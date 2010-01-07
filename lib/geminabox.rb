@@ -1,3 +1,4 @@
+require "builder"
 require 'sinatra/base'
 require 'rubygems'
 require "rubygems/indexer"
@@ -9,6 +10,7 @@ class Geminabox < Sinatra::Base
 
   set :public, File.join(File.dirname(__FILE__), *%w[.. public])
   set :data, File.join(File.dirname(__FILE__), *%w[.. data])
+  set :views, File.join(File.dirname(__FILE__), *%w[.. views])
   use Hostess
 
 
