@@ -1,7 +1,10 @@
-<ul>
+<ul class="gemlist">
   <% @gems.each do |name, version| %>
-    <li><a href="/gems/<%= name %>-<%= version %>.gem"><%= name %> (<%= version %>)</a></li>
+    <li>
+      <strong><%= name %> (<%= version %>)</strong>
+      <code>gem install <%= name %> -v "<%= version %>"</code>
+    </li>
   <% end %>
 </ul>
 
-<a href="upload">Upload More</a>
+<a href="upload">Upload Another Gem</a>

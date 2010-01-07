@@ -1,14 +1,24 @@
 require 'sinatra/base'
 require 'rubygems'
+require "rubygems/indexer"
 
+require 'hostess'
 
 class Gembox < Sinatra::Base
   set :sessions, true
   set :public, File.join(File.dirname(__FILE__), *%w[.. public])
+  set :data, File.join(File.dirname(__FILE__), *%w[.. data])
+  use Hostess, self.data
+
   enable :static
 
   get '/' do
-    @gems = Marshal.load(Gem.gunzip(Gem.read_binary( File.join(options.public, "specs.#{Gem.marshal_version}.gz")) ))
+    begin
+      @gems = Marshal.load(Gem.gunzip(Gem.read_binary( File.join(options.data, "specs.#{Gem.marshal_version}.gz")) ))
+    rescue
+      @gems = []
+    end
+
     erb :index
   end
 
@@ -22,17 +32,33 @@ class Gembox < Sinatra::Base
       return erb(:upload)
     end
 
-    File.open(File.join(options.public, "gems", File.basename(name)), "w") do |f|
+    Dir.mkdir(File.join(options.data, "gems")) unless File.directory? File.join(options.data, "gems")
+
+    File.open(File.join(options.data, "gems", File.basename(name)), "w") do |f|
       while blk = tmpfile.read(65536)
         f << blk
       end
     end
-
+    reindex
     redirect "/"
   end
 
 private
   def reindex
-    Gem::Indexer.new(options.public).generate_index
+    Gem::Indexer.new(options.data).generate_index
+  end
+
+  helpers do
+    def url_for(path)
+      url = request.scheme + "://"
+      url << request.host
+
+      if request.scheme == "https" && request.port != 443 ||
+          request.scheme == "http" && request.port != 80
+        url << ":#{request.port}"
+      end
+
+      url << path
+    end
   end
 end

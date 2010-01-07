@@ -1,8 +1,15 @@
 <html>
   <head>
+    <title>GemBox</title>
+    <link rel="stylesheet" href="/master.css" type="text/css" media="screen" charset="utf-8">
   </head>
   <body>
-    <h1>Gembox</h1>
-    <%= yield %>
+    <div id="content">
+      <h1>Gembox</h1>
+      <p>
+        <code>gem sources -a <%= url_for "/" %></code>
+      </p>
+      <%= yield %>
+    </div>
   </body>
 </html>
