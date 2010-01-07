@@ -1,4 +1,4 @@
 $:.unshift(File.expand_path(File.join(File.dirname(__FILE__), "lib")))
-require "gembox"
+require "geminabox"
 
-run Gembox
+run Geminabox

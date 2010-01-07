@@ -4,7 +4,7 @@ require "rubygems/indexer"
 
 require 'hostess'
 
-class Gembox < Sinatra::Base
+class Geminabox < Sinatra::Base
   enable :static, :methodoverride
 
   set :public, File.join(File.dirname(__FILE__), *%w[.. public])
