@@ -1,0 +1,7 @@
+<ul>
+  <% @gems.each do |name, version| %>
+    <li><a href="/gems/<%= name %>-<%= version %>.gem"><%= name %> (<%= version %>)</a></li>
+  <% end %>
+</ul>
+
+<a href="upload">Upload More</a>
