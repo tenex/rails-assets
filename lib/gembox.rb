@@ -5,12 +5,12 @@ require "rubygems/indexer"
 require 'hostess'
 
 class Gembox < Sinatra::Base
-  set :sessions, true
+  enable :static, :methodoverride
+
   set :public, File.join(File.dirname(__FILE__), *%w[.. public])
   set :data, File.join(File.dirname(__FILE__), *%w[.. data])
   use Hostess, self.data
 
-  enable :static
 
   get '/' do
     begin
@@ -24,6 +24,12 @@ class Gembox < Sinatra::Base
 
   get '/upload' do
     erb :upload
+  end
+
+  delete '/gems/*.gem' do
+    File.delete file_path if File.exists? file_path
+    reindex
+    redirect "/"
   end
 
   post '/upload' do
@@ -46,6 +52,10 @@ class Gembox < Sinatra::Base
 private
   def reindex
     Gem::Indexer.new(options.data).generate_index
+  end
+
+  def file_path
+    File.expand_path(File.join(options.data, *request.path_info))
   end
 
   helpers do
