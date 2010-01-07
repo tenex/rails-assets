@@ -28,12 +28,8 @@ code {
   margin-top: 2em;
   padding: 1em;
   border: 1px solid #000;
-  box-shadow: 0 0 3em #fff;
-  -moz-box-shadow: 0 0 3em #fff;
-  -webkit-box-shadow: 0 0 3em #fff;
-  border-radius: 1em;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 1em;
+  box-shadow: 0 0 3em #fff; -moz-box-shadow: 0 0 3em #fff; -webkit-box-shadow: 0 0 3em #fff;
+  border-radius: 1em; -moz-border-radius: 1em; -webkit-border-radius: 1em;
   text-align: center;
 }
 
@@ -55,9 +51,21 @@ ul.gemlist li {
   border: 1px solid #444;
   padding: .4em;
   border-radius: .5em; -moz-border-radius: .5em; -webkit-border-radius: .5em;
+  position: relative;
 }
 
 ul.gemlist li strong {
   display: block;
   font-size: 1.2em;
+}
+
+ul.gemlist li .delete-form {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: none;
+}
+
+ul.gemlist li:hover .delete-form {
+  display: block;
 }

@@ -3,7 +3,7 @@
     <li>
       <strong><%= name %> (<%= version %>)</strong>
       <code>gem install <%= name %> -v "<%= version %>"</code>
-      <form method="post" action="/gems/<%= name %>-<%= version %>.gem">
+      <form class="delete-form" method="post" action="/gems/<%= name %>-<%= version %>.gem">
         <input type="hidden" name="_method" value="DELETE" />
         <input type="submit" value="delete" />
       </form>
