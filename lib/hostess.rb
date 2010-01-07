@@ -1,13 +1,8 @@
 require 'sinatra/base'
 
 class Hostess < Sinatra::Base
-  def initialize(app, path)
-    @path = path
-    super(app)
-  end
-
   def serve
-    send_file(File.expand_path(File.join(@path, *request.path_info)))
+    send_file(File.expand_path(File.join(Gembox.data, *request.path_info)))
   end
 
   %w[/specs.4.8.gz

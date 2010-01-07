@@ -9,7 +9,7 @@ class Gembox < Sinatra::Base
 
   set :public, File.join(File.dirname(__FILE__), *%w[.. public])
   set :data, File.join(File.dirname(__FILE__), *%w[.. data])
-  use Hostess, self.data
+  use Hostess
 
 
   get '/' do
