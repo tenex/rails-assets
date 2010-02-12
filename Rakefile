@@ -10,7 +10,7 @@ spec = Gem::Specification.new do |s|
   s.summary           = "Really simple rubygem hosting"
   s.author            = "Tom Lea"
   s.email             = "contrib@tomlea.co.uk"
-  s.homepage          = "http://tomlea.co.uk"
+  s.homepage          = "http://tomlea.co.uk/p/gem-in-a-box"
 
   s.has_rdoc          = true
   s.extra_rdoc_files  = %w(README.markdown)
