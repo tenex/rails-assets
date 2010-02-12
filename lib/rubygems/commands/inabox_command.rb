@@ -40,7 +40,7 @@ class Gem::Commands::InaboxCommand < Gem::Command
     possible_gems = Dir.glob("pkg/#{directory}-*.gem")
     raise Gem::CommandLineError, "Couldn't find a gem in pkg, please specify a gem name on the command line (e.g. gem inabox GEMNAME)" unless possible_gems.any?
     name_regexp = Regexp.new("^pkg/#{directory}-")
-    possible_gems.sort{ |a,b| Gem::Version.new(a.sub(name_regexp,'')) <=> Gem::Version.new(b.sub(name_regexp,'')) }.last
+    possible_gems.sort_by{ |a| Gem::Version.new(a.sub(name_regexp,'')) }.last
   end
 
   def send_gem
