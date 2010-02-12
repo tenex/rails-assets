@@ -26,12 +26,25 @@ class Gem::Commands::InaboxCommand < Gem::Command
   end
 
   def setup
-    @gemfile = get_one_gem_name
+    @gemfile = if options[:args].size == 0
+      find_gem
+    else
+      get_one_gem_name
+    end
     configure unless geminabox_host
   end
 
+  def find_gem
+    say "You didn't specify a gem, looking for one in pkg..."
+    path, directory = File.split(Dir.pwd)
+    possible_gems = Dir.glob("pkg/#{directory}-*.gem")
+    raise Gem::CommandLineError, "Couldn't find a gem in pkg, please specify a gem name on the command line (e.g. gem inabox GEMNAME)" unless possible_gems.any?
+    name_regexp = Regexp.new("^pkg/#{directory}-")
+    possible_gems.sort{ |a,b| Gem::Version.new(a.sub(name_regexp,'')) <=> Gem::Version.new(b.sub(name_regexp,'')) }.last
+  end
+
   def send_gem
-    say "Pushing gem to #{geminabox_host}..."
+    say "Pushing #{File.split(@gemfile).last} to #{geminabox_host}..."
 
     File.open(@gemfile, "rb") do |file|
       url = URI.parse(geminabox_host)
