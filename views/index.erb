@@ -1,14 +1,18 @@
-<ul class="gemlist">
-  <% @gems.each do |name, version| %>
-    <li>
-      <strong><%= name %> (<%= version %>)</strong>
-      <code>gem install <%= name %> -v "<%= version %>"</code>
-      <form class="delete-form" method="post" action="/gems/<%= name %>-<%= version %>.gem">
-        <input type="hidden" name="_method" value="DELETE" />
-        <input type="submit" value="delete" />
-      </form>
-    </li>
-  <% end %>
-</ul>
+<% if @gems.any? %>
+  <a href="upload">Upload Another Gem</a>
+
+  <ul class="gemlist">
+    <% @gems.each do |name, version| %>
+      <li>
+        <strong><%= name %> (<%= version %>)</strong>
+        <code>gem install <%= name %> -v "<%= version %>"</code>
+        <form class="delete-form" method="post" action="/gems/<%= name %>-<%= version %>.gem">
+          <input type="hidden" name="_method" value="DELETE" />
+          <input type="submit" value="delete" />
+        </form>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
 
 <a href="upload">Upload Another Gem</a>
