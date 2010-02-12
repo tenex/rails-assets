@@ -72,7 +72,6 @@ class Gem::Commands::InaboxCommand < Gem::Command
   end
 
   module Multipart
-    require 'mime/types'
     require 'net/http'
     require 'cgi'
 
@@ -97,7 +96,7 @@ class Gem::Commands::InaboxCommand < Gem::Command
       end
 
       def to_multipart
-        return "Content-Disposition: form-data; name=\"#{k}\"; filename=\"#{filename}\"\r\n" + "Content-Transfer-Encoding: binary\r\n" + "Content-Type: #{MIME::Types.type_for(@filename)}\r\n\r\n" + content + "\r\n"
+        return "Content-Disposition: form-data; name=\"#{k}\"; filename=\"#{filename}\"\r\n" + "Content-Transfer-Encoding: binary\r\n" + "Content-Type: application/octet-stream\r\n\r\n" + content + "\r\n"
       end
     end
 
