@@ -2,14 +2,16 @@
   <a href="upload">Upload Another Gem</a>
 
   <ul class="gemlist">
-    <% @gems.each do |name, version| %>
+    <% @gems.each do |name, versions| %>
       <li>
-        <strong><%= name %> (<%= version %>)</strong>
-        <code>gem install <%= name %> -v "<%= version %>"</code>
-        <form class="delete-form" method="post" action="/gems/<%= name %>-<%= version %>.gem">
-          <input type="hidden" name="_method" value="DELETE" />
-          <input type="submit" value="delete" />
-        </form>
+        <strong><%= name %> (<%= versions.size == 1 ? versions.first : "#{versions.first} - #{versions.last}" %>)</strong>
+        <% versions.each do |version| %>
+          <form class="delete-form" method="post" action="/gems/<%= name %>-<%= version %>.gem">
+            <code>gem install <%= name %> -v "<%= version %>"</code>
+            <input type="hidden" name="_method" value="DELETE" />
+            <button type="submit">delete</button>
+          </form>
+        <% end %>
       </li>
     <% end %>
   </ul>

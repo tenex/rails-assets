@@ -21,6 +21,18 @@ class Geminabox < Sinatra::Base
       @gems = []
     end
 
+    indices = {}
+    @gems = @gems.inject([]) do |grouped_gems, (name, version, lang)|
+      if i = indices[name]
+        grouped_gems[i][1] << version
+        grouped_gems[i][1].sort!
+      else
+        indices[name] = grouped_gems.size
+        grouped_gems << [name, [version], lang]
+      end
+      grouped_gems
+    end
+
     erb :index
   end
 

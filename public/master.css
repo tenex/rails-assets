@@ -15,6 +15,10 @@ a:hover {
   color: #00f;
 }
 
+form {
+  margin: 0;
+}
+
 code {
   font-size: 0.7em;
 }
@@ -60,12 +64,15 @@ ul.gemlist li strong {
 }
 
 ul.gemlist li .delete-form {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: none;
+  position: relative;
+  padding: 0.25em 0;
 }
-
-ul.gemlist li:hover .delete-form {
-  display: block;
+ul.gemlist li .delete-form button {
+  visibility: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+ul.gemlist li .delete-form:hover button {
+  visibility: visible;
 }
