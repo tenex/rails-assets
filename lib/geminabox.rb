@@ -52,6 +52,8 @@ class Geminabox < Sinatra::Base
       return erb(:upload)
     end
 
+    tmpfile.binmode
+
     Dir.mkdir(File.join(options.data, "gems")) unless File.directory? File.join(options.data, "gems")
 
     File.open(File.join(options.data, "gems", File.basename(name)), "w") do |f|
