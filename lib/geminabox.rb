@@ -56,7 +56,7 @@ class Geminabox < Sinatra::Base
 
     Dir.mkdir(File.join(options.data, "gems")) unless File.directory? File.join(options.data, "gems")
 
-    File.open(File.join(options.data, "gems", File.basename(name)), "w") do |f|
+    File.open(File.join(options.data, "gems", File.basename(name)), "wb") do |f|
       while blk = tmpfile.read(65536)
         f << blk
       end
