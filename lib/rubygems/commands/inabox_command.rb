@@ -53,8 +53,17 @@ class Gem::Commands::InaboxCommand < Gem::Command
       Net::HTTP.start(url.host, url.port) {|con|
         req = Net::HTTP::Post.new('/upload', request_headers)
         req.basic_auth(url.user, url.password) if url.user
-        puts con.request(req, request_body).body
+        handle_response(con.request(req, request_body))
       }
+    end
+  end
+
+  def handle_response(response)
+    case response
+    when Net::HTTPSuccess, Net::HTTPRedirection
+      puts response.body
+    else
+      response.error!
     end
   end
 
