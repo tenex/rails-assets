@@ -48,15 +48,14 @@ class Gem::Commands::InaboxCommand < Gem::Command
 
     File.open(@gemfile, "rb") do |file|
       url = URI.parse(geminabox_host)
-      query, headers = Multipart::MultipartPost.new.prepare_query("file" => file)
+      request_body, request_headers = Multipart::MultipartPost.new.prepare_query("file" => file)
 
       Net::HTTP.start(url.host, url.port) {|con|
-        con.read_timeout = 5
-        response = con.post("/upload", query, headers)
-        puts response.body
+        req = Net::HTTP::Post.new('/upload', request_headers)
+        req.basic_auth(url.user, url.password) if url.user
+        puts con.request(req, request_body).body
       }
     end
-
   end
 
   def config_path
