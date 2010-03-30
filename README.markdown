@@ -4,7 +4,7 @@
 
 ## Really simple rubygem hosting
 
-Gem in a box is a simple [sinatra][sinatra] app to allow you to host your own own in-house gems.
+Gem in a box is a simple [sinatra][sinatra] app to allow you to host your own in-house gems.
 
 It has no security, or authentication so you should handle this yourself.
 
