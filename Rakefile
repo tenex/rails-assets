@@ -6,7 +6,7 @@ task :default => :package
 
 spec = Gem::Specification.new do |s|
   s.name              = "geminabox"
-  s.version           = "0.2.3"
+  s.version           = "0.2.4"
   s.summary           = "Really simple rubygem hosting"
   s.author            = "Tom Lea"
   s.email             = "contrib@tomlea.co.uk"
