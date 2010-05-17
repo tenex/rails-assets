@@ -5,6 +5,7 @@ require "rubygems/indexer"
 
 require 'hostess'
 
+
 class Geminabox < Sinatra::Base
   enable :static, :methodoverride
 
@@ -13,28 +14,10 @@ class Geminabox < Sinatra::Base
   set :views, File.join(File.dirname(__FILE__), *%w[.. views])
   use Hostess
 
+  autoload :GemVersionCollection, "geminabox/gem_version_collection"
 
   get '/' do
-    begin
-      @gems = %w(latest_specs prerelease_specs).inject([]){|gems, spec|
-        gems + Marshal.load(Gem.gunzip(Gem.read_binary( File.join(options.data, "#{spec}.#{Gem.marshal_version}.gz")) ))
-      }
-    rescue
-      @gems = []
-    end
-
-    indices = {}
-    @gems = @gems.inject([]) do |grouped_gems, (name, version, lang)|
-      if i = indices[name]
-        grouped_gems[i][1] << version
-        grouped_gems[i][1].sort!
-      else
-        indices[name] = grouped_gems.size
-        grouped_gems << [name, [version], lang]
-      end
-      grouped_gems
-    end
-
+    @gems = load_gems
     erb :index
   end
 
@@ -74,6 +57,17 @@ private
 
   def file_path
     File.expand_path(File.join(options.data, *request.path_info))
+  end
+
+  def load_gems
+    %w(latest_specs prerelease_specs).inject(GemVersionCollection.new){|gems, specs_file_type|
+      specs_file_path = File.join(options.data, "#{specs_file_type}.#{Gem.marshal_version}.gz")
+      if File.exists?(specs_file_path)
+        gems + Marshal.load(Gem.gunzip(Gem.read_binary(specs_file_path)))
+      else
+        gems
+      end
+    }
   end
 
   helpers do
