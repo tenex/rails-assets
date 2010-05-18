@@ -20,6 +20,11 @@ class Geminabox < Sinatra::Base
     @gems = load_gems
     erb :index
   end
+  
+  get '/atom.xml' do
+    @gems = load_gems
+    erb :atom, :layout => false
+  end
 
   get '/upload' do
     erb :upload

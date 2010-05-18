@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Gem in a Box</title>
+  <link href="<%= url_for '/atom.xml' %>" rel="self" />
+  <link href="<%= url_for '/' %>" />
+
+  <% @gems.each do |name, versions| %>
+    <entry>
+      <title><%= name %> (<%= versions.size == 1 ? versions.first : "#{versions.first} - #{versions.last}" %>)</title>
+      <% versions.each do |version| %>
+        <link href="<%= url_for "/gems/#{name}-#{version}.gem" %>" />
+      <% end %>
+    </entry>
+  <% end %>
+</feed>
