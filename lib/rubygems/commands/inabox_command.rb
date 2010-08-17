@@ -52,11 +52,19 @@ class Gem::Commands::InaboxCommand < Gem::Command
       url = URI.parse(geminabox_host)
       request_body, request_headers = Multipart::MultipartPost.new.prepare_query("file" => file)
 
-      Net::HTTP.start(url.host, url.port) {|con|
+      proxy.start(url.host, url.port) {|con|
         req = Net::HTTP::Post.new('/upload', request_headers)
         req.basic_auth(url.user, url.password) if url.user
         handle_response(con.request(req, request_body))
       }
+    end
+  end
+
+  def proxy
+    if proxy_info = ENV['http_proxy'] || ENV['HTTP_PROXY'] and uri = URI.parse(proxy_info)
+      Net::HTTP::Proxy(uri.host, uri.port, uri.user, uri.password)
+    else
+      Net::HTTP
     end
   end
 
