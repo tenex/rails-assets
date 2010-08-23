@@ -1,8 +1,12 @@
 <% if @gems.any? %>
   <a href="upload">Upload Another Gem</a>
 
+  <div id="alpha_index"><%= ("a".."z").map {|i| "<a href='#jump_#{i}'>#{i}</a>" }.join(" - ") %></div>
+
   <ul class="gemlist">
+
     <% @gems.each do |name, versions| %>
+      <%= "<span id='jump_#{name[0].chr}' />" if @index_gems.include?(name) %>
       <li>
         <strong><%= name %> (<%= versions.size == 1 ? versions.first : "#{versions.first} - #{versions.last}" %>)</strong>
         <% versions.each do |version| %>

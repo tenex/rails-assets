@@ -18,6 +18,7 @@ class Geminabox < Sinatra::Base
 
   get '/' do
     @gems = load_gems
+    @index_gems = index_gems(@gems)
     erb :index
   end
   
@@ -73,6 +74,14 @@ private
         gems
       end
     }
+  end
+
+  def index_gems(gems)
+    gems.inject([]) do |result, curr|
+      name = curr.first
+      result << name unless result.any? {|i| name[0].chr == i[0].chr}
+      result
+    end
   end
 
   helpers do
