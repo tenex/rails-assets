@@ -77,11 +77,7 @@ private
   end
 
   def index_gems(gems)
-    gems.inject([]) do |result, curr|
-      name = curr.first
-      result << name unless result.any? {|i| name[0].chr == i[0].chr}
-      result
-    end
+    Set.new(gems.map{|name, _| name[0..0]})
   end
 
   helpers do
