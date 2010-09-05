@@ -20,7 +20,7 @@ Create a config.ru as follows:
     Geminabox.data = "/var/geminabox-data" # …or wherever
     run Geminabox
 
-And finally, hook up the config.ru as you normally would ([passenger][passenger], [thin][thin], [unicorn][unicorn], whatever floats you boat).
+And finally, hook up the config.ru as you normally would ([passenger][passenger], [thin][thin], [unicorn][unicorn], whatever floats your boat).
 
 
 ## Client Usage
