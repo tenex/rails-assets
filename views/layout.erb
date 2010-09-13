@@ -11,7 +11,8 @@
     <div id="content">
       <h1>Gem in a Box</h1>
       <p>
-        <code>gem sources -a <%= url_for "/" %></code>
+        <pre><code>gem sources -a <%= url_for "/" %></code></pre>
+        <pre><code>gem install geminabox<br />gem inabox [gemfile]</code></pre>
       </p>
       <%= yield %>
     </div>
