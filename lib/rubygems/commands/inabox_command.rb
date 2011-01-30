@@ -19,6 +19,10 @@ class Gem::Commands::InaboxCommand < Gem::Command
     add_option('-c', '--configure', "Configure GemInABox") do |value, options|
       options[:configure] = true
     end
+
+    add_option('-g', '--host HOST', "Host to upload to.") do |value, options|
+      options[:host] = value
+    end
   end
 
   def execute
@@ -88,7 +92,7 @@ class Gem::Commands::InaboxCommand < Gem::Command
   end
 
   def geminabox_host
-    geminabox_host ||= Gem.configuration.load_file(config_path)[:host]
+    @geminabox_host ||= options[:host] || Gem.configuration.load_file(config_path)[:host]
   end
 
   def geminabox_host=(host)
