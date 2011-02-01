@@ -1,6 +1,7 @@
 require "builder"
 require 'sinatra/base'
 require 'rubygems'
+require 'rubygems/builder'
 require "rubygems/indexer"
 
 require 'hostess'
