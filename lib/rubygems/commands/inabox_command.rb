@@ -1,3 +1,4 @@
+require 'uri'
 require 'yaml'
 
 class Gem::Commands::InaboxCommand < Gem::Command
@@ -50,10 +51,14 @@ class Gem::Commands::InaboxCommand < Gem::Command
   end
 
   def send_gem
-    say "Pushing #{File.split(@gemfile).last} to #{geminabox_host}..."
+    # sanitize printed URL if a password is present
+    url = URI.parse(geminabox_host)
+    url_for_presentation = url.clone
+    url_for_presentation.password = '***' if url_for_presentation.password
+
+    say "Pushing #{File.split(@gemfile).last} to #{url_for_presentation}..."
 
     File.open(@gemfile, "rb") do |file|
-      url = URI.parse(geminabox_host)
       request_body, request_headers = Multipart::MultipartPost.new.prepare_query("file" => file)
 
       proxy.start(url.host, url.port) {|con|
@@ -151,6 +156,6 @@ class Gem::Commands::InaboxCommand < Gem::Command
         query = fp.collect {|p| "--" + BOUNDARY + "\r\n" + p.to_multipart }.join("") + "--" + BOUNDARY + "--"
         return query, HEADER
       end
-    end  
+    end
   end
 end
