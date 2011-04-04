@@ -80,6 +80,12 @@ ul.gemlist li .delete-form:hover button {
   visibility: visible;
 }
 
+.details {
+  margin-top: 1em;
+  font-size: 0.7em;
+  border-top: 1px solid #ccc;
+}
+
 #alpha_index {
   font-size: 0.8em;
   margin-top: 1.0em;

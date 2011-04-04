@@ -82,6 +82,11 @@ private
   end
 
   helpers do
+    def spec_for(gem_name, version)
+      spec_file = File.join(options.data, "quick", "Marshal.#{Gem.marshal_version}", "#{gem_name}-#{version}.gemspec.rz")
+      Marshal.load(Gem.inflate(File.read(spec_file)))
+    end
+
     def url_for(path)
       url = request.scheme + "://"
       url << request.host
