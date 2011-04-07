@@ -7,7 +7,7 @@
 
     <% @gems.each do |name, versions| %>
       <li <%= %{id="jump_#{name[0..0]}"} if @index_gems.delete(name[0..0]) %>>
-        <strong><%= name %> (<%= versions.size == 1 ? versions.first : "#{versions.first} - #{versions.last}" %>)</strong>
+        <h2><%= name %> (<%= versions.size == 1 ? versions.first : "#{versions.first} - #{versions.last}" %>)</h2>
         <% versions.each do |version| %>
           <form class="delete-form" method="post" action="/gems/<%= name %>-<%= version %>.gem">
             <code>gem install <%= name %> -v "<%= version %>"</code>
