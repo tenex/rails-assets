@@ -39,6 +39,7 @@ class Geminabox < Sinatra::Base
   end
 
   post '/upload' do
+    return "Please ensure #{File.expand_path(Geminabox.data)} is writable by the geminabox web server." unless File.writable? Geminabox.data
     unless params[:file] && (tmpfile = params[:file][:tempfile]) && (name = params[:file][:filename])
       @error = "No file selected"
       return erb(:upload)
