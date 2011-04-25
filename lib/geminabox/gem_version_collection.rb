@@ -12,13 +12,13 @@ class Geminabox::GemVersionCollection
     @gems[name].sort!
     self
   end
-  
+
   def + other
     other.inject(self.class.new(self)){|new_set, gemdef|
       new_set << gemdef
     }
   end
-  
+
   def each(&block)
     @gems.sort_by{|name, versions| name }.each(&block)
   end

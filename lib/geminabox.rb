@@ -22,7 +22,7 @@ class Geminabox < Sinatra::Base
     @index_gems = index_gems(@gems)
     erb :index
   end
-  
+
   get '/atom.xml' do
     @gems = load_gems
     erb :atom, :layout => false
@@ -85,7 +85,7 @@ private
   helpers do
     def spec_for(gem_name, version)
       spec_file = File.join(options.data, "quick", "Marshal.#{Gem.marshal_version}", "#{gem_name}-#{version}.gemspec.rz")
-      Marshal.load(Gem.inflate(File.read(spec_file)))
+      Marshal.load(Gem.inflate(File.read(spec_file))) if File.exists? spec_file
     end
 
     def url_for(path)
