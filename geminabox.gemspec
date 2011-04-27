@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name              = 'geminabox'
-  s.version           = '0.2.14'
+  s.version           = '0.2.15'
   s.summary           = 'Really simple rubygem hosting'
   s.description       = 'A sinatra based gem hosting app, with client side gem push style functionality.'
   s.author            = 'Tom Lea'
