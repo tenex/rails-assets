@@ -31,6 +31,11 @@ And finally, hook up the config.ru as you normally would ([passenger][passenger]
 
 Simples!
 
+## Licence
+
+Fork it, mod it, choose it, use it, make it better. All under the [do what the fuck you want to + beer/pizza public license][WTFBPPL].
+
+[WTFBPPL]: http://tomlea.co.uk/WTFBPPL.txt
 [sinatra]: http://www.sinatrarb.com/
 [passenger]: http://www.modrails.com/
 [thin]: http://code.macournoyer.com/thin/
