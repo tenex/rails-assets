@@ -13,7 +13,12 @@ class Geminabox < Sinatra::Base
   set :public, File.join(File.dirname(__FILE__), *%w[.. public])
   set :data, File.join(File.dirname(__FILE__), *%w[.. data])
   set :views, File.join(File.dirname(__FILE__), *%w[.. views])
+  set :disallow_replace, false
   use Hostess
+
+  class << self
+    alias :disallow_replace :disallow_replace?
+  end
 
   autoload :GemVersionCollection, "geminabox/gem_version_collection"
 
@@ -49,7 +54,13 @@ class Geminabox < Sinatra::Base
 
     Dir.mkdir(File.join(options.data, "gems")) unless File.directory? File.join(options.data, "gems")
 
-    File.open(File.join(options.data, "gems", File.basename(name)), "wb") do |f|
+    dest_filename = File.join(options.data, "gems", File.basename(name))
+
+    if Geminabox.disallow_replace? && File.exist?(dest_filename)
+      return error_response(409, "Gem already exists")
+    end
+
+    File.open(dest_filename, "wb") do |f|
       while blk = tmpfile.read(65536)
         f << blk
       end
@@ -59,6 +70,20 @@ class Geminabox < Sinatra::Base
   end
 
 private
+
+  def error_response(code, message)
+    html = <<HTML
+<html>
+  <head><title>Error - #{code}</title></head>
+  <body>
+    <h1>Error - #{code}</h1>
+    <p>#{message}</p>
+  </body>
+</html>
+HTML
+    [code, html]
+  end
+
   def reindex
     Gem::Indexer.new(options.data).generate_index
   end
