@@ -13,11 +13,13 @@ class Geminabox < Sinatra::Base
   set :public, File.join(File.dirname(__FILE__), *%w[.. public])
   set :data, File.join(File.dirname(__FILE__), *%w[.. data])
   set :views, File.join(File.dirname(__FILE__), *%w[.. views])
-  set :disallow_replace, false
+  set :allow_replace, false
   use Hostess
 
   class << self
-    alias :disallow_replace :disallow_replace?
+    def disallow_replace?
+      ! allow_replace
+    end
   end
 
   autoload :GemVersionCollection, "geminabox/gem_version_collection"
