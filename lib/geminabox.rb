@@ -58,8 +58,16 @@ class Geminabox < Sinatra::Base
 
     dest_filename = File.join(options.data, "gems", File.basename(name))
 
-    if Geminabox.disallow_replace? && File.exist?(dest_filename)
-      return error_response(409, "Gem already exists")
+
+    if Geminabox.disallow_replace? and File.exist?(dest_filename)
+      existing_file_digest = Digest::SHA1.file(dest_filename).hexdigest
+      tmpfile_digest = Digest::SHA1.file(tmpfile.path).hexdigest
+
+      if existing_file_digest != tmpfile_digest
+        return error_response(409, "Gem already exists, you must delete the existing version first.")
+      else
+        return [200, "Ignoring upload, you uploaded the same thing previously."]
+      end
     end
 
     File.open(dest_filename, "wb") do |f|
