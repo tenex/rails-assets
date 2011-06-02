@@ -8,6 +8,7 @@ class Geminabox::GemVersionCollection
 
   def <<(gemdef)
     name,version,_ = gemdef
+    return self if name.nil?
     @gems[name] += [version].flatten
     @gems[name].sort!
     self
