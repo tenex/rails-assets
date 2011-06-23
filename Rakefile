@@ -1,10 +1,10 @@
 require "rubygems"
-require "rake/gempackagetask"
-require "rake/rdoctask"
+require "rubygems/package_task"
+require "rdoc/task"
 
 task :default => :package
 
-Rake::GemPackageTask.new(eval(File.read("geminabox.gemspec"))) do |pkg|
+Gem::PackageTask.new(eval(File.read("geminabox.gemspec"))) do |pkg|
 end
 
 Rake::RDocTask.new do |rd|
