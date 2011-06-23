@@ -10,7 +10,7 @@
         <h2><%= name %> (<%= versions.size == 1 ? versions.first : "#{versions.first} - #{versions.last}" %>)</h2>
         <% versions.each do |version| %>
           <form class="delete-form" method="post" action="/gems/<%= name %>-<%= version %>.gem">
-            <code>gem install <%= name %> -v "<%= version %>"</code>
+            <code>gem install <%= name %> <%= "--prerelease" if version.to_s.match(/[a-z]/i) %> -v "<%= version %>"</code>
             <input type="hidden" name="_method" value="DELETE" />
             <button type="submit">delete</button>
           </form>
