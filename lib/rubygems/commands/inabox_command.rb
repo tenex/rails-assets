@@ -33,10 +33,10 @@ class Gem::Commands::InaboxCommand < Gem::Command
   end
 
   def setup
-    @gemfile = if options[:args].size == 0
-      find_gem
+    if options[:args].size == 0
+      @gemfiles = [find_gem]
     else
-      get_one_gem_name
+      @gemfiles = get_all_gem_names
     end
     configure unless geminabox_host
   end
@@ -56,16 +56,18 @@ class Gem::Commands::InaboxCommand < Gem::Command
     url_for_presentation = url.clone
     url_for_presentation.password = '***' if url_for_presentation.password
 
-    say "Pushing #{File.split(@gemfile).last} to #{url_for_presentation}..."
+    @gemfiles.each do |gemfile|
+      say "Pushing #{File.basename(gemfile)} to #{url_for_presentation}..."
 
-    File.open(@gemfile, "rb") do |file|
-      request_body, request_headers = Multipart::MultipartPost.new.prepare_query("file" => file)
+      File.open(gemfile, "rb") do |file|
+        request_body, request_headers = Multipart::MultipartPost.new.prepare_query("file" => file)
 
-      proxy.start(url.host, url.port) {|con|
-        req = Net::HTTP::Post.new('/upload', request_headers)
-        req.basic_auth(url.user, url.password) if url.user
-        handle_response(con.request(req, request_body))
-      }
+        proxy.start(url.host, url.port) {|con|
+          req = Net::HTTP::Post.new('/upload', request_headers)
+          req.basic_auth(url.user, url.password) if url.user
+          handle_response(con.request(req, request_body))
+        }
+      end
     end
   end
 
