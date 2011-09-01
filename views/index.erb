@@ -21,7 +21,9 @@
             <% if spec = spec_for(name, versions.last) %>
               <%= spec.description %>
               <br/>
-              <span class="author">– <a href='<%= spec.homepage %>'><%= spec.author %></a></span>
+              <span class="author">– <%= spec.authors.map do |author|
+                "<a href='#{spec.homepage}'>#{author}</a>"
+              end.join(', ') %></span>
             <% end %>
           </p>
         </div>
