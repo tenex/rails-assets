@@ -1,3 +1,4 @@
+require "digest/md5"
 require "builder"
 require 'sinatra/base'
 require 'rubygems'
