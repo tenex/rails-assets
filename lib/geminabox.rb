@@ -96,6 +96,7 @@ HTML
   end
 
   def reindex
+    Gem.post_reset{ Gem::Specification.all = nil }
     Gem::Indexer.new(options.data).generate_index
   end
 
