@@ -1,6 +1,6 @@
 # Gem in a Box
 
-![screen shot](http://i50.tinypic.com/2yknxnr.png)
+![screen shot](http://pics.tomlea.co.uk/55c320/geminabox.png)
 
 ## Really simple rubygem hosting
 
