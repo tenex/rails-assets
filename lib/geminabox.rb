@@ -7,7 +7,6 @@ require "rubygems/indexer"
 
 require 'hostess'
 
-
 class Geminabox < Sinatra::Base
   enable :static, :methodoverride
 
@@ -20,6 +19,12 @@ class Geminabox < Sinatra::Base
   class << self
     def disallow_replace?
       ! allow_replace
+    end
+
+    def fixup_bundler_rubygems!
+      return if @post_reset_hook_applied
+      Gem.post_reset{ Gem::Specification.all = nil } if defined? Bundler and Gem.respond_to? :post_reset
+      @post_reset_hook_applied = true
     end
   end
 
@@ -96,7 +101,7 @@ HTML
   end
 
   def reindex
-    Gem.post_reset{ Gem::Specification.all = nil }
+    Geminabox.fixup_bundler_rubygems!
     Gem::Indexer.new(options.data).generate_index
   end
 
