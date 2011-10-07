@@ -9,6 +9,12 @@ body {
   margin: 0;
 }
 
+small {
+  color: #999;
+  font-size: 60%;
+}
+
+
 a {
   text-decoration: none;
   color: #00a;
@@ -109,4 +115,20 @@ ul.gemlist li .delete-form:hover button {
   font-size: 0.8em;
   margin-top: 1.0em;
   color: #aaa;
+}
+
+
+.gem-version form p {
+  margin: 0;
+  padding: 1px 0;
+  border: 0;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 100%;
+  line-height: 1;
+  font-family: inherit;
+}
+
+.gem-version small.platform {
+  padding: 0 0 0 15px;
 }

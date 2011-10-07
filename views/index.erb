@@ -5,12 +5,17 @@
 
   <ul class="gemlist">
 
-    <% @gems.each do |name, versions| %>
-      <li <%= %{id="jump_#{name[0..0]}"} if @index_gems.delete(name[0..0]) %>>
-        <h2><%= name %> (<%= versions.size == 1 ? versions.first : "#{versions.first} - #{versions.last}" %>)</h2>
+    <% @gems.grouped_by(:name) do |name, versions| %>
+      <li <%= %{id="jump_#{name[0..0]}"} if @index_gems.delete(name[0..0]) %> class="gem-version">
+        <h2><%= name %> (<%= versions.size == 1 ? versions.first.number : "#{versions.first.number} - #{versions.last.number}" %>)</h2>
         <% versions.each do |version| %>
-          <form class="delete-form" method="post" action="/gems/<%= name %>-<%= version %>.gem">
-            <code>gem install <%= name %> <%= "--prerelease" if version.to_s.match(/[a-z]/i) %> -v "<%= version %>"</code>
+          <form class="delete-form" method="post" action="/gems/<%= version.gemfile_name %>.gem">
+            <p>
+              <code>gem install <%= version.name %> <%= "--prerelease" if version.number.to_s.match(/[a-z]/i) %> -v "<%= version.number %>"</code>
+              <% unless version.platform =~ /^ruby/i %>
+                <small class="platform"><%= version.platform %></small>
+              <% end %>
+            </p>
             <input type="hidden" name="_method" value="DELETE" />
             <button type="submit">delete</button>
           </form>
@@ -18,7 +23,7 @@
 
         <div class="details">
           <p>
-            <% if spec = spec_for(name, versions.last) %>
+            <% if spec = spec_for(name, versions.last.number) %>
               <%= spec.description %>
               <br/>
               <span class="author">– <%= spec.authors.map do |author|

@@ -1,7 +1,9 @@
+require 'rubygems'
+require 'bundler/setup'
+
 require "digest/md5"
 require "builder"
 require 'sinatra/base'
-require 'rubygems'
 require 'rubygems/builder'
 require "rubygems/indexer"
 
@@ -118,15 +120,14 @@ HTML
     %w(specs prerelease_specs).inject(GemVersionCollection.new){|gems, specs_file_type|
       specs_file_path = File.join(options.data, "#{specs_file_type}.#{Gem.marshal_version}.gz")
       if File.exists?(specs_file_path)
-        gems + Marshal.load(Gem.gunzip(Gem.read_binary(specs_file_path)))
-      else
-        gems
+        gems |= Geminabox::GemVersionCollection.new(Marshal.load(Gem.gunzip(Gem.read_binary(specs_file_path))))
       end
+      gems
     }
   end
 
   def index_gems(gems)
-    Set.new(gems.map{|name, _| name[0..0]})
+    Set.new(gems.map{|gem| gem.name[0..0]})
   end
 
   helpers do
