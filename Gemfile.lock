@@ -1,0 +1,25 @@
+PATH
+  remote: .
+  specs:
+    geminabox (0.3.2)
+      builder
+      sinatra
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    builder (3.0.0)
+    rack (1.3.4)
+    rack-protection (1.1.4)
+      rack
+    sinatra (1.3.1)
+      rack (~> 1.3, >= 1.3.4)
+      rack-protection (~> 1.1, >= 1.1.2)
+      tilt (~> 1.3, >= 1.3.3)
+    tilt (1.3.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  geminabox!
