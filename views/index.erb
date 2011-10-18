@@ -5,9 +5,9 @@
 
   <ul class="gemlist">
 
-    <% @gems.grouped_by(:name) do |name, versions| %>
+    <% @gems.by_name do |name, versions| %>
       <li <%= %{id="jump_#{name[0..0]}"} if @index_gems.delete(name[0..0]) %> class="gem-version">
-        <h2><%= name %> (<%= versions.size == 1 ? versions.first.number : "#{versions.first.number} - #{versions.last.number}" %>)</h2>
+        <h2><%= name %> (<%= versions.count == 1 ? versions.first.number : "#{versions.first.number} - #{versions.first.number}" %>)</h2>
         <% versions.each do |version| %>
           <form class="delete-form" method="post" action="/gems/<%= version.gemfile_name %>.gem">
             <p>
@@ -23,7 +23,7 @@
 
         <div class="details">
           <p>
-            <% if spec = spec_for(name, versions.last.number) %>
+            <% if spec = spec_for(name, versions.first.number) %>
               <%= spec.description %>
               <br/>
               <span class="author">– <%= spec.authors.map do |author|

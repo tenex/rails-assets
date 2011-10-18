@@ -18,28 +18,32 @@ class Geminabox::GemVersionCollection
               end
 
     @gems << version
-    @gems.sort_by { |version| version.number }
+    @gems.sort!
   end
 
   def |(other)
     self.class.new(self.gems | other.gems)
   end
-  
+
   def each(&block)
-    @gems.sort_by { |gem| gem.name }.each(&block)
+    @gems.each(&block)
   end
-  
-  def grouped_by(attr)
-    grouped = @gems.inject(hash_of_arrays) do |grouped, gem| 
-      grouped[gem.send(attr)] << gem
+
+  def by_name
+    grouped = @gems.inject(hash_of_collections) do |grouped, gem|
+      grouped[gem.name] << gem
       grouped
     end
-    grouped.each(&Proc.new) if block_given?
-    grouped
+
+    if block_given?
+      grouped.each(&Proc.new)
+    else
+      grouped
+    end
   end
 
   private
-  def hash_of_arrays
-    Hash.new { |h,k| h[k] = [] }
+  def hash_of_collections
+    Hash.new { |h,k| h[k] = self.class.new }
   end
 end
