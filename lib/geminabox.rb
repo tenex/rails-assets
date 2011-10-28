@@ -12,7 +12,7 @@ require 'hostess'
 class Geminabox < Sinatra::Base
   enable :static, :methodoverride
 
-  set :public, File.join(File.dirname(__FILE__), *%w[.. public])
+  set :public_folder, File.join(File.dirname(__FILE__), *%w[.. public])
   set :data, File.join(File.dirname(__FILE__), *%w[.. data])
   set :views, File.join(File.dirname(__FILE__), *%w[.. views])
   set :allow_replace, false
@@ -67,9 +67,9 @@ class Geminabox < Sinatra::Base
 
     tmpfile.binmode
 
-    Dir.mkdir(File.join(options.data, "gems")) unless File.directory? File.join(options.data, "gems")
+    Dir.mkdir(File.join(settings.data, "gems")) unless File.directory? File.join(settings.data, "gems")
 
-    dest_filename = File.join(options.data, "gems", File.basename(name))
+    dest_filename = File.join(settings.data, "gems", File.basename(name))
 
 
     if Geminabox.disallow_replace? and File.exist?(dest_filename)
@@ -109,16 +109,16 @@ HTML
 
   def reindex
     Geminabox.fixup_bundler_rubygems!
-    Gem::Indexer.new(options.data).generate_index
+    Gem::Indexer.new(settings.data).generate_index
   end
 
   def file_path
-    File.expand_path(File.join(options.data, *request.path_info))
+    File.expand_path(File.join(settings.data, *request.path_info))
   end
 
   def load_gems
     %w(specs prerelease_specs).inject(GemVersionCollection.new){|gems, specs_file_type|
-      specs_file_path = File.join(options.data, "#{specs_file_type}.#{Gem.marshal_version}.gz")
+      specs_file_path = File.join(settings.data, "#{specs_file_type}.#{Gem.marshal_version}.gz")
       if File.exists?(specs_file_path)
         gems |= Geminabox::GemVersionCollection.new(Marshal.load(Gem.gunzip(Gem.read_binary(specs_file_path))))
       end
@@ -132,7 +132,7 @@ HTML
 
   helpers do
     def spec_for(gem_name, version)
-      spec_file = File.join(options.data, "quick", "Marshal.#{Gem.marshal_version}", "#{gem_name}-#{version}.gemspec.rz")
+      spec_file = File.join(settings.data, "quick", "Marshal.#{Gem.marshal_version}", "#{gem_name}-#{version}.gemspec.rz")
       Marshal.load(Gem.inflate(File.read(spec_file))) if File.exists? spec_file
     end
   end
