@@ -1,5 +1,5 @@
 <% if @gems.any? %>
-  <a href="upload">Upload Another Gem</a>
+  <a href="<%= url("/upload") %>">Upload Another Gem</a>
 
   <div id="alpha_index"><%= ("a".."z").map{|i| @index_gems.include?(i) ? "<a href='#jump_#{i}'>#{i}</a>" : i }.join(" - ") %></div>
 
@@ -9,13 +9,14 @@
       <li <%= %{id="jump_#{name[0..0]}"} if @index_gems.delete(name[0..0]) %> class="gem-version">
         <h2><%= name %> (<%= versions.count == 1 ? versions.first.number : "#{versions.first.number} - #{versions.first.number}" %>)</h2>
         <% versions.each do |version| %>
-          <form class="delete-form" method="post" action="/gems/<%= version.gemfile_name %>.gem">
-            <p>
-              <code>gem install <%= version.name %> <%= "--prerelease" if version.number.to_s.match(/[a-z]/i) %> -v "<%= version.number %>"</code>
-              <% unless version.platform =~ /^ruby/i %>
-                <small class="platform"><%= version.platform %></small>
-              <% end %>
-            </p>
+          <p>
+            <code>gem install <%= version.name %> <%= "--prerelease" if version.number.to_s.match(/[a-z]/i) %> -v "<%= version.number %>"</code>
+            <% unless version.platform =~ /^ruby/i %>
+              <small class="platform"><%= version.platform %></small>
+            <% end %>
+          </p>
+          <form class="delete-form" method="post" action="<%= url("/gems/#{version.gemfile_name}.gem") %>">
+            <a class="download" href="<%= url("/gems/#{version.gemfile_name}.gem") %>">download</a>
             <input type="hidden" name="_method" value="DELETE" />
             <button type="submit">delete</button>
           </form>
@@ -38,4 +39,4 @@
   </ul>
 <% end %>
 
-<a href="upload">Upload Another Gem</a>
+<a href="<%= url("/upload") %>">Upload Another Gem</a>

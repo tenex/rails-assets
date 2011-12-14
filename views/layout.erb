@@ -2,19 +2,19 @@
 <html>
   <head>
     <title>Gem in a Box</title>
-    <link rel="stylesheet" href="/master.css" type="text/css" media="screen">
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Atom Feed">
+    <link rel="stylesheet" href="<%= url "/master.css" %>" type="text/css" media="screen">
+    <link href="<%= url "/atom.xml" %>" type="application/atom+xml" rel="alternate" title="Atom Feed">
   </head>
   <body>
     <div id="content">
       <h1>Gem in a Box</h1>
       <p>
-        <pre><code>gem sources -a <%= url_for "/" %></code></pre>
+        <pre><code>gem sources -a <%= url "/" %></code></pre>
         <pre><code>gem install geminabox<br />gem inabox [gemfile]</code></pre>
       </p>
       <%= yield %>
     </div>
-    <script type="text/javascript" src="/jquery.js"></script>
-    <script type="text/javascript" src="/master.js"></script>
+    <script type="text/javascript" src="<%= url "/jquery.js" %>"></script>
+    <script type="text/javascript" src="<%= url "/master.js" %>"></script>
   </body>
 </html>

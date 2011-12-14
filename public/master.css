@@ -83,11 +83,12 @@ ul.gemlist li strong {
 
 ul.gemlist li .delete-form {
   position: relative;
-  overflow: hidden;
   margin: 2px 0;
 }
-ul.gemlist li .delete-form button {
-  visibility: hidden;
+ul.gemlist li button,
+ul.gemlist li a.download
+{
+  display: none;
   position: absolute;
   right: 0;
   bottom: 0;
@@ -96,9 +97,22 @@ ul.gemlist li .delete-form button {
   border: 0;
   color: #fff;
   margin: 0;
+  font-size: 8pt;
+  padding: 3px;
+  cursor: pointer;
 }
-ul.gemlist li .delete-form:hover button {
-  visibility: visible;
+
+ul.gemlist li a.download {
+  background: #5c5;
+  border-radius: .5em 0 0 .5em; -moz-border-radius: .5em 0 0 .5em; -webkit-border-radius:  0 .5em .5em 0;
+  left: 0;
+  right: auto;
+}
+
+ul.gemlist li:hover button,
+ul.gemlist li:hover a.download {
+  margin: 0;
+  display: block;
 }
 
 .details {
@@ -118,7 +132,7 @@ ul.gemlist li .delete-form:hover button {
 }
 
 
-.gem-version form p {
+.gem-version p {
   margin: 0;
   padding: 1px 0;
   border: 0;

@@ -49,13 +49,13 @@ class Geminabox < Sinatra::Base
 
   get '/reindex' do
     reindex
-    redirect "/"
+    redirect url("/")
   end
 
   delete '/gems/*.gem' do
     File.delete file_path if File.exists? file_path
     reindex
-    redirect "/"
+    redirect url("/")
   end
 
   post '/upload' do
@@ -89,7 +89,7 @@ class Geminabox < Sinatra::Base
       end
     end
     reindex
-    redirect "/"
+    redirect url("/")
   end
 
 private
@@ -134,18 +134,6 @@ HTML
     def spec_for(gem_name, version)
       spec_file = File.join(options.data, "quick", "Marshal.#{Gem.marshal_version}", "#{gem_name}-#{version}.gemspec.rz")
       Marshal.load(Gem.inflate(File.read(spec_file))) if File.exists? spec_file
-    end
-
-    def url_for(path)
-      url = request.scheme + "://"
-      url << request.host
-
-      if request.scheme == "https" && request.port != 443 ||
-          request.scheme == "http" && request.port != 80
-        url << ":#{request.port}"
-      end
-
-      url << path
     end
   end
 end
