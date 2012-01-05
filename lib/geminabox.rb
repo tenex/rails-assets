@@ -14,6 +14,7 @@ class Geminabox < Sinatra::Base
 
   set :public_folder, File.join(File.dirname(__FILE__), *%w[.. public])
   set :data, File.join(File.dirname(__FILE__), *%w[.. data])
+  set :build_legacy, true
   set :views, File.join(File.dirname(__FILE__), *%w[.. views])
   set :allow_replace, false
   use Hostess
@@ -109,7 +110,11 @@ HTML
 
   def reindex
     Geminabox.fixup_bundler_rubygems!
-    Gem::Indexer.new(settings.data).generate_index
+    indexer.generate_index
+  end
+
+  def indexer
+    Gem::Indexer.new(settings.data, :build_legacy => settings.build_legacy)
   end
 
   def file_path

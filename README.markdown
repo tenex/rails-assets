@@ -22,6 +22,11 @@ Create a config.ru as follows:
 
 And finally, hook up the config.ru as you normally would ([passenger][passenger], [thin][thin], [unicorn][unicorn], whatever floats your boat).
 
+## Legacy RubyGems index
+
+RubyGems supports generating indexes for the so called legacy verions (< 1.2), and since it is very rare to use such versions nowadays, it can be disabled, thus improving indexing times for large repositories. If it's safe for your application, you can disable support for these legacy versions by adding the following configuration to yout config.ru file:
+
+    Geminabox.build_legacy = false
 
 ## Client Usage
 
