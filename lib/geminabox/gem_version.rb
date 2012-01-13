@@ -11,9 +11,13 @@ class Geminabox::GemVersion
     !!(platform =~ /ruby/i)
   end
 
+  def version
+    Gem::Version.create(number)
+  end
+
   def <=>(other)
     sort = other.name <=> name
-    sort = other.number <=> number          if sort.zero?
+    sort = version <=>  other.version       if sort.zero?
     sort = (other.ruby? && !ruby?) ? 1 : -1 if sort.zero? && ruby? != other.ruby?
     sort = other.platform <=> platform      if sort.zero?
 

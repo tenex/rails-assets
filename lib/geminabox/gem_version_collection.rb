@@ -21,6 +21,14 @@ class Geminabox::GemVersionCollection
     @gems.sort!
   end
 
+  def oldest
+    @gems.first
+  end
+
+  def newest
+    @gems.last
+  end
+
   def |(other)
     self.class.new(self.gems | other.gems)
   end
