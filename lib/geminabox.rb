@@ -49,13 +49,13 @@ class Geminabox < Sinatra::Base
   end
 
   get '/reindex' do
-    reindex
+    reindex(:force_rebuild)
     redirect url("/")
   end
 
   delete '/gems/*.gem' do
     File.delete file_path if File.exists? file_path
-    reindex
+    reindex(:force_rebuild)
     redirect url("/")
   end
 
@@ -108,9 +108,14 @@ HTML
     [code, html]
   end
 
-  def reindex
+  def reindex(force_rebuild = false)
     Geminabox.fixup_bundler_rubygems!
-    indexer.generate_index
+    force_rebuild = true if settings.build_legacy
+    if force_rebuild
+      indexer.generate_index
+    else
+      indexer.update_index
+    end
   end
 
   def indexer
