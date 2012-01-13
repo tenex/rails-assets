@@ -14,7 +14,7 @@ class Geminabox < Sinatra::Base
 
   set :public_folder, File.join(File.dirname(__FILE__), *%w[.. public])
   set :data, File.join(File.dirname(__FILE__), *%w[.. data])
-  set :build_legacy, true
+  set :build_legacy, false
   set :views, File.join(File.dirname(__FILE__), *%w[.. views])
   set :allow_replace, false
   use Hostess
