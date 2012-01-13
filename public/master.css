@@ -2,7 +2,7 @@
 
 
 body {
-  background: #a00;
+  background: #ddd;
   color: #444;
   font-size: 1.2em;
   font-family: "helvetica neue",  sans-serif;
@@ -35,6 +35,7 @@ code {
 
 #content {
   background: #fff;
+  border: 1px solid #ccc;
   width: 600px;
   margin: 0 auto;
   overflow: hidden;
