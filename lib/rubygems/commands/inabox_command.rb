@@ -52,9 +52,11 @@ class Gem::Commands::InaboxCommand < Gem::Command
 
   def send_gem
     # sanitize printed URL if a password is present
-    url = URI.parse(geminabox_host)
+    url = URI.join(geminabox_host, "upload")
+
     url_for_presentation = url.clone
     url_for_presentation.password = '***' if url_for_presentation.password
+
 
     @gemfiles.each do |gemfile|
       say "Pushing #{File.basename(gemfile)} to #{url_for_presentation}..."
@@ -63,7 +65,7 @@ class Gem::Commands::InaboxCommand < Gem::Command
         request_body, request_headers = Multipart::MultipartPost.new.prepare_query("file" => file)
 
         proxy.start(url.host, url.port) {|con|
-          req = Net::HTTP::Post.new(url.path+'/upload', request_headers)
+          req = Net::HTTP::Post.new(url.path, request_headers)
           req.basic_auth(url.user, url.password) if url.user
           handle_response(con.request(req, request_body))
         }
