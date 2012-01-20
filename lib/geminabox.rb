@@ -112,7 +112,13 @@ HTML
     if force_rebuild
       indexer.generate_index
     else
-      indexer.update_index
+      begin
+        indexer.update_index
+      rescue => e
+        puts "#{e.class}:#{e.message}"
+        puts e.backtrace.join("\n")
+        reindex(:force_rebuild)
+      end
     end
   end
 
