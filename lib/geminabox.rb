@@ -1,6 +1,4 @@
 require 'rubygems'
-require 'bundler/setup'
-
 require "digest/md5"
 require "builder"
 require 'sinatra/base'
