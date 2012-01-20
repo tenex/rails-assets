@@ -6,7 +6,7 @@
   <ul class="gemlist">
 
     <% @gems.by_name do |name, versions| %>
-      <li <%= %{id="jump_#{name[0..0]}"} if @index_gems.delete(name[0..0]) %> class="gem-version">
+      <li <%= %{id="jump_#{name[0..0].downcase}"} if @index_gems.delete(name[0..0].downcase) %> class="gem-version">
         <h2><%= name %> (<%= versions.count == 1 ? versions.first.number : "#{versions.oldest.number} - #{versions.newest.number}" %>)</h2>
         <% versions.each do |version| %>
           <p>

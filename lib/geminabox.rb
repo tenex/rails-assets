@@ -137,7 +137,7 @@ HTML
   end
 
   def index_gems(gems)
-    Set.new(gems.map{|gem| gem.name[0..0]})
+    Set.new(gems.map{|gem| gem.name[0..0].downcase})
   end
 
   helpers do

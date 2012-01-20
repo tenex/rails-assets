@@ -41,7 +41,7 @@ class Geminabox::GemVersionCollection
     grouped = @gems.inject(hash_of_collections) do |grouped, gem|
       grouped[gem.name] << gem
       grouped
-    end
+    end.sort_by{|name, gems| name.downcase }
 
     if block_given?
       grouped.each(&Proc.new)
