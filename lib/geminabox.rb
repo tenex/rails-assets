@@ -13,6 +13,7 @@ class Geminabox < Sinatra::Base
   set :public_folder, File.join(File.dirname(__FILE__), *%w[.. public])
   set :data, File.join(File.dirname(__FILE__), *%w[.. data])
   set :build_legacy, false
+  set :incremental_updates, false
   set :views, File.join(File.dirname(__FILE__), *%w[.. views])
   set :allow_replace, false
   use Hostess
@@ -108,7 +109,7 @@ HTML
 
   def reindex(force_rebuild = false)
     Geminabox.fixup_bundler_rubygems!
-    force_rebuild = true if settings.build_legacy
+    force_rebuild = true unless settings.incremental_updates
     if force_rebuild
       indexer.generate_index
     else

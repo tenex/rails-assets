@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    geminabox (0.5.1)
+    geminabox (0.5.2)
       builder
       sinatra
 
