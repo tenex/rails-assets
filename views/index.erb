@@ -24,7 +24,7 @@
 
         <div class="details">
           <p>
-            <% if spec = spec_for(name, versions.first.number) %>
+            <% if spec = spec_for(name, versions.newest.number) %>
               <%= spec.description %>
               <br/>
               <span class="author">– <%= spec.authors.map do |author|
