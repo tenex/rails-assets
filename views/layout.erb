@@ -9,7 +9,7 @@
     <div id="content">
       <h1>Gem in a Box</h1>
       <p>
-        <pre><code>gem sources -a <%= url "/" %></code></pre>
+        <pre><code>gem sources -a <%= url.to_s.gsub('://','://username:password@') %></code></pre>
         <pre><code>gem install geminabox<br />gem inabox [gemfile]</code></pre>
       </p>
       <%= yield %>
