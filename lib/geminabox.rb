@@ -42,6 +42,20 @@ class Geminabox < Sinatra::Base
     erb :atom, :layout => false
   end
 
+  get '/api/v1/dependencies' do
+    query_gems = params[:gems].split(',')
+    deps = load_gems.gems.select {|gem| query_gems.include?(gem.name) }.map do |gem|
+      spec = spec_for(gem.name, gem.number)
+      {
+        :name => gem.name,
+        :number => gem.number.version,
+        :platform => gem.platform,
+        :dependencies => spec.dependencies.select {|dep| dep.type == :runtime}.map {|dep| [dep.name, dep.requirement.to_s] }
+      }
+    end
+    Marshal.dump(deps)
+  end
+
   get '/upload' do
     erb :upload
   end
