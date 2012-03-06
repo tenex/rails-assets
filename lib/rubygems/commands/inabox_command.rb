@@ -62,9 +62,9 @@ class Gem::Commands::InaboxCommand < Gem::Command
       say "Pushing #{File.basename(gemfile)} to #{url_for_presentation}..."
 
       File.open(gemfile, "rb") do |file|
-        response = HTTPClient.new.post(url, {'file' => file}, :follow_redirect => true)
+        response = HTTPClient.new.post(url, {'file' => file}, {'Accept' => 'text/plain'})
 
-        if response.status == 200
+        if response.status < 400
           say response.body
         else
           raise "Error pushing to #{url_for_presentation}: #{response.code} #{response.reason}\n\n#{response.body}"
