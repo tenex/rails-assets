@@ -67,7 +67,8 @@ class Gem::Commands::InaboxCommand < Gem::Command
         if response.status < 400
           say response.body
         else
-          raise "Error pushing to #{url_for_presentation}: #{response.code} #{response.reason}\n\n#{response.body}"
+          alert_error "Error (#{response.code} received)\n\n#{response.body}"
+          terminate_interaction(1)
         end
       end
     end
