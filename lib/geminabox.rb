@@ -77,9 +77,9 @@ class Geminabox < Sinatra::Base
       tmpfile_digest = Digest::SHA1.file(tmpfile.path).hexdigest
 
       if existing_file_digest != tmpfile_digest
-        return error_response(409, "Gem already exists, you must delete the existing version first.")
+        error_response(409, "Updating an existing gem is not permitted.\nYou should either delete the existing version, or change your version number.")
       else
-        return [200, "Ignoring upload, you uploaded the same thing previously."]
+        error_response(200, "Ignoring upload, you uploaded the same thing previously.")
       end
     end
 
