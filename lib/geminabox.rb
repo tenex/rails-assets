@@ -60,6 +60,7 @@ class Geminabox < Sinatra::Base
 
   post '/upload' do
     return "Please ensure #{File.expand_path(Geminabox.data)} is writable by the geminabox web server." unless File.writable? Geminabox.data
+
     unless params[:file] && (tmpfile = params[:file][:tempfile]) && (name = params[:file][:filename])
       @error = "No file selected"
       halt [400, erb(:upload)]
@@ -69,7 +70,8 @@ class Geminabox < Sinatra::Base
 
     Dir.mkdir(File.join(settings.data, "gems")) unless File.directory? File.join(settings.data, "gems")
 
-    dest_filename = File.join(settings.data, "gems", File.basename(name))
+    gem_name = File.basename(name)
+    dest_filename = File.join(settings.data, "gems", gem_name)
 
 
     if Geminabox.disallow_replace? and File.exist?(dest_filename)
@@ -89,12 +91,22 @@ class Geminabox < Sinatra::Base
       end
     end
     reindex
-    redirect url("/")
+
+    if api_request?
+      "Gem #{gem_name} received and indexed."
+    else
+      redirect url("/")
+    end
   end
 
 private
 
+  def api_request?
+    request.accept.first == "text/plain"
+  end
+
   def error_response(code, message)
+    halt [code, message] if api_request?
     html = <<HTML
 <html>
   <head><title>Error - #{code}</title></head>
@@ -104,7 +116,7 @@ private
   </body>
 </html>
 HTML
-    [code, html]
+    halt [code, html]
   end
 
   def reindex(force_rebuild = false)
