@@ -16,5 +16,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency('sinatra')
   s.add_dependency('builder')
+  s.add_dependency('httpclient')
   s.add_development_dependency('rake')
 end

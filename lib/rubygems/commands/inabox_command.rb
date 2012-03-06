@@ -1,5 +1,6 @@
 require 'uri'
 require 'yaml'
+require 'httpclient'
 
 class Gem::Commands::InaboxCommand < Gem::Command
   def description
@@ -51,46 +52,26 @@ class Gem::Commands::InaboxCommand < Gem::Command
   end
 
   def send_gem
-    # sanitize printed URL if a password is present
     url = URI.join(geminabox_host, "upload")
 
+    # sanitize printed URL if a password is present
     url_for_presentation = url.clone
     url_for_presentation.password = '***' if url_for_presentation.password
-
 
     @gemfiles.each do |gemfile|
       say "Pushing #{File.basename(gemfile)} to #{url_for_presentation}..."
 
       File.open(gemfile, "rb") do |file|
-        request_body, request_headers = Multipart::MultipartPost.new.prepare_query("file" => file)
+        response = HTTPClient.new.post(url, {'file' => file}, :follow_redirect => true)
 
-        p = proxy.new(url.host, url.port)
-        p.use_ssl = url.scheme == "https"
-
-        p.start {|con|
-          req = Net::HTTP::Post.new(url.path, request_headers)
-          req.basic_auth(url.user, url.password) if url.user
-          handle_response(con.request(req, request_body))
-        }
+        if response.status == 200
+          say response.body
+        else
+          raise "Error pushing to #{url_for_presentation}: #{response.code} #{response.reason}\n\n#{response.body}"
+        end
       end
     end
-  end
 
-  def proxy
-    if proxy_info = ENV['http_proxy'] || ENV['HTTP_PROXY'] and uri = URI.parse(proxy_info)
-      Net::HTTP::Proxy(uri.host, uri.port, uri.user, uri.password)
-    else
-      Net::HTTP
-    end
-  end
-
-  def handle_response(response)
-    case response
-    when Net::HTTPSuccess, Net::HTTPRedirection
-      puts response.body
-    else
-      response.error!
-    end
   end
 
   def config_path
@@ -118,51 +99,4 @@ class Gem::Commands::InaboxCommand < Gem::Command
     end
   end
 
-  module Multipart
-    require 'net/https'
-    require 'cgi'
-
-    class Param
-      attr_accessor :k, :v
-      def initialize( k, v )
-        @k = k
-        @v = v
-      end
-
-      def to_multipart
-        return "Content-Disposition: form-data; name=\"#{k}\"\r\n\r\n#{v}\r\n"
-      end
-    end
-
-    class FileParam
-      attr_accessor :k, :filename, :content
-      def initialize( k, filename, content )
-        @k = k
-        @filename = filename
-        @content = content
-      end
-
-      def to_multipart
-        return "Content-Disposition: form-data; name=\"#{k}\"; filename=\"#{filename}\"\r\n" + "Content-Transfer-Encoding: binary\r\n" + "Content-Type: application/octet-stream\r\n\r\n" + content + "\r\n"
-      end
-    end
-
-    class MultipartPost
-      BOUNDARY = 'tarsiers-rule0000'
-      HEADER = {"Content-type" => "multipart/form-data, boundary=" + BOUNDARY + " "}
-
-      def prepare_query(params)
-        fp = []
-        params.each {|k,v|
-          if v.respond_to?(:read)
-            fp.push(FileParam.new(k, v.path, v.read))
-          else
-            fp.push(Param.new(k,v))
-          end
-        }
-        query = fp.collect {|p| "--" + BOUNDARY + "\r\n" + p.to_multipart }.join("") + "--" + BOUNDARY + "--"
-        return query, HEADER
-      end
-    end
-  end
 end
