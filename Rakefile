@@ -8,3 +8,10 @@ end
 
 desc 'Clear out generated packages'
 task :clean => [:clobber_package]
+
+require 'rake/testtask'
+
+Rake::TestTask.new do |t|
+  t.libs << "test" << "lib"
+  t.pattern = "test/examples/*_test.rb"
+end
