@@ -52,24 +52,26 @@ class Gem::Commands::InaboxCommand < Gem::Command
   end
 
   def send_gem
-    url = URI.join(geminabox_host, "upload")
+    url = URI.parse(geminabox_host)
+    username, password = url.user, url.password
+    url.user = url.password = nil
+    url.path = ([""] + url.path.sub(/^\//, '').split("/") + ["upload"]).join("/")
+    url = url.to_s
 
-    # sanitize printed URL if a password is present
-    url_for_presentation = url.clone
-    url_for_presentation.password = '***' if url_for_presentation.password
+    client = HTTPClient.new
+    client.set_auth(url, username, password) if username or password
+    client.www_auth.basic_auth.challenge(url) # Workaround: https://github.com/nahi/httpclient/issues/63
 
     @gemfiles.each do |gemfile|
-      say "Pushing #{File.basename(gemfile)} to #{url_for_presentation}..."
+      say "Pushing #{File.basename(gemfile)} to #{url}..."
 
-      File.open(gemfile, "rb") do |file|
-        response = HTTPClient.new.post(url, {'file' => file}, {'Accept' => 'text/plain'})
+      response = client.post(url, {'file' => File.open(gemfile, "rb")}, {'Accept' => 'text/plain'})
 
-        if response.status < 400
-          say response.body
-        else
-          alert_error "Error (#{response.code} received)\n\n#{response.body}"
-          terminate_interaction(1)
-        end
+      if response.status < 400
+        say response.body
+      else
+        alert_error "Error (#{response.code} received)\n\n#{response.body}"
+        terminate_interaction(1)
       end
     end
 
