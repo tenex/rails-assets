@@ -59,7 +59,16 @@ class Geminabox < Sinatra::Base
   end
 
   post '/upload' do
-    return "Please ensure #{File.expand_path(Geminabox.data)} is writable by the geminabox web server." unless File.writable? Geminabox.data
+    if File.exists? Geminabox.data
+      error_response( 500, "Please ensure #{File.expand_path(Geminabox.data)} is writable by the geminabox web server." ) unless File.writable? Geminabox.data
+      error_response( 500, "Please ensure #{File.expand_path(Geminabox.data)} is a directory." ) unless File.directory? Geminabox.data
+    else
+      begin
+        FileUtils.mkdir_p(settings.data)
+      rescue Errno::EACCES, Errno::ENOENT, RuntimeError => e
+        error_response( 500, "Could not create #{File.expand_path(Geminabox.data)}.\n#{e}\n#{e.message}" )
+      end
+    end
 
     unless params[:file] && (tmpfile = params[:file][:tempfile]) && (name = params[:file][:filename])
       @error = "No file selected"
