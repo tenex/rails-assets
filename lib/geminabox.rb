@@ -75,13 +75,12 @@ class Geminabox < Sinatra::Base
       halt [400, erb(:upload)]
     end
 
-    tmpfile.binmode
+    FileUtils.mkdir_p(File.join(settings.data, "gems"))
 
-    Dir.mkdir(File.join(settings.data, "gems")) unless File.directory? File.join(settings.data, "gems")
+    tmpfile.binmode
 
     gem_name = File.basename(name)
     dest_filename = File.join(settings.data, "gems", gem_name)
-
 
     if Geminabox.disallow_replace? and File.exist?(dest_filename)
       existing_file_digest = Digest::SHA1.file(dest_filename).hexdigest
