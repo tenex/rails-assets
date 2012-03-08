@@ -1,10 +1,9 @@
 require 'rubygems'
-require "digest/md5"
-require "builder"
+require 'digest/md5'
+require 'builder'
 require 'sinatra/base'
 require 'rubygems/builder'
-require "rubygems/indexer"
-
+require 'rubygems/indexer'
 require 'hostess'
 
 class Geminabox < Sinatra::Base
@@ -152,13 +151,14 @@ HTML
   end
 
   def load_gems
-    %w(specs prerelease_specs).inject(GemVersionCollection.new){|gems, specs_file_type|
-      specs_file_path = File.join(settings.data, "#{specs_file_type}.#{Gem.marshal_version}.gz")
-      if File.exists?(specs_file_path)
-        gems |= Geminabox::GemVersionCollection.new(Marshal.load(Gem.gunzip(Gem.read_binary(specs_file_path))))
-      end
-      gems
-    }
+    @loaded_gems ||=
+      %w(specs prerelease_specs).inject(GemVersionCollection.new){|gems, specs_file_type|
+        specs_file_path = File.join(settings.data, "#{specs_file_type}.#{Gem.marshal_version}.gz")
+        if File.exists?(specs_file_path)
+          gems |= Geminabox::GemVersionCollection.new(Marshal.load(Gem.gunzip(Gem.read_binary(specs_file_path))))
+        end
+        gems
+      }
   end
 
   def index_gems(gems)
