@@ -1,7 +1,7 @@
 require 'test_helper'
 
-GeminaboxTestConfig.define "With path" do |config|
-  config.url = "http://localhost/foo"
+class PathTest < Geminabox::TestCase
+  url "http://localhost/foo"
 
   app do
     map "/foo" do

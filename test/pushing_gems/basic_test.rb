@@ -1,5 +1,5 @@
 require 'test_helper'
 
-GeminaboxTestConfig.define "Basic" do |config|
+class BasicTest < Geminabox::TestCase
   should_push_gem
 end

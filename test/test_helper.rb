@@ -1,3 +1,3 @@
 require 'minitest/autorun'
 require "geminabox"
-require "geminabox_test_config"
+require "geminabox_test_case"

@@ -1,8 +1,7 @@
 require 'test_helper'
 
-GeminaboxTestConfig.define "With Rack::Auth::Basic" do |config|
-
-  config.url = "http://foo:bar@localhost/"
+class AuthTest < Geminabox::TestCase
+  url "http://foo:bar@localhost/"
 
   app do
     use Rack::Auth::Basic do |username, password|
@@ -13,5 +12,4 @@ GeminaboxTestConfig.define "With Rack::Auth::Basic" do |config|
   end
 
   should_push_gem
-
 end
