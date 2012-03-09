@@ -25,6 +25,11 @@ task "test:smoke" do
   require "smoke_test"
 end
 
+Rake::TestTask.new("test:requests") do |t|
+  t.libs << "test" << "lib"
+  t.pattern = "test/requests/**/*_test.rb"
+end
+
 task :st => "test:smoke"
-task :test => "test:integration"
+task :test => ["test:requests", "test:integration"]
 task :default => :test

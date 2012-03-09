@@ -7,6 +7,7 @@ require 'rubygems/indexer'
 require 'hostess'
 
 class Geminabox < Sinatra::Base
+  VERSION = '0.6.0'
   enable :static, :methodoverride
 
   set :public_folder, File.join(File.dirname(__FILE__), *%w[.. public])
@@ -30,6 +31,10 @@ class Geminabox < Sinatra::Base
   end
 
   autoload :GemVersionCollection, "geminabox/gem_version_collection"
+
+  before do
+    headers 'X-Powered-By' => "geminabox #{VERSION}"
+  end
 
   get '/' do
     @gems = load_gems
