@@ -15,5 +15,17 @@ Rake::TestTask.new("test:integration") do |t|
   t.pattern = "test/integration/**/*_test.rb"
 end
 
+Rake::TestTask.new("test:smoke:paranoid") do |t|
+  t.libs << "test" << "lib"
+  t.pattern = "test/smoke_test.rb"
+end
+
+desc "Run the smoke tests, faster."
+task "test:smoke" do
+  $:.unshift("lib").unshift("test")
+  require "smoke_test"
+end
+
+task :st => "test:smoke"
 task :test => "test:integration"
 task :default => :test
