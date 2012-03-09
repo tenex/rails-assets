@@ -72,7 +72,7 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
   end
 
   def geminabox_push(gemfile)
-    context_path = File.expand_path("../context/", __FILE__)
+    context_path = File.expand_path("../../context", __FILE__)
     output = ""
     IO.popen("GEM_HOME=#{context_path} gem inabox #{gemfile} -g '#{config.url_with_port(@test_server_port)}' 2>&1", "r") do |io|
       data = io.read
