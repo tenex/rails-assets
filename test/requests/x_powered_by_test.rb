@@ -12,7 +12,7 @@ class XPoweredByTest < MiniTest::Unit::TestCase
   %w[ / /gems ].each do |path|
     define_method "test: adds X-Powered-By when requesting '#{path}'" do
       get path
-      assert_equal "geminabox #{Geminabox::VERSION}", last_response.headers['X-Powered-By']
+      assert_equal "geminabox #{GeminaboxVersion}", last_response.headers['X-Powered-By']
     end
   end
 end
