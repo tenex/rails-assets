@@ -6,6 +6,7 @@ require 'uri'
 require 'fileutils'
 require 'tempfile'
 require 'webrick'
+require 'webrick/https'
 require 'logger'
 require 'rack/auth/abstract/handler'
 require 'rack/auth/abstract/request'
@@ -15,6 +16,14 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
     # DSL
     def url(url = nil)
       @url ||= url || "http://localhost/"
+    end
+
+    def ssl(ssl = nil)
+      if ssl.nil?
+        @ssl
+      else
+        @ssl = ssl
+      end
     end
 
     def data(data = nil)
@@ -95,7 +104,9 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
   end
 
   def assert_can_push(gemname = :example, *args)
-    assert_match /Gem .* received and indexed./, geminabox_push(gem_file(gemname, *args))
+    assert_match( /Gem .* received and indexed./, geminabox_push(gem_file(gemname, *args)))
+  end
+
   def self.fixture(path)
     File.join(File.expand_path("../fixtures", __FILE__), path)
   end
@@ -110,20 +121,32 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
     FileUtils.rm_rf("/tmp/geminabox-test-data")
     FileUtils.mkdir("/tmp/geminabox-test-data")
 
+    server_options = {
+      :app => config.to_app,
+      :Port => @test_server_port,
+      :AccessLog => [],
+      :Logger => WEBrick::Log::new("/dev/null", 7)
+    }
+    
+    if config.ssl
+      server_options.merge!(
+        :SSLEnable => true,
+        :SSLVerifyClient => OpenSSL::SSL::VERIFY_NONE,
+        :SSLPrivateKey => OpenSSL::PKey::RSA.new(File.read(fixture("127.0.0.1.key"))),
+        :SSLCertificate => OpenSSL::X509::Certificate.new(File.read(fixture("127.0.0.1.crt"))),
+        :SSLCertName => [["CN", "127.0.0.1"]]
+      )
+    end
+
     @app_server = fork do
-      Kernel.class_eval do
-        alias geminabox_old_require require
-        def require(*args)
-          if geminabox_old_require(*args)
-            p args
-          end
-        end
+      begin
+        Geminabox.data = config.data
+        STDERR.reopen("/dev/null")
+        STDOUT.reopen("/dev/null")
+        Rack::Server.start(server_options)
+      ensure
+        exit
       end
-      STDERR.reopen("/dev/null")
-      STDOUT.reopen("/dev/null")
-      Geminabox.data = config.data
-      Rack::Server.start(:app => config.to_app, :Port => @test_server_port)
-      exit
     end
 
     Timeout.timeout(10) do
