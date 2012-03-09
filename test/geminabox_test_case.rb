@@ -71,10 +71,23 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
     @url_with_port + path
   end
 
+  FAKE_HOME = "/tmp/geminabox-test-home"
+  def self.setup_fake_home!
+    return if @setup_fake_home
+    @setup_fake_home = true
+    FileUtils.rm_rf(FAKE_HOME)
+    FileUtils.mkdir_p("#{FAKE_HOME}/gems")
+    FileUtils.mkdir_p("#{FAKE_HOME}/specifications")
+
+    FileUtils.ln_s(fixture("geminabox-9999.0.0.gemspec"), "#{FAKE_HOME}/specifications/geminabox-9999.0.0.gemspec")
+    FileUtils.ln_s(fixture("../.."), "#{FAKE_HOME}/gems/geminabox-9999.0.0.gem")
+  end
+
   def geminabox_push(gemfile)
-    context_path = File.expand_path("../../context", __FILE__)
+    Geminabox::TestCase.setup_fake_home!
+    command = "GEM_HOME=#{FAKE_HOME} gem inabox #{gemfile} -g '#{config.url_with_port(@test_server_port)}' 2>&1"
     output = ""
-    IO.popen("GEM_HOME=#{context_path} gem inabox #{gemfile} -g '#{config.url_with_port(@test_server_port)}' 2>&1", "r") do |io|
+    IO.popen(command, "r") do |io|
       data = io.read
       output << data
     end
@@ -83,6 +96,12 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
 
   def assert_can_push(gemname = :example, *args)
     assert_match /Gem .* received and indexed./, geminabox_push(gem_file(gemname, *args))
+  def self.fixture(path)
+    File.join(File.expand_path("../fixtures", __FILE__), path)
+  end
+
+  def fixture(*args)
+    self.class.fixture(*args)
   end
 
   def start_app!
