@@ -1,3 +1,5 @@
+require 'rubygems/command'
+
 class Gem::Commands::InaboxCommand < Gem::Command
   def description
     'Push a gem up to your GemInABox'
