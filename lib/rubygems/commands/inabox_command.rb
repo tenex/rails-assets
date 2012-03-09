@@ -1,7 +1,3 @@
-require 'uri'
-require 'yaml'
-require 'httpclient'
-
 class Gem::Commands::InaboxCommand < Gem::Command
   def description
     'Push a gem up to your GemInABox'
@@ -27,54 +23,38 @@ class Gem::Commands::InaboxCommand < Gem::Command
     end
   end
 
+  def last_minute_requires!
+    require 'yaml'
+    require File.expand_path("../../../geminabox_client.rb", __FILE__)
+  end
+
   def execute
+    last_minute_requires!
     return configure if options[:configure]
-    setup
-    send_gem
-  end
-
-  def setup
-    if options[:args].size == 0
-      @gemfiles = [find_gem]
-    else
-      @gemfiles = get_all_gem_names
-    end
     configure unless geminabox_host
+
+    if options[:args].size == 0
+      say "You didn't specify a gem, looking for one in . and in ./pkg/..."
+      gemfiles = [GeminaboxClient::GemLocator.find_gem(Dir.pwd)]
+    else
+      gemfiles = get_all_gem_names
+    end
+
+    send_gems(gemfiles)
   end
 
-  def find_gem
-    say "You didn't specify a gem, looking for one in pkg..."
-    path, directory = File.split(Dir.pwd)
-    possible_gems = Dir.glob("pkg/#{directory}-*.gem")
-    raise Gem::CommandLineError, "Couldn't find a gem in pkg, please specify a gem name on the command line (e.g. gem inabox GEMNAME)" unless possible_gems.any?
-    name_regexp = Regexp.new("^pkg/#{directory}-")
-    possible_gems.sort_by{ |a| Gem::Version.new(a.sub(name_regexp,'')) }.last
-  end
+  def send_gems(gemfiles)
+    client = GeminaboxClient.new(geminabox_host)
 
-  def send_gem
-    url = URI.parse(geminabox_host)
-    username, password = url.user, url.password
-    url.user = url.password = nil
-    url.path = ([""] + url.path.sub(/^\//, '').split("/") + ["upload"]).join("/")
-    url = url.to_s
-
-    client = HTTPClient.new
-    client.set_auth(url, username, password) if username or password
-    client.www_auth.basic_auth.challenge(url) # Workaround: https://github.com/nahi/httpclient/issues/63
-
-    @gemfiles.each do |gemfile|
-      say "Pushing #{File.basename(gemfile)} to #{url}..."
-
-      response = client.post(url, {'file' => File.open(gemfile, "rb")}, {'Accept' => 'text/plain'})
-
-      if response.status < 400
-        say response.body
-      else
-        alert_error "Error (#{response.code} received)\n\n#{response.body}"
+    gemfiles.each do |gemfile|
+      say "Pushing #{File.basename(gemfile)} to #{client.url}..."
+      begin
+        say client.push(gemfile)
+      rescue GeminaboxClient::Error => e
+        alert_error e.message
         terminate_interaction(1)
       end
     end
-
   end
 
   def config_path
