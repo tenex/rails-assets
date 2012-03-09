@@ -6,7 +6,7 @@
 
 Gem in a box is a simple [sinatra][sinatra] app to allow you to host your own in-house gems.
 
-It has no security, or authentication so you should handle this yourself.
+Authentication it left up to either the web server, or to your Rack app. For basic auth, use [Rack::Auth](http://rack.rubyforge.org/doc/Rack/Auth/Basic.html).
 
 ## Server Setup
 
@@ -17,7 +17,7 @@ Create a config.ru as follows:
     require "rubygems"
     require "geminabox"
 
-    Geminabox.data = "/var/geminabox-data" # …or wherever
+    Geminabox.data = "/var/geminabox-data" # ... or wherever
     run Geminabox
 
 And finally, hook up the config.ru as you normally would ([passenger][passenger], [thin][thin], [unicorn][unicorn], whatever floats your boat).
