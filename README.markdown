@@ -1,12 +1,18 @@
-# Gem in a Box
+# Gem in a Box – Really simple rubygem hosting
+## 
+
+Geminabox let's you host your own gems, and push new gems to it just like with rubygems.org.
+The bundler dependencies API is supported out of the box.
+Authentication it left up to either the web server, or the Rack stack.
+For basic auth, try [Rack::Auth](http://rack.rubyforge.org/doc/Rack/Auth/Basic.html).
+
+
+
 
 ![screen shot](http://pics.tomlea.co.uk/bbbba6/geminabox.png)
 
-## Really simple rubygem hosting
 
-Gem in a box is a simple [sinatra][sinatra] app to allow you to host your own in-house gems.
 
-Authentication it left up to either the web server, or to your Rack app. For basic auth, use [Rack::Auth](http://rack.rubyforge.org/doc/Rack/Auth/Basic.html).
 
 ## Server Setup
 
