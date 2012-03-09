@@ -11,3 +11,15 @@ class PathTest < Geminabox::TestCase
 
   should_push_gem
 end
+
+class PathWithTrailingSlashTest < Geminabox::TestCase
+  url "http://localhost/foo/"
+
+  app do
+    map "/foo" do
+      run Geminabox
+    end
+  end
+
+  should_push_gem
+end
