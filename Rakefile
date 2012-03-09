@@ -3,7 +3,6 @@ require "rubygems/package_task"
 
 Gem::PackageTask.new(eval(File.read("geminabox.gemspec"))) do |pkg|
 end
-task :gem => :package
 
 desc 'Clear out generated packages'
 task :clean => [:clobber_package]
