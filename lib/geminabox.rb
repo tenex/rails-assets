@@ -31,6 +31,7 @@ class Geminabox < Sinatra::Base
   end
 
   autoload :GemVersionCollection, "geminabox/gem_version_collection"
+  autoload :DiskCache, "geminabox/disk_cache"
 
   before do
     headers 'X-Powered-By' => "geminabox #{GeminaboxVersion}"
@@ -48,17 +49,19 @@ class Geminabox < Sinatra::Base
   end
 
   get '/api/v1/dependencies' do
-    query_gems = params[:gems].split(',')
-    deps = load_gems.gems.select {|gem| query_gems.include?(gem.name) }.map do |gem|
-      spec = spec_for(gem.name, gem.number)
-      {
-        :name => gem.name,
-        :number => gem.number.version,
-        :platform => gem.platform,
-        :dependencies => spec.dependencies.select {|dep| dep.type == :runtime}.map {|dep| [dep.name, dep.requirement.to_s] }
-      }
+    disk_cache.cache(params[:gems]) do
+      query_gems = params[:gems].split(',')
+      deps = load_gems.gems.select {|gem| query_gems.include?(gem.name) }.map do |gem|
+        spec = spec_for(gem.name, gem.number)
+        {
+          :name => gem.name,
+          :number => gem.number.version,
+          :platform => gem.platform,
+          :dependencies => spec.dependencies.select {|dep| dep.type == :runtime}.map {|dep| [dep.name, dep.requirement.to_s] }
+        }
+      end
+      Marshal.dump(deps)
     end
-    Marshal.dump(deps)
   end
 
   get '/upload' do
@@ -159,6 +162,7 @@ HTML
         reindex(:force_rebuild)
       end
     end
+    disk_cache.flush
   end
 
   def indexer
@@ -167,6 +171,10 @@ HTML
 
   def file_path
     File.expand_path(File.join(settings.data, *request.path_info))
+  end
+
+  def disk_cache
+    @disk_cache = Geminabox::DiskCache.new(File.join(settings.data, "_cache"))
   end
 
   def load_gems

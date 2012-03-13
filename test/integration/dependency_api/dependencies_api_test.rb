@@ -37,6 +37,25 @@ class DependenciesApiTest < Geminabox::TestCase
     assert_equal expected, deps
   end
 
+  test "dependency cache is cleared as expected" do
+    assert_can_push(:a, :deps => [[:b, '>= 0']])
+
+    deps = fetch_deps("a")
+    expected = [
+      {:name=>"a", :number=>"1.0.0", :platform=>"ruby", :dependencies=>[["b", ">= 0"]]}
+    ]
+    assert_equal expected, deps
+
+    assert_can_push(:a, :deps => [[:b, '>= 1']], :version => "2.0.0")
+
+    deps = fetch_deps("a")
+    expected = [
+      {:name=>"a", :number=>"1.0.0", :platform=>"ruby", :dependencies=>[["b", ">= 0"]]},
+      {:name=>"a", :number=>"2.0.0", :platform=>"ruby", :dependencies=>[["b", ">= 1"]]}
+    ]
+    assert_equal expected, deps
+  end
+
 protected
   def fetch_deps(*gems)
     Marshal.load HTTPClient.new.get_content(url_for("api/v1/dependencies?gems=#{gems.join(",")}"))

@@ -30,6 +30,11 @@ Rake::TestTask.new("test:requests") do |t|
   t.pattern = "test/requests/**/*_test.rb"
 end
 
+Rake::TestTask.new("test:units") do |t|
+  t.libs << "test" << "lib"
+  t.pattern = "test/units/**/*_test.rb"
+end
+
 task :st => "test:smoke"
-task :test => ["test:requests", "test:integration"]
+task :test => ["test:units", "test:requests", "test:integration"]
 task :default => :test
