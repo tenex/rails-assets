@@ -4,13 +4,25 @@
   <title>Gem in a Box</title>
   <link href="<%= url '/atom.xml' %>" rel="self" />
   <link href="<%= url '/' %>" />
-
-  <% @gems.each do |name, versions| %>
+  <id><%= url '/atom.xml' %></id>
+  <% @gems.by_name do |name, versions| %>
+  <% spec = spec_for(name, versions.newest.number) %>
     <entry>
-      <title><%= name %> (<%= versions.size == 1 ? versions.first : "#{versions.first} - #{versions.last}" %>)</title>
+      <id><%= name %></id>
+      <updated><%= spec.date.w3cdtf %></updated>
+      <title><%= name %> (<%= versions.size == 1 ? versions.oldest.number : "#{versions.oldest.number} - #{versions.newest.number}" %>)</title>
+      <author><name><%= spec.authors.join(", ") %></name></author>
       <% versions.each do |version| %>
-        <link href="<%= url "/gems/#{name}-#{version}.gem" %>" />
+        <link href="<%= url "/gems/#{name}-#{version.number}.gem" %>" />
       <% end %>
     </entry>
   <% end %>
+
+  <updated>
+    <% if newest_gem = @gems.newest %>
+      <%= spec_for(newest_gem.name, newest_gem.number).date.w3cdtf %>
+    <% else %>
+      <%= Date.today %>
+    <% end %>
+  </updated>
 </feed>

@@ -6,6 +6,7 @@ require 'rubygems/builder'
 require 'rubygems/indexer'
 require 'hostess'
 require 'geminabox/version'
+require 'rss/atom'
 
 class Geminabox < Sinatra::Base
   enable :static, :methodoverride

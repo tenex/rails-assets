@@ -3,6 +3,10 @@ require 'geminabox/gem_version'
 class Geminabox::GemVersionCollection
   include Enumerable
 
+  def size
+    @gems.size
+  end
+
   attr_reader :gems
 
   def initialize(initial_gems=[])
