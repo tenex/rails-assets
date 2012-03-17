@@ -38,10 +38,6 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
       Rack::Builder.app(&app)
     end
 
-    def test(test_name, &block)
-      define_method "test: #{test_name} ", &block
-    end
-
     def should_push_gem(gemname = :example, *args)
       test("can push #{gemname}") do
         assert_can_push(gemname, *args)
