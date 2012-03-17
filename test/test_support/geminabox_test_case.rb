@@ -103,14 +103,6 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
     assert_match( /Gem .* received and indexed./, geminabox_push(gem_file(gemname, *args)))
   end
 
-  def self.fixture(path)
-    File.join(File.expand_path("../fixtures", __FILE__), path)
-  end
-
-  def fixture(*args)
-    self.class.fixture(*args)
-  end
-
   def find_free_port
     server = TCPServer.new('127.0.0.1', 0)
     port = server.addr[1]
@@ -118,12 +110,10 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
     port
   end
 
+
   def start_app!
+    clean_data_dir
     @test_server_port = find_free_port
-
-    FileUtils.rm_rf("/tmp/geminabox-test-data")
-    FileUtils.mkdir("/tmp/geminabox-test-data")
-
     server_options = {
       :app => config.to_app,
       :Port => @test_server_port,
@@ -166,54 +156,6 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
 
   def stop_app!
     Process.kill(9, @app_server) if @app_server
-  end
-
-  module GemFactory
-    def gem_file(name, options = {})
-      version = options[:version] || "1.0.0"
-
-      dependincies = options.fetch(:deps, {}).collect do |dep, requirement|
-        dep = [*dep]
-        gem_file(*dep)
-        if requirement
-          "s.add_dependency(#{dep.first.to_s.inspect}, #{requirement.inspect})"
-        else
-          "s.add_dependency(#{dep.first.to_s.inspect})"
-        end
-      end.join("\n")
-
-      name = name.to_s
-      path = "/tmp/geminabox-fixtures/#{name}-#{version}.gem"
-      FileUtils.mkdir_p File.dirname(path)
-
-      unless File.exists? path 
-        spec = %{
-          Gem::Specification.new do |s|
-            s.name              = #{name.inspect}
-            s.version           = #{version.inspect}
-            s.summary           = #{name.inspect}
-            s.description       = s.summary + " description"
-            s.author            = 'Test'
-            s.files             = []
-            #{dependincies}
-          end
-        }
-
-        spec_file = Tempfile.open("spec") do |tmpfile|
-          tmpfile << spec
-          tmpfile.close
-
-          Dir.chdir File.dirname(path) do
-            system "gem build #{tmpfile.path}"
-          end
-        end
-
-        raise "Failed to build gem #{name}" unless File.exists? path
-      end
-      path
-    end
-
-    extend self
   end
 
   def gem_file(*args)
