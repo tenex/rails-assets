@@ -1,9 +1,9 @@
 # Gem in a Box – Really simple rubygem hosting
 ## 
 
-Geminabox let's you host your own gems, and push new gems to it just like with rubygems.org.
+Geminabox lets you host your own gems, and push new gems to it just like with rubygems.org.
 The bundler dependencies API is supported out of the box.
-Authentication it left up to either the web server, or the Rack stack.
+Authentication is left up to either the web server, or the Rack stack.
 For basic auth, try [Rack::Auth](http://rack.rubyforge.org/doc/Rack/Auth/Basic.html).
 
 
@@ -30,7 +30,7 @@ And finally, hook up the config.ru as you normally would ([passenger][passenger]
 
 ## Legacy RubyGems index
 
-RubyGems supports generating indexes for the so called legacy verions (< 1.2), and since it is very rare to use such versions nowadays, it can be disabled, thus improving indexing times for large repositories. If it's safe for your application, you can disable support for these legacy versions by adding the following configuration to yout config.ru file:
+RubyGems supports generating indexes for the so called legacy verions (< 1.2), and since it is very rare to use such versions nowadays, it can be disabled, thus improving indexing times for large repositories. If it's safe for your application, you can disable support for these legacy versions by adding the following configuration to your config.ru file:
 
     Geminabox.build_legacy = false
 
