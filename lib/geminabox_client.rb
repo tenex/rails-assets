@@ -10,6 +10,7 @@ class GeminaboxClient
     @http_client.set_auth(url_for(:upload), @username, @password) if @username or @password
     @http_client.www_auth.basic_auth.challenge(url_for(:upload)) # Workaround: https://github.com/nahi/httpclient/issues/63
     @http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    @http_client.send_timeout = 600
   end
 
   def extract_username_and_password_from_url!(url)
