@@ -28,7 +28,7 @@ class GeminaboxClient
   def push(gemfile)
     response = http_client.post(url_for(:upload), {'file' => File.open(gemfile, "rb")}, {'Accept' => 'text/plain'})
 
-    if response.status < 400
+    if response.status < 300
       response.body
     else
       raise GeminaboxClient::Error, "Error (#{response.code} received)\n\n#{response.body}"
