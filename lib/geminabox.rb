@@ -50,8 +50,9 @@ class Geminabox < Sinatra::Base
   end
 
   get '/api/v1/dependencies' do
-    disk_cache.cache(params[:gems]) do
-      query_gems = params[:gems].split(',')
+    query_gems = params[:gems].split(',').sort
+    cache_key = query_gems.join(',')
+    disk_cache.cache(cache_key) do
       deps = load_gems.gems.select {|gem| query_gems.include?(gem.name) }.map do |gem|
         spec = spec_for(gem.name, gem.number)
         {
