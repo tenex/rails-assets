@@ -9,10 +9,23 @@ class InvalidDataDirTest < Geminabox::TestCase
 end
 
 class UnwritableDataDirTest < Geminabox::TestCase
-  data "/"
+  def setup
+    super
+
+    FileUtils.mkdir '/tmp/read_only'
+    FileUtils.chmod 0444, '/tmp/read_only'
+  end
+
+  def teardown
+    super
+
+    FileUtils.rmdir '/tmp/read_only'
+  end
+
+  data "/tmp/read_only"
 
   test "report the error back to the user" do
-    assert_match %r{Please ensure / is writable by the geminabox web server.}, geminabox_push(gem_file(:example))
+    assert_match %r{Please ensure /tmp/read_only is writable by the geminabox web server.}, geminabox_push(gem_file(:example))
   end
 end
 

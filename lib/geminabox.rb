@@ -82,8 +82,8 @@ class Geminabox < Sinatra::Base
 
   post '/upload' do
     if File.exists? Geminabox.data
-      error_response( 500, "Please ensure #{File.expand_path(Geminabox.data)} is writable by the geminabox web server." ) unless File.writable? Geminabox.data
       error_response( 500, "Please ensure #{File.expand_path(Geminabox.data)} is a directory." ) unless File.directory? Geminabox.data
+      error_response( 500, "Please ensure #{File.expand_path(Geminabox.data)} is writable by the geminabox web server." ) unless File.writable? Geminabox.data
     else
       begin
         FileUtils.mkdir_p(settings.data)
