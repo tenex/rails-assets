@@ -7,6 +7,7 @@ require 'rubygems/indexer'
 require 'hostess'
 require 'geminabox/version'
 require 'rss/atom'
+require 'tempfile'
 
 class Geminabox < Sinatra::Base
   enable :static, :methodoverride
@@ -115,14 +116,14 @@ class Geminabox < Sinatra::Base
         error_response(200, "Ignoring upload, you uploaded the same thing previously.")
       end
     end
-
-    File.open(dest_filename, "wb") do |f|
+    
+    atomic_write(dest_filename) do |f|
       while blk = tmpfile.read(65536)
         f << blk
       end
     end
     reindex
-
+    
     if api_request?
       "Gem #{gem_name} received and indexed."
     else
@@ -194,6 +195,16 @@ HTML
     Set.new(gems.map{|gem| gem.name[0..0].downcase})
   end
 
+  # based on http://as.rubyonrails.org/classes/File.html
+  def atomic_write(file_name)
+    temp_dir = File.join(settings.data, "_temp")
+    FileUtils.mkdir_p(temp_dir)
+    temp_file = Tempfile.new("." + File.basename(file_name), temp_dir)
+    yield temp_file
+    temp_file.close
+    File.rename(temp_file.path, file_name)
+  end
+  
   helpers do
     def spec_for(gem_name, version)
       spec_file = File.join(settings.data, "quick", "Marshal.#{Gem.marshal_version}", "#{gem_name}-#{version}.gemspec.rz")
