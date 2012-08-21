@@ -24,6 +24,12 @@ a:hover {
   color: #00f;
 }
 
+a#more_link {
+  font-size: 0.7em;
+  line-height: 1.2;
+  vertical-align: bottom;
+}
+
 form {
   margin: 0;
 }

@@ -75,6 +75,13 @@ class Geminabox < Sinatra::Base
     redirect url("/")
   end
 
+  get '/gems/:gemname' do
+    gems = Hash[load_gems.by_name]
+    @gem = gems[params[:gemname]]
+    halt 404 unless @gem
+    erb :gem
+  end
+
   delete '/gems/*.gem' do
     File.delete file_path if File.exists? file_path
     reindex(:force_rebuild)

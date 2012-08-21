@@ -1,3 +1,12 @@
+<p>
+<small>If you did not need any credentials to get to this page</small>
+  <pre><code>gem sources -a <%= url "/" %></code></pre>
+<small>If you needed some credentials to get to this page</small>
+  <pre><code>gem sources -a <%= url.to_s.gsub('://','://username:password@') %></code></pre>
+<small>and then ...</small>
+  <pre><code>gem install geminabox<br />gem inabox [gemfile]</code></pre>
+</p>
+
 <% if @gems.any? %>
   <a href="<%= url("/upload") %>">Upload Another Gem</a>
 
@@ -8,7 +17,7 @@
     <% @gems.by_name do |name, versions| %>
       <li <%= %{id="jump_#{name[0..0].downcase}"} if @index_gems.delete(name[0..0].downcase) %> class="gem-version">
         <h2><%= name %> (<%= versions.count == 1 ? versions.first.number : "#{versions.oldest.number} - #{versions.newest.number}" %>)</h2>
-        <% versions.each do |version| %>
+        <% versions.each.reverse_each.first(5).each do |version| %>
           <p>
             <code>gem install <%= version.name %> <%= "--prerelease" if version.number.to_s.match(/[a-z]/i) %> -v "<%= version.number %>"</code>
             <% unless version.platform =~ /^ruby/i %>
@@ -20,6 +29,10 @@
             <input type="hidden" name="_method" value="DELETE" />
             <button type="submit">delete</button>
           </form>
+        <% end %>
+
+        <% if versions.count > 5 %>
+          <a href="<%= url("/gems/#{name}") %>" id="more_link">Older versions...</a>
         <% end %>
 
         <div class="details">
