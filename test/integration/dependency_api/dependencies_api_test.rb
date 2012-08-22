@@ -3,7 +3,10 @@ require 'httpclient'
 
 class DependenciesApiTest < Geminabox::TestCase
   test "push a gem with dependencies" do
-    assert_can_push(:a, :deps => [[:b, '>= 0']])
+    cache_fixture_data_dir "a_gem_with_deps" do
+      assert_can_push(:a, :deps => [[:b, '>= 0']])
+    end
+
     deps = fetch_deps("a")
     expected = [{:name=>"a", :number=>"1.0.0", :platform=>"ruby", :dependencies=>[["b", ">= 0"]]}]
     assert_equal expected, deps
@@ -15,8 +18,11 @@ class DependenciesApiTest < Geminabox::TestCase
   end
 
   test "get dependencies for multiple gems" do
-    assert_can_push(:a, :deps => [[:b, '>= 0']])
-    assert_can_push(:another_gem, :deps => [[:fred, '>= 0'], [:john, '= 2.0']])
+    cache_fixture_data_dir "multiple_gems_with_deps" do
+      assert_can_push(:a, :deps => [[:b, '>= 0']])
+      assert_can_push(:another_gem, :deps => [[:fred, '>= 0'], [:john, '= 2.0']])
+    end
+
     deps = fetch_deps("a", "another_gem")
     expected = [
       {:name=>"another_gem", :number=>"1.0.0", :platform=>"ruby", :dependencies=>[["fred", ">= 0"], ["john", "= 2.0"]]},
@@ -26,8 +32,10 @@ class DependenciesApiTest < Geminabox::TestCase
   end
 
   test "get dependencies for multiple versions of the same gem" do
-    assert_can_push(:a, :deps => [[:b, '>= 0']])
-    assert_can_push(:a, :deps => [[:b, '>= 1']], :version => "2.0.0")
+    cache_fixture_data_dir "one_gem_many_versions" do
+      assert_can_push(:a, :deps => [[:b, '>= 0']])
+      assert_can_push(:a, :deps => [[:b, '>= 1']], :version => "2.0.0")
+    end
 
     deps = fetch_deps("a")
     expected = [
