@@ -110,6 +110,28 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
     port
   end
 
+  FIXTURES_PATH = Pathname.new(File.expand_path("../../fixtures", __FILE__))
+  def load_fixture_data_dir(name)
+    path = FIXTURES_PATH.join("#{name}.fixture")
+    FileUtils.rm_rf config.data
+    FileUtils.mkdir_p config.data
+
+    Dir.chdir config.data do
+      system "tar", "-xf", path.to_s
+    end
+  end
+
+  def cache_fixture_data_dir(name)
+    path = FIXTURES_PATH.join("#{name}.fixture")
+    if File.exists? path
+      load_fixture_data_dir(name)
+    else
+      yield
+      Dir.chdir config.data do
+        system "tar", "-cf", path.to_s, *Dir.glob('{*,**/*}')
+      end
+    end
+  end
 
   def start_app!
     clean_data_dir
@@ -120,7 +142,7 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
       :AccessLog => [],
       :Logger => WEBrick::Log::new("/dev/null", 7)
     }
-    
+
     if config.ssl
       server_options.merge!(
         :SSLEnable => true,
