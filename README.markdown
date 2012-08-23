@@ -41,6 +41,14 @@ RubyGems supports generating indexes for the so called legacy versions (< 1.2), 
 
     gem inabox pkg/my-awesome-gem-1.0.gem
 
+Configure Gem in a box (interactive prompt to specify where to upload to):
+
+    geminabox -c
+
+Change the host to upload to:
+
+    geminabox -g HOST
+
 Simples!
 
 ## Licence
