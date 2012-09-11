@@ -15,7 +15,7 @@ class Geminabox < Sinatra::Base
   set :public_folder, File.join(File.dirname(__FILE__), *%w[.. public])
   set :data, File.join(File.dirname(__FILE__), *%w[.. data])
   set :build_legacy, false
-  set :incremental_updates, false
+  set :incremental_updates, true
   set :views, File.join(File.dirname(__FILE__), *%w[.. views])
   set :allow_replace, false
   set :gem_permissions, 0644
@@ -167,6 +167,8 @@ HTML
       indexer.generate_index
     else
       begin
+        require 'geminabox/indexer'
+        Geminabox::Indexer.patch_rubygems_update_index_pre_1_8_25(indexer)
         indexer.update_index
       rescue => e
         puts "#{e.class}:#{e.message}"

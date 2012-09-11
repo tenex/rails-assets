@@ -2,3 +2,5 @@ pkg
 .DS_Store
 tmp/restart.txtGemfile.lock
 Gemfile.lock
+vendor/bundle
+.rbenv-version
