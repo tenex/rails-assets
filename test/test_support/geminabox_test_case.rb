@@ -30,6 +30,10 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
       @data ||= data || "/tmp/geminabox-test-data"
     end
 
+    def gem_permissions
+      0644
+    end
+
     def app(&block)
       @app = block || @app || lambda{|builder| run Geminabox }
     end
@@ -41,7 +45,9 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
     def should_push_gem(gemname = :example, *args)
       test("can push #{gemname}") do
         assert_can_push(gemname, *args)
-        assert File.exists?( File.join(config.data, "gems", File.basename(gem_file(gemname, *args)) ) ), "Gemfile not in data dir."
+        gem_path = File.join(config.data, "gems", File.basename(gem_file(gemname, *args)) )
+        assert File.exists?( gem_path ), "Gemfile not in data dir."
+        assert File.stat(gem_path).mode.to_s(8).match(/#{config.gem_permissions.to_s(8)}$/), "Gemfile has incorrect permissions."
       end
     end
 
