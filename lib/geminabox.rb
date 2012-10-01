@@ -54,7 +54,7 @@ class Geminabox < Sinatra::Base
 
   # Return a list of versions of gem 'gem_name' with the dependencies of each version.
   def gem_dependencies(gem_name)
-    dependency_cache.cache(gem_name) do
+    dependency_cache.marshal_cache(gem_name) do
       load_gems.select {|gem| gem_name == gem.name }.map do |gem|
         spec = spec_for(gem.name, gem.number)
         {
