@@ -191,7 +191,7 @@ HTML
   end
 
   def dependency_cache
-    @dependency_cache = Geminabox::DiskCache.new(File.join(settings.data, "_cache"))
+    @dependency_cache ||= Geminabox::DiskCache.new(File.join(settings.data, "_cache"))
   end
 
   def all_gems
