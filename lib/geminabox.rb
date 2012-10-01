@@ -52,11 +52,10 @@ class Geminabox < Sinatra::Base
     erb :atom, :layout => false
   end
 
-  get '/api/v1/dependencies' do
-    query_gems = params[:gems].split(',').sort
-    cache_key = query_gems.join(',')
-    disk_cache.cache(cache_key) do
-      deps = load_gems.select {|gem| query_gems.include?(gem.name) }.map do |gem|
+  # Return a list of versions of gem 'gem_name' with the dependencies of each version.
+  def gem_dependencies(gem_name)
+    disk_cache.cache(gem_name) do
+      load_gems.select {|gem| gem_name == gem.name }.map do |gem|
         spec = spec_for(gem.name, gem.number)
         {
           :name => gem.name,
@@ -65,8 +64,13 @@ class Geminabox < Sinatra::Base
           :dependencies => spec.dependencies.select {|dep| dep.type == :runtime}.map {|dep| [dep.name, dep.requirement.to_s] }
         }
       end
-      Marshal.dump(deps)
     end
+  end
+
+  get '/api/v1/dependencies' do
+    query_gems = params[:gems].split(',').sort
+    deps = query_gems.each_with_object([]) {|query_gem, memo| memo.concat gem_dependencies(query_gem) }
+    Marshal.dump(deps)
   end
 
   get '/upload' do
@@ -165,16 +169,17 @@ HTML
     force_rebuild = true unless settings.incremental_updates
     if force_rebuild
       indexer.generate_index
+      disk_cache.flush
     else
       begin
         indexer.update_index
+        updated_gemspecs.each { |gem| disk_cache.flush_key(gem.name) }
       rescue => e
         puts "#{e.class}:#{e.message}"
         puts e.backtrace.join("\n")
         reindex(:force_rebuild)
       end
     end
-    disk_cache.flush
   end
 
   def indexer
