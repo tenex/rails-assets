@@ -54,7 +54,7 @@ class Geminabox < Sinatra::Base
 
   # Return a list of versions of gem 'gem_name' with the dependencies of each version.
   def gem_dependencies(gem_name)
-    disk_cache.cache(gem_name) do
+    dependency_cache.cache(gem_name) do
       load_gems.select {|gem| gem_name == gem.name }.map do |gem|
         spec = spec_for(gem.name, gem.number)
         {
@@ -169,11 +169,11 @@ HTML
     force_rebuild = true unless settings.incremental_updates
     if force_rebuild
       indexer.generate_index
-      disk_cache.flush
+      dependency_cache.flush
     else
       begin
         indexer.update_index
-        updated_gemspecs.each { |gem| disk_cache.flush_key(gem.name) }
+        updated_gemspecs.each { |gem| dependency_cache.flush_key(gem.name) }
       rescue => e
         puts "#{e.class}:#{e.message}"
         puts e.backtrace.join("\n")
@@ -190,8 +190,8 @@ HTML
     File.expand_path(File.join(settings.data, *request.path_info))
   end
 
-  def disk_cache
-    @disk_cache = Geminabox::DiskCache.new(File.join(settings.data, "_cache"))
+  def dependency_cache
+    @dependency_cache = Geminabox::DiskCache.new(File.join(settings.data, "_cache"))
   end
 
   def all_gems
