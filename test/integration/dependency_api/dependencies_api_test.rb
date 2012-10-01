@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'httpclient'
+require 'set'
 
 class DependenciesApiTest < Geminabox::TestCase
   test "push a gem with dependencies" do
@@ -24,11 +25,11 @@ class DependenciesApiTest < Geminabox::TestCase
     end
 
     deps = fetch_deps("a", "another_gem")
-    expected = [
+    expected = Set[
       {:name=>"another_gem", :number=>"1.0.0", :platform=>"ruby", :dependencies=>[["fred", ">= 0"], ["john", "= 2.0"]]},
       {:name=>"a", :number=>"1.0.0", :platform=>"ruby", :dependencies=>[["b", ">= 0"]]}
     ]
-    assert_equal expected, deps
+    assert_equal expected, Set[*deps]
   end
 
   test "get dependencies for multiple versions of the same gem" do

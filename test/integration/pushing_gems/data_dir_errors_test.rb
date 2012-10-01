@@ -29,6 +29,7 @@ class UnwritableDataDirTest < Geminabox::TestCase
   end
 end
 
+# FIXME: this test PASSES on Ubuntu 10.04 and FAILS on Mac OS 10.7
 class UnwritableUncreatableDataDirTest < Geminabox::TestCase
   data "/geminabox-fail"
 
