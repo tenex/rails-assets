@@ -12,6 +12,7 @@ class Geminabox::GemVersionCollection
   def initialize(initial_gems=[])
     @gems = []
     initial_gems.each { |gemdef| self << gemdef }
+    sort!
   end
 
   def <<(version_or_def)
@@ -22,7 +23,6 @@ class Geminabox::GemVersionCollection
               end
 
     @gems << version
-    @gems.sort!
   end
 
   def oldest
@@ -52,6 +52,10 @@ class Geminabox::GemVersionCollection
     else
       grouped
     end
+  end
+
+  def sort!
+    @gems.sort!
   end
 
   private

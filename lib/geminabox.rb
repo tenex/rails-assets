@@ -123,14 +123,14 @@ class Geminabox < Sinatra::Base
         error_response(200, "Ignoring upload, you uploaded the same thing previously.")
       end
     end
-    
+
     atomic_write(dest_filename) do |f|
       while blk = tmpfile.read(65536)
         f << blk
       end
     end
     reindex
-    
+
     if api_request?
       "Gem #{gem_name} received and indexed."
     else
@@ -211,7 +211,7 @@ HTML
     temp_file.close
     File.rename(temp_file.path, file_name)
   end
-  
+
   helpers do
     def spec_for(gem_name, version)
       spec_file = File.join(settings.data, "quick", "Marshal.#{Gem.marshal_version}", "#{gem_name}-#{version}.gemspec.rz")
