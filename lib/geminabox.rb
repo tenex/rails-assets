@@ -33,6 +33,7 @@ class Geminabox < Sinatra::Base
   end
 
   autoload :GemVersionCollection, "geminabox/gem_version_collection"
+  autoload :GemVersion, "geminabox/gem_version"
   autoload :DiskCache, "geminabox/disk_cache"
 
   before do
@@ -54,7 +55,7 @@ class Geminabox < Sinatra::Base
     query_gems = params[:gems].split(',').sort
     cache_key = query_gems.join(',')
     disk_cache.cache(cache_key) do
-      deps = load_gems.gems.select {|gem| query_gems.include?(gem.name) }.map do |gem|
+      deps = load_gems.select {|gem| query_gems.include?(gem.name) }.map do |gem|
         spec = spec_for(gem.name, gem.number)
         {
           :name => gem.name,
@@ -187,15 +188,19 @@ HTML
     @disk_cache = Geminabox::DiskCache.new(File.join(settings.data, "_cache"))
   end
 
+  def all_gems
+    %w(specs prerelease_specs).map{ |specs_file_type|
+      specs_file_path = File.join(settings.data, "#{specs_file_type}.#{Gem.marshal_version}.gz")
+      if File.exists?(specs_file_path)
+        Marshal.load(Gem.gunzip(Gem.read_binary(specs_file_path)))
+      else
+        []
+      end
+    }.inject(:|)
+  end
+
   def load_gems
-    @loaded_gems ||=
-      %w(specs prerelease_specs).inject(GemVersionCollection.new){|gems, specs_file_type|
-        specs_file_path = File.join(settings.data, "#{specs_file_type}.#{Gem.marshal_version}.gz")
-        if File.exists?(specs_file_path)
-          gems |= Geminabox::GemVersionCollection.new(Marshal.load(Gem.gunzip(Gem.read_binary(specs_file_path))))
-        end
-        gems
-      }
+    @loaded_gems ||= Geminabox::GemVersionCollection.new(all_gems)
   end
 
   def index_gems(gems)

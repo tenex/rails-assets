@@ -24,6 +24,11 @@ class Geminabox::GemVersion
     sort
   end
 
+  def ==(other)
+    return false unless other.class == self.class
+    [name, number, platform] == [other.name, other.number, other.platform]
+  end
+
   def gemfile_name
     included_platform = ruby? ? nil : platform
     [name, number, included_platform].compact.join('-')
