@@ -1,1 +1,1 @@
-GeminaboxVersion = '0.7.0' unless defined? GeminaboxVersion
+GeminaboxVersion = '0.8.0' unless defined? GeminaboxVersion
