@@ -4,6 +4,7 @@ require 'builder'
 require 'sinatra/base'
 require 'rubygems/builder'
 require 'rubygems/indexer'
+require 'rubygems/package'
 require 'hostess'
 require 'geminabox/version'
 require 'rss/atom'
@@ -36,6 +37,7 @@ class Geminabox < Sinatra::Base
   autoload :GemVersionCollection, "geminabox/gem_version_collection"
   autoload :GemVersion, "geminabox/gem_version"
   autoload :DiskCache, "geminabox/disk_cache"
+  autoload :IncomingGem, "geminabox/incoming_gem"
 
   before do
     headers 'X-Powered-By' => "geminabox #{GeminaboxVersion}"
@@ -92,58 +94,34 @@ class Geminabox < Sinatra::Base
   end
 
   post '/upload' do
-    if File.exists? Geminabox.data
-      error_response( 500, "Please ensure #{File.expand_path(Geminabox.data)} is a directory." ) unless File.directory? Geminabox.data
-      error_response( 500, "Please ensure #{File.expand_path(Geminabox.data)} is writable by the geminabox web server." ) unless File.writable? Geminabox.data
-    else
-      begin
-        FileUtils.mkdir_p(settings.data)
-      rescue Errno::EACCES, Errno::ENOENT, RuntimeError => e
-        error_response( 500, "Could not create #{File.expand_path(Geminabox.data)}.\n#{e}\n#{e.message}" )
-      end
-    end
-
-    unless params[:file] && (tmpfile = params[:file][:tempfile]) && (name = params[:file][:filename])
+    unless params[:file] && params[:file][:filename] && (tmpfile = params[:file][:tempfile])
       @error = "No file selected"
       halt [400, erb(:upload)]
     end
+    handle_incoming_gem(IncomingGem.new(File.read(tmpfile)))
+  end
 
-    FileUtils.mkdir_p(File.join(settings.data, "gems"))
+  post '/api/v1/gems' do
+    handle_incoming_gem(IncomingGem.new(request.body.read))
+  end
 
-    tmpfile.binmode
+private
 
-    gem_name = File.basename(name)
-    dest_filename = File.join(settings.data, "gems", gem_name)
-
-    if Geminabox.disallow_replace? and File.exist?(dest_filename)
-      existing_file_digest = Digest::SHA1.file(dest_filename).hexdigest
-      tmpfile_digest = Digest::SHA1.file(tmpfile.path).hexdigest
-
-      if existing_file_digest != tmpfile_digest
-        error_response(409, "Updating an existing gem is not permitted.\nYou should either delete the existing version, or change your version number.")
-      else
-        error_response(200, "Ignoring upload, you uploaded the same thing previously.")
-      end
-    end
-
-    atomic_write(dest_filename) do |f|
-      while blk = tmpfile.read(65536)
-        f << blk
-      end
-    end
-    reindex
+  def handle_incoming_gem(gem)
+    prepare_data_folders
+    error_response(400, "Cannot process gem") unless gem.valid?
+    handle_replacement(gem)
+    write_and_index(gem)
 
     if api_request?
-      "Gem #{gem_name} received and indexed."
+      "Gem #{gem.name} received and indexed."
     else
       redirect url("/")
     end
   end
 
-private
-
   def api_request?
-    request.accept.first == "text/plain"
+    request.accept.first != "text/html"
   end
 
   def error_response(code, message)
@@ -158,6 +136,43 @@ private
 </html>
 HTML
     halt [code, html]
+  end
+
+  def prepare_data_folders
+    if File.exists? Geminabox.data
+      error_response( 500, "Please ensure #{File.expand_path(Geminabox.data)} is a directory." ) unless File.directory? Geminabox.data
+      error_response( 500, "Please ensure #{File.expand_path(Geminabox.data)} is writable by the geminabox web server." ) unless File.writable? Geminabox.data
+    else
+      begin
+        FileUtils.mkdir_p(settings.data)
+      rescue Errno::EACCES, Errno::ENOENT, RuntimeError => e
+        error_response( 500, "Could not create #{File.expand_path(Geminabox.data)}.\n#{e}\n#{e.message}" )
+      end
+    end
+
+    FileUtils.mkdir_p(File.join(settings.data, "gems"))
+  end
+
+  def handle_replacement(gem)
+    if Geminabox.disallow_replace? and File.exist?(gem.dest_filename)
+      existing_file_digest = Digest::SHA1.file(gem.dest_filename).hexdigest
+
+      if existing_file_digest != gem.hexdigest
+        error_response(409, "Updating an existing gem is not permitted.\nYou should either delete the existing version, or change your version number.")
+      else
+        error_response(200, "Ignoring upload, you uploaded the same thing previously.")
+      end
+    end
+  end
+
+  def write_and_index(gem)
+    tmpfile = StringIO.new(gem.gem_data)
+    atomic_write(gem.dest_filename) do |f|
+      while blk = tmpfile.read(65536)
+        f << blk
+      end
+    end
+    reindex
   end
 
   def reindex(force_rebuild = false)
