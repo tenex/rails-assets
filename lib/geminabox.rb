@@ -68,7 +68,7 @@ class Geminabox < Sinatra::Base
   end
 
   get '/api/v1/dependencies' do
-    query_gems = params[:gems].split(',').sort
+    query_gems = params[:gems].split(',')
     deps = query_gems.each_with_object([]) {|query_gem, memo| memo.concat gem_dependencies(query_gem) }
     Marshal.dump(deps)
   end
