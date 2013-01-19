@@ -20,20 +20,24 @@ module Geminabox::Indexer
     (gem_version >= v1_8) && (gem_version < v1_8_25)
   end
 
+  def self.updated_gemspecs(indexer)
+    specs_mtime = File.stat(indexer.dest_specs_index).mtime
+    newest_mtime = Time.at 0
+
+    updated_gems = indexer.gem_file_list.select do |gem|
+      gem_mtime = File.stat(gem).mtime
+      newest_mtime = gem_mtime if gem_mtime > newest_mtime
+      gem_mtime >= specs_mtime
+    end
+
+    indexer.map_gems_to_specs updated_gems
+  end
+
   def self.patch_rubygems_update_index_pre_1_8_25(indexer)
     if germane?
-      specs_mtime = File.stat(indexer.dest_specs_index).mtime
-      newest_mtime = Time.at 0
+      specs = updated_gemspecs(indexer)
 
-      updated_gems = indexer.gem_file_list.select do |gem|
-        gem_mtime = File.stat(gem).mtime
-        newest_mtime = gem_mtime if gem_mtime > newest_mtime
-        gem_mtime >= specs_mtime
-      end
-
-      specs = indexer.map_gems_to_specs updated_gems
-
-      unless updated_gems.empty?
+      unless specs.empty?
         Gem::Specification.dirs = []
         Gem::Specification.add_specs(*specs)
       end
