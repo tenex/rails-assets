@@ -37,6 +37,16 @@ class DiskCacheTest < MiniTest::Unit::TestCase
     assert_equal "bar", subject.cache("bar"){ "bar" }
   end
 
+  def test_flushing_a_key
+    assert_equal "foo", subject.cache("foo"){ "foo" }
+    assert_equal "bar", subject.cache("bar"){ "bar" }
+
+    subject.flush_key("foo")
+
+    assert_equal "baz", subject.cache("foo"){ "baz" }
+    assert_equal "bar", subject.cache("bar"){ "baz" }
+  end
+
   def teardown
     FileUtils.rm_rf(DIR)
   end
