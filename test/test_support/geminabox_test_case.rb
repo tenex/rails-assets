@@ -51,6 +51,15 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
       end
     end
 
+    def should_push_gem_over_gemcutter_api(gemname = :example, *args)
+      test("can push #{gemname}") do
+        gem_file = gem_file(gemname, *args)
+        gemcutter_push(gem_file)
+        gem_path = File.join(config.data, "gems", File.basename(gem_file) )
+        assert File.exists?( gem_path ), "Gemfile not in data dir."
+        assert File.stat(gem_path).mode.to_s(8).match(/#{config.gem_permissions.to_s(8)}$/), "Gemfile has incorrect permissions."
+      end
+    end
 
     def url_with_port(port)
       uri = URI.parse url
@@ -94,15 +103,25 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
     FileUtils.ln_s(fixture("../.."), "#{FAKE_HOME}/gems/geminabox-9999.0.0.gem")
   end
 
-  def geminabox_push(gemfile)
-    Geminabox::TestCase.setup_fake_home!
-    command = "GEM_HOME=#{FAKE_HOME} gem inabox #{gemfile} -g '#{config.url_with_port(@test_server_port)}' 2>&1"
+  def execute(command)
     output = ""
     IO.popen(command, "r") do |io|
       data = io.read
       output << data
     end
     output
+  end
+
+  def gemcutter_push(gemfile)
+    Geminabox::TestCase.setup_fake_home!
+    command = "GEM_HOME=#{FAKE_HOME} gem push #{gemfile} --host '#{config.url_with_port(@test_server_port)}' 2>&1"
+    execute(command)
+  end
+
+  def geminabox_push(gemfile)
+    Geminabox::TestCase.setup_fake_home!
+    command = "GEM_HOME=#{FAKE_HOME} gem inabox #{gemfile} -g '#{config.url_with_port(@test_server_port)}' 2>&1"
+    execute(command)
   end
 
   def assert_can_push(gemname = :example, *args)
@@ -179,7 +198,7 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
         sleep 0.05
         retry
       end
-    end  
+    end
   end
 
   def stop_app!

@@ -1,8 +1,9 @@
 class Geminabox::IncomingGem
   attr_reader :spec, :gem_data
 
-  def initialize(gem_data)
+  def initialize(gem_data, root_path = Geminabox.settings.data)
     @gem_data = gem_data
+    @root_path = root_path
   end
 
   def valid?
@@ -23,7 +24,7 @@ class Geminabox::IncomingGem
   end
 
   def dest_filename
-    File.join(Geminabox.settings.data, "gems", name)
+    File.join(@root_path, "gems", name)
   end
 
   def hexdigest
