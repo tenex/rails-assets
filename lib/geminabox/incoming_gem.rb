@@ -1,9 +1,23 @@
 class Geminabox::IncomingGem
-  attr_reader :spec, :gem_data
-
   def initialize(gem_data, root_path = Geminabox.settings.data)
-    @gem_data = gem_data
+    unless gem_data.respond_to? :read
+      raise ArgumentError, "Expected an instance of IO"
+    end
+
+    digest = Digest::SHA1.new
+    @tempfile = Tempfile.new("gem", :encoding => 'binary')
+    while data = gem_data.read(1024**2)
+      @tempfile.write data
+      digest << data
+    end
+    @tempfile.close
+    @sha1 = digest.hexdigest
+
     @root_path = root_path
+  end
+
+  def gem_data
+    File.open(@tempfile.path, "rb")
   end
 
   def valid?
@@ -13,10 +27,12 @@ class Geminabox::IncomingGem
   end
 
   def spec
-    return @spec if @spec
-    Gem::Package.open(StringIO.new(gem_data), "r", nil) do |pkg|
-      @spec = pkg.metadata
+    unless @spec
+      Gem::Package.open(gem_data, "r", nil) do |pkg|
+        @spec = pkg.metadata
+      end
     end
+    @spec
   end
 
   def name
@@ -28,6 +44,6 @@ class Geminabox::IncomingGem
   end
 
   def hexdigest
-    Digest::SHA1.hexdigest(gem_data)
+    @sha1
   end
 end

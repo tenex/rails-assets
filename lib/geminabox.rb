@@ -102,11 +102,17 @@ class Geminabox < Sinatra::Base
       @error = "No file selected"
       halt [400, erb(:upload)]
     end
-    handle_incoming_gem(IncomingGem.new(File.read(tmpfile)))
+    handle_incoming_gem(IncomingGem.new(tmpfile))
   end
 
   post '/api/v1/gems' do
-    handle_incoming_gem(IncomingGem.new(request.body.read))
+    begin
+      handle_incoming_gem(IncomingGem.new(request.body))
+    rescue Object => o
+      File.open "/tmp/debug.txt", "a" do |io|
+        io.puts o, o.backtrace
+      end
+    end
   end
 
 private
@@ -170,7 +176,7 @@ HTML
   end
 
   def write_and_index(gem)
-    tmpfile = StringIO.new(gem.gem_data)
+    tmpfile = gem.gem_data
     atomic_write(gem.dest_filename) do |f|
       while blk = tmpfile.read(65536)
         f << blk
