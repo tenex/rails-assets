@@ -1,14 +1,6 @@
 require 'test_helper'
 
-class InvalidDataDirTest < Geminabox::TestCase
-  data "/dev/null"
-
-  test "report the error back to the user" do
-    assert_match %r{Please ensure /dev/null is a directory.}, geminabox_push(gem_file(:example))
-  end
-end
-
-class UnwritableDataDirTest < Geminabox::TestCase
+module WithTmpReadonly
   def setup
     super
 
@@ -21,6 +13,18 @@ class UnwritableDataDirTest < Geminabox::TestCase
 
     FileUtils.rmdir '/tmp/read_only'
   end
+end
+
+class InvalidDataDirTest < Geminabox::TestCase
+  data "/dev/null"
+
+  test "report the error back to the user" do
+    assert_match %r{Please ensure /dev/null is a directory.}, geminabox_push(gem_file(:example))
+  end
+end
+
+class UnwritableDataDirTest < Geminabox::TestCase
+  include WithTmpReadonly
 
   data "/tmp/read_only"
 
@@ -29,12 +33,13 @@ class UnwritableDataDirTest < Geminabox::TestCase
   end
 end
 
-# FIXME: this test PASSES on Ubuntu 10.04 and FAILS on Mac OS 10.7
 class UnwritableUncreatableDataDirTest < Geminabox::TestCase
-  data "/geminabox-fail"
+  include WithTmpReadonly
+
+  data "/tmp/read_only/geminabox-fail"
 
   test "report the error back to the user" do
-    assert_match %r{Could not create /geminabox-fail}, geminabox_push(gem_file(:example))
+    assert_match %r{Could not create /tmp/read_only/geminabox-fail}, geminabox_push(gem_file(:example))
   end
 end
 
