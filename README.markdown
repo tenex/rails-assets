@@ -1,5 +1,6 @@
 # Gem in a Box – Really simple rubygem hosting
-##
+[![Build Status](https://secure.travis-ci.org/cwninja/geminabox.png)](http://travis-ci.org/cwninja/geminabox)
+[![Gem Version](https://badge.fury.io/rb/geminabox.png)](http://badge.fury.io/rb/geminabox)
 
 Geminabox lets you host your own gems, and push new gems to it just like with rubygems.org.
 The bundler dependencies API is supported out of the box.
@@ -7,7 +8,6 @@ Authentication is left up to either the web server, or the Rack stack.
 For basic auth, try [Rack::Auth](http://rack.rubyforge.org/doc/Rack/Auth/Basic.html).
 
 
-[![Build Status](https://secure.travis-ci.org/cwninja/geminabox.png)](http://travis-ci.org/cwninja/geminabox)
 
 
 ![screen shot](http://pics.tomlea.co.uk/bbbba6/geminabox.png)
