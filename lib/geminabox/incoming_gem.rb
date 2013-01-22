@@ -5,11 +5,17 @@ class Geminabox::IncomingGem
     end
 
     digest = Digest::SHA1.new
-    @tempfile = Tempfile.new("gem", :encoding => 'binary')
+    if RbConfig::CONFIG["MAJOR"].to_i <= 1 and RbConfig::CONFIG["MINOR"].to_i <= 8
+      @tempfile = Tempfile.new("gem")
+    else
+      @tempfile = Tempfile.new("gem", :encoding => 'binary')
+    end
+
     while data = gem_data.read(1024**2)
       @tempfile.write data
       digest << data
     end
+
     @tempfile.close
     @sha1 = digest.hexdigest
 
