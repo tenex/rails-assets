@@ -8,9 +8,10 @@ class GemFactory
   end
 
   def gem(name, options = {})
-    version = options[:version] || "1.0.0"
+    version  = options[:version] || "1.0.0"
+    platform = options[:platform] || "ruby"
 
-    dependincies = options.fetch(:deps, {}).collect do |dep, requirement|
+    dependencies = options.fetch(:deps, {}).collect do |dep, requirement|
       dep = [*dep]
       gem(*dep)
       if requirement
@@ -21,7 +22,9 @@ class GemFactory
     end.join("\n")
 
     name = name.to_s
-    path = @path.join("#{name}-#{version}.gem")
+    filename = %W[#{name} #{version}]
+    filename.push(platform) if platform != "ruby"
+    path = @path.join("#{filename.join("-")}.gem")
     FileUtils.mkdir_p File.dirname(path)
 
     unless File.exists? path 
@@ -29,11 +32,12 @@ class GemFactory
         Gem::Specification.new do |s|
           s.name              = #{name.inspect}
           s.version           = #{version.inspect}
+          s.platform          = #{platform.inspect}
           s.summary           = #{name.inspect}
           s.description       = s.summary + " description"
           s.author            = 'Test'
           s.files             = []
-          #{dependincies}
+          #{dependencies}
         end
       }
 

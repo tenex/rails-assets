@@ -42,7 +42,12 @@ class Geminabox::IncomingGem
   end
 
   def name
-    "#{spec.name}-#{spec.version}.gem"
+    unless @name
+      filename = %W[#{spec.name} #{spec.version}]
+      filename.push(spec.platform) if spec.platform && spec.platform != "ruby"
+      @name = filename.join("-") + ".gem"
+    end
+    @name
   end
 
   def dest_filename

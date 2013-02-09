@@ -31,6 +31,13 @@ class IncomingGemTest < MiniTest::Unit::TestCase
     assert_equal "example-1.0.0.gem", subject.name
   end
 
+  test "#name for platform dependent gem" do
+    file = File.open(GemFactory.gem_file(:example, :platform => "x86_64-linux"))
+    subject = Geminabox::IncomingGem.new(file)
+
+    assert_equal "example-1.0.0-x86_64-linux.gem", subject.name
+  end
+
   test "#dest_filename" do
     file = File.open(GemFactory.gem_file(:example))
     subject = Geminabox::IncomingGem.new(file, "/root/path")

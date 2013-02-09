@@ -13,12 +13,13 @@ class GemVersionCollectionTest < MiniTest::Unit::TestCase
     subject = GIB::GemVersionCollection.new([
       ['foo', '1.2.3', 'ruby'],
       ['foo', '1.2.4', 'ruby'],
-      ['bar', '1.2.4', 'ruby']
+      ['bar', '1.2.4', 'ruby'],
+      ['foo', '1.2.4', 'x86_amd64-linux'],
     ])
 
     actual = Hash[subject.by_name]
     assert_equal GIB::GemVersionCollection, actual['foo'].class
-    assert_equal 2, actual['foo'].size
+    assert_equal 3, actual['foo'].size
     assert_equal 1, actual['bar'].size
   end
 
