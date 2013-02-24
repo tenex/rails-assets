@@ -54,21 +54,6 @@ class Geminabox < Sinatra::Base
     erb :atom, :layout => false
   end
 
-  # Return a list of versions of gem 'gem_name' with the dependencies of each version.
-  def gem_dependencies(gem_name)
-    dependency_cache.marshal_cache(gem_name) do
-      load_gems.select {|gem| gem_name == gem.name }.map do |gem|
-        spec = spec_for(gem.name, gem.number)
-        {
-          :name => gem.name,
-          :number => gem.number.version,
-          :platform => gem.platform,
-          :dependencies => spec.dependencies.select {|dep| dep.type == :runtime}.map {|dep| [dep.name, dep.requirement.to_s] }
-        }
-      end
-    end
-  end
-
   get '/api/v1/dependencies' do
     query_gems = params[:gems].split(',')
     deps = query_gems.inject([]){|memo, query_gem| memo + gem_dependencies(query_gem) }
@@ -252,6 +237,31 @@ HTML
     def spec_for(gem_name, version)
       spec_file = File.join(settings.data, "quick", "Marshal.#{Gem.marshal_version}", "#{gem_name}-#{version}.gemspec.rz")
       Marshal.load(Gem.inflate(File.read(spec_file))) if File.exists? spec_file
+    end
+
+    # Return a list of versions of gem 'gem_name' with the dependencies of each version.
+    def gem_dependencies(gem_name)
+      dependency_cache.marshal_cache(gem_name) do
+        load_gems.
+          select { |gem| gem_name == gem.name }.
+          map    { |gem| [gem, spec_for(gem.name, gem.number)] }.
+          reject { |(_, spec)| spec.nil? }.
+          map do |(gem, spec)|
+            {
+              :name => gem.name,
+              :number => gem.number.version,
+              :platform => gem.platform,
+              :dependencies => runtime_dependencies(spec)
+            }
+          end
+      end
+    end
+
+    def runtime_dependencies(spec)
+      spec.
+        dependencies.
+        select { |dep| dep.type == :runtime }.
+        map    { |dep| [dep.name, dep.requirement.to_s] }
     end
   end
 end
