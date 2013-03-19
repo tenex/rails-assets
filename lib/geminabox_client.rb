@@ -26,8 +26,8 @@ class GeminaboxClient
     url + path.to_s
   end
 
-  def push(gemfile)
-    response = http_client.post(url_for(:upload), {'file' => File.open(gemfile, "rb")}, {'Accept' => 'text/plain'})
+  def push(gemfile, options = {})
+    response = http_client.post(url_for(:upload), { 'file' => File.open(gemfile, "rb"), 'overwrite' => !!options[:overwrite] }, { 'Accept' => 'text/plain' })
 
     if response.status < 300
       response.body

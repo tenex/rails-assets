@@ -7,13 +7,14 @@ The bundler dependencies API is supported out of the box.
 Authentication is left up to either the web server, or the Rack stack.
 For basic auth, try [Rack::Auth](http://rack.rubyforge.org/doc/Rack/Auth/Basic.html).
 
-
-
-
 ![screen shot](http://pics.tomlea.co.uk/bbbba6/geminabox.png)
 
+## System Requirements
 
+    Tested on Mac OS X 10.8.2
+    Ruby 1.9.3-392
 
+    Tests fail on Ruby 2.0.0-p0
 
 ## Server Setup
 
@@ -50,6 +51,34 @@ Change the host to upload to:
     geminabox -g HOST
 
 Simples!
+
+## Command Line Help
+
+    Usage: gem inabox GEM [options]
+
+      Options:
+        -c, --configure                  Configure GemInABox
+        -g, --host HOST                  Host to upload to.
+        -o, --overwrite                  Overwrite Gem.
+
+
+      Common Options:
+        -h, --help                       Get help on this command
+        -V, --[no-]verbose               Set the verbose level of output
+        -q, --quiet                      Silence commands
+            --config-file FILE           Use this config file instead of default
+            --backtrace                  Show stack backtrace on errors
+            --debug                      Turn on Ruby debugging
+
+
+      Arguments:
+        GEM       built gem to push up
+
+      Summary:
+        Push a gem up to your GemInABox
+
+      Description:
+        Push a gem up to your GemInABox
 
 ## Licence
 

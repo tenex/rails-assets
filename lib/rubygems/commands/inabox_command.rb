@@ -23,6 +23,10 @@ class Gem::Commands::InaboxCommand < Gem::Command
     add_option('-g', '--host HOST', "Host to upload to.") do |value, options|
       options[:host] = value
     end
+
+    add_option('-o', '--overwrite', "Overwrite Gem.") do |value, options|
+      options[:overwrite] = true
+    end
   end
 
   def last_minute_requires!
@@ -51,7 +55,7 @@ class Gem::Commands::InaboxCommand < Gem::Command
     gemfiles.each do |gemfile|
       say "Pushing #{File.basename(gemfile)} to #{client.url}..."
       begin
-        say client.push(gemfile)
+        say client.push(gemfile, options)
       rescue GeminaboxClient::Error => e
         alert_error e.message
         terminate_interaction(1)
