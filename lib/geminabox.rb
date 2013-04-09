@@ -105,7 +105,7 @@ private
   def handle_incoming_gem(gem)
     prepare_data_folders
     error_response(400, "Cannot process gem") unless gem.valid?
-    handle_replacement(gem) if params[:overwrite] == "false"
+    handle_replacement(gem) unless params[:overwrite] == "true"
     write_and_index(gem)
 
     if api_request?
