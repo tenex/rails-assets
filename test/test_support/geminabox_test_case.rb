@@ -112,8 +112,13 @@ class Geminabox::TestCase < MiniTest::Unit::TestCase
     output
   end
 
+  def fix_fixture_permissions!
+    File.chmod 0600, FIXTURES_PATH.join('fake_home_path/.gem/credentials')
+  end
+
   def gemcutter_push(gemfile)
     Geminabox::TestCase.setup_fake_home!
+    fix_fixture_permissions!
     home = FIXTURES_PATH.join('fake_home_path')
     command = "GEM_HOME=#{FAKE_HOME} HOME=#{home} gem push #{gemfile} --host '#{config.url_with_port(@test_server_port)}' 2>&1"
     execute(command)
