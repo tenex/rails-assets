@@ -6,6 +6,7 @@ class LargeGemListSpec < Geminabox::TestCase
   include Capybara::DSL
 
   test "more than 5 versions of the same gem" do
+    Capybara.app = Geminabox::TestCase.app
     cache_fixture_data_dir('large_gem_list_test') do
       assert_can_push(:unrelated_gem, :version => '1.0')
 

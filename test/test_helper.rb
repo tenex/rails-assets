@@ -17,11 +17,11 @@ Capybara.default_driver = :mechanize
 Capybara.app_host = "http://localhost"
 module TestMethodMagic
   def test(test_name, &block)
-    define_method "test: #{test_name} ", &block
+    define_method "test_method: #{test_name} ", &block
   end
 end
 
-class MiniTest::Unit::TestCase
+class Minitest::Test
   extend TestMethodMagic
 
   TEST_DATA_DIR="/tmp/geminabox-test-data"

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class GemVersionCollectionTest < MiniTest::Unit::TestCase
+class GemVersionCollectionTest < Minitest::Test
   GIB = Geminabox
   def test_it_coerces_things_to_gem_versions
     expected = GIB::GemVersion.new('foo', '1.2.3', 'ruby')

@@ -2,7 +2,7 @@ require 'test_helper'
 require 'minitest/unit'
 require 'rack/test'
 
-class XPoweredByTest < MiniTest::Unit::TestCase
+class XPoweredByTest < Minitest::Test
   include Rack::Test::Methods
 
   def app

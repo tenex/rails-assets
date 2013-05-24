@@ -2,7 +2,7 @@ require 'test_helper'
 require 'minitest/unit'
 require 'rack/test'
 
-class AtomFeedTest < MiniTest::Unit::TestCase
+class AtomFeedTest < Minitest::Test
   include Rack::Test::Methods
 
   def setup

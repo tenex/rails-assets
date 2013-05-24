@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class IncomingGemTest < MiniTest::Unit::TestCase
+class IncomingGemTest < Minitest::Test
 
   test "#new" do
     assert_raises ArgumentError do

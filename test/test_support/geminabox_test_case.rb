@@ -11,7 +11,7 @@ require 'logger'
 require 'rack/auth/abstract/handler'
 require 'rack/auth/abstract/request'
 
-class Geminabox::TestCase < MiniTest::Unit::TestCase
+class Geminabox::TestCase < Minitest::Test
   class << self
     # DSL
     def url(url = nil)

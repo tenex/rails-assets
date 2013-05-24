@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class DiskCacheTest < MiniTest::Unit::TestCase
+class DiskCacheTest < Minitest::Test
   DIR = "/tmp/geminabox-disk-cache-test"
   def setup
     FileUtils.rm_rf(DIR)
