@@ -19,7 +19,7 @@ class Geminabox < Sinatra::Base
   set :views, File.join(File.dirname(__FILE__), *%w[.. views])
   set :allow_replace, false
   set :gem_permissions, 0644
-  set :delete_allowed, false
+  set :delete_allowed, true
   use Hostess
 
   class << self
