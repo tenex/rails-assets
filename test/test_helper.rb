@@ -7,7 +7,6 @@ require 'minitest/autorun'
 require 'fileutils'
 require 'test_support/gem_factory'
 require 'test_support/geminabox_test_case'
-require 'pry'
 
 require 'capybara/mechanize'
 require 'capybara/dsl'

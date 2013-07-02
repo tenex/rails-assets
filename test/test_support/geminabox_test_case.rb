@@ -103,6 +103,10 @@ class Geminabox::TestCase < Minitest::Test
     FileUtils.ln_s(fixture("../.."), "#{FAKE_HOME}/gems/geminabox-9999.0.0.gem")
   end
 
+  def without_bundler
+    defined?(Bundler) ? Bundler.with_clean_env { yield } : yield
+  end
+
   def execute(command)
     output = ""
     IO.popen(command, "r") do |io|
@@ -121,7 +125,7 @@ class Geminabox::TestCase < Minitest::Test
     fix_fixture_permissions!
     home = FIXTURES_PATH.join('fake_home_path')
     command = "GEM_HOME=#{FAKE_HOME} HOME=#{home} gem push #{gemfile} --host '#{config.url_with_port(@test_server_port)}' 2>&1"
-    execute(command)
+    without_bundler { execute(command) }
   end
 
   def geminabox_push(gemfile)

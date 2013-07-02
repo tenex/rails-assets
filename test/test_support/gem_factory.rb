@@ -27,7 +27,7 @@ class GemFactory
     path = @path.join("#{filename.join("-")}.gem")
     FileUtils.mkdir_p File.dirname(path)
 
-    unless File.exists? path 
+    unless File.exists? path
       spec = %{
         Gem::Specification.new do |s|
           s.name              = #{name.inspect}
@@ -37,6 +37,9 @@ class GemFactory
           s.description       = s.summary + " description"
           s.author            = 'Test'
           s.files             = []
+          s.email             = 'fake@fake.fake'
+          s.homepage          = 'http://fake.fake/fake'
+          s.licenses          = ['fake']
           #{dependencies}
         end
       }
