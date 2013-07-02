@@ -19,11 +19,16 @@ class Geminabox < Sinatra::Base
   set :views, File.join(File.dirname(__FILE__), *%w[.. views])
   set :allow_replace, false
   set :gem_permissions, 0644
+  set :allow_delete, true
   use Hostess
 
   class << self
     def disallow_replace?
       ! allow_replace
+    end
+
+    def allow_delete?
+      allow_delete
     end
 
     def fixup_bundler_rubygems!
@@ -76,6 +81,9 @@ class Geminabox < Sinatra::Base
   end
 
   delete '/gems/*.gem' do
+    unless Geminabox.allow_delete?
+      error_response(403, 'Gem deletion is disabled - see https://github.com/cwninja/geminabox/issues/115')
+    end
     File.delete file_path if File.exists? file_path
     reindex(:force_rebuild)
     redirect url("/")
