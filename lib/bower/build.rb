@@ -307,7 +307,7 @@ module Bower
       @gem_root = @gem_name
     end
 
-    def build!(debug = false, &block)
+    def build!(debug = ENV["DEBUG"], &block)
       if debug
         dir = "/tmp/build"
         sh "rm -rf #{dir}"
