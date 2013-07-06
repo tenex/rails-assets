@@ -10,10 +10,10 @@ Gem::Specification.new do |s|
   s.homepage          = 'http://tomlea.co.uk/p/gem-in-a-box'
 
   s.has_rdoc          = true
-  s.extra_rdoc_files  = %w[README.markdown]
-  s.rdoc_options      = %w[--main README.markdown]
+  s.extra_rdoc_files  = %w[README.md]
+  s.rdoc_options      = %w[--main README.md]
 
-  s.files             = %w[README.markdown] + Dir['{lib,public,views}/**/*']
+  s.files             = %w[README.md] + Dir['{lib,public,views}/**/*']
   s.require_paths     = ['lib']
 
   s.add_dependency('sinatra')

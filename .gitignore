@@ -1,7 +1,7 @@
 pkg
 .DS_Store
 tmp/restart.txt
-Gemfile.lock
+test-app/Gemfile.lock
 .bundle
 vendor/bundle
 .rbenv-version
