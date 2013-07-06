@@ -4,6 +4,7 @@ PATH
     geminabox (0.10.2)
       builder
       httpclient (>= 2.2.7)
+      rake
       redcarpet
       sinatra
       slim
