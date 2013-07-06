@@ -12,7 +12,9 @@ module Bower
   module Utils
     def sh(*cmd)
       puts "--> $ #{cmd.join(" ")}"
-      system *cmd
+      unless system *cmd
+        raise "Command #{cmd.join(" ")} failed"
+      end
     end
 
     def file_replace(file, &block)
@@ -45,7 +47,8 @@ module Bower
         :version => data["version"],
         :description => data["description"],
         :javascripts => [data["main"]].flatten,
-        :dependencies => data["dependencies"]
+        :dependencies => data["dependencies"],
+        :repository => data["repository"]
       }.reject {|k,v| !v}
     end
   end
@@ -175,6 +178,31 @@ module Bower
           f.call  /#{key}.email.+/,        %Q|#{key}.email         = [""]|
           f.call  /#{key}.description.+/,  %Q|#{key}.description   = %q{#{info[:description]}}|
           f.call  /#{key}.summary.+/,      %Q|#{key}.summary       = %q{#{info[:description]}}|
+
+          if repo = info[:repository]
+            if url = repo["url"]
+              homepage = case url
+              when %r|git://github.com/(.+)/(.+).git|
+                "http://github.com/#{$1}/#{$2}"
+              end
+
+              if homepage
+                f.call /#{key}.homepage.+/, %Q|#{key}.homepage      = "#{homepage}"|
+              end
+            end
+          end
+
+          if info[:dependencies]
+            deps = info[:dependencies].map do |dep, version|
+              version.gsub!(/~(\d)/, '~> \1')
+
+              %Q|  #{key}.add_dependency "rails-assets-#{dep}", "#{version}"|
+            end.join("\n")
+
+            f.call(/  #{key}.require_paths.+/,
+                   (%Q|  spec.require_paths = ["lib"]\n\n| + deps))
+          end
+
         end
       end
     end
@@ -279,26 +307,32 @@ module Bower
       @gem_root = @gem_name
     end
 
-    def build!(&block)
-      puts "--> Building gem #{gem_name} form #{bower_name} package"
-
-      # Dir.mktmpdir do |dir|
-      dir = "/tmp/build"
-      sh "rm -rf #{dir}"
-      sh "mkdir -p #{dir}"
-        gems = Dir.chdir(dir) do
-          bower_install
-
-          Dir["bower_components/*"].map do |f|
-            name = File.basename(f)
-            gem_pkg = Bower::Builder.new(name).build!
-            File.join(dir, gem_pkg)
-          end
+    def build!(debug = false, &block)
+      if debug
+        dir = "/tmp/build"
+        sh "rm -rf #{dir}"
+        sh "mkdir -p #{dir}"
+        build_in_dir(dir, &block)
+      else
+        Dir.mktmpdir do |dir|
+          build_in_dir(dir, &block)
         end
+      end
+    end
 
-        gems.each(&block)
-      # end
+    def build_in_dir(dir, &block)
+      puts "--> Building gem #{gem_name} from #{bower_name} package in #{dir}"
+      gems = Dir.chdir(dir) do
+        bower_install
 
+        Dir["bower_components/*"].map do |f|
+          name = File.basename(f)
+          gem_pkg = Bower::Builder.new(name).build!
+          File.join(dir, gem_pkg)
+        end
+      end
+
+      gems.each(&block)
     end
 
     def bower_install

@@ -253,6 +253,15 @@ HTML
       Marshal.load(Gem.inflate(File.read(spec_file))) if File.exists? spec_file
     end
 
+    def display_dependencies(deps)
+      deps.map do |dep|
+        <<-EOS
+          <span class="name">#{dep.name.gsub(/^rails-assets-/, "")}</span>
+          <span class="req"> (#{dep.requirements_list.join(", ")})</span>
+        EOS
+      end.join(", ")
+    end
+
     # Return a list of versions of gem 'gem_name' with the dependencies of each version.
     def gem_dependencies(gem_name)
       build_gem(gem_name)

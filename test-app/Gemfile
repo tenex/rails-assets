@@ -26,3 +26,10 @@ gem "rails-assets-resizeend"
 gem "rails-assets-leaflet"
 gem "rails-assets-jquery.cookie"
 gem "rails-assets-purl"
+# gem "rails-assets-fancybox" # Missing manifest
+gem "rails-assets-jquery-mousewheel"
+gem "rails-assets-angular-mousewheel"
+# gem "rails-assets-jquery.spinjs"
+# gem "rails-assets-jquery-waypoints" # Missing main js file
+# gem "rails-assets-datejs" # Missing main js file
+gem "rails-assets-moment"

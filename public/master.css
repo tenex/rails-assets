@@ -352,4 +352,19 @@ footer p + p {
   margin: 0;
   padding: 0;
   font-size: 10pt;
+  margin-bottom: 10px;
 }
+.details p {
+  margin-bottom: 5px;
+}
+
+.dependencies {
+  font-size: 9pt;
+}
+
+.dependencies .header {
+  text-decoration: underline;
+  padding-right: 5px;
+}
+
+.dependencies .name { font-weight: bold; }

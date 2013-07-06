@@ -69,11 +69,14 @@
         li
           .summary
             span.name= name.gsub(/^rails-assets-/, "")
-            |  (
-            span.versions= versions.map {|e| e.number }.join(", ")
-            ' )
+            span.versions= " (#{versions.map {|e| e.number }.join(", ")})"
           .details
             - if spec = spec_for(name, versions.newest.number)
               == Tilt[:markdown].new { spec.description }.render
               .homepage
-                a href=spec.homepage = spec.homepage
+                a href=spec.homepage = spec.homepage.gsub(/^https?:\/\//, "")
+            - unless spec.runtime_dependencies.empty?
+              .dependencies
+                span.header = "Dependencies:"
+                == display_dependencies(spec.runtime_dependencies)
+

@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency('sinatra')
   s.add_dependency('builder')
   s.add_dependency('slim')
+  s.add_dependency('thin')
   s.add_dependency('httpclient', [">= 2.2.7"])
   s.add_development_dependency('rake')
   s.add_development_dependency('rack-test')
