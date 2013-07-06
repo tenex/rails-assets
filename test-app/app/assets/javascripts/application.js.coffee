@@ -5,7 +5,9 @@
 #= require leaflet
 #= require jquery.cookie
 #= require purl
-
+#= require select2
+#= require d3
+#= require underscore
 
 assert = (label, cond) ->
   res = false
@@ -44,3 +46,7 @@ $ ->
 
   assert "jquery.cookie", -> $.cookie
   assert "purl", -> purl()
+  assert "select2", ->
+    $("#select2").select2()
+  assert "d3", -> d3.select("body")
+  assert "underscore", -> _([1]).map
