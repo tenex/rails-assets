@@ -274,9 +274,7 @@ module Bower
         :version => data["version"],
         :description => data["description"],
         :javascripts => [data["main"]].flatten,
-        :dependencies => data["dependencies"],
-        :readmeFilename => data["readmeFilename"] || "README",
-        :readme => data["readmeFilename"] ? File.read(File.join(dir, data["readmeFilename"])) : data["readme"]
+        :dependencies => data["dependencies"]
       }.reject {|k,v| !v}
     end
   end

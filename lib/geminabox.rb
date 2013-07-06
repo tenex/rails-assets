@@ -8,6 +8,7 @@ require 'hostess'
 require 'geminabox/version'
 require 'rss/atom'
 require 'tempfile'
+require 'slim'
 
 class Geminabox < Sinatra::Base
   enable :static, :methodoverride
@@ -50,8 +51,8 @@ class Geminabox < Sinatra::Base
 
   get '/' do
     @gems = load_gems
-    @index_gems = index_gems(@gems)
-    erb :index
+    @asset_gems = @gems.by_name.select {|n,_| n =~ /^rails-assets-/ }
+    slim :index
   end
 
   get '/atom.xml' do
