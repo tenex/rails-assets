@@ -3,7 +3,7 @@ require "json"
 require "fileutils"
 
 module Bower
-  BOWER_BIN = "/usr/local/share/npm/bin/bower"
+  BOWER_BIN = "bower"
   BUNDLE_BIN = "bundle"
   GIT_BIN = "git"
   RAKE_BIN = "rake"
