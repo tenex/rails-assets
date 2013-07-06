@@ -46,7 +46,7 @@ module Bower
       {
         :version => data["version"],
         :description => data["description"],
-        :javascripts => [data["main"]].flatten,
+        :javascripts => [data["main"]].flatten.select {|e| e =~ /\.js$/ },
         :dependencies => data["dependencies"],
         :repository => data["repository"]
       }.reject {|k,v| !v}
