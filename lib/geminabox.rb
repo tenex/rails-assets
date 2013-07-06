@@ -14,7 +14,7 @@ class Geminabox < Sinatra::Base
   enable :static, :methodoverride
 
   set :public_folder, File.join(File.dirname(__FILE__), *%w[.. public])
-  set :data, File.join(File.dirname(__FILE__), *%w[.. data])
+  set :data, ENV["DATA_DIR"] || File.join(File.dirname(__FILE__), *%w[.. data])
   set :build_legacy, false
   set :incremental_updates, true
   set :views, File.join(File.dirname(__FILE__), *%w[.. views])
