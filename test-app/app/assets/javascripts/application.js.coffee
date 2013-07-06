@@ -3,6 +3,8 @@
 #= require angular
 #= require resizeend
 #= require leaflet
+#= require jquery.cookie
+#= require purl
 
 
 assert = (label, cond) ->
@@ -39,3 +41,6 @@ $ ->
     L.marker([51.5, -0.09]).addTo(map)
       .bindPopup('A pretty CSS3 popup. <br> Easily customizable.')
       .openPopup();
+
+  assert "jquery.cookie", -> $.cookie
+  assert "purl", -> purl()

@@ -37,6 +37,7 @@ module Bower
           fix_ruby_require
           process_javascript_files
           process_css_and_image_files
+          fix_naming
           build_gem
         end
         yield File.join(dir, gem_pkg)
@@ -107,6 +108,19 @@ module Bower
         puts "--> Creating missing #{root}.rb file"
         File.open("#{root}.rb", "w") do |f|
           f.puts %Q|require "#{gem_lib_paths[3]}"|
+        end
+      end
+    end
+
+    def fix_naming
+      if bower_name =~ /\./
+        old_constant = bower_name.capitalize
+        new_constant = old_constant.gsub(/\./, "_")
+
+        Dir["**/*.{rb,ru,gemspec}"].each do |file|
+          file_replace file do |f|
+            f.call old_constant, new_constant
+          end
         end
       end
     end
@@ -259,7 +273,7 @@ module Bower
       {
         :version => data["version"],
         :description => data["description"],
-        :javascripts => [data["main"]],
+        :javascripts => [data["main"]].flatten,
         :dependencies => data["dependencies"],
         :readmeFilename => data["readmeFilename"] || "README",
         :readme => data["readmeFilename"] ? File.read(File.join(dir, data["readmeFilename"])) : data["readme"]
