@@ -9,41 +9,74 @@ module Bower
   RAKE_BIN = "rake"
   BOWER_MANIFESTS = ["bower.json", "package.json", "component.json"]
 
-  class Build
+  module Utils
+    def sh(*cmd)
+      puts "--> $ #{cmd.join(" ")}"
+      system *cmd
+    end
+
+    def file_replace(file, &block)
+      puts "--> Modifing file #{file}"
+      content = File.read(file)
+      content_was = content.dup
+
+      proc = lambda do |source, target|
+        content.gsub!(source, target)
+      end
+
+      block.call(proc)
+
+      if content_was != content
+        File.open(file, "w") do |f|
+          f.write content
+        end
+        true
+      else
+        false
+      end
+    end
+
+    def read_bower_file(path)
+      puts "--> Reading bower file #{path}"
+      data = JSON.parse(File.read(path))
+      dir = File.dirname(path)
+
+      {
+        :version => data["version"],
+        :description => data["description"],
+        :javascripts => [data["main"]].flatten,
+        :dependencies => data["dependencies"]
+      }.reject {|k,v| !v}
+    end
+  end
+
+  class Builder
+    include Utils
     attr_accessor :bower_name, :bower_root, :gem_name, :gem_root
 
-    def initialize(gemname)
-      name = gemname.gsub(/^rails-assets-/, "")
-
-      @bower_name = name
+    def initialize(bower_name)
+      @bower_name = bower_name
       @bower_root = "bower_components/#{@bower_name}"
-      @gem_name = gemname
+      @gem_name = "rails-assets-#{bower_name}"
       @gem_root = @gem_name
     end
 
     def build!
       puts "--> Building gem #{gem_name} form #{bower_name} package"
 
-      # Dir.mktmpdir do |dir|
-      dir = "/tmp/build"
-      sh "rm -rf #{dir}"
-      sh "mkdir -p #{dir}"
-        Dir.chdir(dir) do
-          bower_install
-          bundle_gem
-          process_version_file
-          process_gemspec_file
-          process_rails_engine
-          fix_ruby_require
-          process_javascript_files
-          process_css_and_image_files
-          fix_naming
-          build_gem
-        end
-        yield File.join(dir, gem_pkg)
-      # end
+      bundle_gem
+      process_version_file
+      process_gemspec_file
+      process_rails_engine
+      fix_ruby_require
+      process_javascript_files
+      process_css_and_image_files
+      fix_naming
+      build_gem
 
+      gem_pkg
     end
+
 
     def info
       @info ||= begin
@@ -129,10 +162,6 @@ module Bower
       file_replace gem_lib("version.rb") do |f|
         f.call  %Q{VERSION = "0.0.1"}, %Q{VERSION = "#{info[:version]}"}
       end
-    end
-
-    def bower_install
-      sh BOWER_BIN, "install", @bower_name
     end
 
     def bundle_gem
@@ -234,48 +263,47 @@ module Bower
         sh RAKE_BIN, "build"
       end
     end
+  end
 
-    def publish
-      # sh "gem inabox #{gemname}/#{gempkg} --host #{GEMINABOX_HOST}"
+  class Convert
+    include Utils
+
+    attr_accessor :bower_name, :bower_root, :gem_name, :gem_root
+
+    def initialize(gemname)
+      name = gemname.gsub(/^rails-assets-/, "")
+
+      @bower_name = name
+      @bower_root = "bower_components/#{@bower_name}"
+      @gem_name = gemname
+      @gem_root = @gem_name
     end
 
-    def sh(*cmd)
-      puts "--> $ #{cmd.join(" ")}"
-      system *cmd
-    end
+    def build!(&block)
+      puts "--> Building gem #{gem_name} form #{bower_name} package"
 
-    def file_replace(file, &block)
-      puts "--> Modifing file #{file}"
-      content = File.read(file)
-      content_was = content.dup
+      # Dir.mktmpdir do |dir|
+      dir = "/tmp/build"
+      sh "rm -rf #{dir}"
+      sh "mkdir -p #{dir}"
+        gems = Dir.chdir(dir) do
+          bower_install
 
-      proc = lambda do |source, target|
-        content.gsub!(source, target)
-      end
-
-      block.call(proc)
-
-      if content_was != content
-        File.open(file, "w") do |f|
-          f.write content
+          Dir["bower_components/*"].map do |f|
+            name = File.basename(f)
+            gem_pkg = Bower::Builder.new(name).build!
+            File.join(dir, gem_pkg)
+          end
         end
-        true
-      else
-        false
-      end
+
+        gems.each(&block)
+      # end
+
     end
 
-    def read_bower_file(path)
-      puts "--> Reading bower file #{path}"
-      data = JSON.parse(File.read(path))
-      dir = File.dirname(path)
-
-      {
-        :version => data["version"],
-        :description => data["description"],
-        :javascripts => [data["main"]].flatten,
-        :dependencies => data["dependencies"]
-      }.reject {|k,v| !v}
+    def bower_install
+      sh BOWER_BIN, "install", @bower_name
     end
+
   end
 end
