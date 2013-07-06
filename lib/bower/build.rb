@@ -173,7 +173,7 @@ module Bower
 
     def process_gemspec_file
       file_replace File.join(gem_root, "#{gem_name}.gemspec") do |f|
-        ["spec", "gem"].each do |key|
+        ["spec", "gem"].each do |key| # stupid rubygems differencies...
           f.call  /#{key}.authors.+/,      %Q|#{key}.authors       = [""]|
           f.call  /#{key}.email.+/,        %Q|#{key}.email         = [""]|
           f.call  /#{key}.description.+/,  %Q|#{key}.description   = %q{#{info[:description]}}|
@@ -200,7 +200,7 @@ module Bower
             end.join("\n")
 
             f.call(/  #{key}.require_paths.+/,
-                   (%Q|  spec.require_paths = ["lib"]\n\n| + deps))
+                   (%Q|  #{key}.require_paths = ["lib"]\n\n| + deps))
           end
 
         end
