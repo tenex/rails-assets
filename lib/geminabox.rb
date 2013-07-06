@@ -356,7 +356,7 @@ HTML
 
     def build_gem(gem_name)
       if gem_name =~ /^rails-assets-/ && !load_gems.find {|e| e.name == gem_name }
-        Bower::Convert.new(gem_name).build! do |tmpfile|
+        Bower::Convert.new(gem_name.gsub(/^rails-assets-/, '')).build! do |tmpfile|
           gem = IncomingGem.new(File.open(tmpfile))
 
           prepare_data_folders
