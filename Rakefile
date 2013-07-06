@@ -38,3 +38,14 @@ end
 task :st => "test:smoke"
 task :test => ["test:units", "test:requests", "test:integration"]
 task :default => :test
+
+desc "Convert bower package to gem. Run with rake convert[bower-lib-name]"
+task :convert, :name do |t, args|
+  name = args[:name]
+  require File.expand_path("lib/bower/build", File.dirname(__FILE__), )
+  Bower::Build.new("rails-assets-#{name}").build! do |file|
+    fname = File.basename(file)
+    File.open(fname, "w"){|f| f.write File.read(file) }
+    system "gem unpack #{fname}"
+  end
+end

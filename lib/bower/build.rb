@@ -36,6 +36,7 @@ module Bower
           process_rails_engine
           fix_ruby_require
           process_javascript_files
+          process_css_and_image_files
           build_gem
         end
         yield File.join(dir, gem_pkg)
@@ -55,6 +56,14 @@ module Bower
 
     def js_root
       @js_root ||= File.join(gem_root, "vendor", "assets", "javascripts")
+    end
+
+    def css_root
+      @css_root ||= File.join(gem_root, "vendor", "assets", "stylesheets")
+    end
+
+    def images_root
+      @images_root ||= File.join(gem_root, "vendor", "assets", "images")
     end
 
     def gem_pkg
@@ -140,20 +149,68 @@ module Bower
     def process_javascript_files
       FileUtils.mkdir_p js_root
 
-      info[:javascripts].each do |js|
+      files = info[:javascripts].map do |js|
         puts "--> Processing #{js}"
-
-        filename = "__original__#{bower_name}__#{File.basename(js)}"
-        filename_no_ext = filename.gsub(/\.js$/, "")
+        # filename = "__original__#{bower_name}__#{File.basename(js)}"
+        filename = File.basename(js)
 
         puts "--> Copy #{js} -> #{filename}"
         FileUtils.cp File.join(bower_root, js), File.join(js_root, filename)
 
-        # Create manifest file
-        manifest = "#{bower_name}.js"
+        filename
+      end
+
+      # Create manifest file if needed
+      manifest = "#{bower_name}.js"
+      unless files.find {|f| f == manifest }
         File.open(File.join(js_root, manifest), "w") do |f|
-          f.puts "//= require #{filename_no_ext}"
+          files.each do |filename|
+            filename_no_ext = filename.gsub(/\.js$/, "")
+            f.puts "//= require #{filename_no_ext}"
+          end
         end
+      end
+    end
+
+    # This one is tricky
+    # bower.json does not include css/images
+    # so we will try to be a little bit smart here
+    def process_css_and_image_files
+      images = find_and_copy_files(images_root, "{png,gif,jpg,jpeg}")
+      css = find_and_copy_files(css_root, "css")
+
+      # Replace image paths in css files
+      css.each do |css_name, css_file|
+        replaced = file_replace css_file[:new_path] do |f|
+          images.each do |image_name, image_file|
+            f.call image_file[:old_relative_path],
+                    %Q|<%= asset_path "#{image_name}" %>|
+          end
+        end
+
+        if replaced
+          FileUtils.mv css_file[:new_path], css_file[:new_path] + ".erb"
+        end
+      end
+    end
+
+    def find_and_copy_files(root, ext)
+      FileUtils.mkdir_p root
+      info[:javascripts].inject({}) do |hash, js|
+        dir = File.join(bower_root, File.dirname(js))
+
+        puts "--> Searching #{dir} for #{ext} files"
+        Dir["#{dir}/**/*.#{ext}"].map do |f|
+          filename = File.basename(f)
+          puts "--> Copy #{f} -> #{filename}"
+          FileUtils.cp f, File.join(root, filename)
+          hash[filename] = {
+            :old_relative_path => f.sub(/^#{dir}\//, ""),
+            :new_path => File.join(root, filename)
+          }
+        end
+
+        hash
       end
     end
 
@@ -176,6 +233,7 @@ module Bower
     def file_replace(file, &block)
       puts "--> Modifing file #{file}"
       content = File.read(file)
+      content_was = content.dup
 
       proc = lambda do |source, target|
         content.gsub!(source, target)
@@ -183,8 +241,13 @@ module Bower
 
       block.call(proc)
 
-      File.open(file, "w") do |f|
-        f.write content
+      if content_was != content
+        File.open(file, "w") do |f|
+          f.write content
+        end
+        true
+      else
+        false
       end
     end
 

@@ -8,12 +8,15 @@
 
 body {
   font-family: sans-serif;
+  overflow: hidden;
 }
 #results {
   width: 300px;
   border: 1px solid black;
   border-collapse: collapse;
   border-spacing: 0;
+  float: left;
+  margin-right: 50px;
 }
 td,th {
   padding: 5px;
@@ -24,3 +27,12 @@ td { color: #fff;}
 .ok { background-color: green; }
 .error { background-color: red; }
 .pending { background-color: orange; }
+
+#playground {
+  float: left;
+}
+
+#leaflet-map {
+  width: 200px;
+  height: 200px;
+}
