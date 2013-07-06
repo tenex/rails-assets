@@ -96,23 +96,23 @@ class Geminabox < Sinatra::Base
     end
   end
 
-  post '/upload' do
-    unless params[:file] && params[:file][:filename] && (tmpfile = params[:file][:tempfile])
-      @error = "No file selected"
-      halt [400, erb(:upload)]
-    end
-    handle_incoming_gem(IncomingGem.new(tmpfile))
-  end
+  # post '/upload' do
+  #   unless params[:file] && params[:file][:filename] && (tmpfile = params[:file][:tempfile])
+  #     @error = "No file selected"
+  #     halt [400, erb(:upload)]
+  #   end
+  #   handle_incoming_gem(IncomingGem.new(tmpfile))
+  # end
 
-  post '/api/v1/gems' do
-    begin
-      handle_incoming_gem(IncomingGem.new(request.body))
-    rescue Object => o
-      File.open "/tmp/debug.txt", "a" do |io|
-        io.puts o, o.backtrace
-      end
-    end
-  end
+  # post '/api/v1/gems' do
+  #   begin
+  #     handle_incoming_gem(IncomingGem.new(request.body))
+  #   rescue Object => o
+  #     File.open "/tmp/debug.txt", "a" do |io|
+  #       io.puts o, o.backtrace
+  #     end
+  #   end
+  # end
 
 private
 
