@@ -1,0 +1,26 @@
+/*
+ *= require leaflet
+ *
+ *
+ *= require_self
+ *= require_tree .
+ */
+
+body {
+  font-family: sans-serif;
+}
+#results {
+  width: 300px;
+  border: 1px solid black;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td,th {
+  padding: 5px;
+  border: 1px solid black;
+  text-align: center
+}
+td { color: #fff;}
+.ok { background-color: green; }
+.error { background-color: red; }
+.pending { background-color: orange; }

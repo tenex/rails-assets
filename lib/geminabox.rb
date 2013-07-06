@@ -42,6 +42,7 @@ class Geminabox < Sinatra::Base
   autoload :GemVersion, "geminabox/gem_version"
   autoload :DiskCache, "geminabox/disk_cache"
   autoload :IncomingGem, "geminabox/incoming_gem"
+  autoload :Bower, "bower/build"
 
   before do
     headers 'X-Powered-By' => "geminabox #{GeminaboxVersion}"
@@ -84,9 +85,14 @@ class Geminabox < Sinatra::Base
     unless Geminabox.allow_delete?
       error_response(403, 'Gem deletion is disabled - see https://github.com/cwninja/geminabox/issues/115')
     end
-    File.delete file_path if File.exists? file_path
-    reindex(:force_rebuild)
-    redirect url("/")
+
+    if File.exists? file_path
+      File.delete file_path
+      reindex(:force_rebuild)
+      "OK"
+    else
+      halt 404
+    end
   end
 
   post '/upload' do
@@ -248,6 +254,7 @@ HTML
 
     # Return a list of versions of gem 'gem_name' with the dependencies of each version.
     def gem_dependencies(gem_name)
+      build_gem(gem_name)
       dependency_cache.marshal_cache(gem_name) do
         load_gems.
           select { |gem| gem_name == gem.name }.
@@ -269,6 +276,21 @@ HTML
         dependencies.
         select { |dep| dep.type == :runtime }.
         map    { |dep| [dep.name, dep.requirement.to_s] }
+    end
+
+    def build_gem(gem_name)
+      if gem_name =~ /^rails-assets-/ && !load_gems.find {|e| e.name == gem_name }
+        Bower::Build.new(gem_name).build! do |tmpfile|
+          gem = IncomingGem.new(File.open(tmpfile))
+
+          prepare_data_folders
+          error_response(400, "Cannot process gem") unless gem.valid?
+          # handle_replacement(gem) unless params[:overwrite] == "true"
+          write_and_index(gem)
+          reindex(:force_rebuild)
+          @loaded_gems = nil
+        end
+      end
     end
   end
 end
