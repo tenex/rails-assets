@@ -15,6 +15,7 @@ body {
   color: #555;
   font-weight: 300;
   background: #eae6d1;
+  padding-bottom: 100px;
 }
 
 .wrapper {
@@ -348,6 +349,11 @@ footer p + p {
 .summary .versions {
   font-size: 10pt;
 }
+.summary code {
+  float: right;
+  color: #ddd;
+  font-size: 9pt;
+}
 .details {
   margin: 0;
   padding: 0;
@@ -368,3 +374,12 @@ footer p + p {
 }
 
 .dependencies .name { font-weight: bold; }
+#gem-search { float: right;}
+.error { color: red; }
+.success { color: green; }
+#new-gem {
+  border: 1px dashed #EAE6D1;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+

@@ -9,6 +9,8 @@ require 'geminabox/version'
 require 'rss/atom'
 require 'tempfile'
 require 'slim'
+require 'json'
+require 'redcarpet'
 
 class Geminabox < Sinatra::Base
   enable :static, :methodoverride
@@ -50,9 +52,32 @@ class Geminabox < Sinatra::Base
   end
 
   get '/' do
-    @gems = load_gems
-    @asset_gems = @gems.by_name.select {|n,_| n =~ /^rails-assets-/ }
     slim :index
+  end
+
+  get '/index.json' do
+    gems = load_gems.by_name.select {|n,_| n =~ /^rails-assets-/ }.map do |name, versions|
+      data = {
+        :name => name.gsub(/^rails-assets-/, ""),
+        :versions => versions.sort.map {|e| e.number }.reverse
+      }
+
+      if spec = spec_for(name, versions.newest.number)
+        data[:description] = Tilt[:markdown].new { spec.description }.render
+        data[:homepage] = spec.homepage
+
+        data[:dependencies] = spec.runtime_dependencies.map do |dep|
+          {
+            :name => dep.name.gsub(/^rails-assets-/, ""),
+            :reqs => dep.requirements_list
+          }
+        end
+      end
+
+      data
+    end
+
+    json gems
   end
 
   get '/atom.xml' do
@@ -96,6 +121,37 @@ class Geminabox < Sinatra::Base
     end
   end
 
+  post '/convert.json' do
+    params = JSON.parse(request.body.read)
+    io = StringIO.new
+
+    begin
+      name = params["name"].to_s.strip
+      ver = params["version"].to_s.strip
+      pkg = name
+      pkg += "##{ver}" unless ver == ""
+
+      Bower::Convert.new(pkg).build!(true, io) do |tmpfile|
+        gem = IncomingGem.new(File.open(tmpfile))
+
+        prepare_data_folders
+        error_response(400, "Cannot process gem") unless gem.valid?
+        # handle_replacement(gem) unless params[:overwrite] == "true"
+        write_and_index(gem)
+      end
+
+      reindex(:force_rebuild)
+      @loaded_gems = nil
+
+      puts io.string
+      json :gem => "rails-assets-#{name}"
+    rescue Bower::BuildError, Exception => ex
+      io.puts ex.message
+      io.puts ex.backtrace.take(5).first.gsub(File.dirname(File.dirname(__FILE__)), "")
+      json({:error => ex.message, :log => io.string}, 422)
+    end
+  end
+
   # post '/upload' do
   #   unless params[:file] && params[:file][:filename] && (tmpfile = params[:file][:tempfile])
   #     @error = "No file selected"
@@ -115,6 +171,16 @@ class Geminabox < Sinatra::Base
   # end
 
 private
+
+  def json(data, status = 200)
+    content_type :json
+    resp = JSON.dump(data)
+    if status >= 400
+      halt status, resp
+    else
+      resp
+    end
+  end
 
   def handle_incoming_gem(gem)
     prepare_data_folders

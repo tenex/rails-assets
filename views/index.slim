@@ -1,4 +1,4 @@
-.wrapper
+.wrapper ng-controller="MainCtrl"
   section
     markdown:
       ## Rails Assets - Bundler to Bower proxy
@@ -6,6 +6,8 @@
       The final solution to managing asset dependencies in your rails apps
 
       **NOTICE**: Currently some packages do not build correctly. If you're having issues installing some gems (bundler return "Cound not find gem X..." please see ["Packages that do not build correctly wiki page"](https://github.com/rails-assets/rails-assets/wiki/Packages-that-do-not-build-correctly)
+
+      **NOTICE**: Currently due to way bundler works there is no way to build package for explicit version specified in Gemfile - rails-assets will alway build newest version and bundler will raise error that such gem version was not found. If you need older version of package please use [the form below](#gems).
 
       ### Setup
 
@@ -64,21 +66,53 @@
       This will create `rails-assets-NAME-VERSION.gem` file
 
 
-      ## Already converted gems
+
+
+    markdown:
+      Please search bower first (using `bower search`) for package name
+
+
+    h2#gems
+      | Already converted gems
+      input#gem-search type="search" ng-model="search.name" placeholder="Search"
+
+
+    div#new-gem ng-show="pkg.force || (gems | filter:search).length == 0"
+      h4 Package {{ search.name }} not found, let's try to create it!
+      div ng-hide="pkg.converting"
+        .error ng-show="pkg.error"
+          | {{ pkg.error }}
+        .error-log ng-show="pkg.error"
+          pre
+            | {{ pkg.errorLog }}
+        .success ng-show="pkg.success"
+          | {{ pkg.success }}
+        input type="text" ng-model="pkg.name" placeholder="Package name"
+        input type="version" ng-model="pkg.version" placeholder="Version (not required)"
+        button href="" ng-click="pkg.convert()" Create package {{ search.name }}
+      div ng-show="pkg.converting"
+        p Converting package {{ pkg.name }} in progress...
+
+    p ng-hide="pkg.force || (gems | filter:search).length == 0"
+      ' If you can't find your package, try
+      a href="" ng-click="pkg.open()" creating one
 
     ul
-      - @asset_gems.each do |name, versions|
-        li
-          .summary
-            span.name= name.gsub(/^rails-assets-/, "")
-            span.versions= " (#{versions.map {|e| e.number }.join(", ")})"
-          .details
-            - if spec = spec_for(name, versions.newest.number)
-              == Tilt[:markdown].new { spec.description }.render
-              .homepage
-                a href=spec.homepage = spec.homepage.gsub(/^https?:\/\//, "")
-            - unless spec.runtime_dependencies.empty?
-              .dependencies
-                span.header = "Dependencies:"
-                == display_dependencies(spec.runtime_dependencies)
+      li ng-repeat="gem in gems | filter:search"
+        .summary
+          span.name
+            ' {{ gem.name }}
+          span.versions
+            ' ({{ gem.versions.join(", ") }})
+          code
+            | gem "rails-assets-{{ gem.name }}"
+        .details
+          div ng-html="gem.description"
+          .homepage
+            a href="{{ gem.homepage }}"
+              ' {{ gem.homepage }}
+          .dependencies ng-show="gem.dependencies.length"
+            span.header Dependencies:
+            span dependencies="gem.dependencies"
+
 

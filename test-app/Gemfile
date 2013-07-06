@@ -1,5 +1,5 @@
 source 'http://rubygems.org'
-source 'http://localhost:9292'
+source 'http://rails-assets.dh1.teamon.eu'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
@@ -39,5 +39,5 @@ gem "rails-assets-backbone"
 gem "rails-assets-hammerjs"
 gem "rails-assets-moment"
 gem "rails-assets-d3"
-# gem "rails-assets-raphael"            # Missing main js file
+gem "rails-assets-raphael"
 gem "rails-assets-select2"

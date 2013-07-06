@@ -1,6 +1,8 @@
 require "tmpdir"
 require "json"
 require "fileutils"
+require "logger"
+require "open3"
 
 module Bower
   BOWER_BIN = "bower"
@@ -9,16 +11,27 @@ module Bower
   RAKE_BIN = "rake"
   BOWER_MANIFESTS = ["bower.json", "package.json", "component.json"]
 
+  class BuildError < Exception; end
+
   module Utils
     def sh(*cmd)
-      puts "--> $ #{cmd.join(" ")}"
-      unless system *cmd
-        raise "Command #{cmd.join(" ")} failed"
+      cmd = cmd.join(" ")
+      log.debug "Running shell command '#{cmd}'"
+
+      status = Open3.popen3(cmd) do |stdin, stdout, stderr, thr|
+        stdout.each {|line| log.info("[stdout] " + line.chomp) }
+        stderr.each {|line| log.warn("[stderr] " + line.chomp) }
+        thr.value
+      end
+
+      unless status.success?
+        log.error "Command '#{cmd}' failed with exit code #{status.to_i}"
+        raise BuildError.new(cmd)
       end
     end
 
     def file_replace(file, &block)
-      puts "--> Modifing file #{file}"
+      log.debug "Modifing file #{file}"
       content = File.read(file)
       content_was = content.dup
 
@@ -39,7 +52,7 @@ module Bower
     end
 
     def read_bower_file(path)
-      puts "--> Reading bower file #{path}"
+      log.info "Reading bower file #{path}"
       data = JSON.parse(File.read(path))
       dir = File.dirname(path)
 
@@ -55,9 +68,10 @@ module Bower
 
   class Builder
     include Utils
-    attr_accessor :bower_name, :bower_root, :gem_name, :gem_root
+    attr_accessor :bower_name, :bower_root, :gem_name, :gem_root, :log
 
-    def initialize(bower_name)
+    def initialize(bower_name, log)
+      @log = log
       @bower_name = bower_name
       @bower_root = "bower_components/#{@bower_name}"
       @gem_name = "rails-assets-#{bower_name}"
@@ -65,7 +79,7 @@ module Bower
     end
 
     def build!
-      puts "--> Building gem #{gem_name} form #{bower_name} package"
+      log.info "Building gem #{gem_name} form #{bower_name} package"
 
       bundle_gem
       process_version_file
@@ -109,9 +123,7 @@ module Bower
 
     def gem_lib_paths
       @gem_lib_root ||= begin
-        puts "--> gem_name #{gem_name}"
         root = File.join(gem_root, "lib", gem_name)
-        puts "--> root #{root}"
         if File.exist?(root)
           [
             root,
@@ -139,9 +151,8 @@ module Bower
     end
 
     def fix_ruby_require
-      puts "--> gem_lib_paths #{gem_lib_paths.inspect}"
       if root = gem_lib_paths[2]
-        puts "--> Creating missing #{root}.rb file"
+        log.info "Creating missing #{root}.rb file"
         File.open("#{root}.rb", "w") do |f|
           f.puts %Q|require "#{gem_lib_paths[3]}"|
         end
@@ -218,14 +229,15 @@ module Bower
     end
 
     def process_javascript_files
+      raise Bower::BuildError.new("Missing main js file") if info[:javascripts].empty?
+
       FileUtils.mkdir_p js_root
 
       files = info[:javascripts].map do |js|
-        puts "--> Processing #{js}"
-        # filename = "__original__#{bower_name}__#{File.basename(js)}"
+        log.info "Processing #{js}"
         filename = File.basename(js)
 
-        puts "--> Copy #{js} -> #{filename}"
+        log.info "Copying #{js} to #{filename}"
         FileUtils.cp File.join(bower_root, js), File.join(js_root, filename)
 
         filename
@@ -270,10 +282,10 @@ module Bower
       info[:javascripts].inject({}) do |hash, js|
         dir = File.join(bower_root, File.dirname(js))
 
-        puts "--> Searching #{dir} for #{ext} files"
+        log.info "Searching #{dir} for #{ext} files"
         Dir["#{dir}/**/*.#{ext}"].map do |f|
           filename = File.basename(f)
-          puts "--> Copy #{f} -> #{filename}"
+          log.info "Copying #{f} to #{filename}"
           FileUtils.cp f, File.join(root, filename)
           hash[filename] = {
             :old_relative_path => f.sub(/^#{dir}\//, ""),
@@ -296,18 +308,23 @@ module Bower
   class Convert
     include Utils
 
-    attr_accessor :bower_name, :bower_root, :gem_name, :gem_root
+    attr_accessor :bower_name, :bower_root, :gem_name, :gem_root, :log
 
-    def initialize(gemname)
-      name = gemname.gsub(/^rails-assets-/, "")
+    def initialize(package)
+      name = package.strip
+
+      raise Bower::BuildError.new("Empty package name") if name.split("#").first == ""
 
       @bower_name = name
       @bower_root = "bower_components/#{@bower_name}"
-      @gem_name = gemname
-      @gem_root = @gem_name
     end
 
-    def build!(debug = ENV["DEBUG"], &block)
+    def build!(debug = ENV["DEBUG"], io = STDOUT, &block)
+      @log = Logger.new(io)
+      @log.formatter = proc { |severity, datetime, progname, msg|
+        "#{severity.to_s.rjust(5)} - #{msg}\n"
+      }
+
       if debug
         dir = "/tmp/build"
         sh "rm -rf #{dir}"
@@ -321,13 +338,13 @@ module Bower
     end
 
     def build_in_dir(dir, &block)
-      puts "--> Building gem #{gem_name} from #{bower_name} package in #{dir}"
+      log.info "Building package #{bower_name} in #{dir}"
       gems = Dir.chdir(dir) do
         bower_install
 
         Dir["bower_components/*"].map do |f|
           name = File.basename(f)
-          gem_pkg = Bower::Builder.new(name).build!
+          gem_pkg = Bower::Builder.new(name, log).build!
           File.join(dir, gem_pkg)
         end
       end
