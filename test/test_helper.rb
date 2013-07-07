@@ -3,7 +3,10 @@ gem "bundler"
 require "bundler/setup"
 
 require 'rails/assets'
+
 require 'minitest/autorun'
+require 'minitest/pride'
+
 require 'fileutils'
 require 'test_support/gem_factory'
 
