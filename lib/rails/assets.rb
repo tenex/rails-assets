@@ -48,6 +48,10 @@ module Rails
     autoload :Bower, "bower/build"
 
     get '/' do
+      "Comming soon..."
+    end
+
+    get '/home' do
       slim :index
     end
 
