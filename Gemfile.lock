@@ -1,17 +1,5 @@
-PATH
-  remote: .
-  specs:
-    geminabox (0.10.2)
-      builder
-      httpclient (>= 2.2.7)
-      rake
-      redcarpet
-      sinatra
-      slim
-      thin
-
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     builder (3.2.2)
     capybara (2.1.0)
@@ -85,10 +73,15 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  builder
   capybara
   capybara-mechanize
-  geminabox!
+  httpclient (>= 2.2.7)
   minitest
   pry
   rack-test
   rake
+  redcarpet
+  sinatra
+  slim
+  thin
