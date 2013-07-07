@@ -122,12 +122,12 @@ class Geminabox < Sinatra::Base
   end
 
   post '/convert.json' do
-    params = JSON.parse(request.body.read)
+    ps = params.empty? ? JSON.parse(request.body.read) : params
     io = StringIO.new
 
     begin
-      name = params["name"].to_s.strip
-      ver = params["version"].to_s.strip
+      name = ps["name"].to_s.strip
+      ver = ps["version"].to_s.strip
       pkg = name
       pkg += "##{ver}" unless ver == ""
 

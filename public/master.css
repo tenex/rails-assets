@@ -276,11 +276,11 @@ footer {
   width: 640px;
   margin: 0 auto;
   padding: 20px 0 0;
-  color: #ccc;
+  color: #555;
   overflow: hidden;
 }
 footer a {
-  color: #fff;
+  color: #069;
   font-weight: bold;
 }
 footer p {
