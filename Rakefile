@@ -1,9 +1,5 @@
 require "rubygems"
-require "rubygems/package_task"
 require "bundler/setup"
-
-desc 'Clear out generated packages'
-task :clean => [:clobber_package]
 
 require 'rake/testtask'
 
