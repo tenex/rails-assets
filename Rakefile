@@ -5,7 +5,7 @@ require 'rake/testtask'
 
 Rake::TestTask.new("test:units") do |t|
   t.libs << "test" << "lib"
-  t.pattern = "test/units/**/*_test.rb"
+  t.pattern = "test/rails/**/*_test.rb"
 end
 
 task :test => ["test:units"]
