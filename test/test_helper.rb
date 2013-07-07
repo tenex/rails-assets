@@ -2,7 +2,7 @@ require "rubygems"
 gem "bundler"
 require "bundler/setup"
 
-require 'geminabox'
+require 'rails/assets'
 require 'minitest/autorun'
 require 'fileutils'
 require 'test_support/gem_factory'
@@ -22,11 +22,11 @@ end
 class Minitest::Test
   extend TestMethodMagic
 
-  TEST_DATA_DIR="/tmp/geminabox-test-data"
+  TEST_DATA_DIR="/tmp/rails-assets-test-data"
   def clean_data_dir
     FileUtils.rm_rf(TEST_DATA_DIR)
     FileUtils.mkdir(TEST_DATA_DIR)
-    Geminabox.data = TEST_DATA_DIR
+    Rails::Assets.data = TEST_DATA_DIR
   end
 
   def self.fixture(path)
@@ -57,8 +57,8 @@ class Minitest::Test
 
   def inject_gems(&block)
     silence do
-      yield GemFactory.new(File.join(Geminabox.data, "gems"))
-      Gem::Indexer.new(Geminabox.data).generate_index
+      yield GemFactory.new(File.join(Rails::Assets.data, "gems"))
+      Gem::Indexer.new(Rails::Assets.data).generate_index
     end
   end
 

@@ -1,11 +1,11 @@
-require 'geminabox/gem_version'
+require 'rails/assets/gem_version'
 
-# This class represents a sorted collection of Geminabox::GemVersion objects.
+# This class represents a sorted collection of Rails::Assets::GemVersion objects.
 # It it used widely throughout the system for displaying and filtering gems.
-class Geminabox::GemVersionCollection
+class Rails::Assets::GemVersionCollection
   include Enumerable
 
-  # Array of Geminabox::GemVersion objects, or an array of [name, version,
+  # Array of Rails::Assets::GemVersion objects, or an array of [name, version,
   # platform] triples.
   def initialize(initial_gems=[])
     @gems = initial_gems.map{|object|
@@ -40,7 +40,7 @@ class Geminabox::GemVersionCollection
   # yields 'foo_gem', version_collection
   def by_name(&block)
     @grouped ||= @gems.group_by(&:name).map{|name, collection|
-      [name, Geminabox::GemVersionCollection.new(collection)]
+      [name, Rails::Assets::GemVersionCollection.new(collection)]
     }.sort_by{|name, collection|
       name.downcase
     }
@@ -54,10 +54,10 @@ class Geminabox::GemVersionCollection
 
 private
   def coerce_to_gem_version(object)
-    if object.is_a?(Geminabox::GemVersion)
+    if object.is_a?(Rails::Assets::GemVersion)
       object
     else
-      Geminabox::GemVersion.new(*object)
+      Rails::Assets::GemVersion.new(*object)
     end
   end
 end

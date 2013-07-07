@@ -1,13 +1,13 @@
 require 'test_helper'
 
 class DiskCacheTest < Minitest::Test
-  DIR = "/tmp/geminabox-disk-cache-test"
+  DIR = "/tmp/rails-assets-disk-cache-test"
   def setup
     FileUtils.rm_rf(DIR)
   end
 
   def subject
-    @subject ||= Geminabox::DiskCache.new(DIR)
+    @subject ||= Rails::Assets::DiskCache.new(DIR)
   end
 
   def test_cache_some_stuff

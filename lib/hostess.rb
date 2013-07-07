@@ -2,7 +2,7 @@ require 'sinatra/base'
 
 class Hostess < Sinatra::Base
   def serve
-    send_file(File.expand_path(File.join(Geminabox.data, *request.path_info)), :type => response['Content-Type'])
+    send_file(File.expand_path(File.join(Rails::Assets.data, *request.path_info)), :type => response['Content-Type'])
   end
 
   %w[/specs.4.8.gz

@@ -1,6 +1,6 @@
 
-# This module addresses Geminabox issue
-# https://github.com/cwninja/geminabox/issues/70
+# This module addresses Rails::Assets issue
+# https://github.com/cwninja/rails-assets/issues/70
 #
 # The underlying problem is rubygems issue
 # https://github.com/rubygems/rubygems/issues/232, fixed by
@@ -8,10 +8,10 @@
 #
 # This library (and its call) should be deleted once that pull request is resolved.
 
-require 'geminabox'
+require 'rails/assets'
 require 'rubygems/indexer'
 
-module Geminabox::Indexer
+module Rails::Assets::Indexer
   def self.germane?
     gem_version = Gem::Version.new(Gem::VERSION)
     v1_8        = Gem::Version.new('1.8')

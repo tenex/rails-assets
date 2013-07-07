@@ -1,6 +1,6 @@
 require "fileutils"
 
-class Geminabox::DiskCache
+class Rails::Assets::DiskCache
   attr_reader :root_path
 
   def initialize(root_path)

@@ -1,6 +1,6 @@
 class GemFactory
   def self.gem_file(*args)
-    new("/tmp/geminabox-fixtures").gem(*args)
+    new("/tmp/rails-assets-fixtures").gem(*args)
   end
 
   def initialize(path)

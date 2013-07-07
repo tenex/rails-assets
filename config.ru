@@ -1,4 +1,4 @@
 $:.unshift(File.expand_path(File.join(File.dirname(__FILE__), "lib")))
-require "geminabox"
+require "rails/assets"
 
-run Geminabox
+run Rails::Assets

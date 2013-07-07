@@ -1,4 +1,4 @@
-class Geminabox::GemVersion
+class Rails::Assets::GemVersion
   attr_accessor :name, :number, :platform
 
   def initialize(name, number, platform)
