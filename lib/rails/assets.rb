@@ -131,7 +131,7 @@ module Rails
         pkg = name
         pkg += "##{ver}" unless ver == ""
 
-        Bower::Convert.new(pkg).build!(true, io) do |tmpfile|
+        Bower::Convert.new(pkg).build!(io) do |tmpfile|
           gem = IncomingGem.new(File.open(tmpfile))
 
           prepare_data_folders

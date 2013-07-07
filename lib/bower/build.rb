@@ -30,7 +30,7 @@ module Bower
       @bower_name = name
     end
 
-    def build!(debug = ENV["DEBUG"], io = STDOUT, &block)
+    def build!(io = STDOUT, debug = false, &block)
       @log = Logger.new(io)
       @log.formatter = proc { |severity, datetime, progname, msg|
         "#{severity.to_s.rjust(5)} - #{msg}\n"
@@ -38,8 +38,8 @@ module Bower
 
       if debug
         dir = "/tmp/build"
-        sh "rm -rf #{dir}"
-        sh "mkdir -p #{dir}"
+        FileUtils.rm_rf(dir)
+        FileUtils.mkdir_p(dir)
         build_in_dir(dir, &block)
       else
         Dir.mktmpdir do |dir|
