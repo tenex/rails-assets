@@ -3,13 +3,13 @@ require "json"
 require "fileutils"
 require "logger"
 require "open3"
+require "bundler/cli"
 
 require File.expand_path("../utils", __FILE__)
 require File.expand_path("../builder", __FILE__)
 
 module Bower
   BOWER_BIN = "bower"
-  BUNDLE_BIN = "bundle"
   GIT_BIN = "git"
   RAKE_BIN = "rake"
   BOWER_MANIFESTS = ["bower.json", "package.json", "component.json"]

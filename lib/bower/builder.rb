@@ -114,7 +114,16 @@ module Bower
     end
 
     def bundle_gem
-      sh build_dir, BUNDLE_BIN, "gem", @gem_name
+      # Old code for reference
+      # sh build_dir, "bundle", "gem", @gem_name
+
+      # Since we can't chdir on master process we need to fork
+      pid = fork do
+        Dir.chdir(build_dir) do
+          Bundler::CLI.start(["gem", @gem_name])
+        end
+      end
+      Process.wait(pid)
     end
 
     def process_gemspec_file
