@@ -7,22 +7,6 @@ task :clean => [:clobber_package]
 
 require 'rake/testtask'
 
-Rake::TestTask.new("test:integration") do |t|
-  t.libs << "test" << "lib"
-  t.pattern = "test/integration/**/*_test.rb"
-end
-
-Rake::TestTask.new("test:smoke:paranoid") do |t|
-  t.libs << "test" << "lib"
-  t.pattern = "test/smoke_test.rb"
-end
-
-desc "Run the smoke tests, faster."
-task "test:smoke" do
-  $:.unshift("lib").unshift("test")
-  require "smoke_test"
-end
-
 Rake::TestTask.new("test:requests") do |t|
   t.libs << "test" << "lib"
   t.pattern = "test/requests/**/*_test.rb"
@@ -33,8 +17,7 @@ Rake::TestTask.new("test:units") do |t|
   t.pattern = "test/units/**/*_test.rb"
 end
 
-task :st => "test:smoke"
-task :test => ["test:units", "test:requests", "test:integration"]
+task :test => ["test:units", "test:requests"]
 task :default => :test
 
 desc "Convert bower package to gem. Run with rake convert[name] or convert[name#version]"
