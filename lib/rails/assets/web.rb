@@ -1,5 +1,6 @@
 require "sinatra/base"
 require "slim"
+require "redcarpet"
 
 require "rails/assets"
 require "rails/assets/serve"

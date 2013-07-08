@@ -8,6 +8,8 @@ gem 'redcarpet',  "~> 2.2.0"
 gem 'redis',      "~> 3.0.0"
 gem 'puma'
 gem 'sidekiq'
+gem 'builder'
+gem 'thin'
 
 group :development do
   gem 'rack-test'
