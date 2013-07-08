@@ -40,6 +40,14 @@ module Rails
         end
       end
 
+      def description
+        gem_spec.description
+      end
+
+      def homepage
+        gem_spec.homepage
+      end
+
       def extract_gem_spec
         if Gem::Package.respond_to?(:open)
           File.open(gem_path, "rb") do |f|
@@ -55,7 +63,8 @@ module Rails
       protected
 
       def name_and_version(pkg)
-        pkg.split("#")
+        n,v = pkg.split("#").map {|e| e.strip }
+        [n, v == "" ? nil : v]
       end
     end
   end

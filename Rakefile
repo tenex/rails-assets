@@ -14,10 +14,13 @@ task :default => :test
 desc "Convert bower package to gem. Run with rake convert[name] or convert[name#version]"
 task :convert, :pkg do |t, args|
   pkg = args[:pkg]
-  require File.expand_path("lib/bower/build", File.dirname(__FILE__), )
-  Bower::Convert.new(pkg).build!(STDOUT, true) do |file|
-    fname = File.basename(file)
-    File.open(fname, "w"){|f| f.write File.read(file) }
-    system "gem unpack #{fname}"
+
+  $:.unshift(File.expand_path("../lib", __FILE__))
+  require "rails/assets"
+
+  include Rails::Assets
+
+  if component = Convert.new(Component.new(pkg)).convert!(:id => STDOUT, :debug => true, :force => true)
+    system "gem unpack #{component.gem_path}"
   end
 end

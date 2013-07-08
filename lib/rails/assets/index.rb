@@ -4,6 +4,10 @@ require "rails/assets/reindex"
 module Rails
   module Assets
     class Index
+      def all
+        redis.smembers(key("gems"))
+      end
+
       def save(component)
         logger.debug "Storing gem #{component.name} #{component.version}"
 

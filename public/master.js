@@ -40,9 +40,10 @@ app.controller("MainCtrl",
       },
       convert: function(){
         $scope.pkg.converting = true
-        data = {
-          name: $scope.pkg.name,
-          version: $scope.pkg.version
+
+        data = {pkg: $scope.pkg.name};
+        if($scope.pkg.version){
+          data.pkg += ("#" + $scope.pkg.version);
         }
         $http.post("/convert.json", data).success(function(data){
           $scope.reload();
