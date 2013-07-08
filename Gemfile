@@ -7,9 +7,9 @@ gem 'slim' ,      "~> 2.0.0"
 gem 'redcarpet',  "~> 2.2.0"
 gem 'redis',      "~> 3.0.0"
 gem 'thin'
+gem 'sidekiq'
 
 group :development do
-  gem 'rake'
   gem 'rack-test'
   gem 'minitest'
   gem 'capybara'

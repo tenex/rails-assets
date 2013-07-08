@@ -63,15 +63,21 @@ module Rails
         bower_install
 
         new_components = Dir[File.join(build_dir, "bower_components", "*")].map do |f|
-          Builder.new(build_dir, File.basename(f), log).build!
+          Builder.new(build_dir, File.basename(f), log).build!(@opts)
         end.compact
 
         # This must happen after every component build succeed
-        new_components.each do |component|
+        cs = new_components.map do |component|
           log.info "New gem #{component.gem_name} built in #{component.tmpfile}"
           file_store.save(component)
           index.save(component)
+          component
         end
+
+        log.debug "cs"
+        log.debug cs
+
+        cs.find {|c| c.name == component.name }
       end
 
       def bower_install

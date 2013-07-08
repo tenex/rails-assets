@@ -1,11 +1,9 @@
 require "sinatra/base"
 require "slim"
 
-
 require "rails/assets/config"
 require "rails/assets/component"
 require "rails/assets/index"
-# require "rails/assets/incoming_gem"
 require "rails/assets/convert"
 require "rails/assets/serve"
 
@@ -63,11 +61,13 @@ module Rails
         io = STDOUT #StringIO.new
 
 
-        if index.exists?(component)
+        if !params["force"] && index.exists?(component)
           halt 302
         else
-          if Convert.new(component).convert!(:io => STDOUT)
-            json 201, :gem => component.gem_name, :version => component.version
+          if c = Convert.new(component).convert!(:io => STDOUT, :force => params["force"])
+            json 201, :name => c.name,
+                      :version => c.version,
+                      :gem => c.gem_name
           else
             halt 422
           end
@@ -233,24 +233,6 @@ end
 #       end
 #     end
 
-
-#     # post '/upload' do
-#     #   unless params[:file] && params[:file][:filename] && (tmpfile = params[:file][:tempfile])
-#     #     @error = "No file selected"
-#     #     halt [400, erb(:upload)]
-#     #   end
-#     #   handle_incoming_gem(IncomingGem.new(tmpfile))
-#     # end
-
-#     # post '/api/v1/gems' do
-#     #   begin
-#     #     handle_incoming_gem(IncomingGem.new(request.body))
-#     #   rescue Object => o
-#     #     File.open "/tmp/debug.txt", "a" do |io|
-#     #       io.puts o, o.backtrace
-#     #     end
-#     #   end
-#     # end
 
 #   private
 

@@ -13,13 +13,13 @@ module Rails
         @gem_root = File.join(@build_dir, @component.gem_name)
       end
 
-      def build!
+      def build!(opts = {})
         log.info "Building gem #{component.gem_name} form #{component.full} package"
 
         update_component_info
 
-        if index.exists?(component) # skip building if gem has been already buit by other worker
-          log.info "Gem #{component.gem_name} alreafy built"
+        if !opts[:force] && index.exists?(component) # skip building if gem has been already buit by other worker
+          log.info "Gem #{component.gem_name} already built"
           nil
         else
           bundle_gem
