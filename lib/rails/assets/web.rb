@@ -98,8 +98,7 @@ module Rails
           end
         end
 
-        # json gems
-        Marshal.dump(gems)
+        params["json"] ? json(gems) : Marshal.dump(gems)
       end
 
 

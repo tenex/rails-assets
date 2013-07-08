@@ -40,6 +40,10 @@ module Rails
       def gems_lock
         File.join(root, "gems.lock")
       end
+
+      def bower_lock
+        File.join(root, "bower.lock")
+      end
     end
   end
 end

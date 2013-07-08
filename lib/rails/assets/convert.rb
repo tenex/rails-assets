@@ -60,24 +60,19 @@ module Rails
         log.info "Building package #{component.full} in #{dir}"
         @build_dir = dir
 
-        bower_install
+        # Sadly bower makes a mess in ~/.cache and it can't be disabled
+        file_store.with_lock(file_store.bower_lock) do
+          bower_install
+        end
 
-        new_components = Dir[File.join(build_dir, "bower_components", "*")].map do |f|
+        Dir[File.join(build_dir, "bower_components", "*")].map do |f|
           Builder.new(build_dir, File.basename(f), log).build!(@opts)
-        end.compact
-
-        # This must happen after every component build succeed
-        cs = new_components.map do |component|
+        end.compact.map do |component|
           log.info "New gem #{component.gem_name} built in #{component.tmpfile}"
           file_store.save(component)
           index.save(component)
           component
-        end
-
-        log.debug "cs"
-        log.debug cs
-
-        cs.find {|c| c.name == component.name }
+        end.find {|c| c.name == component.name }
       end
 
       def bower_install
