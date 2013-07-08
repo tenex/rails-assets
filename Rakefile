@@ -15,7 +15,7 @@ desc "Convert bower package to gem. Run with rake convert[name] or convert[name#
 task :convert, :pkg do |t, args|
   pkg = args[:pkg]
   require File.expand_path("lib/bower/build", File.dirname(__FILE__), )
-  Bower::Convert.new(pkg).build!() do |file|
+  Bower::Convert.new(pkg).build!(STDOUT, true) do |file|
     fname = File.basename(file)
     File.open(fname, "w"){|f| f.write File.read(file) }
     system "gem unpack #{fname}"
