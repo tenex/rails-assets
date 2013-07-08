@@ -1,12 +1,12 @@
 source "https://rubygems.org"
 
-gem 'sinatra'
-gem 'builder'
-gem 'slim'
+gem 'rake',       "~> 10.1.0"
+gem 'sinatra',    "~> 1.4.0"
+gem 'bundler',    "~> 1.3.0"
+gem 'slim' ,      "~> 2.0.0"
+gem 'redcarpet',  "~> 2.2.0"
+gem 'redis',      "~> 3.0.0"
 gem 'thin'
-gem 'redcarpet'
-gem 'rake'
-gem 'httpclient', '>= 2.2.7'
 
 group :development do
   gem 'rake'

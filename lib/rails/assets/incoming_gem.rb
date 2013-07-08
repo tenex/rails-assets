@@ -1,15 +1,19 @@
-class Rails::Assets::IncomingGem
-  def initialize(gem_data, root_path = Rails::Assets.settings.data)
-    unless gem_data.respond_to? :read
-      raise ArgumentError, "Expected an instance of IO"
-    end
+require "rubygems/package"
 
+class Rails::Assets::IncomingGem
+  def initialize(gem_data)
+    # unless gem_data.respond_to? :read
+    #   raise ArgumentError, "Expected an instance of IO"
+    # end
+
+
+
+    # if RbConfig::CONFIG["MAJOR"].to_i <= 1 and RbConfig::CONFIG["MINOR"].to_i <= 8
+    #   @tempfile = Tempfile.new("gem")
+    # else
     digest = Digest::SHA1.new
-    if RbConfig::CONFIG["MAJOR"].to_i <= 1 and RbConfig::CONFIG["MINOR"].to_i <= 8
-      @tempfile = Tempfile.new("gem")
-    else
-      @tempfile = Tempfile.new("gem", :encoding => 'binary')
-    end
+    @tempfile = Tempfile.new("gem", :encoding => 'binary')
+    # end
 
     while data = gem_data.read(1024**2)
       @tempfile.write data
@@ -19,7 +23,7 @@ class Rails::Assets::IncomingGem
     @tempfile.close
     @sha1 = digest.hexdigest
 
-    @root_path = root_path
+    # @root_path = root_path
   end
 
   def gem_data
@@ -47,16 +51,23 @@ class Rails::Assets::IncomingGem
   end
 
   def name
-    unless @name
-      filename = %W[#{spec.name} #{spec.version}]
+    spec.name
+  end
+
+  def version
+    spec.version
+  end
+
+  def filenname
+    @name ||= begin
+      filename = [spec.name, spec.version]
       filename.push(spec.platform) if spec.platform && spec.platform != "ruby"
-      @name = filename.join("-") + ".gem"
+      filename.join("-") + ".gem"
     end
-    @name
   end
 
   def dest_filename
-    File.join(@root_path, "gems", name)
+    File.join(@root_path, "gems", filenname)
   end
 
   def hexdigest

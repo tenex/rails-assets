@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
-source 'http://rails-assets.org'
+# source 'http://rails-assets.org'
+source 'http://localhost:9292'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
@@ -35,9 +36,9 @@ gem "rails-assets-spin.js"
 # gem "rails-assets-datejs"             # Missing main js file
 # gem "rails-assets-facebox"            # Missing main js file
 gem "rails-assets-underscore"
-gem "rails-assets-backbone"
-gem "rails-assets-hammerjs"
-gem "rails-assets-moment"
+# gem "rails-assets-backbone"
+# gem "rails-assets-hammerjs"
+# gem "rails-assets-moment"
 gem "rails-assets-d3"
 # gem "rails-assets-raphael"
 gem "rails-assets-select2"
