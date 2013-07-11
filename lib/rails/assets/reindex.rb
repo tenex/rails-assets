@@ -10,6 +10,22 @@ module Rails
   module Assets
     class ReindexInProgress < Exception; end
 
+    class HackedIndexer < Gem::Indexer
+      def build_indicies
+        # ----
+        # Gem::Specification.dirs = []
+        # Gem::Specification.add_specs(*map_gems_to_specs(gem_file_list))
+        # ++++
+        Gem::Specification.all = map_gems_to_specs(gem_file_list) # This line
+        # ----
+
+        build_marshal_gemspecs
+        build_modern_indicies if @build_modern
+
+        compress_indicies
+      end
+    end
+
     class Reindex
       include Sidekiq::Worker
       sidekiq_options :queue => :reindex
@@ -19,7 +35,7 @@ module Rails
 
         if index.stale?
           index.with_lock do
-            Gem::Indexer.new(DATA_DIR).generate_index
+            HackedIndexer.new(DATA_DIR).generate_index
             index.generated!
           end
         end
