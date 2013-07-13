@@ -1,0 +1,5 @@
+source 'http://rubygems.org'
+source 'http://rails-assets.org'
+
+# Specify your gem's dependencies in rails-assets-sugar.gemspec
+gemspec

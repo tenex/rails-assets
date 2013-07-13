@@ -1,3 +1,5 @@
+require "erb"
+
 module Rails
   module Assets
     class Builder
@@ -22,14 +24,9 @@ module Rails
           log.info "Gem #{component.gem_name} already built"
           nil
         else
-          bundle_gem
-          process_version_file
-          process_gemspec_file
-          process_rails_engine
-          fix_ruby_require
           process_javascript_files
           process_css_and_image_files
-          fix_naming
+          generate_gem_structure
           build_gem
 
           component.tmpfile = gem_pkg
@@ -56,153 +53,90 @@ module Rails
         end
       end
 
-      def gem_name
-        component.gem_name
-      end
-
       def js_root
-        @js_root ||= File.join(gem_root, "vendor", "assets", "javascripts")
+        @js_root ||= File.join("vendor", "assets", "javascripts")
       end
 
       def css_root
-        @css_root ||= File.join(gem_root, "vendor", "assets", "stylesheets")
+        @css_root ||= File.join("vendor", "assets", "stylesheets")
       end
 
       def images_root
-        @images_root ||= File.join(gem_root, "vendor", "assets", "images")
+        @images_root ||= File.join("vendor", "assets", "images")
       end
 
       def gem_pkg
         @gem_pkg ||= File.join(gem_root, "pkg", "#{gem_name}-#{info[:version]}.gem")
       end
 
-      def gem_lib_paths
-        @gem_lib_root ||= begin
-          root = File.join(gem_root, "lib", gem_name)
-          if File.exist?(root)
-            [
-              root,
-              "#{root}.rb"
-            ]
-          else
-            chunks = gem_name.split("-")
-            last = chunks.pop
-            [
-              File.join(gem_root, "lib", *(chunks + [last])),
-              File.join(gem_root, "lib", *chunks, "#{last}.rb"),
-              root,
-              File.join(*chunks, last)
-            ]
+      def gem_name
+        component.gem_name
+      end
+
+      def gem_module
+        "#{GEM_PREFIX}#{component.name.gsub(/\./, "_")}".split("-").map {|e| e.capitalize}.join
+      end
+
+      def gem_files
+        @gem_files ||= []
+      end
+
+      def gem_dependencies
+        (info[:dependencies] || []).map do |dep, version|
+          version.gsub!(/~(\d)/, '~> \1')
+          ["#{GEM_PREFIX}#{dep}", version]
+        end
+      end
+
+      def generate_gem_file(file)
+        source_path = File.join(templates_dir, file)
+        file.gsub!("GEM", component.gem_name)
+        erb = file.sub!(/\.erb$/, "")
+        target_path = File.join(gem_root, file)
+
+        FileUtils.mkdir_p File.dirname(target_path)
+        FileUtils.cp source_path, target_path
+
+        gem_files << file
+
+        if erb
+          File.open(target_path, "w") do |f|
+            erb = ERB.new(File.read(source_path))
+            erb.filename = source_path
+            f.write erb.result(binding)
           end
         end
+
+        puts "--> Generated #{target_path}"
       end
 
-      def gem_lib_main
-        gem_lib_paths[1]
+      def generate_gem_structure
+        generate_gem_file "lib/GEM/version.rb.erb"
+        generate_gem_file "lib/GEM.rb.erb"
+        generate_gem_file "Gemfile"
+        generate_gem_file "Rakefile"
+        generate_gem_file "README.md.erb"
+
+        # This must be the last one so that is can have full gem_files list
+        generate_gem_file "GEM.gemspec.erb"
       end
 
-      def gem_lib(file)
-        File.join(gem_lib_paths[0], file)
-      end
-
-      def fix_ruby_require
-        if root = gem_lib_paths[2]
-          log.info "Creating missing #{root}.rb file"
-          File.open("#{root}.rb", "w") do |f|
-            f.puts %Q|require "#{gem_lib_paths[3]}"|
-          end
-        end
-      end
-
-      def fix_naming
-        if component.name =~ /\./
-          old_constant = component.name.capitalize
-          new_constant = old_constant.gsub(/\./, "_")
-
-          Dir[File.join(gem_root, "**" ,"*.{rb,ru,gemspec}")].each do |file|
-            file_replace file do |f|
-              f.call old_constant, new_constant
-            end
-          end
-        end
-      end
-
-      def process_version_file
-        file_replace gem_lib("version.rb") do |f|
-          f.call  %Q{VERSION = "0.0.1"}, %Q{VERSION = "#{info[:version]}"}
-        end
-      end
-
-      def bundle_gem
-        # Old code for reference
-        # sh build_dir, "bundle", "gem", @gem_name
-
-        # Since we can't chdir on master process we need to fork
-        pid = fork do
-          Dir.chdir(build_dir) do
-            Bundler::CLI.start(["gem", gem_name])
-          end
-        end
-        Process.wait(pid)
-      end
-
-      def process_gemspec_file
-        file_replace File.join(gem_root, "#{gem_name}.gemspec") do |f|
-          ["spec", "gem"].each do |key| # stupid rubygems differencies...
-            f.call  /#{key}.authors.+/,      %Q|#{key}.authors       = [""]|
-            f.call  /#{key}.email.+/,        %Q|#{key}.email         = [""]|
-            f.call  /#{key}.description.+/,  %Q|#{key}.description   = %q{#{info[:description]}}|
-            f.call  /#{key}.summary.+/,      %Q|#{key}.summary       = %q{#{info[:description]}}|
-
-            if repo = info[:repository]
-              if url = repo["url"]
-                homepage = case url
-                when %r|git://github.com/(.+)/(.+).git|
-                  "http://github.com/#{$1}/#{$2}"
-                end
-
-                if homepage
-                  f.call /#{key}.homepage.+/, %Q|#{key}.homepage      = "#{homepage}"|
-                end
-              end
-            end
-
-            if info[:dependencies]
-              deps = info[:dependencies].map do |dep, version|
-                version.gsub!(/~(\d)/, '~> \1')
-
-                %Q|  #{key}.add_dependency "#{GEM_PREFIX}#{dep}", "#{version}"|
-              end.join("\n")
-
-              f.call(/  #{key}.require_paths.+/,
-                     (%Q|  #{key}.require_paths = ["lib"]\n\n| + deps))
-            end
-
-          end
-        end
-      end
-
-      def process_rails_engine
-        file_replace gem_lib_main do |f|
-          f.call /^.+Your code goes here.+$/, <<-EOS
-          class Engine < ::Rails::Engine
-            # Rails -> use vendor directory.
-          end
-          EOS
-        end
+      def templates_dir
+        File.expand_path("../templates", __FILE__)
       end
 
       def process_javascript_files
         raise BuildError.new("Missing main js file") if info[:javascripts].empty?
 
-        FileUtils.mkdir_p js_root
+        FileUtils.mkdir_p File.join(gem_root, js_root)
 
         files = info[:javascripts].map do |js|
           log.info "Processing #{js}"
           filename = File.basename(js)
 
           log.info "Copying #{js} to #{filename}"
-          FileUtils.cp File.join(bower_root, js), File.join(js_root, filename)
+          FileUtils.cp File.join(bower_root, js), File.join(gem_root, js_root, filename)
+          gem_files << File.join(js_root, filename)
 
           filename
         end
@@ -210,12 +144,13 @@ module Rails
         # Create manifest file if needed
         manifest = "#{component.name}.js"
         unless files.find {|f| f == manifest }
-          File.open(File.join(js_root, manifest), "w") do |f|
+          File.open(File.join(gem_root, js_root, manifest), "w") do |f|
             files.each do |filename|
               filename_no_ext = filename.gsub(/\.js$/, "")
               f.puts "//= require #{filename_no_ext}"
             end
           end
+          gem_files << File.join(js_root, manifest)
         end
       end
 
@@ -233,7 +168,7 @@ module Rails
 
         # Replace image paths in css files
         css.each do |css_name, css_file|
-          replaced = file_replace css_file[:new_path] do |f|
+          replaced = file_replace File.join(gem_root, css_file[:new_path]) do |f|
             images.each do |image_name, image_file|
               f.call image_file[:old_relative_path],
                       %Q|<%= asset_path "#{image_name}" %>|
@@ -241,25 +176,30 @@ module Rails
           end
 
           if replaced
-            FileUtils.mv css_file[:new_path], css_file[:new_path] + ".erb"
+            op = css_file[:new_path]
+            np = css_file[:new_path] + ".erb"
+            FileUtils.mv File.join(gem_root, op), File.join(gem_root, np)
+            gem_files.delete(op)
+            gem_files << (np)
           end
         end
       end
 
       def find_and_copy_files(root, ext)
-        FileUtils.mkdir_p root
+        FileUtils.mkdir_p File.join(gem_root, root)
         info[:javascripts].inject({}) do |hash, js|
           dir = File.join(bower_root, File.dirname(js))
 
           log.info "Searching #{dir} for #{ext} files"
-          Dir["#{dir}/**/*.#{ext}"].map do |f|
+          Dir["#{dir}/**/*.#{ext}"].each do |f|
             filename = File.basename(f)
             log.info "Copying #{f} to #{filename}"
-            FileUtils.cp f, File.join(root, filename)
+            FileUtils.cp f, File.join(gem_root, root, filename)
             hash[filename] = {
               :old_relative_path => f.sub(/^#{dir}\//, ""),
               :new_path => File.join(root, filename)
             }
+            gem_files << File.join(root, filename)
           end
 
           hash
@@ -267,7 +207,6 @@ module Rails
       end
 
       def build_gem
-        sh gem_root, GIT_BIN, "add", "."
         sh gem_root, RAKE_BIN, "build"
       end
     end

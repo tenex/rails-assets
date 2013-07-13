@@ -34,10 +34,13 @@ module Rails
         index = Index.new
 
         if index.stale?
+          puts "Generating index"
           index.with_lock do
             HackedIndexer.new(DATA_DIR).generate_index
             index.generated!
           end
+        else
+          puts "Index is fresh - skipping"
         end
       end
     end

@@ -24,3 +24,13 @@ task :convert, :pkg do |t, args|
     system "gem unpack #{component.gem_path}"
   end
 end
+
+desc "Wipeout all data (data dir, redis index, installed gems)"
+task :wipeout do
+  print "Are you sure?"
+  STDIN.gets
+
+  system "rm -rf data"
+  system "gem list rails-assets | xargs gem uninstall -ax"
+  system "redis-cli KEYS 'rails-assets*' | xargs redis-cli DEL"
+end
