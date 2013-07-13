@@ -1,5 +1,4 @@
 require "redis"
-require "rails/assets/reindex"
 
 module Rails
   module Assets
@@ -24,11 +23,20 @@ module Rails
         Reindex.perform_async
       end
 
+      def delete(component)
+        redis.del(key("gems", component.gem_name, component.version))
+        redis.del(key("gems", component.gem_name))
+        redis.srem(key("gems"), component.gem_name)
+        changed!
+      end
+
       def changed!
+        @stale = true
         redis.set(key("index", "changed"), Time.now.to_f.to_s)
       end
 
       def generated!
+        @stale = false
         redis.set(key("index", "generated"), Time.now.to_f.to_s)
       end
 
@@ -45,9 +53,11 @@ module Rails
       end
 
       def stale?
-        changed = redis.get(key("index", "changed")).to_f
-        generated = redis.get(key("index", "generated")).to_f
-        generated < changed
+        @stale || begin
+          changed = redis.get(key("index", "changed")).to_f
+          generated = redis.get(key("index", "generated")).to_f
+          generated < changed
+        end
       end
 
       def exists?(component)
@@ -59,7 +69,8 @@ module Rails
         end
       end
 
-      def versions(gem_name)
+      def versions(gem_name_or_component)
+        gem_name = gem_name_or_component.respond_to?(:gem_name) ? gem_name_or_component.gem_name : gem_name_or_component
         redis.smembers(key("gems", gem_name))
       end
 

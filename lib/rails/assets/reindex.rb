@@ -1,10 +1,4 @@
-require "sidekiq"
-require "rails/assets/index"
 require "rubygems/indexer"
-
-Sidekiq.configure_client do |config|
-  config.redis = { :namespace => Rails::Assets::REDIS_NAMESPACE }
-end
 
 module Rails
   module Assets

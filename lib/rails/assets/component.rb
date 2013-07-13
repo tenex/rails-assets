@@ -5,11 +5,15 @@ module Rails
     class Component
       attr_accessor :name, :version, :tmpfile
 
-      def initialize(pkg_name)
-        if pkg_name.start_with?(GEM_PREFIX)
-          @name = pkg_name.sub(/^#{GEM_PREFIX}/, "")
+      def initialize(pkg_name, version = nil)
+        if version
+          @name, @verison = pkg_name, version
         else
-          @name, @version = name_and_version(pkg_name)
+          if pkg_name.start_with?(GEM_PREFIX)
+            @name = pkg_name.sub(/^#{GEM_PREFIX}/, "")
+          else
+            @name, @version = name_and_version(pkg_name)
+          end
         end
       end
 

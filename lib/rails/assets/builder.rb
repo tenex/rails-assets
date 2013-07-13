@@ -21,7 +21,7 @@ module Rails
         update_component_info
 
         if !opts[:force] && index.exists?(component) # skip building if gem has been already buit by other worker
-          log.info "Gem #{component.gem_name} already built"
+          log.info "Gem #{component.gem_name}-#{component.version} already built"
           nil
         else
           process_javascript_files

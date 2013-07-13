@@ -5,10 +5,6 @@ require "logger"
 require "open3"
 require "bundler/cli"
 
-require "rails/assets/utils"
-require "rails/assets/builder"
-require "rails/assets/file_store"
-
 module Rails
   module Assets
     class BuildError < Exception; end

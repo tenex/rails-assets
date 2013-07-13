@@ -2,7 +2,7 @@ module Rails
   module Assets
     class FileStore
       attr_reader :root, :log
-      def initialize(log)
+      def initialize(log = Logger.new(STDOUT))
         @log = log
         @root = DATA_DIR
 
@@ -18,6 +18,10 @@ module Rails
         end
 
         component.tmpfile = nil
+      end
+
+      def delete(component)
+        FileUtils.rm File.join(gems_root, component.gem_filename)
       end
 
       def with_lock(lock, &block)

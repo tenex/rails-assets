@@ -15,13 +15,50 @@ desc "Convert bower package to gem. Run with rake convert[name] or convert[name#
 task :convert, [:pkg] => :env do |t, args|
   pkg = args[:pkg]
 
-
-
-  include Rails::Assets
-
   if component = Convert.new(Component.new(pkg)).convert!(:io => STDOUT, :debug => true, :force => true)
     system "gem unpack #{component.gem_path}"
   end
+end
+
+desc "List all gems"
+task :list => :env do
+  index = Index.new
+  index.all.sort.each do |g|
+    c = Component.new(g)
+    vs = index.versions(c).join(", ")
+    puts "#{c.name} (#{vs})"
+  end
+end
+
+desc "Remove gem"
+task :remove, [:pkg] => :env do |t, args|
+  pkg = args[:pkg]
+  index = Index.new
+  fs = FileStore.new
+  component = Component.new(pkg)
+
+  puts "v #{component.version}"
+
+  components = if component.version
+    [component]
+  else
+    index.versions(component).map do |v|
+      Component.new(component.name, v)
+    end
+  end
+
+  components.each do |c|
+    puts "Removing gem #{c.gem_name}-#{c.version}"
+    index.delete(component)
+    fs.delete(component)
+  end
+
+  Reindex.new.perform
+end
+
+desc "Update gem"
+task :update, [:pkg] => :env do |t, args|
+  Update.new.perform(args[:pkg])
 end
 
 desc "Wipeout all data (data dir, redis index, installed gems)"
@@ -41,7 +78,7 @@ task :rebuild => :env do
   index.all.each do |gem_name|
     pkg = gem_name.sub(GEM_PREFIX, "")
     index.versions(gem_name).each do |version|
-      component = Component.new("#{pkg}##{version}")
+      component = Component.new(pkg, version)
       Convert.new(component).convert!(:force => true)
     end
   end
