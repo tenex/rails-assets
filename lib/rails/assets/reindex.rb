@@ -30,10 +30,10 @@ module Rails
       include Sidekiq::Worker
       sidekiq_options :queue => :reindex
 
-      def perform
+      def perform(force = false)
         index = Index.new
 
-        if index.stale?
+        if force || index.stale?
           puts "Generating index"
           index.with_lock do
             HackedIndexer.new(DATA_DIR).generate_index

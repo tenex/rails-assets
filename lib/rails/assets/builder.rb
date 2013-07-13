@@ -88,6 +88,17 @@ module Rails
         end
       end
 
+      def gem_homepage
+        if repo = info[:repository]
+          if url = repo["url"]
+            case url
+            when %r|git://github.com/(.+)/(.+).git|
+              "http://github.com/#{$1}/#{$2}"
+            end
+          end
+        end
+      end
+
       def generate_gem_file(file)
         source_path = File.join(templates_dir, file)
         file.gsub!("GEM", component.gem_name)
