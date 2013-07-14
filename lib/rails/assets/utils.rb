@@ -46,10 +46,22 @@ module Rails
         {
           :version => data["version"],
           :description => data["description"],
-          :javascripts => [data["main"]].flatten.select {|e| e =~ /\.js$/ },
+          :javascripts => Utils.select_javascripts(data["main"]),
           :dependencies => data["dependencies"],
           :repository => data["repository"]
         }.reject {|k,v| !v}
+      end
+
+      def self.select_javascripts(files)
+        js = [files].flatten.select { |file| file.match(/\.js$/) }
+        remove_min_js_duplicates(js)
+      end
+
+      def self.remove_min_js_duplicates(files)
+        files.reject do |file|
+          file.match(/min\.js$/) &&
+            files.include?(file.gsub(".min", ""))
+        end
       end
     end
   end
