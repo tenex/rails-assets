@@ -2,8 +2,8 @@ doctype html
 html ng-app="app"
   head
     title Rails Assets
-    link href=url("/master.css") rel="stylesheet"  type="text/css" media="screen"
-    script type="text/javascript" src="/angular.js"
-    script type="text/javascript" src="/master.js"
+    == stylesheet_tag 'master'
+    == javascript_tag 'angular'
+    == javascript_tag 'master'
   body
     == yield

@@ -1,4 +1,5 @@
 source "https://rubygems.org"
+source "http://rails-assets.org"
 
 gem 'rake',       "~> 10.1.0"
 gem 'sinatra',    "~> 1.4.0"
@@ -8,6 +9,13 @@ gem 'redis',      "~> 3.0.0"
 gem 'sidekiq'
 gem 'builder'
 gem 'thin'
+gem 'faye'
+gem 'sinatra-reloader'
+gem 'sprockets'
+gem 'sprockets-helpers'
+
+gem "rails-assets-jquery"
+gem "rails-assets-angular"
 
 group :development do
   gem 'rack-test'

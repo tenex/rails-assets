@@ -5,11 +5,35 @@ require "redcarpet"
 require "rails/assets"
 require "rails/assets/serve"
 
+require "faye"
+require 'sprockets'
+require 'sprockets-helpers'
+
 module Rails
   module Assets
     class Web < Sinatra::Base
-      set :views, File.join(File.dirname(__FILE__), *%w[.. .. .. views])
-      set :public_folder, File.join(File.dirname(__FILE__), *%w[.. .. .. public])
+      set :root, File.join(File.dirname(__FILE__), ['..', '..', '..'])
+      set :sprockets, Sprockets::Environment.new(root)
+
+      configure do
+        sprockets.append_path File.join(root, 'assets', 'stylesheets')
+        sprockets.append_path File.join(root, 'assets', 'javascripts')
+        sprockets.append_path File.join(root, 'assets', 'images')
+
+        Sprockets::Helpers.configure do |config|
+          config.environment = sprockets
+          config.prefix      = '/assets'
+          config.digest      = false
+          config.public_path = public_folder
+          config.debug       = true if development?
+        end
+      end
+
+      helpers do
+        include Sprockets::Helpers
+      end
+
+      use Faye::RackAdapter, mount: '/faye', timeout: 25
 
       use Serve
 
