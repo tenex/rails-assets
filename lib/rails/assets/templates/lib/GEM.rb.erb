@@ -1,7 +1,10 @@
 require "<%= component.gem_name %>/version"
 
-module <%= gem_module %>
-  class Engine < ::Rails::Engine
-    # Rails -> use vendor directory.
+if defined?(Rails)
+  module <%= gem_module %>
+    class Engine < ::Rails::Engine
+      # Rails -> use vendor directory.
+    end
   end
 end
+
