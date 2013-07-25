@@ -8,6 +8,7 @@ require "rails/assets/serve"
 require "faye"
 require 'sprockets'
 require 'sprockets-helpers'
+require 'autoprefixer-rails/compiler'
 
 module Rails
   module Assets
@@ -19,6 +20,11 @@ module Rails
         sprockets.append_path File.join(root, 'assets', 'stylesheets')
         sprockets.append_path File.join(root, 'assets', 'javascripts')
         sprockets.append_path File.join(root, 'assets', 'images')
+
+        sprockets.register_postprocessor 'text/css', :autoprefixer do |context, css|
+          autoprefixer = AutoprefixerRails::Compiler.new(nil)
+          autoprefixer.compile(css)
+        end
 
         Sprockets::Helpers.configure do |config|
           config.environment = sprockets

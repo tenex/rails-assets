@@ -3,6 +3,8 @@ GEM
   remote: http://rails-assets.org/
   specs:
     addressable (2.3.5)
+    autoprefixer-rails (0.6.20130721)
+      execjs
     backports (3.3.3)
     builder (3.2.2)
     celluloid (0.14.1)
@@ -20,6 +22,8 @@ GEM
     em-socksify (0.3.0)
       eventmachine (>= 1.0.0.beta.4)
     eventmachine (1.0.3)
+    execjs (1.4.0)
+      multi_json (~> 1.0)
     faye (0.8.9)
       cookiejar (>= 0.3.0)
       em-http-request (>= 0.3.0)
@@ -96,6 +100,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  autoprefixer-rails
   builder
   faye
   minitest

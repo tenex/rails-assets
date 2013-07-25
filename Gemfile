@@ -13,6 +13,7 @@ gem 'faye'
 gem 'sinatra-reloader'
 gem 'sprockets'
 gem 'sprockets-helpers'
+gem 'autoprefixer-rails'
 
 gem "rails-assets-jquery"
 gem "rails-assets-angular"
