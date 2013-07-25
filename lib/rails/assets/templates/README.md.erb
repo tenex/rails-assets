@@ -1,10 +1,12 @@
-# <%= component.gem_name %> bower package repacked as gem
+# <%= component.gem_name %>
 
-This gem was generated, please visit [rails-asset.org](http://rails-assets.org) for more information.
+> The Bower package inside a gem
 
-## Installation
+This gem was automatically generated. You can visit [rails-assets.org](http://rails-assets.org) for more information.
 
-Add this two lines to your application's Gemfile:
+## Usage
+
+Add these two lines to your application’s `Gemfile`:
 
 ```ruby
 source "http://rails-assets.org"
@@ -12,7 +14,7 @@ source "http://rails-assets.org"
 gem <%= component.gem_name.dump %>
 ```
 
-## Usage
+Then, import the asset using Sprockets’ `require` directive:
 
 ```js
 //= require <%= component.name.dump %>
