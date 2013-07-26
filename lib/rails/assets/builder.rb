@@ -164,7 +164,7 @@ module Rails
         if repo = info[:repository]
           if url = repo["url"]
             case url
-            when %r|git://github.com/(.+)/(.+).git|
+            when %r|//github.com/(.+)/(.+)(.git)?|
               "http://github.com/#{$1}/#{$2}"
             end
           end
