@@ -23,7 +23,7 @@ class Minitest::Test
   def clean_data_dir
     FileUtils.rm_rf(TEST_DATA_DIR)
     FileUtils.mkdir(TEST_DATA_DIR)
-    Rails::Assets.data = TEST_DATA_DIR
+    RailsAssets.data = TEST_DATA_DIR
   end
 
   def silence_stream(stream)
@@ -45,8 +45,8 @@ class Minitest::Test
 
   def inject_gems(&block)
     silence do
-      yield GemFactory.new(File.join(Rails::Assets.data, "gems"))
-      Gem::Indexer.new(Rails::Assets.data).generate_index
+      yield GemFactory.new(File.join(RailsAssets.data, "gems"))
+      Gem::Indexer.new(RailsAssets.data).generate_index
     end
   end
 

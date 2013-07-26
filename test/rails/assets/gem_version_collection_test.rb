@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class GemVersionCollectionTest < Minitest::Test
-  GIB = Rails::Assets
+  GIB = RailsAssets
   def test_it_coerces_things_to_gem_versions
     expected = GIB::GemVersion.new('foo', '1.2.3', 'ruby')
     actual = GIB::GemVersionCollection.new([['foo', '1.2.3', 'ruby']]).oldest

@@ -90,5 +90,5 @@ end
 task :env do
   $:.unshift(File.expand_path("../lib", __FILE__))
   require "rails/assets"
-  include Rails::Assets
+  include RailsAssets
 end

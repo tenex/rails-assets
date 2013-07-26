@@ -7,7 +7,7 @@ class DiskCacheTest < Minitest::Test
   end
 
   def subject
-    @subject ||= Rails::Assets::DiskCache.new(DIR)
+    @subject ||= RailsAssets::DiskCache.new(DIR)
   end
 
   def test_cache_some_stuff

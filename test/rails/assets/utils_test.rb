@@ -1,12 +1,12 @@
 require 'minitest/pride'
 require 'rails/assets/utils'
 
-module Rails::Assets
+module RailsAssets
   describe Utils do
     class UtilsClass; include Utils; end
 
     describe '#remove_min_js_duplicates' do
-      after do 
+      after do
         utils = UtilsClass.new
         utils.remove_min_js_duplicates(@input).must_equal(@output)
       end
@@ -23,7 +23,7 @@ module Rails::Assets
     end
 
     describe '#select_javascripts' do
-      after do 
+      after do
         utils = UtilsClass.new
         utils.select_javascripts(@input).must_equal(@output)
       end
