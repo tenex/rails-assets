@@ -11,8 +11,10 @@ require 'sprockets'
 require 'sprockets-helpers'
 require 'autoprefixer-rails/compiler'
 
-Raven.configure do |config|
-  config.dsn = ENV["RAVEN_DSN"]
+if ENV["RAVEN_DSN"]
+  Raven.configure do |config|
+    config.dsn = ENV["RAVEN_DSN"]
+  end
 end
 
 module Rails
