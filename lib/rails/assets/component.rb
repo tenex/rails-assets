@@ -7,7 +7,7 @@ module Rails
 
       def initialize(pkg_name, version = nil)
         if version
-          @name, @verison = pkg_name, version
+          @name, @version = pkg_name, version
         else
           if pkg_name.start_with?(GEM_PREFIX)
             @name = pkg_name.sub(/^#{GEM_PREFIX}/, "")

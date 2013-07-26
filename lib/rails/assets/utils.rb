@@ -44,24 +44,12 @@ module Rails
         dir = File.dirname(path)
 
         {
-          :version => data["version"],
-          :description => data["description"],
-          :javascripts => select_javascripts(data["main"]),
+          :version      => data["version"],
+          :description  => data["description"],
+          :main         => [data["main"]].flatten.reject {|e| e.nil?},
           :dependencies => data["dependencies"],
-          :repository => data["repository"]
+          :repository   => data["repository"]
         }.reject {|k,v| !v}
-      end
-
-      def select_javascripts(files)
-        js = [files].flatten.select { |file| file.match(/\.js$/) }
-        remove_min_js_duplicates(js)
-      end
-
-      def remove_min_js_duplicates(files)
-        files.reject do |file|
-          file.match(/min\.js$/) &&
-            files.include?(file.gsub(".min", ""))
-        end
       end
     end
   end

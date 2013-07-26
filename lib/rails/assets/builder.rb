@@ -3,6 +3,16 @@ require "erb"
 module Rails
   module Assets
     class Builder
+      EXTENSIONS = [
+        [:javascripts, %w(js coffee), lambda {|files|
+          files.map {|f| "//= require #{f}"}.join("\n")
+        }],
+        [:stylesheets, %w(css less scss sass), lambda {|files|
+          "/*\n" + files.map {|f| " *= require #{f}"}.join("\n") + "\n */"
+        }],
+        [:images, %w(png gif jpg jpeg), nil] # no manifest
+      ]
+
       include Utils
       attr_accessor :build_dir, :bower_root, :gem_root,
                     :log, :component
@@ -24,14 +34,84 @@ module Rails
           log.info "Gem #{component.gem_name}-#{component.version} already built"
           nil
         else
-          process_javascript_files
-          process_css_and_image_files
+          validate_main
+
+          main_files = EXTENSIONS.map do |name, exts, manifest|
+            fs = info[:main].select do |e|
+              ext_matches?(exts, e)
+            end
+
+            [name, fs, exts, manifest]
+          end
+
+          raise BuildError.new("Empty main") if main_files.all? {|_, fs, _, _| fs.empty? }
+
+          basedir = File.dirname(main_files.map {|name, fs, _, _| fs }.flatten.first)
+
+          main_files.map! do |name, fs, exts, manifest|
+            if fs.empty?
+              fs += find_files(basedir, exts)
+            end
+            [name, fs, exts, manifest]
+          end
+
+          main_files.map! do |name, fs, exts, manifest|
+            fs.reject! do |f|
+              exts.any? do |ext|
+                f.match(/min\.#{ext}$/) && fs.include?(f.sub("min.", ""))
+              end
+            end
+
+            [name, fs, exts, manifest]
+          end
+
+          main_files.each do |name, fs, exts, manifest|
+            FileUtils.mkdir_p File.join(gem_root, "vendor", "assets", name.to_s)
+
+            paths = fs.map do |f|
+              path = File.join(component.name.to_s, f.sub(/^#{Regexp.escape(basedir)}/, ""))
+              source = File.join(bower_root, f)
+              target = File.join(gem_root, "vendor", "assets", name.to_s, path)
+              log.info "Copying #{source} to #{target}"
+              FileUtils.mkdir_p(File.dirname(target))
+              FileUtils.cp source, target
+              gem_files << File.join("vendor", "assets", name.to_s, path)
+              path
+            end
+
+            # Manifest file
+            if manifest && !fs.empty?
+              manifest_filename = "#{component.name}.#{exts.first}"
+              manifest_file = File.join(gem_root, "vendor", "assets", name.to_s, manifest_filename)
+              log.info "Creating manifest file #{manifest_file}"
+              File.open(manifest_file, "w") do |m|
+                m.puts manifest.call(paths)
+              end
+              gem_files << File.join("vendor", "assets", name.to_s, manifest_filename)
+            end
+          end
+
           generate_gem_structure
           build_gem
 
           component.tmpfile = gem_pkg
           component
         end
+      end
+
+      def find_files(basedir, exts)
+        dir = File.join(bower_root, basedir)
+        log.info "Looking for #{exts} in #{dir}"
+        Dir["#{dir}/**/*"].select do |f|
+          ext_matches?(exts, f)
+        end.map do |f|
+          File.join(basedir, f.sub(dir, ""))
+        end
+      end
+
+      def ext_matches?(exts, filename)
+        ext = File.extname(filename)
+        ext == "" ? false : exts.include?(ext.sub(".", ""))
       end
 
       def index
@@ -43,6 +123,10 @@ module Rails
         raise BuildError.new("Version is empty") if component.version == ""
       end
 
+      def validate_main
+        raise BuildError.new("Missing main file") if info[:main].empty?
+      end
+
       def info
         @info ||= begin
           BOWER_MANIFESTS
@@ -51,18 +135,6 @@ module Rails
             .map {|f| read_bower_file(f) }
             .inject({}){|h,e| h.merge(e) }
         end
-      end
-
-      def js_root
-        @js_root ||= File.join("vendor", "assets", "javascripts")
-      end
-
-      def css_root
-        @css_root ||= File.join("vendor", "assets", "stylesheets")
-      end
-
-      def images_root
-        @images_root ||= File.join("vendor", "assets", "images")
       end
 
       def gem_pkg
@@ -134,87 +206,6 @@ module Rails
 
       def templates_dir
         File.expand_path("../templates", __FILE__)
-      end
-
-      def process_javascript_files
-        raise BuildError.new("Missing main js file") if info[:javascripts].empty?
-
-        FileUtils.mkdir_p File.join(gem_root, js_root)
-
-        files = info[:javascripts].map do |js|
-          log.info "Processing #{js}"
-          filename = File.basename(js)
-
-          log.info "Copying #{js} to #{filename}"
-          FileUtils.cp File.join(bower_root, js), File.join(gem_root, js_root, filename)
-          gem_files << File.join(js_root, filename)
-
-          filename
-        end
-
-        # Create manifest file if needed
-        manifest = "#{component.name}.js"
-        unless files.find {|f| f == manifest }
-          File.open(File.join(gem_root, js_root, manifest), "w") do |f|
-            files.each do |filename|
-              filename_no_ext = filename.gsub(/\.js$/, "")
-              f.puts "//= require #{filename_no_ext}"
-            end
-          end
-          gem_files << File.join(js_root, manifest)
-        end
-      end
-
-      # This one is tricky
-      # bower.json does not include css/images
-      # so we will try to be a little bit smart here
-      def process_css_and_image_files
-        images = find_and_copy_files(images_root, "{png,gif,jpg,jpeg}")
-        css = find_and_copy_files(css_root, "css")
-
-        log.debug "images: "
-        log.debug images
-        log.debug "css: "
-        log.debug css
-
-        # Replace image paths in css files
-        css.each do |css_name, css_file|
-          replaced = file_replace File.join(gem_root, css_file[:new_path]) do |f|
-            images.each do |image_name, image_file|
-              f.call image_file[:old_relative_path],
-                      %Q|<%= asset_path "#{image_name}" %>|
-            end
-          end
-
-          if replaced
-            op = css_file[:new_path]
-            np = css_file[:new_path] + ".erb"
-            FileUtils.mv File.join(gem_root, op), File.join(gem_root, np)
-            gem_files.delete(op)
-            gem_files << (np)
-          end
-        end
-      end
-
-      def find_and_copy_files(root, ext)
-        FileUtils.mkdir_p File.join(gem_root, root)
-        info[:javascripts].inject({}) do |hash, js|
-          dir = File.join(bower_root, File.dirname(js))
-
-          log.info "Searching #{dir} for #{ext} files"
-          Dir["#{dir}/**/*.#{ext}"].each do |f|
-            filename = File.basename(f)
-            log.info "Copying #{f} to #{filename}"
-            FileUtils.cp f, File.join(gem_root, root, filename)
-            hash[filename] = {
-              :old_relative_path => f.sub(/^#{dir}\//, ""),
-              :new_path => File.join(root, filename)
-            }
-            gem_files << File.join(root, filename)
-          end
-
-          hash
-        end
       end
 
       def build_gem

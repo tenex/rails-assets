@@ -37,8 +37,6 @@ task :remove, [:pkg] => :env do |t, args|
   fs = FileStore.new
   component = Component.new(pkg)
 
-  puts "v #{component.version}"
-
   components = if component.version
     [component]
   else
@@ -48,9 +46,9 @@ task :remove, [:pkg] => :env do |t, args|
   end
 
   components.each do |c|
-    puts "Removing gem #{c.gem_name}-#{c.version}"
-    index.delete(component)
-    fs.delete(component)
+    puts "Removing gem #{c.gem_filename}"
+    fs.delete(c)
+    index.delete(c)
   end
 
   Reindex.new.perform

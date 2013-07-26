@@ -18,6 +18,8 @@ gem 'autoprefixer-rails'
 gem "rails-assets-jquery"
 gem "rails-assets-angular"
 
+gem "sentry-raven"
+
 group :development do
   gem 'rack-test'
   gem 'minitest'

@@ -1,6 +1,7 @@
 require "sinatra/base"
 require "slim"
 require "redcarpet"
+require "raven"
 
 require "rails/assets"
 require "rails/assets/serve"
@@ -9,6 +10,10 @@ require "faye"
 require 'sprockets'
 require 'sprockets-helpers'
 require 'autoprefixer-rails/compiler'
+
+Raven.configure do |config|
+  config.dsn = ENV["RAVEN_DSN"]
+end
 
 module Rails
   module Assets
@@ -38,6 +43,8 @@ module Rails
       helpers do
         include Sprockets::Helpers
       end
+
+      use Raven::Rack
 
       use Faye::RackAdapter, mount: '/faye', timeout: 25
 
@@ -86,6 +93,7 @@ module Rails
               halt 422
             end
           rescue BuildError, Exception => ex
+            Raven.capture_exception(ex)
             io.puts ex.message
             io.puts ex.backtrace.take(5).first.gsub(File.dirname(File.dirname(__FILE__)), "")
             json 422, :error => ex.message, :log => io.string
@@ -136,20 +144,6 @@ module Rails
           resp
         end
       end
-
-
-
-        #   # reindex(:force_rebuild)
-        #   # @loaded_gems = nil
-
-        #   # puts io.string
-        #   json :gem => "rails-assets-#{name}"
-        # rescue Bower::BuildError, Exception => ex
-        #   io.puts ex.message
-        #   io.puts ex.backtrace.take(5).first.gsub(File.dirname(File.dirname(__FILE__)), "")
-        #   json({:error => ex.message, :log => io.string}, 422)
-        # end
-
     end
   end
 end
