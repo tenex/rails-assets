@@ -9,5 +9,4 @@ test/fixtures/fake_home_path/.gem/specs
 .idea
 .ruby-version
 .bin
-bin
 data
