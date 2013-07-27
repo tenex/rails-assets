@@ -5,5 +5,5 @@ module RailsAssets
   RAKE_BIN = "rake"
   BOWER_MANIFESTS = ["bower.json", "package.json", "component.json"]
   REDIS_NAMESPACE = "rails-assets"
-  DATA_DIR = ENV["DATA_DIR"] || File.expand_path("../../../../data", __FILE__)
+  DATA_DIR = ENV["DATA_DIR"] || File.expand_path("../../../data", __FILE__)
 end

@@ -3,8 +3,8 @@ require "slim"
 require "redcarpet"
 require "raven"
 
-require "rails/assets"
-require "rails/assets/serve"
+require "rails-assets"
+require "rails-assets/serve"
 
 require "faye"
 require 'sprockets'
@@ -19,7 +19,7 @@ end
 
 module RailsAssets
   class Web < Sinatra::Base
-    set :root, File.join(File.dirname(__FILE__), ['..', '..', '..'])
+    set :root, File.join(File.dirname(__FILE__), ['..', '..'])
     set :sprockets, Sprockets::Environment.new(root)
 
     configure do

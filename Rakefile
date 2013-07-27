@@ -5,7 +5,7 @@ require 'rake/testtask'
 
 Rake::TestTask.new("test:units") do |t|
   t.libs << "test" << "lib"
-  t.pattern = "test/rails/**/*_test.rb"
+  t.pattern = "test/rails-assets/*_test.rb"
 end
 
 task :test => ["test:units"]
@@ -89,6 +89,6 @@ end
 
 task :env do
   $:.unshift(File.expand_path("../lib", __FILE__))
-  require "rails/assets"
+  require "rails-assets"
   include RailsAssets
 end

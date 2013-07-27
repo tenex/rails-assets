@@ -1,5 +1,5 @@
 require 'minitest/pride'
-require 'rails/assets/utils'
+require 'rails-assets/utils'
 
 module RailsAssets
   describe Utils do

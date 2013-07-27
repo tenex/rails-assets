@@ -1,7 +1,7 @@
 require "rubygems"
 require "bundler/setup"
 
-require 'rails/assets'
+require 'rails-assets'
 
 require 'minitest/autorun'
 require 'minitest/pride'
