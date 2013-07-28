@@ -9,7 +9,6 @@ gem 'redis',      "~> 3.0.0"
 gem 'sidekiq'
 gem 'builder'
 gem 'thin'
-gem 'faye'
 gem 'sinatra-reloader'
 gem 'sprockets'
 gem 'sprockets-helpers'

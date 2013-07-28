@@ -2,7 +2,6 @@ GEM
   remote: https://rubygems.org/
   remote: http://rails-assets.org/
   specs:
-    addressable (2.3.5)
     autoprefixer-rails (0.6.20130728)
       execjs
     backports (3.3.3)
@@ -11,34 +10,14 @@ GEM
       timers (>= 1.0.0)
     coderay (1.0.9)
     connection_pool (1.0.0)
-    cookiejar (0.3.0)
     daemons (1.1.9)
-    em-http-request (1.1.0)
-      addressable (>= 2.3.4)
-      cookiejar
-      em-socksify (>= 0.3)
-      eventmachine (>= 1.0.3)
-      http_parser.rb (>= 0.6.0.beta.2)
-    em-socksify (0.3.0)
-      eventmachine (>= 1.0.0.beta.4)
     eventmachine (1.0.3)
     execjs (1.4.0)
       multi_json (~> 1.0)
     faraday (0.8.7)
       multipart-post (~> 1.1)
-    faye (0.8.9)
-      cookiejar (>= 0.3.0)
-      em-http-request (>= 0.3.0)
-      eventmachine (>= 0.12.0)
-      faye-websocket (>= 0.4.0)
-      rack (>= 1.0.0)
-      yajl-ruby (>= 1.0.0)
-    faye-websocket (0.6.2)
-      eventmachine (>= 0.12.0)
-      websocket-driver (>= 0.2.0)
     hashie (2.0.5)
     hike (1.2.3)
-    http_parser.rb (0.6.0.beta.2)
     json (1.8.0)
     method_source (0.8.1)
     minitest (5.0.6)
@@ -103,8 +82,6 @@ GEM
     tilt (1.4.1)
     timers (1.1.0)
     uuidtools (2.1.4)
-    websocket-driver (0.2.1)
-    yajl-ruby (1.1.0)
 
 PLATFORMS
   ruby
@@ -112,7 +89,6 @@ PLATFORMS
 DEPENDENCIES
   autoprefixer-rails (>= 0.6.20130728)
   builder
-  faye
   minitest
   pry
   rack-test

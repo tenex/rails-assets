@@ -6,7 +6,6 @@ require "raven"
 require "rails-assets"
 require "rails-assets/serve"
 
-require "faye"
 require 'sprockets'
 require 'sprockets-helpers'
 require 'autoprefixer-rails'
@@ -43,8 +42,6 @@ module RailsAssets
     end
 
     use Raven::Rack
-
-    use Faye::RackAdapter, mount: '/faye', timeout: 25
 
     use Serve
 
