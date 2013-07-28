@@ -42,15 +42,22 @@ module RailsAssets
     end
 
     use Raven::Rack
-
     use Serve
 
-    get '/' do
-      "Comming soon..."
-    end
-
-    get '/home' do
-      slim :index
+    unless development?
+      get '/' do
+        'Comming soon…'
+      end
+      get '/home' do
+        slim :index
+      end
+    else
+      get '/' do
+        slim :index
+      end
+      get '/home' do
+        redirect '/'
+      end
     end
 
     get '/index.json' do
