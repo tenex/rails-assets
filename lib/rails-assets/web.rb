@@ -20,6 +20,7 @@ module RailsAssets
   class Web < Sinatra::Base
     set :root, File.join(File.dirname(__FILE__), ['..', '..'])
     set :sprockets, Sprockets::Environment.new(root)
+    set :slim, :pretty => development?
 
     configure do
       sprockets.append_path File.join(root, 'assets', 'stylesheets')
