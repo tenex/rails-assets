@@ -1,5 +1,3 @@
-#= require angular
-
 app = angular.module("app", []);
 app.directive('ngHtml', function() {
   return function(scope, element, attrs) {
