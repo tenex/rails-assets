@@ -3,7 +3,7 @@ GEM
   remote: http://rails-assets.org/
   specs:
     addressable (2.3.5)
-    autoprefixer-rails (0.6.20130721)
+    autoprefixer-rails (0.6.20130728)
       execjs
     backports (3.3.3)
     builder (3.2.2)
@@ -110,7 +110,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  autoprefixer-rails
+  autoprefixer-rails (>= 0.6.20130728)
   builder
   faye
   minitest

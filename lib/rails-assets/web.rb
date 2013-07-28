@@ -9,7 +9,7 @@ require "rails-assets/serve"
 require "faye"
 require 'sprockets'
 require 'sprockets-helpers'
-require 'autoprefixer-rails/compiler'
+require 'autoprefixer-rails'
 
 if ENV["RAVEN_DSN"]
   Raven.configure do |config|
@@ -27,10 +27,7 @@ module RailsAssets
       sprockets.append_path File.join(root, 'assets', 'javascripts')
       sprockets.append_path File.join(root, 'assets', 'images')
 
-      sprockets.register_postprocessor 'text/css', :autoprefixer do |context, css|
-        autoprefixer = AutoprefixerRails::Compiler.new(nil)
-        autoprefixer.compile(css)
-      end
+      AutoprefixerRails.install(sprockets)
 
       Sprockets::Helpers.configure do |config|
         config.environment = sprockets

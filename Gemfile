@@ -13,7 +13,7 @@ gem 'faye'
 gem 'sinatra-reloader'
 gem 'sprockets'
 gem 'sprockets-helpers'
-gem 'autoprefixer-rails'
+gem 'autoprefixer-rails', '>= 0.6.20130728'
 
 gem "rails-assets-jquery"
 gem "rails-assets-angular"
