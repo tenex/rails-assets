@@ -9,7 +9,6 @@ gem 'redis',      "~> 3.0.0"
 gem 'sidekiq'
 gem 'builder'
 gem 'thin'
-gem 'sinatra-reloader'
 gem 'sprockets'
 gem 'sprockets-helpers'
 gem 'autoprefixer-rails', '>= 0.6.20130728'
