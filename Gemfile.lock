@@ -4,7 +4,6 @@ GEM
   specs:
     autoprefixer-rails (0.6.20130728)
       execjs
-    backports (3.3.3)
     builder (3.2.2)
     celluloid (0.14.1)
       timers (>= 1.0.0)
@@ -54,15 +53,6 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
-    sinatra-contrib (1.4.0)
-      backports (>= 2.0)
-      eventmachine
-      rack-protection
-      rack-test
-      sinatra (~> 1.4.2)
-      tilt (~> 1.3)
-    sinatra-reloader (1.0)
-      sinatra-contrib
     slim (2.0.0)
       temple (~> 0.6.5)
       tilt (~> 1.3, >= 1.3.3)
@@ -100,7 +90,6 @@ DEPENDENCIES
   sentry-raven
   sidekiq
   sinatra (~> 1.4.0)
-  sinatra-reloader
   slim (~> 2.0.0)
   sprockets
   sprockets-helpers
