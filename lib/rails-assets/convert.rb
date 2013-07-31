@@ -36,22 +36,22 @@ module RailsAssets
       @file_store ||= FileStore.new(log)
     end
 
-    def convert!(opts = {})
+    def convert!(opts = {}, &block)
       @opts = opts
 
       if opts[:debug]
         dir = "/tmp/build"
         FileUtils.rm_rf(dir)
         FileUtils.mkdir_p(dir)
-        build_in_dir(dir)
+        build_in_dir(dir, &block)
       else
         Dir.mktmpdir do |dir|
-          build_in_dir(dir)
+          build_in_dir(dir, &block)
         end
       end
     end
 
-    def build_in_dir(dir)
+    def build_in_dir(dir, &block)
       log.info "Building package #{component.full} in #{dir}"
       @build_dir = dir
 
@@ -60,7 +60,7 @@ module RailsAssets
         bower_install
       end
 
-      Dir[File.join(build_dir, "bower_components", "*")].map do |f|
+      c = Dir[File.join(build_dir, "bower_components", "*")].map do |f|
         Builder.new(build_dir, File.basename(f), log).build!(@opts)
       end.compact.map do |component|
         log.info "New gem #{component.gem_name} built in #{component.tmpfile}"
@@ -68,6 +68,10 @@ module RailsAssets
         index.save(component)
         component
       end.find {|c| c.name == component.name }
+
+      block.call(build_dir) if block
+
+      c
     end
 
     def bower_install
