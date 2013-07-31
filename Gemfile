@@ -23,4 +23,5 @@ group :development do
   gem 'rack-test'
   gem 'minitest'
   gem 'pry'
+  gem 'rerun'
 end

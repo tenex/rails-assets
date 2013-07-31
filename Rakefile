@@ -11,6 +11,14 @@ end
 task :test => ["test:units"]
 task :default => :test
 
+desc 'Run local server for development'
+task :local do
+  require 'yaml'
+  command = YAML.load_file('Procfile')['web']
+  command.sub!('$PORT', ENV['PORT'] || '3000')
+  sh "bin/rerun '#{command}'"
+end
+
 desc "Convert bower package to gem. Run with rake convert[name] or convert[name#version]"
 task :convert, [:pkg] => :env do |t, args|
   pkg = args[:pkg]
