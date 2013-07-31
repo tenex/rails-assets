@@ -123,7 +123,10 @@ module RailsAssets
     end
 
     def validate_main
-      raise BuildError.new("Missing main file") if info[:main].empty?
+      if info[:main].empty?
+        log.debug info.inspect
+        raise BuildError.new("Missing main file")
+      end
     end
 
     def info
