@@ -11,6 +11,7 @@ gem 'builder'
 gem 'thin'
 gem 'sprockets'
 gem 'sprockets-helpers'
+gem 'sass'
 gem 'autoprefixer-rails', '>= 0.6.20130728'
 
 gem "rails-assets-jquery"
@@ -23,4 +24,3 @@ group :development do
   gem 'minitest'
   gem 'pry'
 end
-
