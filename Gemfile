@@ -16,7 +16,7 @@ gem 'autoprefixer-rails', '>= 0.6.20130728'
 
 gem "sentry-raven"
 
-group :development do
+group :development, :test do
   gem 'rack-test'
   gem 'minitest'
   gem 'pry'
