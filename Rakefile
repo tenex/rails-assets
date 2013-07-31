@@ -5,11 +5,19 @@ require 'rake/testtask'
 
 Rake::TestTask.new("test:units") do |t|
   t.libs << "test" << "lib"
-  t.pattern = "test/rails-assets/*_test.rb"
+  t.pattern = "test/rails-assets/*_spec.rb"
 end
 
 task :test => ["test:units"]
 task :default => :test
+
+desc 'Run local server for development'
+task :local do
+  require 'yaml'
+  command = YAML.load_file('Procfile')['web']
+  command.sub!('$PORT', ENV['PORT'] || '3000')
+  sh "bin/rerun '#{command}'"
+end
 
 desc "Convert bower package to gem. Run with rake convert[name] or convert[name#version]"
 task :convert, [:pkg] => :env do |t, args|

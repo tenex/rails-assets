@@ -2,24 +2,29 @@ GEM
   remote: https://rubygems.org/
   remote: http://rails-assets.org/
   specs:
-    autoprefixer-rails (0.6.20130728)
+    autoprefixer-rails (0.6.20130731)
       execjs
-    builder (3.1.4)
+    builder (3.2.2)
     celluloid (0.14.1)
       timers (>= 1.0.0)
     coderay (1.0.9)
-    connection_pool (1.0.0)
+    connection_pool (1.1.0)
     daemons (1.1.9)
     eventmachine (1.0.3)
     execjs (1.4.0)
       multi_json (~> 1.0)
-    faraday (0.8.7)
-      multipart-post (~> 1.1)
+    faraday (0.8.8)
+      multipart-post (~> 1.2.0)
+    ffi (1.9.0)
     hashie (2.0.5)
     hike (1.2.3)
     json (1.8.0)
-    method_source (0.8.1)
-    minitest (4.7.5)
+    listen (1.2.2)
+      rb-fsevent (>= 0.9.3)
+      rb-inotify (>= 0.9)
+      rb-kqueue (>= 0.2)
+    method_source (0.8.2)
+    minitest (5.0.6)
     multi_json (1.7.7)
     multipart-post (1.2.0)
     pry (0.9.12.2)
@@ -31,20 +36,24 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
-    rails-assets-angular (1.0.7)
-    rails-assets-jquery (2.0.3)
     rake (10.1.0)
+    rb-fsevent (0.9.3)
+    rb-inotify (0.9.0)
+      ffi (>= 0.5.0)
+    rb-kqueue (0.2.0)
+      ffi (>= 0.5.0)
     redcarpet (2.2.2)
     redis (3.0.4)
     redis-namespace (1.3.0)
       redis (~> 3.0.0)
+    rerun (0.8.1)
+      listen (>= 1.0.3)
     sass (3.2.10)
-    sentry-raven (0.5.0)
+    sentry-raven (0.6.0)
       faraday (>= 0.7.6)
       hashie (>= 1.1.0)
-      multi_json (~> 1.0)
       uuidtools
-    sidekiq (2.12.1)
+    sidekiq (2.13.0)
       celluloid (>= 0.14.1)
       connection_pool (>= 1.0.0)
       json
@@ -54,10 +63,10 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
-    slim (2.0.0)
-      temple (~> 0.6.5)
-      tilt (~> 1.3, >= 1.3.3)
-    slop (3.4.5)
+    slim (2.0.1)
+      temple (~> 0.6.6)
+      tilt (>= 1.3.3, < 2.1)
+    slop (3.4.6)
     sprockets (2.10.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -65,7 +74,7 @@ GEM
       tilt (~> 1.1, != 1.3.0)
     sprockets-helpers (1.0.1)
       sprockets (~> 2.0)
-    temple (0.6.5)
+    temple (0.6.6)
     thin (1.5.1)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -83,11 +92,10 @@ DEPENDENCIES
   minitest
   pry
   rack-test
-  rails-assets-angular
-  rails-assets-jquery
   rake (~> 10.1.0)
   redcarpet (~> 2.2.0)
   redis (~> 3.0.0)
+  rerun
   sass
   sentry-raven
   sidekiq
