@@ -36,8 +36,6 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
-    rails-assets-angular (1.0.7)
-    rails-assets-jquery (2.0.3)
     rake (10.1.0)
     rb-fsevent (0.9.3)
     rb-inotify (0.9.0)
@@ -95,8 +93,6 @@ DEPENDENCIES
   minitest
   pry
   rack-test
-  rails-assets-angular
-  rails-assets-jquery
   rake (~> 10.1.0)
   redcarpet (~> 2.2.0)
   redis (~> 3.0.0)

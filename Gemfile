@@ -14,9 +14,6 @@ gem 'sprockets-helpers'
 gem 'sass'
 gem 'autoprefixer-rails', '>= 0.6.20130728'
 
-gem "rails-assets-jquery"
-gem "rails-assets-angular"
-
 gem "sentry-raven"
 
 group :development do
