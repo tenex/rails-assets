@@ -48,7 +48,7 @@ module RailsAssets
         :main         => [data["main"]].flatten.reject {|e| e.nil?},
         :dependencies => data["dependencies"],
         :repository   => data["repository"]
-      }.reject {|k,v| !v}
+      }.reject {|k,v| !v || v.empty?}
     end
   end
 end
