@@ -1,5 +1,8 @@
 $:.unshift(File.expand_path("../", __FILE__))
 
+require "bundler/setup"
+Bundler.setup
+
 require "rails-assets/config"
 require "rails-assets/component"
 require "rails-assets/utils"

@@ -24,7 +24,7 @@ GEM
       rb-inotify (>= 0.9)
       rb-kqueue (>= 0.2)
     method_source (0.8.1)
-    minitest (4.7.5)
+    minitest (5.0.6)
     multi_json (1.7.7)
     multipart-post (1.2.0)
     pry (0.9.12.2)
