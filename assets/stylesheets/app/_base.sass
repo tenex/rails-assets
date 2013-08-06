@@ -13,11 +13,19 @@ section,
 
 html
   font: 300 16px/1.4 adelle-sans, sans-serif
+  text-rendering: optimizeLegibility
   -ms-text-size-adjust: 100%
   -webkit-text-size-adjust: 100%
 
-body
+body, p,
+ul, ol, li,
+h1, h2, h3, h4, h5, h6
   margin: 0
 
 a
   text-decoration: none
+  transition: color 0.2s ease-out, opacity 0.2s ease-out
+
+  &:active
+    opacity: 0.8
+    transition: none
