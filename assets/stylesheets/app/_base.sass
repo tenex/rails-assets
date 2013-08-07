@@ -12,10 +12,11 @@ section,
   box-sizing: border-box
 
 html
-  font: 300 16px/1.4 adelle-sans, sans-serif
+  font: 16px/1.4 adelle-sans, sans-serif
   text-rendering: optimizeLegibility
   -ms-text-size-adjust: 100%
   -webkit-text-size-adjust: 100%
+  -webkit-font-smoothing: antialiased
 
 body, p,
 ul, ol, li,
@@ -29,3 +30,8 @@ a
   &:active
     opacity: 0.8
     transition: none
+
+code
+  font-family: source-code-pro, monospace
+  font-weight: 500 !important
+  letter-spacing: -1px

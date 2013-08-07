@@ -10,18 +10,4 @@ html ng-app="app"
       try{Typekit.load();}catch(e){}
 
   body
-    header.top
-      .wrap
-        h1
-          a.top__logo href="/" Rails Assets
-
-        nav.text-right
-          ul.top__nav
-            li.top__nav__item title="Rails Assets on GitHub"
-              a href="https://github.com/rails-assets/rails-assets/" GitHub
-            li.top__nav__item
-              a href="#" Package list
-            li.top__nav__item
-              a href="#" Add package
-
     == yield

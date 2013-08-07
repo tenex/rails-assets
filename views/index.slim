@@ -1,16 +1,33 @@
-section.section.section--top
+header.section.section--top
+  .top
+    .wrap
+      h1
+        a.top__logo href="/" Rails Assets
+      nav.text-right
+        ul.top__nav
+          li.top__nav__item title="Rails Assets on GitHub"
+            a href="https://github.com/rails-assets/rails-assets/" GitHub
+          li.top__nav__item
+            a href="#" Package list
+          li.top__nav__item
+            a href="#" Add package
+
   .wrap.text-center
     h1.section__header.section__header--tagline
       span.text-line The solution to
       span.text-line< managing assets in&nbsp;Rails
+  .wrap.wrap--narrow.text-center.gutter-top
+    p
+      ' Rails Assets is the proxy between <a href="http://bundler.io/">Bundler</a>
+      | and&nbsp;<a href="http://bower.io/">Bower</a>.
+    p
+      ' It automatically converts the packaged components into valid&nbsp;gems
+      | that are easily droppable into your asset pipeline and stay up&nbsp;to
+      | &nbsp;date via&nbsp;<code>bundle</code>&nbsp;<code>install</code>.
 
 .wrap ng-controller="MainCtrl"
   section
     markdown:
-      ## Rails Assets - Bundler to Bower proxy
-
-      The final solution to managing asset dependencies in your rails apps
-
       **NOTICE**: Currently some packages do not build correctly. If you're having issues installing some gems (bundler return "Cound not find gem X..." please see ["Packages that do not build correctly wiki page"](https://github.com/rails-assets/rails-assets/wiki/Packages-that-do-not-build-correctly)
 
       **NOTICE**: Currently due to way bundler works there is no way to build package for explicit version specified in Gemfile - rails-assets will alway build newest version and bundler will raise error that such gem version was not found. If you need older version of package please use [the form below](#gems).
