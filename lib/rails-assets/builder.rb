@@ -48,6 +48,7 @@ module RailsAssets
         basedir = File.dirname(main_files.map {|name, fs, _, _| fs }.flatten.first)
 
         main_files.map! do |name, fs, exts, manifest|
+          puts "fs: #{fs.inspect}"
           if fs.empty?
             fs += find_files(basedir, exts)
           end
@@ -157,9 +158,20 @@ module RailsAssets
 
     def gem_dependencies
       (info[:dependencies] || []).map do |dep, version|
-        version.gsub!(/~(\d)/, '~> \1')
-        ["#{GEM_PREFIX}#{dep}", version]
+        ["#{GEM_PREFIX}#{dep}", fix_version_string(version)]
       end
+    end
+
+    def fix_version_string(version)
+      if version =~ />=(.+)<(.+)/
+        version = ">= #{$1}"
+      end
+
+      if version.strip == "latest"
+        return nil
+      end
+
+      version.gsub!(/~(\d)/, '~> \1')
     end
 
     def gem_homepage
