@@ -2,7 +2,7 @@ GEM
   remote: https://rubygems.org/
   remote: http://rails-assets.org/
   specs:
-    autoprefixer-rails (0.7.20130806)
+    autoprefixer-rails (0.7.20130810)
       execjs
     builder (3.2.2)
     celluloid (0.14.1)
@@ -25,7 +25,7 @@ GEM
       rb-kqueue (>= 0.2)
     method_source (0.8.2)
     minitest (5.0.6)
-    multi_json (1.7.8)
+    multi_json (1.7.9)
     multipart-post (1.2.0)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
