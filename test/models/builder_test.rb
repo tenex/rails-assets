@@ -4,7 +4,7 @@ module Helper
 
 end
 
-describe RailsAssets::Builder do
+describe GemBuilder do
   def self.component(name, version = nil, &block)
     define_method "test_component: #{name} #{version}" do
       STDERR.puts "\n\e[34mBuilding package #{name} #{version}\e[0m"
@@ -13,9 +13,9 @@ describe RailsAssets::Builder do
       @component = nil
       @gemspec = nil
 
-      @component = RailsAssets::Component.new(name, version)
+      @component = Component.new(name, version)
       silence_stream(STDOUT) do
-        RailsAssets::Convert.new(@component).convert!(
+        Convert.new(@component).convert!(
           :io => STDOUT,
           :force => true
         ) do |dir|
