@@ -1,3 +1,5 @@
+require "rubygems/indexer"
+
 class HackedIndexer < Gem::Indexer
   def build_indicies
     # ----
