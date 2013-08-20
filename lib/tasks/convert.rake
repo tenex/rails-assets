@@ -8,7 +8,7 @@ task :local do
 end
 
 desc "Convert bower package to gem. Run with rake convert[name] or convert[name#version]"
-task :convert, [:pkg] => :env do |t, args|
+task :convert, [:pkg] => :environment do |t, args|
   pkg = args[:pkg]
 
   if component = Convert.new(Component.new(pkg)).convert!(:io => STDOUT, :debug => true, :force => true)
@@ -17,7 +17,7 @@ task :convert, [:pkg] => :env do |t, args|
 end
 
 desc "List all gems"
-task :list => :env do
+task :list => :environment do
   index = Index.new
   index.all.sort.each do |g|
     c = Component.new(g)
@@ -27,7 +27,7 @@ task :list => :env do
 end
 
 desc "Remove gem"
-task :remove, [:pkg] => :env do |t, args|
+task :remove, [:pkg] => :environment do |t, args|
   pkg = args[:pkg]
   index = Index.new
   fs = FileStore.new
@@ -51,7 +51,7 @@ task :remove, [:pkg] => :env do |t, args|
 end
 
 desc "Update gem"
-task :update, [:pkg] => :env do |t, args|
+task :update, [:pkg] => :environment do |t, args|
   Update.new.perform(args[:pkg])
 end
 
@@ -66,7 +66,7 @@ task :wipeout do
 end
 
 desc "Rebuild all"
-task :rebuild => :env do
+task :rebuild => :environment do
   index = Index.new
 
   index.all.each do |gem_name|
@@ -79,6 +79,6 @@ task :rebuild => :env do
 end
 
 desc "Reindex all gems"
-task :reindex => :env do
+task :reindex => :environment do
   Reindex.new.perform(:force)
 end
