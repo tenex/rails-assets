@@ -1,0 +1,13 @@
+doctype html
+html ng-app="app"
+  head
+    title Rails Assets
+    = stylesheet_link_tag    "application", media: "all"
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+    = javascript_include_tag '//use.typekit.net/jvv3pir.js'
+    javascript:
+      try{Typekit.load();}catch(e){}
+
+  body
+    = yield

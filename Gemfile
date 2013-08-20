@@ -1,24 +1,28 @@
-source "https://rubygems.org"
-source "http://rails-assets.org"
+source 'https://rubygems.org'
+source 'http://rails-assets.org'
 
-gem 'rake',       "~> 10.1.0"
-gem 'sinatra',    "~> 1.4.0"
-gem 'slim' ,      "~> 2.0.0"
-gem 'redcarpet',  "~> 2.2.0"
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '4.0.0'
+
+
+gem 'sass-rails', '~> 4.0.0'
+gem 'uglifier', '>= 1.3.0'
+gem 'coffee-rails', '~> 4.0.0'
+
+gem 'rails-assets-angular'
+
+gem 'slim-rails'
 gem 'redis',      "~> 3.0.0"
 gem 'sidekiq'
 gem 'builder'
-gem 'thin'
-gem 'sprockets'
-gem 'sprockets-helpers'
-gem 'sass'
 gem 'autoprefixer-rails', '>= 0.6.20130728'
+gem 'redcarpet'
 
-gem "sentry-raven"
+gem 'sentry-raven'
+
+gem 'thin'
 
 group :development, :test do
-  gem 'rack-test'
-  gem 'minitest'
-  gem 'pry'
-  gem 'rerun'
+  gem 'pry-rails'
 end
+

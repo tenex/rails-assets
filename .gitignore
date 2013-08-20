@@ -1,12 +1,16 @@
-pkg
+# Ignore bundler config.
+/.bundle
+
+# Ignore the default SQLite database.
+/db/*.sqlite3
+/db/*.sqlite3-journal
+
+# Ignore all logfiles and tempfiles.
+/log/*.log
+/tmp
+
 .DS_Store
-tmp/restart.txt
-test-app/Gemfile.lock
-.bundle
-vendor/bundle
 .rbenv-version
-test/fixtures/fake_home_path/.gem/specs
-.idea
 .ruby-version
-.bin
-data
+/data
+.dogrc
