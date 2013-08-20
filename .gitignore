@@ -14,3 +14,5 @@
 .ruby-version
 /data
 .dogrc
+
+/test-app/Gemfile.lock
