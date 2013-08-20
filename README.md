@@ -59,3 +59,14 @@ downloads correct package using bower and repackages it as valid ruby gem.
 
 This will create `rails-assets-NAME-VERSION.gem` file
 
+
+
+## Symlinks
+
+```
+/gems                       -> DATA_DIR/gems
+/quick                      -> DATA_DIR/quick
+/latest_specs.4.8.gz        -> DATA_DIR/latest_specs.4.8.gz
+/prerelease_specs.4.8.gz    -> DATA_DIR/prerelease_specs.4.8.gz
+/specs.4.8.gz               -> DATA_DIR/specs.4.8.gz
+```

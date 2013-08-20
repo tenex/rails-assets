@@ -67,7 +67,7 @@ class MainController < ApplicationController
       end
     end
 
-    params[:json] ? render(json: gems) : Marshal.dump(gems)
+    params[:json] ? render(json: gems) : render(text: Marshal.dump(gems))
   end
 
 
