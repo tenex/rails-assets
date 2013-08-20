@@ -22,6 +22,8 @@ gem 'sentry-raven'
 
 gem 'thin'
 
+gem 'rails_12factor'
+
 group :development, :test do
   gem 'pry-rails'
 end

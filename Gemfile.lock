@@ -80,6 +80,11 @@ GEM
       railties (= 4.0.0)
       sprockets-rails (~> 2.0.0)
     rails-assets-angular (1.0.7)
+    rails_12factor (0.0.2)
+      rails_serve_static_assets
+      rails_stdout_logging
+    rails_serve_static_assets (0.0.1)
+    rails_stdout_logging (0.0.1)
     railties (4.0.0)
       actionpack (= 4.0.0)
       activesupport (= 4.0.0)
@@ -152,6 +157,7 @@ DEPENDENCIES
   pry-rails
   rails (= 4.0.0)
   rails-assets-angular
+  rails_12factor
   redcarpet
   redis (~> 3.0.0)
   sass-rails (~> 4.0.0)
