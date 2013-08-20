@@ -3,3 +3,6 @@ bundler_args: --without development
 before_script: npm install -g bower
 rvm:
   - 2.0.0
+branches:
+  except:
+    - front-end

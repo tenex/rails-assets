@@ -1,0 +1,44 @@
+.top
+  position: absolute
+  top: 0
+  left: 0
+  right: 0
+  padding: 16px 0
+  background: inherit
+
+.top__logo
+  position: absolute
+  height: 30px
+  margin: 0
+  padding: 0 0 0 36px
+  background: url(logo--white.png) no-repeat
+  background-size: 24px 24px
+  background-position: 0 5px
+  color: #fff !important
+  font-size: 30px !important
+  font-weight: 300 !important
+  line-height: 1
+  overflow: visible
+
+  +retina
+    background-image: url(logo--white@2x.png)
+
+.top__nav
+  margin: 0
+  line-height: 1
+  list-style: none
+
+.top__nav__item
+  display: inline
+  margin: 0
+
+  a
+    display: inline-block
+    padding: 10px
+    font-weight: 600
+
+  & + & a
+    margin-left: 10px
+
+  &:last-of-type a
+    margin-right: -10px

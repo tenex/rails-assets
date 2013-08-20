@@ -1,74 +1,83 @@
-.wrapper ng-controller="MainCtrl"
+header.section.section--top
+  .top
+    .wrap
+      h1
+        a.top__logo href="/" Rails Assets
+      nav.text-right
+        ul.top__nav
+          li.top__nav__item title="Rails Assets on GitHub"
+            a href="https://github.com/rails-assets/rails-assets/" GitHub
+          li.top__nav__item
+            a href="#" Package list
+          li.top__nav__item
+            a href="#" Add package
+
+  .wrap.text-center
+    h1.section__header.section__header--tagline
+      span.text-line The solution to
+      span.text-line< managing assets in&nbsp;Rails
+  .wrap.wrap--narrow.text-center.gutter-top
+    p
+      ' Rails Assets is the proxy between <a href="http://bundler.io/">Bundler</a>
+      | and&nbsp;<a href="http://bower.io/">Bower</a>.
+    p
+      ' It automatically converts the packaged components into gems that are
+      | easily&nbsp;droppable into your asset pipeline and stay up&nbsp;to
+      | &nbsp;date.
+
+section.section.section--getting-started
+  .wrap
+    h1.section__header.text-center Getting started
+
+    .columns.gutter-top--short
+      .column.column--1-3
+        h2.section__subheader.text-center
+          | Use the new gem&nbsp;source
+        article.file
+          h1.file__name
+            code Gemfile
+          == erb :'index/code_gemfile_source.html'
+        h2.section__subheader.gutter-top--short.text-center
+          | Add Bower packages as&nbsp;gems
+        article.file
+          h1.file__name
+            code Gemfile
+          == erb :'index/code_gemfile_gem.html'
+      .column.column--1-3
+        h2.section__subheader.text-center
+          | Run Bundler
+        article.file
+          h1.file__name
+            code Console
+          == erb :'index/code_bundle_install.html'
+        p.text-small
+          ' When Bundler requests a Bower package, it’s immediately downloaded on
+          ' Rails Assets’ server and repackaged as valid Ruby&nbsp;gems.
+        p.text-small
+          | You can update these gems,&nbsp;too:
+        article.file
+          h1.file__name
+            code Console
+          == erb :'index/code_bundle_install.html'
+      .column.column--1-3
+        h2.section__subheader.text-center
+          | Use the&nbsp;assets
+        article.file
+          h1.file__name
+            code application.js
+          == erb :'index/code_application_js.html'
+        article.file
+          h1.file__name
+            code application.css
+          == erb :'index/code_application_css.html'
+
+.wrap ng-controller="MainCtrl"
   section
     markdown:
-      ## Rails Assets - Bundler to Bower proxy
-
-      The final solution to managing asset dependencies in your rails apps
-
       **NOTICE**: Currently some packages do not build correctly. If you're having issues installing some gems (bundler return "Cound not find gem X..." please see ["Packages that do not build correctly wiki page"](https://github.com/rails-assets/rails-assets/wiki/Packages-that-do-not-build-correctly)
 
       **NOTICE**: Currently due to way bundler works there is no way to build package for explicit version specified in Gemfile - rails-assets will alway build newest version and bundler will raise error that such gem version was not found. If you need older version of package please use [the form below](#gems).
 
-      ### Setup
-
-      Add new source to your app's `Gemfile`
-
-          # Gemfile
-          source "http://#{request.host}"
-
-
-      Then add bower packages as gems following the convention:
-
-      `RUBY_GEM_NAME = rails-assets-BOWER_PACKAGE_NAME`
-
-      Examples:
-
-          # Gemfile
-          gem "rails-assets-angular"
-          gem "rails-assets-jquery.cookie"
-          gem "rails-assets-leaflet"
-
-      And then just simply run `bundle install`.
-
-      ### Using assets
-
-          # app/assets/application.js
-          //= require angular
-          //= require jquery.cookie
-          //= require leaflet
-
-          # app/assets/application.css
-          *= require leaflet
-
-
-      Check out [example rails app](https://github.com/rails-assets/rails-assets/tree/master/test-app)
-
-
-
-      ### How it works
-
-      When bundler requests gem that wasn't yet converted rails-assets server
-      downloads correct package using bower and repackages it as valid ruby gem.
-
-
-      ### Development
-
-      ### Setup
-
-          git clone git@github.com:rails-assets/rails-assets.git
-          cd rails-assets
-          bundle
-
-      ### Convert bower package to gem using command line
-
-          rake convert[NAME]
-
-      This will create `rails-assets-NAME-VERSION.gem` file
-
-
-
-
-    markdown:
       Please search bower first (using `bower search`) for package name
 
 
