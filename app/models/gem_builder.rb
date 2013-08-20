@@ -121,7 +121,7 @@ class GemBuilder
   end
 
   def validate_main
-    if info[:main].empty?
+    if !info[:main] || info[:main].empty?
       log.debug info.inspect
       raise BuildError.new("Missing main file")
     end
