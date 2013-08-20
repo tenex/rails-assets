@@ -1,2 +1,2 @@
 web: bin/thin start -p $PORT
-sidekiq: sidekiq -q reindex -q update
+sidekiq: bin/sidekiq -q reindex -q update
