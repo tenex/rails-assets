@@ -22,7 +22,7 @@ class GemBuilder
   end
 
   def build!(opts = {})
-    log.info "Building gem #{component.gem_name} form #{component.full} package"
+    log.info "Building gem #{component.gem_name} from #{component.full} package"
 
     update_component_info
 
