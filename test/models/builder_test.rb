@@ -56,7 +56,7 @@ describe GemBuilder do
 
   component "sugar", "1.3.9" do
     gem_file "vendor/assets/javascripts/sugar.js"
-    gem_file "vendor/assets/javascripts/sugar/sugar.min.js"
+    gem_file "vendor/assets/javascripts/sugar/sugar-full.development.js"
   end
 
   component "purl", "2.3.1" do
