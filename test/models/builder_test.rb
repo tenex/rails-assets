@@ -44,6 +44,11 @@ describe GemBuilder do
     ex.must_equal true
   end
 
+  component "angular", "1.2.0-rc.1" do
+    gem_file "vendor/assets/javascripts/angular.js"
+    gem_file "vendor/assets/javascripts/angular/angular.js"
+  end
+
   component "angular", "1.0.7" do
     gem_file "vendor/assets/javascripts/angular.js"
     gem_file "vendor/assets/javascripts/angular/angular.js"

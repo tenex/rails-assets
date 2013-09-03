@@ -116,7 +116,7 @@ class GemBuilder
   end
 
   def update_component_info
-    component.version = info[:version].to_s.strip
+    component.version = gem_version
     raise BuildError.new("Version is empty") if component.version == ""
   end
 
@@ -138,11 +138,15 @@ class GemBuilder
   end
 
   def gem_pkg
-    @gem_pkg ||= File.join(gem_root, "pkg", "#{gem_name}-#{info[:version]}.gem")
+    @gem_pkg ||= File.join(gem_root, "pkg", "#{gem_name}-#{gem_version}.gem")
   end
 
   def gem_name
     component.gem_name
+  end
+
+  def gem_version
+    @gem_version ||= fix_version_string(info[:version].to_s.strip)
   end
 
   def gem_module
@@ -168,7 +172,9 @@ class GemBuilder
       return nil
     end
 
+    version.gsub!('-', '.')
     version.gsub!(/~(\d)/, '~> \1')
+    version
   end
 
   def gem_homepage
