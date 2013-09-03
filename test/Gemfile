@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 # source 'http://rails-assets.org'
-source 'http://localhost:9292'
+source 'http://localhost:3000'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
