@@ -74,6 +74,6 @@ class Convert
   end
 
   def bower_install
-    sh build_dir, BOWER_BIN, "install", component.full
+    sh build_dir, BOWER_BIN, "install", "-p", component.full
   end
 end
