@@ -4,6 +4,8 @@ source 'http://rails-assets.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
 
+gem 'pg'
+gem 'schema_plus'
 
 gem 'sass-rails', '~> 4.0.0'
 gem 'uglifier', '>= 1.3.0'
@@ -23,9 +25,7 @@ gem 'sentry-raven'
 
 gem 'thin'
 
-group :production do
-  # gem 'rails_12factor'
-end
+gem 'rails_12factor'
 
 group :development, :test do
   gem 'pry-rails'

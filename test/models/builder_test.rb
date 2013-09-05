@@ -4,24 +4,15 @@ module Helper
 
 end
 
-describe GemBuilder do
+describe Build::Convert do
   def self.component(name, version = nil, &block)
     define_method "test_component: #{name} #{version}" do
       STDERR.puts "\n\e[34mBuilding package #{name} #{version}\e[0m"
 
-      # Reset
-      @component = nil
-      @gemspec = nil
-
-      @component = Component.new(name, version)
       silence_stream(STDOUT) do
-        Convert.new(@component).convert!(
-          :io => STDOUT,
-          :force => true
-        ) do |dir|
-          Dir.chdir(dir) do
-            instance_exec(&block)
-          end
+        Build::Convert.new(name, version).convert!(force: true) do |dir|
+          @gem_root = File.join(dir, "gems", name)
+          instance_exec(&block)
         end
       end
     end
@@ -32,10 +23,10 @@ describe GemBuilder do
   end
 
   def gem_file(path)
-    ex = File.exist?(File.join(@component.gem_name, path))
+    ex = File.exist?(File.join(@gem_root, path))
     log "Checking file #{path} -> #{ex ? "OK" : "NOT FOUND"}", (ex ? 32 : 31)
     unless ex
-      dir = File.join(@component.gem_name, "**", "*")
+      dir = File.join(@gem_root, "**", "*")
       log "Existing files: #{dir}"
       Dir[dir].each do |f|
         STDERR.puts " - #{f}"

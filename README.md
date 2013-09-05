@@ -50,7 +50,8 @@ downloads correct package using bower and repackages it as valid ruby gem.
 
     git clone git@github.com:rails-assets/rails-assets.git
     cd rails-assets
-    bundle --binstubs
+    bundle
+    ln -sf ../data/{latest_specs.4.8.gz,prerelease_specs.4.8.gz,quick,specs.4.8.gz,gems} public
     foreman start
 
 ### Convert bower package to gem using command line

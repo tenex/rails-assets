@@ -1,6 +1,6 @@
 RailsAssets::Application.routes.draw do
-  get "/index",     to: "main#list"
-  post "/convert",  to: "main#convert"
+  resources :components, only: [:index, :create]
+
   get "/api/v1/dependencies", to: "main#dependencies"
 
   if Rails.env.development?
