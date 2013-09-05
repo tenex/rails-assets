@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 source 'http://rails-assets.org'
 
+ruby '2.0.0'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
 
@@ -29,7 +31,9 @@ gem 'rails_12factor'
 
 group :development, :test do
   gem 'pry-rails'
-  gem 'minitest-rails'
   gem 'better_errors'
 end
 
+group :test do
+  gem 'rspec-rails'
+end
