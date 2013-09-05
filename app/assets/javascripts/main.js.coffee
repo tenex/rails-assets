@@ -9,52 +9,47 @@ app.directive "dependencies", ->
   (scope, element, attrs) ->
     scope.$watch attrs.dependencies, (deps) ->
       html = []
-      i = 0
 
-      while i < deps.length
-        h = "<span class=\"name\">" + deps[i].name + "</span>"
-        h += "<span class=\"req\"> (" + deps[i].reqs.join(", ") + ")</span>"
+      for dep in deps
+        h = "<span class=\"name\">" + dep[0] + "</span>"
+        h += "<span class=\"req\"> (" + dep[1] + ")</span>"
         html.push h
-        i++
+
       element[0].innerHTML = html.join(", ")
 
 
 app.controller "IndexCtrl", ["$scope", "$http", ($scope, $http) ->
   $scope.fetch = ->
-    $http.get("/index.json").then (res) ->
+    $http.get("/components.json").then (res) ->
       $scope.gems = res.data
 
   $scope.fetch()
 
   $scope.search =
     name: ""
-
 ]
 
 app.controller "ConvertCtrl", ["$scope", "$http", ($scope, $http) ->
   $scope.converting = false
-  $scope.pkg =
+  $scope.component =
     name: null
-    verions: null
+    version: null
 
   $scope.error = null
 
   $scope.convert = ->
     $scope.converting = true
     $scope.error = null
+    $scope.gem = null
 
-    pkg = $scope.pkg.name
-    pkg += ("#" + $scope.pkg.version) if $scope.pkg.version
-
-    $http.post("/convert.json", pkg: pkg).success((data, xhr) ->
-      console.log "suc", data, xhr
+    $http.post("/components.json", component: $scope.component).success((data, xhr) ->
+      $scope.gem = data
       $scope.converting = false
-      $scope.pkg.name = data.gem
     ).error (data, status) ->
       $scope.converting = false
       if status == 302
         $scope.error =
-          message: "Package #{pkg} already exist"
+          message: "Package #{component} already exist"
       else
         $scope.error = data
 ]

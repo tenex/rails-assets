@@ -2,17 +2,11 @@ class Reindex
   include Sidekiq::Worker
   sidekiq_options :queue => :reindex
 
-  def perform(force = false)
-    index = Index.new
-
-    if force || index.stale?
-      puts "Generating index"
-      index.with_lock do
-        HackedIndexer.new(DATA_DIR).generate_index
-        index.generated!
-      end
-    else
-      puts "Index is fresh - skipping"
+  def perform
+    file_store = Build::FileStore.new
+    file_store.with_lock(file_store.index_lock) do
+      Rails.logger.info "Generating index"
+      HackedIndexer.new(DATA_DIR).generate_index
     end
   end
 end

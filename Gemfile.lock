@@ -70,6 +70,7 @@ GEM
       rails (>= 3.0)
     multi_json (1.7.9)
     multipart-post (1.2.0)
+    pg (0.16.0)
     polyglot (0.3.3)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
@@ -89,6 +90,11 @@ GEM
       railties (= 4.0.0)
       sprockets-rails (~> 2.0.0)
     rails-assets-angular (1.0.7)
+    rails_12factor (0.0.2)
+      rails_serve_static_assets
+      rails_stdout_logging
+    rails_serve_static_assets (0.0.1)
+    rails_stdout_logging (0.0.1)
     railties (4.0.0)
       actionpack (= 4.0.0)
       activesupport (= 4.0.0)
@@ -104,6 +110,9 @@ GEM
       railties (>= 4.0.0.beta, < 5.0)
       sass (>= 3.1.10)
       sprockets-rails (~> 2.0.0)
+    schema_plus (1.2.0)
+      rails (>= 3.2)
+      valuable
     sentry-raven (0.6.0)
       faraday (>= 0.7.6)
       hashie (>= 1.1.0)
@@ -150,6 +159,7 @@ GEM
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
     uuidtools (2.1.4)
+    valuable (0.9.8)
 
 PLATFORMS
   ruby
@@ -161,12 +171,15 @@ DEPENDENCIES
   coffee-rails (~> 4.0.0)
   figaro
   minitest-rails
+  pg
   pry-rails
   rails (= 4.0.0)
   rails-assets-angular
+  rails_12factor
   redcarpet
   redis (~> 3.0.0)
   sass-rails (~> 4.0.0)
+  schema_plus
   sentry-raven
   sidekiq
   slim-rails

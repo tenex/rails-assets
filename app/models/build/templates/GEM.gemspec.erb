@@ -1,0 +1,27 @@
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require '<%= gem_component.name %>/version'
+
+Gem::Specification.new do |spec|
+  spec.name          = <%= gem_component.name.dump %>
+  spec.version       = <%= gem_component.module %>::VERSION
+  spec.authors       = ["rails-assets.org"]
+  spec.description   = <%= gem_component.description.to_s.dump %>
+  spec.summary       = <%= gem_component.description.to_s.dump %>
+  spec.homepage      = <%= gem_component.homepage.to_s.dump %>
+
+  spec.files         = [<%= gem_component.files.map{|f| f.dump }.join(",\n                        ") %>]
+  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  spec.require_paths = ["lib"]
+  <% gem_component.dependencies.each do |gem| %>
+    <% if gem.version %>
+  spec.add_dependency <%= gem.name.dump %>, <%= gem.version.dump %>
+    <% else %>
+  spec.add_dependency <%= gem.name.dump %>
+    <% end %>
+  <% end %>
+  spec.add_development_dependency "bundler", "~> 1.3"
+  spec.add_development_dependency "rake"
+end

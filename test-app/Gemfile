@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 # source 'http://rails-assets.org'
-source 'http://localhost:9292'
+# source 'http://localhost:9292'
+source 'http://rails-assets.dev'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
@@ -42,4 +43,4 @@ gem "rails-assets-underscore"
 gem "rails-assets-d3"
 # gem "rails-assets-raphael"
 gem "rails-assets-select2"
-gem "rails-assets-griddle-patched"
+gem "rails-assets-griddle"
