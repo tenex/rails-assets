@@ -17,15 +17,19 @@ gem 'sidekiq'
 gem 'builder'
 gem 'autoprefixer-rails', '>= 0.6.20130728'
 gem 'redcarpet'
+gem 'figaro'
 
 gem 'sentry-raven'
 
 gem 'thin'
 
-gem 'rails_12factor'
+group :production do
+  # gem 'rails_12factor'
+end
 
 group :development, :test do
   gem 'pry-rails'
   gem 'minitest-rails'
+  gem 'better_errors'
 end
 

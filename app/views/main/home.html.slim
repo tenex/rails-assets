@@ -71,57 +71,6 @@ section.section.section--getting-started
             code application.css
           = render partial: 'code_application_css.html'
 
-.wrap ng-controller="MainCtrl"
-  section
-    markdown:
-      **NOTICE**: Currently due to way bundler works there is no way to build package for explicit version specified in Gemfile - rails-assets will alway build newest version and bundler will raise error that such gem version was not found. If you need older version of package please use [the form below](#gems).
-
-      Please search bower first (using `bower search`) for package name
-
-
-    h2#gems
-      | Already converted gems
-      input#gem-search type="search" ng-model="search.name" placeholder="Search"
-
-
-    div#new-gem ng-show="pkg.force || (gems | filter:search).length == 0"
-      h4 Package {{ search.name }} not found, let's try to create it!
-      div ng-hide="pkg.converting"
-        .error ng-show="pkg.error"
-          | {{ pkg.error }}
-        .error-log ng-show="pkg.error"
-          pre
-            | {{ pkg.errorLog }}
-        .success ng-show="pkg.success"
-          | {{ pkg.success }}
-        input type="text" ng-model="pkg.name" placeholder="Package name"
-        input type="version" ng-model="pkg.version" placeholder="Version (not required)"
-        button href="" ng-click="pkg.convert()" Create package {{ search.name }}
-      div ng-show="pkg.converting"
-        p Converting package {{ pkg.name }} in progress...
-
-    p ng-hide="pkg.force || (gems | filter:search).length == 0"
-      ' If you can't find your package, try
-      a href="" ng-click="pkg.open()" creating one
-
-    ul
-      li ng-repeat="gem in gems | filter:search"
-        .summary
-          span.name
-            ' {{ gem.name }}
-          span.versions
-            ' ({{ gem.versions.join(", ") }})
-          code
-            | gem "rails-assets-{{ gem.name }}"
-        .details
-          div ng-html="gem.description"
-          .homepage
-            a href="{{ gem.homepage }}"
-              ' {{ gem.homepage }}
-          .dependencies ng-show="gem.dependencies.length"
-            span.header Dependencies:
-            span dependencies="gem.dependencies"
-
 
 footer
   p

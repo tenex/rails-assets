@@ -16,3 +16,4 @@
 .dogrc
 
 /test-app/Gemfile.lock
+/config/application.yml

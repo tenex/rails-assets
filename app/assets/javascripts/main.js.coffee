@@ -19,44 +19,42 @@ app.directive "dependencies", ->
       element[0].innerHTML = html.join(", ")
 
 
-app.controller "MainCtrl", ["$scope", "$http", ($scope, $http) ->
-  $scope.reload = ->
+app.controller "IndexCtrl", ["$scope", "$http", ($scope, $http) ->
+  $scope.fetch = ->
     $http.get("/index.json").then (res) ->
       $scope.gems = res.data
 
+  $scope.fetch()
 
-  $scope.reload()
   $scope.search =
     name: ""
+
+]
+
+app.controller "ConvertCtrl", ["$scope", "$http", ($scope, $http) ->
+  $scope.converting = false
   $scope.pkg =
     name: null
-    converting: false
-    success: null
-    error: null
-    force: false
-    open: ->
-      $scope.pkg.force = true
+    verions: null
 
-    convert: ->
-      $scope.pkg.converting = true
-      data = pkg: $scope.pkg.name
-      data.pkg += ("#" + $scope.pkg.version)  if $scope.pkg.version
-      $http.post("/convert.json", data).success((data) ->
-        $scope.reload()
-        $scope.pkg.success = "Gem #{data.gem} built successfully!"
-        $scope.pkg.error = null
-        $scope.pkg.converting = false
-        $scope.pkg.version = null
-        $scope.search.name = $scope.pkg.name
-      ).error (data, status) ->
-        console.log "error", status, data
-        $scope.pkg.converting = false
-        $scope.pkg.error = "ERROR: " + data.error
-        $scope.pkg.errorLog = data.log
-        $scope.pkg.success = null
+  $scope.error = null
 
+  $scope.convert = ->
+    $scope.converting = true
+    $scope.error = null
 
-  $scope.$watch "search.name", (val, old) ->
-    $scope.pkg.name = val
+    pkg = $scope.pkg.name
+    pkg += ("#" + $scope.pkg.version) if $scope.pkg.version
 
+    $http.post("/convert.json", pkg: pkg).success((data, xhr) ->
+      console.log "suc", data, xhr
+      $scope.converting = false
+      $scope.pkg.name = data.gem
+    ).error (data, status) ->
+      $scope.converting = false
+      if status == 302
+        $scope.error =
+          message: "Package #{pkg} already exist"
+      else
+        $scope.error = data
 ]
