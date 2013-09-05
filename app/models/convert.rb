@@ -14,7 +14,7 @@ class Convert
 
   def initialize(component)
     @component = component
-    raise BuildError.new("Empty component name") if component.name == ""
+    raise BuildError.new("Empty component name") if component.name.to_s.strip == ""
   end
 
   def log

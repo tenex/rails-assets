@@ -1,19 +1,24 @@
 class MainController < ApplicationController
   def list
-    gems = index.all.map do |gem_name|
-      component = Component.new(gem_name)
-      versions = index.versions(gem_name)
-      component.version = versions.first
-      {
-        :name => component.name,
-        :versions => versions,
-        :description => Tilt[:markdown].new { component.description }.render,
-        :homepage => component.homepage,
-        :dependencies => index.dependencies(gem_name, versions.first)
-      }
-    end
+    respond_to do |format|
+      format.html {}
+      format.json do
+        gems = index.all.map do |gem_name|
+          component = Component.new(gem_name)
+          versions = index.versions(gem_name)
+          component.version = versions.first
+          {
+            :name => component.name,
+            :versions => versions,
+            :description => Tilt[:markdown].new { component.description }.render,
+            :homepage => component.homepage,
+            :dependencies => index.dependencies(gem_name, versions.first)
+          }
+        end
 
-    render json: gems
+        render json: gems
+      end
+    end
   end
 
   def convert
@@ -38,7 +43,13 @@ class MainController < ApplicationController
         Raven.capture_exception(ex)
         io.puts ex.message
         io.puts ex.backtrace.take(5).first.gsub(File.dirname(File.dirname(__FILE__)), "")
-        render json: { error: ex.message, log: io.string }, status: :unprocessable_entity
+
+        log = io.string
+
+        render json: {
+          message: discover_error_cause(log) || ex.message,
+          log: log
+        }, status: :unprocessable_entity
       end
     end
   end
@@ -75,5 +86,13 @@ class MainController < ApplicationController
 
   def index
     @index ||= Index.new
+  end
+
+  def discover_error_cause(log)
+    if pkg = log[/INFO - \[stdout\] - \e\[31m(.+)\e\[39m not found/, 1]
+      "Package #{pkg.strip} not found"
+    else
+      nil
+    end
   end
 end
