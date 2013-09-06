@@ -57,7 +57,10 @@ class ComponentsController < ApplicationController
   end
 
   def build(name, version)
-    result = Build::Convert.new(name, version).convert!(debug: params[:_debug])
+    result = Build::Convert.new(name, version).convert!(
+      debug: params[:_debug],
+      force: params[:_force]
+    )
     result[:component]
   end
 
