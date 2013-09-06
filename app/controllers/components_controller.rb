@@ -11,7 +11,9 @@ class ComponentsController < ApplicationController
   def create
     name, version = component_params[:name].to_s.strip, component_params[:version]
 
-    component = if component = Component.where(name: name).first
+    component = if params[:_force]
+      build(name, version)
+    elsif component = Component.where(name: name).first
       if version.blank?
         component
       else
