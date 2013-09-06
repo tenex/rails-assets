@@ -1,5 +1,9 @@
 require "<%= gem_component.name %>/version"
 
+<% gem_component.dependencies.each do |gem| %>
+require <%= gem.name.dump %>
+<% end %>
+
 if defined?(Rails)
   module <%= gem_component.module %>
     class Engine < ::Rails::Engine
@@ -7,4 +11,3 @@ if defined?(Rails)
     end
   end
 end
-
