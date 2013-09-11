@@ -1,5 +1,7 @@
 ## Rails Assets - Bundler to Bower proxy
 
+![Build Status](https://circleci.com/gh/rails-assets/rails-assets.png?circle-token=3eec67ef0c9bf5973d6d074091e9f4065c7bd0b2)
+
 The final solution to managing asset dependencies in your rails apps
 
 ### Setup
