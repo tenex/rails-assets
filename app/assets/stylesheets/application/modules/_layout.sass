@@ -7,3 +7,14 @@
 
 .wrap--narrow
   max-width: $wrapper-narrow-width
+
+.grid--line
+  &:before
+    content: ""
+    display: block
+    height: 1px
+    background: $content-border-color
+    margin: 0 10px ($wrapper-default-padding / 2)
+
+  & + &
+    margin-top: $wrapper-default-padding
