@@ -1,0 +1,15 @@
+<pre class="diff"><code>diff <span class="diff__file">Gemfile</span>
+<span class="diff__line-numbers">@@ -1,4 +1,5 @@</span>
+ source 'https://rubygems.org'
+<span class="diff__added-line diff__added-line--first diff__added-line--last"><b>+</b>source 'http://rails-assets.org'</span>
+
+ gem 'rails'
+
+<span class="diff__line-numbers">@@ -6,6 +7,9 @@</span> group :assets do
+   gem 'sass-rails'
+   gem 'uglifier'
+   gem 'coffee-rails'
+<span class="diff__added-line diff__added-line--first"><b>+</b>  gem 'rails-assets-bootstrap'</span>
+<span class="diff__added-line"><b>+</b>  gem 'rails-assets-angular'</span>
+<span class="diff__added-line diff__added-line--last"><b>+</b>  gem 'rails-assets-leaflet'</span>
+ end</code></pre>

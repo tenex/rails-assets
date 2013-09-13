@@ -12,12 +12,14 @@ section,
   box-sizing: border-box
 
 html
+  background: #fff
+  color: $default-text-color
   font: 400 15px/1.5 $default-font-stack
   text-rendering: optimizeLegibility
   -ms-text-size-adjust: 100%
   -webkit-text-size-adjust: 100%
 
-body, p, ul, ol, li,
+body, p, ul, ol, li, pre,
 h1, h2, h3, h4, h5, h6
   margin: 0
   padding: 0
@@ -34,6 +36,11 @@ a
 pre
   @extend %word-wrap
   text-align: left !important
+
+code
+  font: 0.9em $code-font-stack
+  font-weight: normal !important
+  -webkit-font-smoothing: antialiased
 
 ::selection
   background: $brand-orange
