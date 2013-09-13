@@ -1,0 +1,28 @@
+article.section
+  .section__content.wrap
+    h1.section__header.header Getting started
+    .grid
+      .grid__cell.unit-1-2
+        markdown:
+
+          Add `rails-assets.org` as the new source of Ruby gems and reference your desired Bower packages in the following way:
+
+              gem "rails-assets-#{'#{BOWER_PACKAGE_NAME}'}"
+
+          Run `bundle install`.
+
+          When Bundler requests a package like this, Rails Assets’ daemon automatically fetches the package, analyzes `bower.json` from the repository, and then repackages it as a valid Ruby&nbsp;gem.
+
+          Package dependencies are recursively handled the same way.
+
+      .grid__cell.unit-1-2
+        = render 'shared/diff_gemfile'
+    .grid
+      .grid__cell.unit-1-2
+        markdown:
+
+          Use the packages just like you’re used to—with one exception: your `vendor` directory stays neat.
+
+      .grid__cell.unit-1-2
+        = render 'shared/diff_javascript'
+        = render 'shared/diff_stylesheet'

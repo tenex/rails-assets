@@ -88,6 +88,7 @@ GEM
       railties (= 4.0.0)
       sprockets-rails (~> 2.0.0)
     rails-assets-angular (1.0.7)
+    rails-assets-griddle (0.3.0)
     rails_12factor (0.0.2)
       rails_serve_static_assets
       rails_stdout_logging
@@ -183,6 +184,7 @@ DEPENDENCIES
   pry-rails
   rails (= 4.0.0)
   rails-assets-angular
+  rails-assets-griddle
   rails_12factor
   redcarpet
   redis (~> 3.0.0)

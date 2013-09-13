@@ -2,7 +2,7 @@ section.hero.util__inverted
   h1.hero__title.header.header--alpha
       span.util__text-line The&nbsp;solution to
       span.util__text-line< managing assets in&nbsp;Rails
-  .hero__wrapper
+  .wrap.wrap--narrow
     p.hero__description
       | Rails Assets is the proxy between <a href="http://bundler.io/">Bundler</a>
       |  and&nbsp;<a href="http://bower.io/">Bower</a>.
@@ -10,56 +10,7 @@ section.hero.util__inverted
       | It automatically converts the packaged components into gems that are easily
       | &nbsp;droppable into your asset pipeline and stay up&nbsp;to&nbsp;date.
 
-= render 'shared/diff_gemfile'
-= render 'shared/diff_javascript'
-= render 'shared/diff_stylesheet'
-
-section.section.section--getting-started
-  .wrap
-    h1.section__header.text-center Getting started
-
-    .columns.gutter-top--short
-      .column.column--1-3
-        h2.section__subheader.text-center
-          | Use the new gem&nbsp;source
-        article.file
-          h1.file__name
-            code Gemfile
-          = render partial: 'code_gemfile_source.html'
-        h2.section__subheader.gutter-top--short.text-center
-          | Add Bower packages as&nbsp;gems
-        article.file
-          h1.file__name
-            code Gemfile
-          = render partial: 'code_gemfile_gem.html'
-      .column.column--1-3
-        h2.section__subheader.text-center
-          | Run Bundler
-        article.file
-          h1.file__name
-            code Console
-          = render partial: 'code_bundle_install.html'
-        p.text-small
-          ' When Bundler requests a Bower package, it’s immediately downloaded on
-          ' Rails Assets’ server and repackaged as valid Ruby&nbsp;gems.
-        p.text-small
-          | You can update these gems,&nbsp;too:
-        article.file
-          h1.file__name
-            code Console
-          = render partial: 'code_bundle_install.html'
-      .column.column--1-3
-        h2.section__subheader.text-center
-          | Use the&nbsp;assets
-        article.file
-          h1.file__name
-            code application.js
-          = render partial: 'code_application_js.html'
-        article.file
-          h1.file__name
-            code application.css
-          = render partial: 'code_application_css.html'
-
+= render 'main/content'
 
 footer
   p

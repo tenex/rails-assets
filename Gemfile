@@ -14,6 +14,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.0.0'
 
 gem 'rails-assets-angular'
+gem 'rails-assets-griddle'
 
 gem 'slim-rails'
 gem 'redis',      "~> 3.0.0"
