@@ -2,12 +2,27 @@ doctype html
 html ng-app="app"
   head
     title Rails Assets
-    = stylesheet_link_tag    "application", media: "all"
-    = javascript_include_tag "application"
-    = csrf_meta_tags
+
+    = stylesheet_link_tag 'application', media: 'all'
+    = stylesheet_link_tag '//cloud.typography.com/6743452/745062/css/fonts.css', media: 'all'
     = javascript_include_tag '//use.typekit.net/jvv3pir.js'
-    javascript:
-      try{Typekit.load();}catch(e){}
+    script try{Typekit.load();}catch(e){}
+
+    = javascript_include_tag 'application'
+    = csrf_meta_tags
 
   body
+    header.top.util__inverted
+      .top__wrapper
+        h1.top__header
+          a href="/" Rails Assets
+        nav
+          ul.top__nav
+            li.top__nav__item title="Rails Assets on GitHub"
+              a href="https://github.com/rails-assets/rails-assets/" GitHub
+            li.top__nav__item
+              a href=components_path Package list
+            li.top__nav__item
+              a href="#" Add package
+
     = yield

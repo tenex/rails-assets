@@ -12,35 +12,30 @@ section,
   box-sizing: border-box
 
 html
-  font: 16px/1.4 adelle-sans, sans-serif
+  font: 400 15px/1.5 $default-font-stack
   text-rendering: optimizeLegibility
   -ms-text-size-adjust: 100%
   -webkit-text-size-adjust: 100%
-  -webkit-font-smoothing: antialiased
 
-body, p,
-ul, ol, li,
+body, p, ul, ol, li,
 h1, h2, h3, h4, h5, h6
   margin: 0
+  padding: 0
+  list-style: none
 
 a
   text-decoration: none
-  transition: color 0.2s ease-out, opacity 0.2s ease-out
+  transition: color 0.2s ease-out
 
   &:active
-    opacity: 0.8
-    transition: none
-
-code
-  font-family: source-code-pro, monospace
-  font-weight: 500 !important
-  letter-spacing: -1px
+    position: relative
+    top: 1px
 
 pre
   @extend %word-wrap
   text-align: left !important
 
 ::selection
-  background: #f36d00
+  background: $brand-orange
   color: #fff
   text-shadow: none

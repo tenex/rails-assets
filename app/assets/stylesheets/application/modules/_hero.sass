@@ -1,0 +1,23 @@
+.hero
+  padding: $hero-top-padding 0 (2 * $wrapper-default-padding)
+  background: $hero-background-color asset-data-url("hero-image@2x.png") no-repeat
+  background-position: center round($hero-top-padding / 2)
+  background-size: 48px 48px
+  color: $hero-text-color
+  text-align: center
+
+  a, b
+    font-weight: 500
+
+.hero__wrapper
+  max-width: $wrapper-default-width
+  margin: 0 auto
+  padding: 0 $wrapper-default-padding
+
+.hero__title
+  color: #fff
+  padding-bottom: $wrapper-default-padding
+
+.hero__description
+  & + &
+    margin-top: 0.5em
