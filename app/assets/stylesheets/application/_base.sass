@@ -29,8 +29,14 @@ b, strong
   font-weight: 600
 
 a
+  color: $default-link-color
+  font-weight: 600
   text-decoration: none
   transition: color 0.2s ease-out
+
+  &:hover,
+  &:active
+    color: $hover-link-color
 
   &:active
     position: relative
