@@ -8,6 +8,9 @@ class ComponentsController < ApplicationController
     end
   end
 
+  def new
+  end
+
   def create
     name, version = component_params[:name].to_s.strip, component_params[:version]
 

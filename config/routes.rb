@@ -1,5 +1,5 @@
 RailsAssets::Application.routes.draw do
-  resources :components, only: [:index, :create]
+  resources :components, only: [:index, :new, :create]
 
   get "/api/v1/dependencies", to: "main#dependencies"
 
