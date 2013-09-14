@@ -21,3 +21,5 @@
 /public/latest_specs.4.8.gz
 /public/prerelease_specs.4.8.gz
 /public/specs.4.8.gz
+
+/rails-assets-*
