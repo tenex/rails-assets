@@ -1,7 +1,6 @@
 .diff
-  padding: $diff-vertical-padding 0 $diff-vertical-padding $diff-horizontal-padding
-  color: $dimmed-text-color
-  line-height: 1.2 !important
+  padding-left: $diff-vertical-padding
+  line-height: 1.4 !important
 
   & + &
     margin-top: $wrapper-default-padding / 2
@@ -16,18 +15,18 @@
   padding: $diff-vertical-padding $diff-horizontal-padding
   border-radius: $diff-border-radius
 
-
 .diff__added-line
   display: inline-block
+  box-sizing: content-box
   width: 100%
-  margin-left: -1 * $diff-horizontal-padding
-  padding-left: $diff-horizontal-padding
-  background: #35aa3a
+  margin: -1px 0 -1px -1 * $diff-horizontal-padding
+  padding: 1px 0 1px $diff-horizontal-padding
+  background: $diff-green
   color: #fff
 
   b
     font: inherit
-    color: $top-text-color
+    color: lighten($diff-green, 15%)
 
 .diff__added-line--first
   margin-top: -1 * $diff-vertical-padding
