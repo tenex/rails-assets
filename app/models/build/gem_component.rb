@@ -58,17 +58,19 @@ module Build
     protected
 
     def fix_version_string(version)
+      version = version.to_s
+
       if version =~ />=(.+)<(.+)/
         version = ">= #{$1}"
       end
 
       if version.strip == "latest"
-        return nil
+        nil
+      else
+        version.gsub!('-', '.')
+        version.gsub!(/~(\d)/, '~> \1')
+        version
       end
-
-      version.gsub!('-', '.')
-      version.gsub!(/~(\d)/, '~> \1')
-      version
     end
   end
 end
