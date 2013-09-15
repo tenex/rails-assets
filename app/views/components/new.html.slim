@@ -1,4 +1,4 @@
-section.section.gem-list ng-controller="ConvertCtrl"
+section.section.gem-list ng-controller="ConvertCtrl" ng-init="component.name = '#{params[:name]}'"
   .wrap
     h1.section__header.header.header--gamma
       | New component
@@ -21,7 +21,7 @@ section.section.gem-list ng-controller="ConvertCtrl"
     .gem-list__item ng-show="gem"
       p.notice.notice--success.content.content--small
         b> Success:
-        code> rails-assets-gem.name
+        code> rails-assets-{{ gem.name }}
         | has been created.
 
     pre.gem-list__item.util__dimmed ng-show="error"
