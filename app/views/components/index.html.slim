@@ -11,8 +11,8 @@ section.section.gem-list ng-controller="IndexCtrl"
       input#gem-search type="search" ng-model="search.name" placeholder="Search"
 
     p.gem-list__item ng-hide="(gems | filter:search).length > 0"
-      | Package <code>{{ search.name }}</code> not found.
-      |  You can <a href="/components/new?name={{ search.name }}"> create it using this form</a>.
+      ' Package <code>{{ search.name }}</code> not found.
+      | You can always <a href="/components/new?name={{ search.name }}">add it</a>.
 
     article.grid.gem-list__item.gem ng-repeat="gem in gems | filter:search"
       header.grid__cell.unit-1-2
