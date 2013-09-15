@@ -32,3 +32,13 @@ This will create `rails-assets-NAME-VERSION.gem` file.
 /prerelease_specs.4.8.gz    -> DATA_DIR/prerelease_specs.4.8.gz
 /specs.4.8.gz               -> DATA_DIR/specs.4.8.gz
 ```
+
+## Credits
+
+Rails Assets *used to* be the fork of [Gem in a Box](https://github.com/geminabox/geminabox).
+
+---
+
+Created by [@teamon](http://github.com/teamon) and [@porada](http://github.com/porada).
+
+Thanks for help to [@sheerun](http://github.com/sheerun), [@jandudulski](http://github.com/jandudulski) and [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors).
