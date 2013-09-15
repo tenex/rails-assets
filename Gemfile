@@ -26,6 +26,8 @@ gem 'figaro'
 
 gem 'sentry-raven'
 
+gem 'activeadmin', :github => "gregbell/active_admin", :branch => "rails4"
+
 gem 'thin'
 
 gem 'rails_12factor'
