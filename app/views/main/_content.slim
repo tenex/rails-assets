@@ -4,15 +4,20 @@ article.section
     .grid.grid--line
       .grid__cell.unit-1-2.content
         markdown:
-          ## Bundle Install
+          ## Bundler
 
-          Add `rails-assets.org` as the&nbsp;new source of Ruby gems and reference your desired Bower&nbsp;packages:
+          1. Add `http://rails-assets.org` as a&nbsp;new source.
+          2. Add components as gems with `rails-assets-` prefixed:
 
-              gem "rails-assets-#{'#{BOWER_PACKAGE_NAME}'}"
+                  rails-assets-BOWER_PACKAGE_NAME
 
-          When Bundler requests a&nbsp;package like this, Rails Assets’ daemon automatically fetches the package, analyzes `bower.json` from the&nbsp;repository, and then repackages it as&nbsp;a&nbsp;valid Ruby&nbsp;gem.
+          On `bundle install` Rails Assets' daemon:
 
-          Package dependencies are recursively handled the&nbsp;same&nbsp;way.
+          * Fetches component's repository (possibly on-the-fly).
+          * Analyzes `component.json` from the&nbsp;fetched&nbsp;repository.
+          * Packages it as&nbsp;a&nbsp;valid Ruby&nbsp;gem.
+
+          Then the process repeats for component's dependencies.
 
       .grid__cell.unit-1-2
         = render 'shared/diff_gemfile'
@@ -21,7 +26,9 @@ article.section
         markdown:
           ## Asset pipeline
 
-          Use the packages just like you’re used to—with the&nbsp;one exception: your `vendor` directory stays&nbsp;neat.
+            1. You can require any asset from component.
+
+            1. The `main` asset defined in `component.json` is going to be aliased to name of the component.
 
         p.notice.notice--important.content--small
           strong> Notice:
