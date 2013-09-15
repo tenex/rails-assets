@@ -1,0 +1,7 @@
+{
+  "name": "rails-assets",
+  "version": "0.0.0",
+  "dependencies": {
+    "bower": "1.0.0"
+  }
+}

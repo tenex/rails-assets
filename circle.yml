@@ -1,4 +1,4 @@
 checkout:
   post:
-    - npm install -g bower
+    - npm install
     - cp config/application.sample.yml config/application.yml
