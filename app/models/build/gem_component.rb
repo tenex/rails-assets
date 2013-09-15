@@ -14,7 +14,7 @@ module Build
     end
 
     def name
-      @name ||= "#{GEM_PREFIX}#{@bower_component.name}"
+      @name ||= "#{GEM_PREFIX}#{@bower_component.full_name}"
     end
 
     def short_name

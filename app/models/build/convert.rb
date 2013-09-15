@@ -52,7 +52,13 @@ module Build
       end
 
       results = Dir[File.join(dir, "bower_components", "*")].map do |file|
-        GemBuilder.new(dir, File.basename(file)).build!(@opts)
+        name = File.basename(file)
+
+        if name == @bower_component.name && @bower_component.github?
+          name = @bower_component.github_name
+        end
+
+        GemBuilder.new(dir, name).build!(@opts)
       end
 
       results.each do |result|

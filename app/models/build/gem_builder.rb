@@ -5,18 +5,33 @@ module Build
     attr_reader :dir, :name, :bower_component, :gem_component
     def initialize(dir, name)
       @dir, @name = dir, name
-      @bower_dir = File.join(dir, "bower_components", name)
-      @gem_dir = File.join(dir, "gems", name)
+      gem_name = @name
+
+      if name.include?("/") # github
+        @user, @name = name.split("/",2)
+        gem_name = "#{@user}--#{@name}"
+      end
+
+      @bower_dir = File.join(dir, "bower_components", @name)
+      @gem_dir = File.join(dir, "gems", gem_name)
       @gem_files = []
+    end
+
+    def github?
+      !!@user
     end
 
     def build!(opts = {})
       Rails.logger.tagged(name) do
         @bower_component = BowerComponent.from_manifests(@bower_dir, name)
+        if github?
+          @bower_component.github!(@user)
+        end
+
         @gem_component = @bower_component.gem
         Rails.logger.info "Bower component: #{@bower_component.inspect}"
 
-        @component, @version = Component.get(@bower_component.name, @bower_component.version)
+        @component, @version = Component.get(@bower_component.full_name, @bower_component.version)
         result = if @version.new_record? || opts[:force]
           build
           { pkg: File.join(@gem_dir, "pkg", gem_component.filename) }

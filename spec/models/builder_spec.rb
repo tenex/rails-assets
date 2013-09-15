@@ -2,15 +2,21 @@ require 'spec_helper'
 
 describe Build::Convert do
   context 'generates proper files in conversion', slow: true do
-    def self.component(name, version = nil, &block)
-      it "properly compile #{name} #{version}" do
+    before { Component.destroy_all }
+
+    def self.component(name, version = nil, opts = {}, &block)
+      gem_name = opts[:gem_name] || name
+
+      it "properly compile #{name} #{version} to #{gem_name}" do
         STDERR.puts "\n\e[34mBuilding package #{name} #{version}\e[0m"
 
         silence_stream(STDOUT) do
           Build::Convert.new(name, version).convert!(force: true) do |dir|
-            @gem_root = File.join(dir, "gems", name)
+            @gem_root = File.join(dir, "gems", gem_name)
             instance_exec(&block)
           end
+
+          Component.where(:name => gem_name).first.should_not be_nil
         end
       end
     end
@@ -77,6 +83,11 @@ describe Build::Convert do
     component "resizeend", "1.1.2" do
       gem_file "vendor/assets/javascripts/resizeend.js"
       gem_file "vendor/assets/javascripts/resizeend/resizeend.js"
+    end
+
+    component "rails-assets/jquery-waypoints", nil, :gem_name => "rails-assets--jquery-waypoints" do
+      gem_file "vendor/assets/javascripts/jquery-waypoints.js"
+      gem_file "vendor/assets/javascripts/jquery-waypoints/waypoints.js"
     end
   end
 end

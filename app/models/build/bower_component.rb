@@ -4,17 +4,46 @@ module Build
 
     attr_accessor :name, :version, :description,
                   :dependencies, :repository, :main,
-                  :homepage
+                  :homepage, :user, :repo
 
     def initialize(name, version = nil)
       @name, @version = name, version
+
+      if name.include?("/") # github repo
+        @version ||= "master" # defaults to master
+        @user, @name = name.split("/", 2)
+      end
 
       # Validation
       raise BuildError.new("Empty bower component name") if @name.blank?
     end
 
+    def github!(user)
+      @user = user
+    end
+
+    def github?
+      !!user
+    end
+
+    def full_name
+      if github?
+        "#{user}--#{name}"
+      else
+        name
+      end
+    end
+
+    def github_name
+      "#{user}/#{name}"
+    end
+
     def full
-      version.blank? ? name : "#{name}##{version}"
+      if github?
+        "#{user}/#{name}##{version}"
+      else
+        version.blank? ? name : "#{name}##{version}"
+      end
     end
 
     def gem
