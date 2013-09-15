@@ -19,7 +19,10 @@ module Build
     end
 
     def github!(user)
-      @user = user
+      self.user = user
+
+      self.repository = "git://github.com/#{user}/#{name}.git"
+      self.homepage = self.class.get_homepage_from_repository(repository)
     end
 
     def github?
@@ -61,8 +64,8 @@ module Build
         self.new(name, data[:version]).tap do |c|
           c.description   = data[:description]
           c.dependencies  = (data[:dependencies] || {})
-          c.repository    = data[:repository]
           c.main          = data[:main]
+          c.repository    = data[:repository]
           c.homepage      = data[:homepage]
           c.homepage      = get_homepage_from_repository(data[:repository]) if c.homepage.blank?
         end
@@ -70,7 +73,7 @@ module Build
 
       def get_homepage_from_repository(repo)
         case repo.to_s
-        when %r|//github.com/(.+)/(.+)(.git)?|
+        when %r|//github.com/(.+)/(.+?)(\.git)?$|
             "http://github.com/#{$1}/#{$2}"
         end
       end
