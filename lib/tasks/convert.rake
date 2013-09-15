@@ -26,6 +26,7 @@ task :remove, [:pkg] => :environment do |t, args|
       Rails.logger.info "Removing #{v.gem.filename}"
       fs.delete(v.gem)
     end
+    component.destroy
   else
     Rails.logger.error "Component #{name} not found"
   end
