@@ -26,6 +26,7 @@ section.section.gem-list ng-controller="IndexCtrl"
         code.gem__code
           | gem "rails-assets-{{ gem.name }}"
       .grid__cell.unit-1-2.content.content--small
-        .gem__description ng-show="gem.description" ng-html="gem.description"
+        .gem__description ng-show="gem.description"
+          | {{ gem.description }}
         .gem__description.gem__description--empty ng-hide="gem.description"
           | No description available.
