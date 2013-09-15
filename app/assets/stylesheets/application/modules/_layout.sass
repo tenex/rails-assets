@@ -8,13 +8,17 @@
 .wrap--narrow
   max-width: $wrapper-narrow-width
 
+.grid__cell--unpadded
+  padding-right: 0
+  padding-left: 0
+
 .grid--line
   &:before
     content: ""
     display: block
     height: 1px
     background: $content-border-color
-    margin: 0 10px ($wrapper-default-padding / 2)
+    margin-bottom: $wrapper-default-padding / 2
 
   & + &
     margin-top: $wrapper-default-padding

@@ -1,26 +1,31 @@
-section.gem-list ng-controller="ConvertCtrl"
-  h1.util__hidden New component
+section.section.gem-list ng-controller="ConvertCtrl"
+  .wrap
+    h1.section__header.header.header--gamma
+      | New component
 
-  markdown:
-    **NOTICE**: Currently due to way bundler works there is no way to build package for explicit version specified in Gemfile - rails-assets will alway build newest version and bundler will raise error that such gem version was not found. If you need older version of package please use [the form below](#gems).
+    .notice.content.content--small
+      p <b>Notice:</b> Currently, due to the way Bundler works, there is no way to automatically convert a&nbsp;package for a&nbsp;specific gem version referenced in&nbsp;<code>Gemfile</code>. In such cases, Rails Assets will always build the&nbsp;newest version causing Bundler to raise an&nbsp;error.
+      p If you need an&nbsp;older component version, add it using this form first—then lock the version in your&nbsp;<code>Gemfile</code>.
 
-  div
-    input type="text"     ng-model="component.name"     placeholder="Package name"
-    input type="version"  ng-model="component.version"  placeholder="Version (not required)"
-    button ng-click="convert()" ng-disabled="converting" Convert
+    form.gem-list__form.grid
+      .grid__cell.unit-2-4
+        input type="text" ng-model="component.name" placeholder="Package name"
+      .grid__cell.grid__cell--unpadded.unit-1-4
+        input type="text" ng-model="component.version" placeholder="Version (optional)"
+      .grid__cell.unit-1-4
+        button ng-click="convert()" ng-disabled="converting" Convert
 
-  div ng-show="converting"
-    | Converting in progress...
+    p.gem-list__item.util__dimmed ng-show="converting"
+      | Conversion in progress…
 
-  div ng-show="gem"
-    | {{ gem | json }}
+    .gem-list__item ng-show="gem"
+      p.notice.notice--success.content.content--small
+        b> Success:
+        code> rails-assets-gem.name
+        | has been created.
 
-  div ng-show="error"
-    ' {{ error.message }}
-    a href="#" ng-hide="showLog" ng-click="showLog = true" Show log
-
-    div ng-show="showLog"
-      | Build log
-      a href="#" ng-show="showLog" ng-click="showLog = false" Hide
-      pre
-        | {{ error.log }}
+    pre.gem-list__item.util__dimmed ng-show="error"
+      code
+        | {{ error.message }}
+      code ng-show="error.log"
+        = "\n\n{{ error.log }}"

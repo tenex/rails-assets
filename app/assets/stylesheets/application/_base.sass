@@ -52,6 +52,51 @@ code
   color: $dimmed-text-color
   -webkit-font-smoothing: antialiased
 
+input, button
+  -webkit-appearance: none
+  display: block
+  width: 100%
+  margin: 0
+  padding: 1rem
+  border: 1px solid $content-border-color
+  border-radius: 2 * $diff-border-radius
+  background: #fff
+  color: inherit
+  font: inherit
+  line-height: normal
+  transition: border-color 0.2s ease-out, color 0.2s ease-out, background 0.2s ease-out
+
+  &:focus,
+  &:active
+    outline: none
+
+  &::placeholder
+    color: $dimmed-text-color
+    font-weight: 300
+
+  &::-moz-focus-inner
+    border: 0
+    padding: 0
+
+input[type="submit"], button
+  padding-right: 0
+  padding-left: 0
+  border-color: mix($brand-orange, $content-border-color)
+  color: $brand-orange
+  text-align: center
+  cursor: pointer
+
+  &:hover,
+  &:focus,
+  &:active
+    border-color: $brand-orange
+    background: $brand-orange
+    color: $brand-light-yellow
+
+  &:active
+    position: relative
+    top: 1px
+
 ::selection
   background: $brand-orange
   color: #fff

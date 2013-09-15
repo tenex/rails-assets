@@ -1,9 +1,18 @@
-section.gem-list ng-controller="IndexCtrl"
-  h1.util__hidden Components
-
-  input#gem-search type="search" ng-model="search.name" placeholder="Search name"
-
+section.section.gem-list ng-controller="IndexCtrl"
   .wrap
+    h1.section__header.header.header--gamma
+      | Component list
+
+    .notice.content--small
+      p You can always reference Rails Assets gems in your <code>Gemfile</code>, even if&nbsp;they aren’t listed&nbsp;below.
+      p If you need a&nbsp;specific version of any&nbsp;component, #{link_to 'add one&nbsp;manually'.html_safe, new_component_path}.
+
+    .gem-list__form
+      input#gem-search type="search" ng-model="search.name" placeholder="Search"
+
+    p.gem-list__item ng-hide="(gems | filter:search).length > 0"
+      | Package <code>{{ search.name }}</code> not found.
+
     article.grid.gem-list__item.gem ng-repeat="gem in gems | filter:search"
       header.grid__cell.unit-1-2
         h1.gem__name
@@ -19,6 +28,3 @@ section.gem-list ng-controller="IndexCtrl"
         .gem__description ng-show="gem.description" ng-html="gem.description"
         .gem__description.gem__description--empty ng-hide="gem.description"
           | No description available.
-
-    .grid.gem-list__item ng-hide="(gems | filter:search).length > 0"
-      p.grid__cell Package <code>{{ search.name }}</code> not found.

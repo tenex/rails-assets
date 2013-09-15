@@ -1,5 +1,14 @@
-.top + .gem-list
+.top + .section
   margin-top: 3rem
 
-.grid--line .diff
-  margin-left: $wrapper-default-padding / 2
+.header--gamma.section__header
+  padding-bottom: 0
+
+.gem-list__item,
+.grid--line
+  &.grid:before
+    margin-right: 10px
+    margin-left: 10px
+
+  .diff
+    margin-left: $wrapper-default-padding / 2
