@@ -6,18 +6,17 @@ article.section
         markdown:
           ## Bundler
 
-          1. Add `http://rails-assets.org` as a&nbsp;new source.
-          2. Add components as gems with `rails-assets-` prefixed:
+          Add `http://rails-assets.org` as a&nbsp;new source, then reference any Bower components that you need as gems in the&nbsp;following&nbsp;convention:
 
-                  rails-assets-BOWER_PACKAGE_NAME
+              gem 'rails-assets-BOWER_PACKAGE_NAME'
 
-          On `bundle install` Rails Assets' daemon:
+          During `bundle` `install`, if Bundler requests a&nbsp;package like this, Rails Assets’ daemon automatically&nbsp;will:
 
-          * Fetches component's repository (possibly on-the-fly).
-          * Analyzes `component.json` from the&nbsp;fetched&nbsp;repository.
-          * Packages it as&nbsp;a&nbsp;valid Ruby&nbsp;gem.
+          * fetch the component from Bower’s&nbsp;registry,
+          * analyze its manifest file, `bower.json`,
+          * repackage the component as a&nbsp;valid&nbsp;Ruby gem and&nbsp;serve&nbsp;it to your application.
 
-          Then the process repeats for component's dependencies.
+          Dependencies are handled the&nbsp;same way&nbsp;recursively.
 
       .grid__cell.unit-1-2
         = render 'shared/diff_gemfile'
@@ -26,9 +25,9 @@ article.section
         markdown:
           ## Asset pipeline
 
-            1. You can require any asset from component.
+          You can `require` any asset that’s exposed as&nbsp;`main` in&nbsp;component’s manifest file.
 
-            1. The `main` asset defined in `component.json` is going to be aliased to name of the component.
+          Gems created by Rails Assets work great with any Sprockets-based application.
 
         p.notice.notice--important.content--small
           strong> Notice:
