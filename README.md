@@ -1,4 +1,4 @@
-# Rails Assets ![Build Status](https://circleci.com/gh/rails-assets/rails-assets.png?circle-token=3eec67ef0c9bf5973d6d074091e9f4065c7bd0b2)
+# Rails Assets [![Build Status](https://travis-ci.org/rails-assets/rails-assets.png)](https://travis-ci.org/rails-assets/rails-assets)
 
 > [Bundler](http://bundler.io) to [Bower](http://bower.io) proxy
 
