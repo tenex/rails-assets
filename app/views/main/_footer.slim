@@ -1,7 +1,13 @@
 footer.footer
   .wrap.content.content--small
-    markdown:
+    .grid
+      p.grid__cell.unit-1-2
+        span.util__text-line Proudly used&nbsp;at and supported&nbsp;by
+        span.util__text-line
+          a< href="http://monterail.com"
+            = image_tag 'logo-monterail.png', class: 'footer__logo', height: 30
+      .grid__cell.unit-1-2
+        markdown:
+          Created by [@teamon](http://github.com/teamon) and [@porada](http://github.com/porada).
 
-      Created by [@teamon](http://github.com/teamon) and [@porada](http://github.com/porada).
-
-      Thanks for help to [@sheerun](http://github.com/sheerun), [@jandudulski](http://github.com/jandudulski) and&nbsp;[contributors](https://github.com/rails-assets/rails-assets/graphs/contributors).
+          Thanks for help to [@sheerun](http://github.com/sheerun), [@jandudulski](http://github.com/jandudulski) and&nbsp;[contributors](https://github.com/rails-assets/rails-assets/graphs/contributors).
