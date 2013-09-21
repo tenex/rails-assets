@@ -6,9 +6,13 @@
   color: $hero-text-color
   text-align: center
 
+  @media (max-width: $breakpoint-narrow - 1px)
+    padding: round($hero-top-padding / 2) 0 $wrapper-default-padding
+    background-position: center 1rem
+
   a, b
     font-weight: 500
 
 .hero__title
   color: #fff
-  padding-bottom: $wrapper-default-padding
+  padding: 0 1rem $wrapper-default-padding

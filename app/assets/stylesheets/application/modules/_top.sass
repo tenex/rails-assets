@@ -1,14 +1,11 @@
 .top
-  position: fixed
   top: 0
   right: 0
   left: 0
-  padding: 1rem 0
-  border-bottom: 1px solid darken($top-background-color, 4%)
-  background: rgba($top-background-color, 0.9)
+  padding: ($wrapper-default-padding / 2) 0
+  background: $top-background-color
   color: $top-text-color
-  line-height: 1
-  -webkit-font-smoothing: subpixel-antialiased
+  line-height: 2
 
 .top__header
   position: absolute
@@ -18,8 +15,20 @@
 .top__nav
   text-align: right
 
-.top__nav__item
-  display: inline-block
+@media (min-width: $breakpoint-narrow)
+  .top
+    position: fixed
+    padding: 1rem 0
+    border-bottom: 1px solid darken($top-background-color, 4%)
+    background: rgba($top-background-color, 0.9)
+    line-height: 1
+    -webkit-font-smoothing: subpixel-antialiased
 
-  & + &
-    margin-left: 2rem
+    & + .section
+      margin-top: 3rem
+
+  .top__nav__item
+    display: inline-block
+
+    & + &
+      margin-left: 2rem

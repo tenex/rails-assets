@@ -1,14 +1,20 @@
-.top + .section
-  margin-top: 3rem
-
 .header--gamma.section__header
-  padding-bottom: 0
+  padding-bottom: 1rem
 
-.gem-list__item,
 .grid--line
-  &.grid:before
-    margin-right: 10px
-    margin-left: 10px
-
   .diff
-    margin-left: $wrapper-default-padding / 2
+    margin-top: round($wrapper-default-padding / 2)
+
+@media (min-width: $breakpoint-wide)
+  .gem-list__item,
+  .grid--line
+    &.grid:before
+      margin-right: 10px
+      margin-left: 10px
+
+    .diff
+      margin: 0 0 0 ($wrapper-default-padding / 2)
+
+@media (max-width: $breakpoint-wide - 1px)
+  .gem-list__form .grid__cell--unpadded
+    margin: 5px 0

@@ -1,16 +1,20 @@
-+griddle-build(2 3 4 5 6 7 8 9 10 11 12)
+@media (min-width: $breakpoint-wide)
+  +griddle-build(2 4)
+
+  .grid__cell--unpadded
+    padding-right: 0
+    padding-left: 0
 
 .wrap
   max-width: $wrapper-default-width
   margin: 0 auto
-  padding: 0 $wrapper-default-padding
+  padding: 0 ($wrapper-default-padding / 2)
+
+  @media (min-width: $breakpoint-tiny)
+    padding: 0 $wrapper-default-padding
 
 .wrap--narrow
   max-width: $wrapper-narrow-width
-
-.grid__cell--unpadded
-  padding-right: 0
-  padding-left: 0
 
 .grid--line
   &:before
