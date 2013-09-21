@@ -4,15 +4,19 @@ article.section
     .grid.grid--line
       .grid__cell.unit-1-2.content
         markdown:
-          ## Bundle Install
+          ## Bundler
 
-          Add `rails-assets.org` as the&nbsp;new source of Ruby gems and reference your desired Bower&nbsp;packages:
+          Add `http://rails-assets.org` as a&nbsp;new source, then reference any Bower components that you need as gems in the&nbsp;following&nbsp;convention:
 
-              gem "rails-assets-#{'#{BOWER_PACKAGE_NAME}'}"
+              gem 'rails-assets-BOWER_PACKAGE_NAME'
 
-          When Bundler requests a&nbsp;package like this, Rails Assets’ daemon automatically fetches the package, analyzes `bower.json` from the&nbsp;repository, and then repackages it as&nbsp;a&nbsp;valid Ruby&nbsp;gem.
+          During `bundle` `install`, if Bundler requests a&nbsp;package like this, Rails Assets’ daemon automatically&nbsp;will:
 
-          Package dependencies are recursively handled the&nbsp;same&nbsp;way.
+          * fetch the component from Bower’s&nbsp;registry,
+          * analyze its manifest file, `bower.json`,
+          * repackage the component as a&nbsp;valid&nbsp;Ruby gem and&nbsp;serve&nbsp;it to your application.
+
+          Dependencies are handled the&nbsp;same way&nbsp;recursively.
 
       .grid__cell.unit-1-2
         = render 'shared/diff_gemfile'
@@ -21,11 +25,10 @@ article.section
         markdown:
           ## Asset pipeline
 
-          Use the packages just like you’re used to—with the&nbsp;one exception: your `vendor` directory stays&nbsp;neat.
+          You can `require` any asset that’s exposed as&nbsp;`main` in&nbsp;component’s manifest file.
 
-        p.notice.notice--important.content--small
-          strong> Notice:
-          | Rails Assets is not production-ready&nbsp;yet.
+          Gems created by Rails Assets work great with any Sprockets-based application.
+
       .grid__cell.unit-1-2
         = render 'shared/diff_javascript'
         = render 'shared/diff_stylesheet'
