@@ -15,6 +15,13 @@
     .diff
       margin: 0 0 0 ($wrapper-default-padding / 2)
 
+      & + .diff
+        margin-top: 2em
+
 @media (max-width: $breakpoint-wide - 1px)
   .gem-list__form .grid__cell--unpadded
     margin: 5px 0
+
+@media (orientation: portrait), (orientation: landscape)
+  .diff
+    line-height: 1.25 !important
