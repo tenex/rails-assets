@@ -1,4 +1,0 @@
-checkout:
-  post:
-    - npm install
-    - cp config/application.sample.yml config/application.yml
