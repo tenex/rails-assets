@@ -6,7 +6,7 @@ article.section
         markdown:
           ## Bundler
 
-          Add `http://rails-assets.org` as a&nbsp;new source, then reference any Bower components that you need as gems in the&nbsp;following&nbsp;convention:
+          Add `http://rails-assets.org` as the&nbsp;new gem source, then reference any Bower components that you need as gems in the&nbsp;following&nbsp;convention:
 
               gem 'rails-assets-BOWER_PACKAGE_NAME'
 
@@ -25,7 +25,7 @@ article.section
         markdown:
           ## Asset pipeline
 
-          You can `require` any asset that’s exposed as&nbsp;`main` in&nbsp;component’s manifest file.
+          You can now `require BOWER_PACKAGE_NAME` in your stylesheets and JavaScript files—all assets exposed as&nbsp;`main` in `bower.json` will be automatically&nbsp;included.
 
           Gems created by Rails Assets work great with any Sprockets-based application.
 
