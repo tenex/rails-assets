@@ -15,19 +15,7 @@ html ng-app="app"
     link rel="icon" href="/favicon.ico"
 
   body
-    header.top.util__inverted
-      .wrap
-        h1.top__header
-          a href="/" Rails Assets
-        nav
-          ul.top__nav
-            li.top__nav__item title="Rails Assets on GitHub"
-              a href="https://github.com/rails-assets/rails-assets/" GitHub
-            li.top__nav__item
-              a href=components_path Package list
-            li.top__nav__item
-              a href=new_component_path Add package
-
+    = render 'main/top'
     = yield
     = render 'main/footer'
     = render 'shared/analytics'
