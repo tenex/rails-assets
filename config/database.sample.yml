@@ -3,7 +3,7 @@ development:
   encoding: unicode
   database: rails_assets_development
   pool: 5
-  username:
+  username: postgres
   password:
 
 test:
@@ -11,5 +11,5 @@ test:
   encoding: unicode
   database: rails_assets_test
   pool: 5
-  username:
+  username: postgres
   password:
