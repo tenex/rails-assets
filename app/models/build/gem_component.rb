@@ -1,5 +1,7 @@
 module Build
   class GemComponent
+    include Utils
+
     attr_accessor :files, :name, :version, :filename
 
     def initialize(bower_component_or_attrs)
@@ -52,24 +54,6 @@ module Build
         @bower_component.send(name, *args, &block)
       else
         super
-      end
-    end
-
-    protected
-
-    def fix_version_string(version)
-      version = version.to_s
-
-      if version =~ />=(.+)<(.+)/
-        version = ">= #{$1}"
-      end
-
-      if version.strip == "latest"
-        nil
-      else
-        version.gsub!('-', '.')
-        version.gsub!(/~(\d)/, '~> \1')
-        version
       end
     end
   end
