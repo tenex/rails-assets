@@ -11,6 +11,8 @@ require "sprockets/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env)
 
+require_relative '../app/workers/update_scheduler'
+
 module RailsAssets
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
