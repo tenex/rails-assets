@@ -1,15 +1,22 @@
 class UpdateComponent
   include Sidekiq::Worker
+  include Build::Utils
 
   sidekiq_options queue: 'update_component', unique: true
 
   def perform(name)
-    component = Component.where(name: name).first
-    db_versions = component.versions.map(&:string)
-    bower_versions = Build::Bower.info(name)["versions"] || []
+    versions = Build::Bower.info(name)["versions"] || []
+    versions = versions.map { |version| fix_version_string(version) }
 
-    (bower_versions - db_versions).each do |version|
-      BuildVersion.perform_async(name, version)
+    if component = Component.where(name: name).first
+      versions = versions - component.versions.map(&:string)
+    end
+
+    if versions.size > 0
+      puts "Scheduling #{versions.size} versions of #{name} for build..."
+      versions.each do |version|
+        BuildVersion.perform_async(name, version)
+      end
     end
   end
 end
