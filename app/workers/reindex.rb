@@ -1,6 +1,6 @@
 class Reindex
   include Sidekiq::Worker
-  sidekiq_options :queue => :reindex
+  sidekiq_options :queue => :reindex, :unique => true
 
   def perform
     file_store = Build::FileStore.new

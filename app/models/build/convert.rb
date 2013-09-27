@@ -45,10 +45,8 @@ module Build
     def build_in_dir(dir, &block)
       Rails.logger.debug "Building in #{dir}"
 
-      bower = Bower.new(dir)
-
       file_store.with_lock(file_store.bower_lock) do
-        bower.install(@bower_component)
+        Bower.install(@bower_component.full, dir)
       end
 
       results = Dir[File.join(dir, "bower_components", "*")].map do |file|
