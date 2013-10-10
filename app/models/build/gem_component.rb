@@ -20,7 +20,7 @@ module Build
     end
 
     def short_name
-      @short_name ||= @bower_component.name
+      @short_name ||= @bower_component.full_name
     end
 
     def version
@@ -41,13 +41,16 @@ module Build
       end
     end
 
-    def update(component, version)
+    def get_component_and_version!
+      component, version = Component.get(self.short_name, self.version)
+
       component.description = self.description
       component.homepage    = self.homepage
       version.string        = self.version
       version.dependencies  = self.dependencies.inject({}) {|h,g| h.merge(g.short_name => g.version) }
-    end
 
+      [component, version]
+    end
 
     def method_missing(name, *args, &block)
       if @bower_component.respond_to?(name)

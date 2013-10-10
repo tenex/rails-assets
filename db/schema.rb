@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130915142527) do
+ActiveRecord::Schema.define(version: 20131010124336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,6 +63,8 @@ ActiveRecord::Schema.define(version: 20130915142527) do
     t.hstore   "dependencies"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "build_status"
+    t.text     "build_message"
     t.index ["component_id"], :name => "fk__versions_component_id", :order => {"component_id" => :asc}
     t.index ["component_id"], :name => "index_versions_on_component_id", :order => {"component_id" => :asc}
     t.index ["string"], :name => "index_versions_on_string", :order => {"string" => :asc}

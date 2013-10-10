@@ -28,13 +28,30 @@ module Build
           @bower_component.github!(@user)
         end
 
-        @gem_component = @bower_component.gem
         Rails.logger.info "Bower component: #{@bower_component.inspect}"
 
-        @component, @version = Component.get(@bower_component.full_name, @bower_component.version)
-        result = if @version.new_record? || opts[:force]
+        # @sheerun: Need to refactor this...
+        @gem_component = @bower_component.gem
+        @component, @version = @gem_component.get_component_and_version!
+
+        if @version.string.blank?
+          raise BuildError.new(
+            "Component has no verions defined. " +
+            "Please create an issue in component's repository."
+          )
+        end
+
+        # Save metadata even if in case of failed build
+        Component.transaction do
+          @component.save!
+          @version.save!
+        end
+
+        result = if @version.needs_build? || opts[:force]
           build
           { pkg: File.join(@gem_dir, "pkg", gem_component.filename) }
+        elsif @version.build_status == 'error'
+          raise BuildError.new(@version.build_message)
         else
           Rails.logger.info "Bower component #{@bower_component.name} #{@bower_component.version} already converted - skipping"
           {}
@@ -115,11 +132,22 @@ module Build
       generate_gem_structure
       build_gem
 
-      @gem_component.update(@component, @version)
       Component.transaction do
+        @version.build_status = 'success'
+
         @component.save!
         @version.save!
       end
+    rescue BuildError => e
+      Component.transaction do
+        @version.build_status = 'error'
+        @version.build_message = e.message
+
+        @component.save!
+        @version.save!
+      end
+
+      raise
     end
 
     def find_files(basedir, ext)
