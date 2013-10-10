@@ -1,9 +1,14 @@
 class ComponentsController < ApplicationController
   def index
+    components = Component.includes(:versions).
+      all.
+      select { |c| c.versions.any? { |v| v.built? } }.
+      map { |c| component_data(c) }
+
     respond_to do |format|
       format.html {}
       format.json do
-        render(json: Component.all.map {|c| component_data(c) })
+        render(json: components)
       end
     end
   end
@@ -17,14 +22,10 @@ class ComponentsController < ApplicationController
     component = if params[:_force]
       build(name, version)
     elsif component = Component.where(name: name).first
-      if version.blank?
+      if component.versions.built.string(version).first
         component
       else
-        if component.versions.where(string: version).first
-          component
-        else
-          build(name, version)
-        end
+        build(name, version)
       end
     else
       build(name, version)
@@ -47,8 +48,8 @@ class ComponentsController < ApplicationController
       name:         component.name,
       description:  component.description,
       homepage:     component.homepage,
-      versions:     component.versions.map {|v| v.string },
-      dependencies: component.versions.last.dependencies.to_a
+      versions:     component.versions.built.map {|v| v.string },
+      dependencies: component.versions.built.last.dependencies.to_a
     }
   end
 

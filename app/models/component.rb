@@ -5,7 +5,7 @@ class Component < ActiveRecord::Base
 
   def self.get(name, version)
     if component = where(name: name).first
-      if version = component.versions.where(string: version).first
+      if version = component.versions.string(version).first
         [component, version]
       else
         [component, component.versions.new(string: version)]

@@ -9,7 +9,7 @@ class UpdateComponent
     versions = versions.map { |version| fix_version_string(version) }
 
     if component = Component.where(name: name).first
-      versions = versions - component.versions.map(&:string)
+      versions = versions - component.versions.processed.map(&:string)
     end
 
     if versions.size > 0
