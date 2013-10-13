@@ -20,8 +20,9 @@ node_modules
 /public/gems
 /public/quick
 
-/public/latest_specs.4.8.gz
-/public/prerelease_specs.4.8.gz
+/public/*specs.*
 /public/specs.4.8.gz
+/public/data
+/public/*.lock
 
 /rails-assets-*
