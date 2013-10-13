@@ -72,7 +72,7 @@ module Build
         @bower_component.name,
         Pathname.new(@bower_dir),
         Pathname.new(@gem_dir),
-        Paths.new(@bower_component.main)
+        Paths.new(@bower_component.main).map(:expand_path, @bower_dir).select(:exist?)
       )
 
       transformations.each do |source, target|
@@ -121,7 +121,6 @@ module Build
     #   each transform is in form [source_path, target_path] or [source, target_path]
     def compute_transformations(name, bower_path, gem_path, all_main_paths = Paths.new)
       all_source_paths = Paths.from(bower_path).reject(:minified?)
-      all_main_paths = all_main_paths.map(:expand_path, bower_path).select(:exist?)
 
       [:javascripts, :stylesheets, :images].flat_map do |type|
         main_paths = all_main_paths.select(:member_of?, type)
