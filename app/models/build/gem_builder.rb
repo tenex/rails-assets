@@ -90,6 +90,7 @@ module Build
         images: Pathname.new(@bower_dir) # shouldn't we do the same for images
       }
 
+
       source_dirs.each do |type, source_dir|
         source_paths = all_source_paths.select(:member_of?, type) + main_paths[type]
         source_paths = source_paths.select(:descendant?, source_dir)
@@ -97,25 +98,15 @@ module Build
         target_dir = File.join(@gem_dir, 'vendor', 'assets', type.to_s, dir)
         target_paths = relative_paths.map(:expand_path, target_dir)
         source_paths.zip(target_paths).map { |source, target| copy_file(source, target) }
+
+        if generator = manifest_generators[type]
+          manifest_paths = main_paths[type].map(:relative_path_from, source_dir)
+          unless manifest_paths.empty?
+            generate_manifest(manifest_paths, type.to_s, generator[:extension],
+                              &generator[:processor])
+          end
+        end
       end
-
-      # Generate javascript manifest
-      manifest_javascripts = main_paths[:javascripts].map(:relative_path_from, source_dirs[:javascripts])
-      generate_manifest manifest_javascripts, 'javascripts', 'js' do |files|
-        files.map do |file_name|
-          "//= require #{File.join(dir, file_name)}"
-        end.join("\n")
-      end unless manifest_javascripts.empty?
-
-      # Generate stylesheet manifest
-      manifest_stylesheets = main_paths[:stylesheets].map(:relative_path_from, source_dirs[:stylesheets])
-      generate_manifest manifest_stylesheets, 'stylesheets', 'css' do |files|
-        "/*\n" +
-        files.map { |file_name|
-          " *= require #{File.join(dir, file_name)}"
-        }.join("\n") +
-        "\n */"
-      end unless manifest_stylesheets.empty?
 
       generate_gem_structure
       build_gem
@@ -126,6 +117,29 @@ module Build
         @component.save!
         @version.save!
       end
+    end
+
+    def manifest_generators
+      @manifest_generators ||= {
+        javascripts: {
+          extension: 'js',
+          processor: lambda { |files|
+            files.map do |file_name|
+              "//= require #{File.join(dir, file_name)}"
+            end.join("\n")
+          }
+        },
+        stylesheets: {
+          extension: 'css',
+          processor: lambda { |files|
+            "/*\n" +
+            files.map { |file_name|
+              " *= require #{File.join(dir, file_name)}"
+            }.join("\n") +
+            "\n */"
+          }
+        }
+      }
     end
 
     def generate_manifest(main_files, manifest_directory, manifest_extension)
