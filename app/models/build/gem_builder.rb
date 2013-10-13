@@ -67,43 +67,13 @@ module Build
     end
 
     def build 
-      name = @bower_component.name
 
-      all_source_paths = Paths.
-        from(@bower_dir).
-        reject(:minified?)
-
-      all_main_paths = Paths.
-        new(@bower_component.main).
-        map(:expand_path, @bower_dir).
-        select(:exist?)
-
-      # Each transform is in form [source_path, target_path] or [source, target_path]
-      transformations = [:javascripts, :stylesheets, :images].flat_map do |type|
-        main_paths = all_main_paths.select(:member_of?, type)
-
-        source_dir = main_paths.common_prefix || Pathname.new(@bower_dir)
-        target_dir = Pathname.new(@gem_dir).join('vendor', 'assets', type.to_s)
-
-        source_paths = all_source_paths.select(:member_of?, type).
-          select(:descendant?, source_dir) + main_paths
-
-        relative_paths = source_paths.map(:relative_path_from, source_dir)
-        target_paths = relative_paths.map(:expand_path, target_dir.join(name))
-
-        manifest_transform =
-          if generator = manifest_generators[type]
-            manifest_paths = main_paths.map(:relative_path_from, source_dir)
-            unless manifest_paths.empty?
-              [
-                generator[:processor].call(manifest_paths),
-                target_dir.join("#{name}.#{generator[:extension]}")
-              ]
-            end
-          end
-
-        (source_paths.zip(target_paths) + [manifest_transform]).compact
-      end
+      transformations = compute_transformations(
+        @bower_component.name,
+        Pathname.new(@bower_dir),
+        Pathname.new(@gem_dir),
+        Paths.new(@bower_component.main)
+      )
 
       transformations.each do |source, target|
         target.dirname.mkpath
@@ -140,6 +110,44 @@ module Build
       end
 
       raise
+    end
+
+    # name - The String representing name of the component
+    # bower_path - The Path under which bower component code resist
+    # gem_path - The Path under which gem should be placed
+    # all_main_paths - The Paths fetched from bower component manifest under main key
+    #
+    # Returns file transformations to be made
+    #   each transform is in form [source_path, target_path] or [source, target_path]
+    def compute_transformations(name, bower_path, gem_path, all_main_paths = Paths.new)
+      all_source_paths = Paths.from(bower_path).reject(:minified?)
+      all_main_paths = all_main_paths.map(:expand_path, bower_path).select(:exist?)
+
+      [:javascripts, :stylesheets, :images].flat_map do |type|
+        main_paths = all_main_paths.select(:member_of?, type)
+
+        source_dir = main_paths.common_prefix || bower_path
+        target_dir = gem_path.join('vendor', 'assets', type.to_s)
+
+        source_paths = all_source_paths.select(:member_of?, type).
+          select(:descendant?, source_dir) + main_paths
+
+        relative_paths = source_paths.map(:relative_path_from, source_dir)
+        target_paths = relative_paths.map(:expand_path, target_dir.join(name))
+
+        manifest_transform =
+          if generator = manifest_generators[type]
+            manifest_paths = main_paths.map(:relative_path_from, source_dir)
+            unless manifest_paths.empty?
+              [
+                generator[:processor].call(manifest_paths),
+                target_dir.join("#{name}.#{generator[:extension]}")
+              ]
+            end
+          end
+
+        (source_paths.zip(target_paths) + [manifest_transform]).compact
+      end
     end
 
     def manifest_generators
