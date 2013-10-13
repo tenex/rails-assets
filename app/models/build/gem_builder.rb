@@ -82,18 +82,22 @@ module Build
         javascripts: all_main_paths.select(:javascript?),
         stylesheets: all_main_paths.select(:stylesheet?)
       }
-      
-      source_paths = {
-        javascripts: all_source_paths.select(:javascript?) + main_paths[:javascripts],
-        stylesheets: all_source_paths.select(:stylesheet?) + main_paths[:stylesheets],
-        images: all_source_paths.select(:image?)
-      }
 
       source_dir = {
         javascripts: main_paths[:javascripts].common_prefix || Pathname.new(@bower_dir),
         stylesheets: main_paths[:stylesheets].common_prefix || Pathname.new(@bower_dir),
         images: Pathname.new(@bower_dir)
       }
+
+      source_paths = {
+        javascripts: all_source_paths.select(:javascript?) + main_paths[:javascripts],
+        stylesheets: all_source_paths.select(:stylesheet?) + main_paths[:stylesheets],
+        images: all_source_paths.select(:image?)
+      }.each do |type, files|
+        # Remove all files that are not descendants of source dir
+        # For example we don't include js files if there are coffee ones
+        files.select!(:descendant?, source_dir[type])
+      end
 
       target_dir = {
         javascripts: File.join(@gem_dir, 'vendor', 'assets', 'javascripts', dir),

@@ -163,4 +163,30 @@ module Build
       end
     end
   end
+
+  describe Path do
+    context '#new' do
+      it 'accepts string as path' do
+        expect(Path.new('/usr/local')).to be_a(Pathname)
+      end
+    end
+
+    context '#descendant?' do
+      it 'determines that path is child of another' do
+        expect(
+          Path.new('/usr/local/application.yml').descendant?('/usr/local/')
+        ).to be_true
+      end
+
+      it 'determines that path is not child of another' do
+        expect(
+          Path.new('/usr/application.yml').descendant?('/usr/local/')
+        ).to be_false
+
+        expect(
+          Path.new('/usr/locale/application.yml').descendant?('/usr/local/')
+        ).to be_false
+      end
+    end
+  end
 end

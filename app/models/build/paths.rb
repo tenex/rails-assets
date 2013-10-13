@@ -17,6 +17,11 @@ module Build
       args.size > 0 ? Paths.new(super(&brock)) : super(&block)
     end
 
+    def select!(*args, &block)
+      brock = proc { |e| e.send(*args) }
+      args.size > 0 ? Paths.new(super(&brock)) : super(&block)
+    end
+
     def reject(*args, &block)
       brock = proc { |e| e.send(*args) }
       args.size > 0 ? Paths.new(super(&brock)) : super(&block)
@@ -46,7 +51,6 @@ module Build
       File.file?(path) ?
         Path.new(File.dirname(path)) : Path.new(path)
     end
-
   end
 
   class Path < Pathname
@@ -65,6 +69,10 @@ module Build
 
     def image?
       extension? ['png', 'gif', 'jpg', 'jpeg']
+    end
+
+    def descendant?(directory)
+      !relative_path_from(Path.new(directory)).to_s.split('/').include?('..')
     end
 
     private
