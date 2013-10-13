@@ -78,13 +78,8 @@ module Build
         map(:expand_path, @bower_dir).
         select(:exist?)
 
-      main_path_classes = {
-        javascripts: all_main_paths.select(:member_of?, :javascripts),
-        stylesheets: all_main_paths.select(:member_of?, :stylesheets),
-        images: Paths.new
-      }      
-
-      main_path_classes.each do |type, main_paths|
+      [:javascripts, :stylesheets, :images].each do |type|
+        main_paths = all_main_paths.select(:member_of?, type)
         source_dir = main_paths.common_prefix || Pathname.new(@bower_dir)
         source_paths = all_source_paths.select(:member_of?, type) + main_paths
         source_paths = source_paths.select(:descendant?, source_dir)
