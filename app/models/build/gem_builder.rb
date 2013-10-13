@@ -78,21 +78,15 @@ module Build
         map(:expand_path, @bower_dir).
         select(:exist?)
 
-      main_paths = {
+      main_path_classes = {
         javascripts: all_main_paths.select(:member_of?, :javascripts),
         stylesheets: all_main_paths.select(:member_of?, :stylesheets),
-        images: []
-      }
+        images: Paths.new
+      }      
 
-      source_dirs = {
-        javascripts: main_paths[:javascripts].common_prefix || Pathname.new(@bower_dir),
-        stylesheets: main_paths[:stylesheets].common_prefix || Pathname.new(@bower_dir),
-        images: Pathname.new(@bower_dir) # shouldn't we do the same for images
-      }
-
-
-      source_dirs.each do |type, source_dir|
-        source_paths = all_source_paths.select(:member_of?, type) + main_paths[type]
+      main_path_classes.each do |type, main_paths|
+        source_dir = main_paths.common_prefix || Pathname.new(@bower_dir)
+        source_paths = all_source_paths.select(:member_of?, type) + main_paths
         source_paths = source_paths.select(:descendant?, source_dir)
         relative_paths = source_paths.map(:relative_path_from, source_dir)
         target_dir = File.join(@gem_dir, 'vendor', 'assets', type.to_s, dir)
@@ -100,7 +94,7 @@ module Build
         source_paths.zip(target_paths).map { |source, target| copy_file(source, target) }
 
         if generator = manifest_generators[type]
-          manifest_paths = main_paths[type].map(:relative_path_from, source_dir)
+          manifest_paths = main_paths.map(:relative_path_from, source_dir)
           unless manifest_paths.empty?
             generate_manifest(manifest_paths, type.to_s, generator[:extension],
                               &generator[:processor])
