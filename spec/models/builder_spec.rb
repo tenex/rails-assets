@@ -69,15 +69,15 @@ describe Build::Convert do
       gem_file "vendor/assets/javascripts/leaflet.js"
       gem_file "vendor/assets/javascripts/leaflet/leaflet.js"
 
-      gem_file "vendor/assets/stylesheets/leaflet.css"
-      gem_file "vendor/assets/stylesheets/leaflet/leaflet.ie.css"
-      gem_file "vendor/assets/stylesheets/leaflet/leaflet.css"
+      gem_file "vendor/assets/stylesheets/leaflet/dist/leaflet.css"
+      gem_file "vendor/assets/stylesheets/leaflet/dist/leaflet.ie.css"
+      gem_file "vendor/assets/stylesheets/leaflet/dist/leaflet.css"
 
-      gem_file "vendor/assets/images/leaflet/images/layers-2x.png"
-      gem_file "vendor/assets/images/leaflet/images/layers.png"
-      gem_file "vendor/assets/images/leaflet/images/marker-icon-2x.png"
-      gem_file "vendor/assets/images/leaflet/images/marker-icon.png"
-      gem_file "vendor/assets/images/leaflet/images/marker-shadow.png"
+      gem_file "vendor/assets/images/leaflet/dist/images/layers-2x.png"
+      gem_file "vendor/assets/images/leaflet/dist/images/layers.png"
+      gem_file "vendor/assets/images/leaflet/dist/images/marker-icon-2x.png"
+      gem_file "vendor/assets/images/leaflet/dist/images/marker-icon.png"
+      gem_file "vendor/assets/images/leaflet/dist/images/marker-shadow.png"
     end
 
     component "resizeend", "1.1.2" do

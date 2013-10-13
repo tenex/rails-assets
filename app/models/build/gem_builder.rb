@@ -66,68 +66,92 @@ module Build
       end
     end
 
-    def build
-      raise BuildError.new("Missing main file(s)") if @bower_component.main.blank?
+    def build 
+      dir = @bower_component.name
 
-      # Load files to extensions
-      exts = extensions.map do |e|
-        e.files = @bower_component.main.select do |file|
-          e.matches?(file) && File.exist?(File.join(@bower_dir, file))
-        end
+      all_source_paths = Paths.
+        from(@bower_dir).
+        reject(:minified?)
 
-        e
+      all_main_paths = Paths.
+        new(@bower_component.main).
+        map(:expand_path, @bower_dir).
+        select(:exist?)
+
+      main_paths = {
+        javascripts: all_main_paths.select(:javascript?),
+        stylesheets: all_main_paths.select(:stylesheet?)
+      }
+      
+      source_paths = {
+        javascripts: all_source_paths.select(:javascript?) + main_paths[:javascripts],
+        stylesheets: all_source_paths.select(:stylesheet?) + main_paths[:stylesheets],
+        images: all_source_paths.select(:image?)
+      }
+
+      source_dir = {
+        javascripts: main_paths[:javascripts].common_prefix || Pathname.new(@bower_dir),
+        stylesheets: main_paths[:stylesheets].common_prefix || Pathname.new(@bower_dir),
+        images: Pathname.new(@bower_dir)
+      }
+
+      target_dir = {
+        javascripts: File.join(@gem_dir, 'vendor', 'assets', 'javascripts', dir),
+        stylesheets: File.join(@gem_dir, 'vendor', 'assets', 'stylesheets', dir),
+        images: File.join(@gem_dir, 'vendor', 'assets', 'images', dir)
+      }
+
+      [:javascripts, :stylesheets, :images].each do |type|
+        relative_paths = source_paths[type].map(:relative_path_from, source_dir[type])
+        target_paths = relative_paths.map(:expand_path, target_dir[type])
+        source_paths[type].zip(target_paths).map { |source, target| copy_file(source, target) }
       end
 
-      raise BuildError.new("Missing main file(s)") if exts.all? {|e| e.files.empty? }
+      # Generate javascript manifest
+      manifest_javascripts = main_paths[:javascripts].map(:relative_path_from, source_dir[:javascripts])
+      generate_manifest manifest_javascripts, 'javascripts', 'js' do |files|
+        files.map do |file_name|
+          "//= require #{File.join(dir, file_name)}"
+        end.join("\n")
+      end unless manifest_javascripts.empty?
 
+      # Generate stylesheet manifest
+      manifest_stylesheets = main_paths[:stylesheets].map(:relative_path_from, source_dir[:stylesheets])
+      generate_manifest manifest_stylesheets, 'stylesheets', 'css' do |files|
+        "/*\n" +
+        files.map { |file_name|
+          " *= require #{File.join(dir, file_name)}"
+        }.join("\n") +
+        "\n */"
+      end unless manifest_stylesheets.empty?
 
-      # Find additional files
-      basedir = File.dirname(exts.map {|e| e.files }.flatten.first)
-      exts.each do |e|
-        if e.files.empty?
-          e.files = find_files(basedir, e)
-        end
+      generate_gem_structure
+      build_gem
+
+      @gem_component.update(@component, @version)
+
+      Component.transaction do
+        @component.save!
+        @version.save!
+      end
+    end
+
+    def generate_manifest(main_files, manifest_directory, manifest_extension)
+      manifest_filename = "#{@bower_component.name}.js"
+
+      manifest_relative_path = File.join(
+        "vendor", "assets", manifest_directory, manifest_filename
+      )
+
+      manifest_path = File.join(@gem_dir, manifest_relative_path)
+
+      Rails.logger.info "Creating manifest file #{manifest_path}"
+
+      File.open(manifest_path, "w") do |manifest_file|
+        manifest_file.puts(yield(main_files))
       end
 
-
-      # Remove min files
-      exts.each do |ext|
-        ext.files.reject! do |file|
-          ext.exts.any? do |e|
-            file.match(/min\.#{e}$/) && ext.files.include?(file.sub("min.", ""))
-          end
-        end
-      end
-
-
-      # Create assets files
-      exts.each do |ext|
-        FileUtils.mkdir_p File.join(@gem_dir, "vendor", "assets", ext.assets_dir)
-
-        paths = ext.files.map do |file|
-          path = File.join(@bower_component.name.to_s, file.sub(/^#{Regexp.escape(basedir)}/, ""))
-
-          source = File.join(@bower_dir, file)
-          target = File.join(@gem_dir, "vendor", "assets", ext.assets_dir, path)
-
-          Rails.logger.info "Copying #{source} to #{target}"
-          FileUtils.mkdir_p(File.dirname(target))
-          FileUtils.cp source, target
-          @gem_component.files << File.join("vendor", "assets", ext.assets_dir, path)
-          path
-        end
-
-        # Manifest file
-        if ext.manifest_proc && !ext.files.empty?
-          manifest_filename = "#{@bower_component.name}.#{ext.exts.first}"
-          manifest_file = File.join(@gem_dir, "vendor", "assets", ext.assets_dir, manifest_filename)
-          Rails.logger.info "Creating manifest file #{manifest_file}"
-          File.open(manifest_file, "w") do |m|
-            m.puts ext.manifest_proc.call(paths)
-          end
-          @gem_component.files << File.join("vendor", "assets", ext.assets_dir, manifest_filename)
-        end
-      end
+      @gem_component.files << manifest_relative_path.to_s
 
       generate_gem_structure
       build_gem
@@ -150,11 +174,13 @@ module Build
       raise
     end
 
-    def find_files(basedir, ext)
-      dir = File.join(@bower_dir, basedir)
-      Rails.logger.debug "Looking for #{ext.exts} in #{dir}"
-      Dir["#{dir}/**/*"].select {|f| ext.matches?(f) }
-                        .map    {|f| File.join(basedir, f.sub(dir, "")) }
+    def copy_file(source, target)
+      Rails.logger.info "Copying #{source} to #{target}"
+
+      target.dirname.mkpath
+      FileUtils.cp(source, target)
+      @gem_component.files << target.relative_path_from(
+        Pathname.new(@gem_dir)).to_s
     end
 
     def generate_gem_file(file)
@@ -191,23 +217,11 @@ module Build
     end
 
     def templates_dir
-      File.expand_path("../templates", __FILE__)
+      File.expand_path("../templates", __FILE__).to_s
     end
 
     def build_gem
       sh @gem_dir, RAKE_BIN, "build"
-    end
-
-    def extensions
-      [
-        Extension.new("javascripts", %w(js coffee)) do |files|
-          files.map {|f| "//= require #{f}"}.join("\n")
-        end,
-        Extension.new("stylesheets", %w(css less scss sass)) do |files|
-          "/*\n" + files.map {|f| " *= require #{f}"}.join("\n") + "\n */"
-        end,
-        Extension.new("images", %w(png gif jpg jpeg))
-      ]
     end
   end
 end
