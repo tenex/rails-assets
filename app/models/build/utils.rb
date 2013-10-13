@@ -31,16 +31,54 @@ module Build
     def fix_version_string(version)
       version = version.to_s
 
-      if version =~ />=(.+)<(.+)/
-        version = ">= #{$1}"
+      if version =~ /^v(.+)/
+        version = $1.strip
       end
 
-      if version.strip == "latest"
+      if version =~ />=(.+)<(.+)/
+        if $1.strip[0] != $2.strip[0]
+          version = "~> #{$1.strip.match(/\d+\.\d+/)}"
+        else
+          version = "~> #{$1.strip}"
+        end
+      end
+
+      if version =~ />=(.+)/
+        version = ">= #{$1.strip}"
+      end
+
+      if version.strip == "latest" || version.strip == "master"
         nil
+      elsif version.match(/^[^\/]+\/[^\/]+$/) 
+        nil
+      elsif version.match(/^(http|git|ssh)/)
+        if version.split('/').last =~ /^v?([\w\.-]+)$/
+          fix_version_string($1.strip)
+        else
+          nil
+        end
       else
         version.gsub!('-', '.')
-        version.gsub!(/~(\d)/, '~> \1')
+        version.gsub!(/~\s?(\d)/, '~> \1')
+
+        if version.match('.x')
+          version.gsub!('.x', '.0')
+          version = "~> #{version}"
+        end
+
         version
+      end
+    end
+
+    def fix_gem_name(gem_name, version)
+      version = version.to_s
+
+      if version.match(/^[^\/]+\/[^\/]+$/) 
+        version.sub('/', '--')
+      elsif version =~ /github\.com\/([^\/]+\/[^\/]+)/
+        $1
+      else
+        gem_name
       end
     end
   end

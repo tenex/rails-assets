@@ -89,5 +89,12 @@ describe Build::Convert do
       gem_file "vendor/assets/javascripts/jquery-waypoints.js"
       gem_file "vendor/assets/javascripts/jquery-waypoints/waypoints.js"
     end
+
+    component "selectize", '0.8.0' do
+      gem_file "vendor/assets/javascripts/selectize.js"
+      gem_file "vendor/assets/javascripts/selectize/selectize.js"
+      gem_file "vendor/assets/stylesheets/selectize.css"
+      gem_file "vendor/assets/stylesheets/selectize/selectize.css"
+    end
   end
 end
