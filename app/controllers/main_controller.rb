@@ -11,7 +11,7 @@ class MainController < ApplicationController
       component_name = name.gsub(GEM_PREFIX, "")
 
       if component = (Component.where(name: component_name).first || build(component_name))
-        component.versions.map do |v|
+        component.versions.built.map do |v|
           {
             name:         name,
             platform:     "ruby",

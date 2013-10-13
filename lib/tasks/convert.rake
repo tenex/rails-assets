@@ -12,7 +12,7 @@ end
 desc "List all gems"
 task :list => :environment do
   Component.order("name ASC").each do |c|
-    puts "#{c.name} (#{c.versions.pluck(:string).join(", ")})"
+    puts "#{c.name} (#{c.versions.built.pluck(:string).join(", ")})"
   end
 end
 
@@ -22,7 +22,7 @@ task :remove, [:pkg] => :environment do |t, args|
 
   fs = Build::FileStore.new
   if component = Component.where(name: name).first
-    (version ? [component.versions.where(string: version)] : component.versions).each do |v|
+    (version ? [component.versions.string(version)] : component.versions).each do |v|
       Rails.logger.info "Removing #{v.gem.filename}"
       fs.delete(v.gem)
     end
@@ -55,7 +55,7 @@ desc "Rebuild all"
 task :rebuild => :environment do
   Component.order("name ASC").each do |c|
     c.versions.each do |v|
-      Build::Conver.new(c.name, v.string).convert!(debug: true, force: true)
+      Build::Convert.new(c.name, v.string).convert!(debug: true, force: true)
     end
   end
 end
