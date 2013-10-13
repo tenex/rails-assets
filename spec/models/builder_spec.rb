@@ -10,12 +10,14 @@ describe Build::Convert do
       it "properly compile #{name} #{version} to #{gem_name}" do
         STDERR.puts "\n\e[34mBuilding package #{name} #{version}\e[0m"
 
+        silence_stream(STDOUT) do
           Build::Convert.new(name, version).convert!(force: true) do |dir|
             @gem_root = File.join(dir, "gems", gem_name)
             instance_exec(&block)
           end
 
           Component.where(:name => gem_name).first.should_not be_nil
+        end
       end
     end
 
@@ -67,9 +69,9 @@ describe Build::Convert do
       gem_file "vendor/assets/javascripts/leaflet.js"
       gem_file "vendor/assets/javascripts/leaflet/leaflet.js"
 
-      gem_file "vendor/assets/stylesheets/leaflet/dist/leaflet.css"
-      gem_file "vendor/assets/stylesheets/leaflet/dist/leaflet.ie.css"
-      gem_file "vendor/assets/stylesheets/leaflet/dist/leaflet.css"
+      gem_file "vendor/assets/stylesheets/leaflet/leaflet.css"
+      gem_file "vendor/assets/stylesheets/leaflet/leaflet.ie.css"
+      gem_file "vendor/assets/stylesheets/leaflet/leaflet.css"
 
       gem_file "vendor/assets/images/leaflet/dist/images/layers-2x.png"
       gem_file "vendor/assets/images/leaflet/dist/images/layers.png"

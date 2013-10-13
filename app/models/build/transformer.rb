@@ -36,11 +36,19 @@ module Build
       [:javascripts, :stylesheets, :images].flat_map do |type|
         main_paths = all_main_paths.select(:member_of?, type)
 
-        source_dir = main_paths.common_prefix || Path.new
         target_dir = Path.new.join('vendor', 'assets', type.to_s)
 
-        source_paths = all_source_paths.select(:member_of?, type).
-          select(:descendant?, source_dir) + main_paths
+        source_paths = all_source_paths.select(:member_of?, type)
+
+        if main_paths.empty?
+          # Possibly empty too, try to find asset with the same name as gem
+          main_paths = Paths.new([source_paths.find_main_asset(type, gem_name)])
+        end
+
+        source_dir = main_paths.common_prefix || Path.new
+
+        source_paths = (source_paths + main_paths).
+          select(:descendant?, source_dir)
 
         relative_paths = source_paths.map(:relative_path_from, source_dir)
         target_paths = relative_paths.map(:prefix, target_dir.join(gem_name))

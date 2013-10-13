@@ -26,6 +26,11 @@ module Build
         expect(paths.size).to eq(1)
       end
 
+      it 'ignores nils' do
+        paths = Paths.new([Pathname.new('./foo/bar/baz'), nil])
+        expect(paths.size).to eq(1)
+      end
+
       context 'accepts another Build::Paths' do
         let(:paths) { Paths.new(['./foo/bar/baz', './foo/bar']) }
         let(:paths_dup) { Paths.new(paths) }
@@ -160,6 +165,18 @@ module Build
       it 'can filter out all minified files' do
         expect(asset_paths.reject(&:minified?)).
           to eq(normal_paths)
+      end
+    end
+
+    context '#find_main_asset' do
+      it 'finds css with the same name as gem name' do
+        expect(Paths.new(['dist/foo.css']).find_main_asset(:stylesheets, 'foo')).
+          to eq(Path.new('dist/foo.css'))
+      end
+
+      it 'does not find css if it differs from gem name' do
+        expect(Paths.new(['dist/bar.css']).find_main_asset(:stylesheets, 'foo')).
+          to eq(nil)
       end
     end
   end
