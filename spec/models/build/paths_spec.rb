@@ -37,17 +37,6 @@ module Build
 
         specify { expect(paths_dup).to eq(paths) }
         specify { expect(paths_dup).to_not be(paths) }
-
-        context 'when new Paths object is modified' do
-          let(:paths_mod) {
-            paths_dup.tap { |p| p[0] = Pathname.new("") }
-          }
-
-          specify { expect(paths_mod).to_not eq(paths) }
-          specify { expect(paths_mod).to_not be(paths) }
-          specify { expect(paths_mod).to_not be(paths[0]) }
-          specify { expect(paths_mod).to_not be(paths[1]) }
-        end
       end
 
       it 'converts paths to Build::Path' do
@@ -163,7 +152,7 @@ module Build
       let(:asset_paths) { minified_paths + normal_paths }
 
       it 'can filter out all minified files' do
-        expect(asset_paths.reject(&:minified?)).
+        expect(asset_paths.reject(:minified?)).
           to eq(normal_paths)
       end
     end
@@ -213,6 +202,12 @@ module Build
     context '#prefix' do
       it 'adds prefix to relative path' do
         expect(Path.new('./foo/bar').prefix('fiz/fuz')).to eq(Path.new('fiz/fuz/foo/bar'))
+      end
+    end
+
+    context '#joins' do
+      it 'returns the same class' do
+        expect(Path.new('foo').join('bar', 'biz')).to be_a(Path)
       end
     end
   end

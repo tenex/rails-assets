@@ -92,6 +92,10 @@ module Build
       Path.new(path).join(self)
     end
 
+    def join(*elements)
+      Path.new(super(*elements))
+    end
+
     def extension?(extensions)
       extensions.any? do |extension|
         !!to_s.match(/\.#{extension}(?:[\W]|$)/)

@@ -55,7 +55,8 @@ module Build
 
         manifest_transform =
           if generator = manifest_generators[type]
-            manifest_paths = main_paths.map(:relative_path_from, source_dir)
+            manifest_paths = main_paths.map(:relative_path_from, source_dir).
+              map(:prefix, gem_name)
             unless manifest_paths.empty?
               [
                 generator[:processor].call(manifest_paths),
