@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = <%= gem_component.description.to_s.dump %>
   spec.homepage      = <%= gem_component.homepage.to_s.dump %>
 
-  spec.files         = [<%= gem_component.files.map{|f| f.dump }.join(",\n                        ") %>]
+  spec.files         = `find ./* -type f | cut -b 3-`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]

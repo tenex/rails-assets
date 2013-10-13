@@ -68,14 +68,13 @@ module Build
 
     def build 
       transformations = Transformer.component_transformations(
-        bower_component, @bower_dir
+        @bower_component, @bower_dir
+      ) + generate_gem_structure
+
+      Transformer.process_transformations!(
+        transformations, @bower_dir, @gem_dir
       )
 
-      @gem_component.files = Transformer.process_transformations!(
-        transformations, @bower_dir, @gem_dir
-      ).map(&:to_s)
-
-      generate_gem_structure
       build_gem
 
       Component.transaction do
@@ -97,36 +96,31 @@ module Build
     end
 
     def generate_gem_file(file)
-      source_path = File.join(templates_dir, file)
+      source_path = Path.new(File.join(templates_dir, file))
       file.gsub!("GEM", @bower_component.gem.name)
-      erb = file.sub!(/\.erb$/, "")
-      target_path = File.join(@gem_dir, file)
+      use_erb = file.sub!(/\.erb$/, "")
+      target_path = Path.new(file)
 
-      FileUtils.mkdir_p File.dirname(target_path)
-      FileUtils.cp source_path, target_path
+      Rails.logger.info "Generating #{target_path}"
 
-      @gem_component.files << file
-
-      if erb
-        File.open(target_path, "w") do |f|
-          erb = ERB.new(File.read(source_path))
-          erb.filename = source_path
-          f.write erb.result(binding)
-        end
+      if use_erb
+        erb = ERB.new(File.read(source_path.to_s))
+        erb.filename = source_path.to_s
+        [erb.result(binding), target_path]
+      else
+        [source_path, target_path]
       end
-
-      Rails.logger.info "Generated #{target_path}"
     end
 
     def generate_gem_structure
-      generate_gem_file "lib/GEM/version.rb.erb"
-      generate_gem_file "lib/GEM.rb.erb"
-      generate_gem_file "Gemfile"
-      generate_gem_file "Rakefile"
-      generate_gem_file "README.md.erb"
-
-      # This must be the last one so that is can have full gem_files list
-      generate_gem_file "GEM.gemspec.erb"
+      [
+        generate_gem_file("lib/GEM/version.rb.erb"),
+        generate_gem_file("lib/GEM.rb.erb"),
+        generate_gem_file("Gemfile"),
+        generate_gem_file("Rakefile"),
+        generate_gem_file("README.md.erb"),
+        generate_gem_file("GEM.gemspec.erb")
+      ]
     end
 
     def templates_dir

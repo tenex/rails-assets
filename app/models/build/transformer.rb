@@ -84,7 +84,7 @@ module Build
         target.dirname.mkpath
 
         if source.is_a?(Pathname)
-          source = bower_path.join(source)
+          source = bower_path.join(source) unless source.absolute?
           Rails.logger.info "Copying #{source} to #{target}"
           FileUtils.cp(source, target)
         else
