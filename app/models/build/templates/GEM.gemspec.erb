@@ -22,6 +22,11 @@ Gem::Specification.new do |spec|
   spec.add_dependency <%= gem.name.dump %>
     <% end %>
   <% end %>
+
+  <% if bower_component.main.nil? %>
+    spec.post_install_message = "This component doesn't define main assets in bower.json.\nPlease open new pull request in component's repository:\n<%= bower_component.homepage %>"
+  <% end %>
+
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
 end

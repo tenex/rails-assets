@@ -85,7 +85,7 @@ module Build
         {
           version:      data["version"],
           description:  data["description"],
-          main:         [data["main"]].flatten.reject {|e| e.nil?},
+          main:         data["main"] ? [data["main"]].flatten.reject {|e| e.nil?} : nil,
           dependencies: data["dependencies"],
           repository:   data["repository"].is_a?(Hash) ? data["repository"]["url"] : data["repository"],
           homepage:     data["homepage"]
