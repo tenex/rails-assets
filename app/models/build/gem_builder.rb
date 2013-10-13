@@ -68,17 +68,23 @@ module Build
 
     def build 
 
+      bower_path = Pathname.new(@bower_dir)
+      gem_path = Pathname.new(@gem_dir)
+
       transformations = compute_transformations(
         @bower_component.name,
-        Pathname.new(@bower_dir),
-        Pathname.new(@gem_dir),
-        Paths.new(@bower_component.main).map(:expand_path, @bower_dir).select(:exist?)
+        Paths.from(bower_path).map(:relative_path_from, bower_path),
+        Paths.new(@bower_component.main).
+          map(:expand_path, bower_path).select(:exist?).
+          map(:relative_path_from, bower_path)
       )
 
       transformations.each do |source, target|
+        target = gem_path.join(target)
         target.dirname.mkpath
 
         if source.is_a?(Pathname)
+          source = bower_path.join(source)
           Rails.logger.info "Copying #{source} to #{target}"
           FileUtils.cp(source, target)
         else
@@ -88,8 +94,7 @@ module Build
         end
       end
 
-      @gem_component.files = transformations.map(&:last).
-        map { |path| path.relative_path_from Pathname.new(@gem_dir) }.map(&:to_s)
+      @gem_component.files = transformations.map(&:last).map(&:to_s)
 
       generate_gem_structure
       build_gem
@@ -113,26 +118,25 @@ module Build
     end
 
     # name - The String representing name of the component
-    # bower_path - The Path under which bower component code resist
-    # gem_path - The Path under which gem should be placed
-    # all_main_paths - The Paths fetched from bower component manifest under main key
+    # all_source_paths - The Paths of all assets relative to component directory
+    # all_main_paths - The Paths of main assets relative to component directory
     #
     # Returns file transformations to be made
     #   each transform is in form [source_path, target_path] or [source, target_path]
-    def compute_transformations(name, bower_path, gem_path, all_main_paths = Paths.new)
-      all_source_paths = Paths.from(bower_path).reject(:minified?)
+    def compute_transformations(name, all_source_paths, all_main_paths = Paths.new)
+      all_source_paths = all_source_paths.reject(:minified?)
 
       [:javascripts, :stylesheets, :images].flat_map do |type|
         main_paths = all_main_paths.select(:member_of?, type)
 
-        source_dir = main_paths.common_prefix || bower_path
-        target_dir = gem_path.join('vendor', 'assets', type.to_s)
+        source_dir = main_paths.common_prefix || Path.new
+        target_dir = Path.new.join('vendor', 'assets', type.to_s)
 
         source_paths = all_source_paths.select(:member_of?, type).
           select(:descendant?, source_dir) + main_paths
 
         relative_paths = source_paths.map(:relative_path_from, source_dir)
-        target_paths = relative_paths.map(:expand_path, target_dir.join(name))
+        target_paths = relative_paths.map(:prefix, target_dir.join(name))
 
         manifest_transform =
           if generator = manifest_generators[type]

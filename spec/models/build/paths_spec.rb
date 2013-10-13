@@ -169,6 +169,10 @@ module Build
       it 'accepts string as path' do
         expect(Path.new('/usr/local')).to be_a(Pathname)
       end
+
+      it 'accepts no argument as path' do
+        expect(Path.new).to eq(Pathname.new('.'))
+      end
     end
 
     context '#descendant?' do
@@ -186,6 +190,12 @@ module Build
         expect(
           Path.new('/usr/locale/application.yml').descendant?('/usr/local/')
         ).to be_false
+      end
+    end
+
+    context '#prefix' do
+      it 'adds prefix to relative path' do
+        expect(Path.new('./foo/bar').prefix('fiz/fuz')).to eq(Path.new('fiz/fuz/foo/bar'))
       end
     end
   end

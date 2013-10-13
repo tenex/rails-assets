@@ -10,14 +10,12 @@ describe Build::Convert do
       it "properly compile #{name} #{version} to #{gem_name}" do
         STDERR.puts "\n\e[34mBuilding package #{name} #{version}\e[0m"
 
-        silence_stream(STDOUT) do
           Build::Convert.new(name, version).convert!(force: true) do |dir|
             @gem_root = File.join(dir, "gems", gem_name)
             instance_exec(&block)
           end
 
           Component.where(:name => gem_name).first.should_not be_nil
-        end
       end
     end
 

@@ -48,16 +48,16 @@ module Build
         take_while { |dirs| dirs.uniq.size == 1 }.
         map(&:first).join('/')
 
-      File.file?(path) ?
+      Path.new(path).extname.present? ?
         Path.new(File.dirname(path)) : Path.new(path)
     end
   end
 
   class Path < Pathname
 
-    EXTENSIONS = {
-      
-    }
+    def initialize(path = nil)
+      super(path || '.')
+    end
 
     def minified?
       to_s.include?('.min.')
@@ -69,6 +69,10 @@ module Build
 
     def descendant?(directory)
       !relative_path_from(Path.new(directory)).to_s.split('/').include?('..')
+    end
+
+    def prefix(path)
+      Path.new(path).join(self)
     end
 
     private
