@@ -55,20 +55,16 @@ module Build
 
   class Path < Pathname
 
+    EXTENSIONS = {
+      
+    }
+
     def minified?
       to_s.include?('.min.')
     end
 
-    def javascript?
-      extension? ['js', 'coffee']
-    end
-
-    def stylesheet?
-      extension? ['css', 'less', 'scss', 'sass']
-    end
-
-    def image?
-      extension? ['png', 'gif', 'jpg', 'jpeg']
+    def member_of?(klass)
+      extension?(extension_classes.fetch(klass, []))
     end
 
     def descendant?(directory)
@@ -76,6 +72,15 @@ module Build
     end
 
     private
+
+    # Extensioins are sorted by priority
+    def extension_classes
+      {
+        javascripts: ['coffee', 'js'],
+        stylesheets: ['sass', 'scss', 'less', 'css'],
+        images: ['png', 'jpg', 'jpeg', 'gif']
+      }
+    end
 
     def extension?(extensions)
       extensions.any? do |extension|

@@ -119,17 +119,17 @@ module Build
       }
 
       it 'can filter out all javascript assets' do
-        expect(asset_paths.select(&:javascript?)).
+        expect(asset_paths.select(:member_of?, :javascripts)).
           to eq(javascript_paths)
       end
 
       it 'can filter out all stylesheet assets' do
-        expect(asset_paths.select(&:stylesheet?)).
+        expect(asset_paths.select(:member_of?, :stylesheets)).
           to eq(stylesheet_paths)
       end
 
       it 'can filter out all image assets' do
-        expect(asset_paths.select(&:image?)).
+        expect(asset_paths.select(:member_of?, :images)).
           to eq(image_paths)
       end
 

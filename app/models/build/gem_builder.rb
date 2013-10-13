@@ -79,40 +79,28 @@ module Build
         select(:exist?)
 
       main_paths = {
-        javascripts: all_main_paths.select(:javascript?),
-        stylesheets: all_main_paths.select(:stylesheet?)
+        javascripts: all_main_paths.select(:member_of?, :javascripts),
+        stylesheets: all_main_paths.select(:member_of?, :stylesheets),
+        images: []
       }
 
-      source_dir = {
+      source_dirs = {
         javascripts: main_paths[:javascripts].common_prefix || Pathname.new(@bower_dir),
         stylesheets: main_paths[:stylesheets].common_prefix || Pathname.new(@bower_dir),
-        images: Pathname.new(@bower_dir)
+        images: Pathname.new(@bower_dir) # shouldn't we do the same for images
       }
 
-      source_paths = {
-        javascripts: all_source_paths.select(:javascript?) + main_paths[:javascripts],
-        stylesheets: all_source_paths.select(:stylesheet?) + main_paths[:stylesheets],
-        images: all_source_paths.select(:image?)
-      }.each do |type, files|
-        # Remove all files that are not descendants of source dir
-        # For example we don't include js files if there are coffee ones
-        files.select!(:descendant?, source_dir[type])
-      end
-
-      target_dir = {
-        javascripts: File.join(@gem_dir, 'vendor', 'assets', 'javascripts', dir),
-        stylesheets: File.join(@gem_dir, 'vendor', 'assets', 'stylesheets', dir),
-        images: File.join(@gem_dir, 'vendor', 'assets', 'images', dir)
-      }
-
-      [:javascripts, :stylesheets, :images].each do |type|
-        relative_paths = source_paths[type].map(:relative_path_from, source_dir[type])
-        target_paths = relative_paths.map(:expand_path, target_dir[type])
-        source_paths[type].zip(target_paths).map { |source, target| copy_file(source, target) }
+      source_dirs.each do |type, source_dir|
+        source_paths = all_source_paths.select(:member_of?, type) + main_paths[type]
+        source_paths = source_paths.select(:descendant?, source_dir)
+        relative_paths = source_paths.map(:relative_path_from, source_dir)
+        target_dir = File.join(@gem_dir, 'vendor', 'assets', type.to_s, dir)
+        target_paths = relative_paths.map(:expand_path, target_dir)
+        source_paths.zip(target_paths).map { |source, target| copy_file(source, target) }
       end
 
       # Generate javascript manifest
-      manifest_javascripts = main_paths[:javascripts].map(:relative_path_from, source_dir[:javascripts])
+      manifest_javascripts = main_paths[:javascripts].map(:relative_path_from, source_dirs[:javascripts])
       generate_manifest manifest_javascripts, 'javascripts', 'js' do |files|
         files.map do |file_name|
           "//= require #{File.join(dir, file_name)}"
@@ -120,7 +108,7 @@ module Build
       end unless manifest_javascripts.empty?
 
       # Generate stylesheet manifest
-      manifest_stylesheets = main_paths[:stylesheets].map(:relative_path_from, source_dir[:stylesheets])
+      manifest_stylesheets = main_paths[:stylesheets].map(:relative_path_from, source_dirs[:stylesheets])
       generate_manifest manifest_stylesheets, 'stylesheets', 'css' do |files|
         "/*\n" +
         files.map { |file_name|
