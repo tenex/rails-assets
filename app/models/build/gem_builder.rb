@@ -67,7 +67,7 @@ module Build
     end
 
     def build 
-      dir = @bower_component.name
+      name = @bower_component.name
 
       all_source_paths = Paths.
         from(@bower_dir).
@@ -78,34 +78,68 @@ module Build
         map(:expand_path, @bower_dir).
         select(:exist?)
 
-      [:javascripts, :stylesheets, :images].each do |type|
+      # Each transform is in form [source_path, target_path] or [source, target_path]
+      transformations = [:javascripts, :stylesheets, :images].flat_map do |type|
         main_paths = all_main_paths.select(:member_of?, type)
-        source_dir = main_paths.common_prefix || Pathname.new(@bower_dir)
-        source_paths = all_source_paths.select(:member_of?, type) + main_paths
-        source_paths = source_paths.select(:descendant?, source_dir)
-        relative_paths = source_paths.map(:relative_path_from, source_dir)
-        target_dir = File.join(@gem_dir, 'vendor', 'assets', type.to_s, dir)
-        target_paths = relative_paths.map(:expand_path, target_dir)
-        source_paths.zip(target_paths).map { |source, target| copy_file(source, target) }
 
-        if generator = manifest_generators[type]
-          manifest_paths = main_paths.map(:relative_path_from, source_dir)
-          unless manifest_paths.empty?
-            generate_manifest(manifest_paths, type.to_s, generator[:extension],
-                              &generator[:processor])
+        source_dir = main_paths.common_prefix || Pathname.new(@bower_dir)
+        target_dir = Pathname.new(@gem_dir).join('vendor', 'assets', type.to_s)
+
+        source_paths = all_source_paths.select(:member_of?, type).
+          select(:descendant?, source_dir) + main_paths
+
+        relative_paths = source_paths.map(:relative_path_from, source_dir)
+        target_paths = relative_paths.map(:expand_path, target_dir.join(name))
+
+        manifest_transform =
+          if generator = manifest_generators[type]
+            manifest_paths = main_paths.map(:relative_path_from, source_dir)
+            unless manifest_paths.empty?
+              [
+                generator[:processor].call(manifest_paths),
+                target_dir.join("#{name}.#{generator[:extension]}")
+              ]
+            end
+          end
+
+        (source_paths.zip(target_paths) + [manifest_transform]).compact
+      end
+
+      transformations.each do |source, target|
+        target.dirname.mkpath
+
+        if source.is_a?(Pathname)
+          Rails.logger.info "Copying #{source} to #{target}"
+          FileUtils.cp(source, target)
+        else
+          File.open(target, "w") do |file|
+            file.write(source)
           end
         end
       end
 
+      @gem_component.files = transformations.map(&:last).
+        map { |path| path.relative_path_from Pathname.new(@gem_dir) }.map(&:to_s)
+
       generate_gem_structure
       build_gem
 
-      @gem_component.update(@component, @version)
-
       Component.transaction do
+        @version.build_status = 'success'
+
         @component.save!
         @version.save!
       end
+    rescue BuildError => e
+      Component.transaction do
+        @version.build_status = 'error'
+        @version.build_message = e.message
+
+        @component.save!
+        @version.save!
+      end
+
+      raise
     end
 
     def manifest_generators
@@ -129,53 +163,6 @@ module Build
           }
         }
       }
-    end
-
-    def generate_manifest(main_files, manifest_directory, manifest_extension)
-      manifest_filename = "#{@bower_component.name}.js"
-
-      manifest_relative_path = File.join(
-        "vendor", "assets", manifest_directory, manifest_filename
-      )
-
-      manifest_path = File.join(@gem_dir, manifest_relative_path)
-
-      Rails.logger.info "Creating manifest file #{manifest_path}"
-
-      File.open(manifest_path, "w") do |manifest_file|
-        manifest_file.puts(yield(main_files))
-      end
-
-      @gem_component.files << manifest_relative_path.to_s
-
-      generate_gem_structure
-      build_gem
-
-      Component.transaction do
-        @version.build_status = 'success'
-
-        @component.save!
-        @version.save!
-      end
-    rescue BuildError => e
-      Component.transaction do
-        @version.build_status = 'error'
-        @version.build_message = e.message
-
-        @component.save!
-        @version.save!
-      end
-
-      raise
-    end
-
-    def copy_file(source, target)
-      Rails.logger.info "Copying #{source} to #{target}"
-
-      target.dirname.mkpath
-      FileUtils.cp(source, target)
-      @gem_component.files << target.relative_path_from(
-        Pathname.new(@gem_dir)).to_s
     end
 
     def generate_gem_file(file)
