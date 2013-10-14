@@ -125,10 +125,30 @@ module Build
         source_file = Path.new('style.css')
         target_file = Path.new('style.scss')
 
-        File.write('/tmp/style.css', "body {\n  background-image: url(foo/bar.png)\n}")
+        transformations = [
+          [source_file, target_file],
+          [Path.new('foo/bar.png'), Path.new('vendor/assets/images/foo.png')]
+        ]
 
-        Transformer.process_transformations!([[source_file, target_file]], '/tmp', '/tmp')
-        expect(File.read('/tmp/style.scss')).to include('image-url("foo/bar.png")')
+        File.write('/tmp/style.css', "body {\n  background-image: url(foo/bar.png)\n}")
+        FileUtils.mkdir_p('/tmp/foo')
+        File.write('/tmp/foo/bar.png', "BINARY")
+
+        Transformer.process_transformations!(transformations, '/tmp', '/tmp')
+        expect(File.read('/tmp/style.scss')).to include('image-url("foo.png")')
+      end
+    end
+
+    context '#transform_relative_path' do
+      it 'properly transforms relative path' do
+        expect(Transformer.transform_relative_path(
+          Path.new('../images/image.png'), Path.new('dist/css/foobar.css'),
+          [
+            [Path.new('./dist/css/foobar.css'), Path.new('css/foobar.css')],
+            [Path.new('./dist/images/image.png'), Path.new('vendor/assets/images/fiz/img.png')],
+            [Path.new('./dist/image.png'), Path.new('vendor/assets/images/fuz/img.png')]
+          ]
+        )).to eq(Path.new('fiz/img.png'))
       end
     end
   end

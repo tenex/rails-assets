@@ -12,7 +12,7 @@ module Build
     end
 
     def initialize(path = nil)
-      super(path || '.')
+      super(path ? Pathname.new(path).cleanpath : Pathname.new('.').cleanpath)
     end
 
     def minified?
@@ -39,6 +39,10 @@ module Build
       extensions.any? do |extension|
         !!to_s.match(/\.#{extension}(?:[\W]|$)/)
       end
+    end
+
+    def append_relative_path(exp)
+      Path.new(File.expand_path("../#{exp}", "/#{self.to_s}")[1..-1])
     end
 
   end

@@ -210,5 +210,12 @@ module Build
         expect(Path.new('foo').join('bar', 'biz')).to be_a(Path)
       end
     end
+    
+    context '#append_relative_path' do
+      it 'properly appends relative path' do
+        expect(Path.new('./foo/bar/baz.css').append_relative_path('../foo/image.png')).
+          to eq(Path.new('foo/foo/image.png'))
+      end
+    end
   end
 end

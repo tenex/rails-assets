@@ -4,7 +4,7 @@ module Build
 
     def initialize(paths = nil)
       super((paths || []).flat_map do |path|
-        path ? [Path.new(path).cleanpath] : []
+        path ? [Path.new(path)] : []
       end.uniq)
     end
 

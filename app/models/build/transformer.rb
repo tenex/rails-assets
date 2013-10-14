@@ -101,25 +101,29 @@ module Build
         end
 
         File.open(target, "w") do |file|
-          file.write(process_asset(file_name, source))
+          file.write(process_asset(file_name, source, transformations))
         end
       end
 
       transformations.map(&:last)
     end
 
+    def transform_relative_path(relative_path, source_path, transformations)
+      mapping = Hash[transformations]
+      new_img = mapping[source_path.append_relative_path(relative_path)]
+      Path.new(new_img.to_s.sub(/.*?vendor\/assets\/images\//, ""))
+    end
+
     private
 
-    def process_asset(file_name, source)
+    def process_asset(file_name, source, transformations)
       return source if file_name.nil?
 
       if file_name.member_of?(:stylesheets)
         extensions = Path.extension_classes[:images]
-
-        source.gsub(
-          /url\(["'\s]?([^\)]+\.(#{extensions.join('|')}))["'\s]?\)/i,
-          'image-url("\1")'
-        )
+        source.gsub /url\(["'\s]?([^\)]+\.(#{extensions.join('|')}))["'\s]?\)/i do |match|
+          "image-url(\"#{transform_relative_path($1, file_name, transformations)}\")"
+        end
       else
         source
       end
