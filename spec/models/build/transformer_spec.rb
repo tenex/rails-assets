@@ -28,7 +28,7 @@ module Build
       it 'puts stylesheet files to stylesheets directory' do
         expect(
           targets(['foo.css'])
-        ).to eq(Paths.new(['vendor/assets/stylesheets/foobar/foo.css']))
+        ).to eq(Paths.new(['vendor/assets/stylesheets/foobar/foo.scss']))
       end
 
       it 'puts image files to images directory' do
@@ -57,15 +57,23 @@ module Build
           mappings(
             ['foo.js'], ['foo.js']
           )['vendor/assets/javascripts/foobar.js']
-        ).to include('require foobar/foo.js')
+        ).to include('require foobar/foo')
+      end
+
+      it 'does not include extensions in required files' do
+        expect(
+          mappings(
+            ['foo.js'], ['foo.js']
+          )['vendor/assets/javascripts/foobar.js']
+        ).to_not include('require foobar/foo.js')
       end
 
       it 'generates manifest for stylesheet files' do
         expect(
           targets(['foo.css'], ['foo.css'])
         ).to eq(Paths.new([
-          'vendor/assets/stylesheets/foobar/foo.css',
-          'vendor/assets/stylesheets/foobar.css'
+          'vendor/assets/stylesheets/foobar/foo.scss',
+          'vendor/assets/stylesheets/foobar.scss'
         ]))
       end
 
@@ -73,8 +81,16 @@ module Build
         expect(
           mappings(
             ['foo.css'], ['foo.css']
-          )['vendor/assets/stylesheets/foobar.css']
-        ).to include('require foobar/foo.css')
+          )['vendor/assets/stylesheets/foobar.scss']
+        ).to include('require foobar/foo')
+      end
+
+      it 'does not include extensions in required files' do
+        expect(
+          mappings(
+            ['foo.css'], ['foo.css']
+          )['vendor/assets/stylesheets/foobar.scss']
+        ).to_not include('require foobar/foo.scss')
       end
 
       it 'flattens paths for if main javascript is set' do
@@ -88,11 +104,31 @@ module Build
 
       it 'flattens paths for if main stylesheet is set' do
         expect(
-          targets(['dist/css/foo.css'], ['dist/css/foo.css'])
+          targets(['dist/css/foo.css'], ['dist/css/foo.scss'])
         ).to eq(Paths.new([
-          'vendor/assets/stylesheets/foobar/foo.css',
-          'vendor/assets/stylesheets/foobar.css'
+          'vendor/assets/stylesheets/foobar/foo.scss',
+          'vendor/assets/stylesheets/foobar.scss'
         ]))
+      end
+
+      it 'transforms all css files to scss ones to support asset urls' do
+        expect(
+          targets(['foo.css'])
+        ).to eq(Paths.new([
+          'vendor/assets/stylesheets/foobar/foo.scss'
+        ]))
+      end
+    end
+
+    context '#process_transformations!' do
+      it 'transforms urls in css files' do
+        source_file = Path.new('style.css')
+        target_file = Path.new('style.scss')
+
+        File.write('/tmp/style.css', "body {\n  background-image: url(foo/bar.png)\n}")
+
+        Transformer.process_transformations!([[source_file, target_file]], '/tmp', '/tmp')
+        expect(File.read('/tmp/style.scss')).to include('image-url("foo/bar.png")')
       end
     end
   end

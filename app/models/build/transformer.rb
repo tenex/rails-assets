@@ -65,7 +65,16 @@ module Build
             end
           end
 
-        (source_paths.zip(target_paths) + [manifest_transform]).compact
+        transforms = (source_paths.zip(target_paths) + [manifest_transform]).compact
+
+        transforms = transforms.map do |source, target|
+          if target.member_of?(:stylesheets) && target.extname == '.css'
+            [source, Path.new(target.to_s.sub(/\.css$/, '.scss'))]
+          else
+            [source, target]
+          end
+        end
+
       end
     end
 
@@ -84,13 +93,15 @@ module Build
         target.dirname.mkpath
 
         if source.is_a?(Pathname)
+          file_name = source
           source = bower_path.join(source) unless source.absolute?
-          Rails.logger.info "Copying #{source} to #{target}"
-          FileUtils.cp(source, target)
+          source = File.read(source)
         else
-          File.open(target, "w") do |file|
-            file.write(source)
-          end
+          file_name = nil
+        end
+
+        File.open(target, "w") do |file|
+          file.write(process_asset(file_name, source))
         end
       end
 
@@ -99,13 +110,28 @@ module Build
 
     private
 
+    def process_asset(file_name, source)
+      return source if file_name.nil?
+
+      if file_name.member_of?(:stylesheets)
+        extensions = Path.extension_classes[:images]
+
+        source.gsub(
+          /url\(["'\s]?([^\)]+\.(#{extensions.join('|')}))["'\s]?\)/i,
+          'image-url("\1")'
+        )
+      else
+        source
+      end
+    end
+
     def manifest_generators
       @manifest_generators ||= {
         javascripts: {
           extension: 'js',
           processor: lambda { |files|
             files.map do |file_name|
-              "//= require #{file_name}"
+              "//= require #{file_name.to_s[/\/?([^\/]*\/)*[^\.]+/]}"
             end.join("\n")
           }
         },
@@ -114,7 +140,7 @@ module Build
           processor: lambda { |files|
             "/*\n" +
             files.map { |file_name|
-              " *= require #{file_name}"
+              " *= require #{file_name.to_s[/\/?([^\/]*\/)*[^\.]+/]}"
             }.join("\n") +
             "\n */"
           }

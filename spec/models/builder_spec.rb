@@ -69,9 +69,9 @@ describe Build::Convert do
       gem_file "vendor/assets/javascripts/leaflet.js"
       gem_file "vendor/assets/javascripts/leaflet/leaflet.js"
 
-      gem_file "vendor/assets/stylesheets/leaflet/leaflet.css"
-      gem_file "vendor/assets/stylesheets/leaflet/leaflet.ie.css"
-      gem_file "vendor/assets/stylesheets/leaflet/leaflet.css"
+      gem_file "vendor/assets/stylesheets/leaflet/leaflet.scss"
+      gem_file "vendor/assets/stylesheets/leaflet/leaflet.ie.scss"
+      gem_file "vendor/assets/stylesheets/leaflet.scss"
 
       gem_file "vendor/assets/images/leaflet/dist/images/layers-2x.png"
       gem_file "vendor/assets/images/leaflet/dist/images/layers.png"
@@ -93,8 +93,8 @@ describe Build::Convert do
     component "selectize", '0.8.0' do
       gem_file "vendor/assets/javascripts/selectize.js"
       gem_file "vendor/assets/javascripts/selectize/selectize.js"
-      gem_file "vendor/assets/stylesheets/selectize.css"
-      gem_file "vendor/assets/stylesheets/selectize/selectize.css"
+      gem_file "vendor/assets/stylesheets/selectize.scss"
+      gem_file "vendor/assets/stylesheets/selectize/selectize.scss"
     end
   end
 end
