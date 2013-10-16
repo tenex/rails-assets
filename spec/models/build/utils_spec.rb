@@ -64,6 +64,10 @@ module Build
       specify do
         expect(utils.fix_version_string('~1.x')).to eq('~> 1.0')
       end
+
+      specify do
+        expect(utils.fix_version_string('~3.4')).to eq('~> 3.4')
+      end
     end
 
     context '#fix_gem_name' do

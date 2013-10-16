@@ -64,7 +64,7 @@ module Build
         end
 
         version.gsub!('-', '.')
-        version.gsub!(/~[^>]\s?(\d)/, '~> \1')
+        version.gsub!(/~(?!>)\s?(\d)/, '~> \1')
 
         version
       end
