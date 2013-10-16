@@ -37,6 +37,8 @@ gem 'thin'
 
 gem 'rails_12factor'
 
+gem 'quiet_assets'
+
 group :development do
   gem 'better_errors'
   gem 'foreman'
