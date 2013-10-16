@@ -33,7 +33,7 @@ module Build
     def compute_transformations(gem_name, all_source_paths, all_main_paths = Paths.new)
       all_source_paths = all_source_paths.reject(:minified?)
 
-      [:javascripts, :stylesheets, :images].flat_map do |type|
+      transformations = [:javascripts, :stylesheets, :images].flat_map do |type|
         main_paths = all_main_paths.select(:member_of?, type)
 
         target_dir = Path.new.join('vendor', 'assets', type.to_s)
@@ -75,7 +75,22 @@ module Build
           end
         end
 
+        transforms_hash = Hash[transforms]
+
+        main_transforms = main_paths.map do |path|
+          [path, transforms_hash[path]]
+        end
+
+        {
+          all: transforms,
+          main: main_transforms
+        }
       end
+
+      {
+        all: Hash[transformations.flat_map { |t| t[:all] }],
+        main: Hash[transformations.flat_map { |t| t[:main] }]
+      }
     end
 
     # Public: processes transfirmations by copying or generating gem files
@@ -105,7 +120,7 @@ module Build
         end
       end
 
-      transformations.map(&:last)
+      transformations.values
     end
 
     def transform_relative_path(relative_path, source_path, transformations)

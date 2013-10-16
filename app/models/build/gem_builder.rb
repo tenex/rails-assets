@@ -68,9 +68,15 @@ module Build
     end
 
     def build 
-      transformations = Transformer.component_transformations(
+      asset_transformations = Transformer.component_transformations(
         @bower_component, @bower_dir
-      ) + generate_gem_structure
+      )
+      
+      @version.asset_paths = asset_transformations[:all].values.map(&:to_s)
+      @version.main_paths = asset_transformations[:main].values.map(&:to_s)
+
+      transformations = asset_transformations[:all].
+        merge(generate_gem_structure)
 
       Transformer.process_transformations!(
         transformations, @bower_dir, @gem_dir
@@ -114,14 +120,14 @@ module Build
     end
 
     def generate_gem_structure
-      [
+      Hash[[
         generate_gem_file("lib/GEM/version.rb.erb"),
         generate_gem_file("lib/GEM.rb.erb"),
         generate_gem_file("Gemfile"),
         generate_gem_file("Rakefile"),
         generate_gem_file("README.md.erb"),
         generate_gem_file("GEM.gemspec.erb")
-      ]
+      ]]
     end
 
     def templates_dir

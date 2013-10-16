@@ -8,7 +8,7 @@ module Build
           'foobar',
           Paths.new(asset_paths),
           Paths.new(main_paths)
-        ).map(&:last))
+        )[:all].values)
       end
 
       def mappings(asset_paths, main_paths = [])
@@ -16,7 +16,7 @@ module Build
           'foobar',
           Paths.new(asset_paths),
           Paths.new(main_paths)
-        ).map { |source, target| [target.to_s, source] } ]
+        )[:all].invert.map { |s, t| [s.to_s, t.to_s] }]
       end
 
       it 'puts javascript files to javascripts directory' do
@@ -125,10 +125,10 @@ module Build
         source_file = Path.new('style.css')
         target_file = Path.new('style.scss')
 
-        transformations = [
+        transformations = Hash[[
           [source_file, target_file],
           [Path.new('foo/bar.png'), Path.new('vendor/assets/images/foo.png')]
-        ]
+        ]]
 
         File.write('/tmp/style.css', "body {\n  background-image: url(foo/bar.png)\n}")
         FileUtils.mkdir_p('/tmp/foo')
@@ -143,11 +143,11 @@ module Build
       it 'properly transforms relative path' do
         expect(Transformer.transform_relative_path(
           Path.new('../images/image.png'), Path.new('dist/css/foobar.css'),
-          [
+          Hash[[
             [Path.new('./dist/css/foobar.css'), Path.new('css/foobar.css')],
             [Path.new('./dist/images/image.png'), Path.new('vendor/assets/images/fiz/img.png')],
             [Path.new('./dist/image.png'), Path.new('vendor/assets/images/fuz/img.png')]
-          ]
+          ]]
         )).to eq(Path.new('fiz/img.png'))
       end
     end
