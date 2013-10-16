@@ -3,17 +3,11 @@ module Build
     extend Utils
 
     def self.install(component_name, build_dir)
-      sh(
-        build_dir, BOWER_BIN,
-        "install", "-p", "-F", component_name, "--json"
-      )
+      Utils.bower(build_dir, 'install -p -F', component_name)
     end
 
     def self.info(component_name)
-      JSON.parse sh(
-        '/tmp', BOWER_BIN,
-        "info", component_name, "--json --quiet"
-      )
+      Utils.bower('/tmp', 'info', component_name)
     end
   end
 end

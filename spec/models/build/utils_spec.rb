@@ -3,6 +3,34 @@ require 'spec_helper'
 module Build
   describe Utils do
     let(:utils) { Object.new.send(:extend, subject) }
+
+    context '#bower' do
+      it 'executes bower command and returns JSON' do
+        expect(silence_stream(STDOUT) {
+          Utils.bower('/', 'info jquery#2.0.3')["name"]
+        }).to be_a(String)
+      end
+
+      it 'extracts BuildError.message' do
+        expect(silence_stream(STDOUT) {
+          begin
+            Utils.bower('/', 'info jquery#0.0.0')
+          rescue BuildError => e
+            e.message
+          end
+        }).to eq("No tag found that was able to satisfy 0.0.0")
+      end
+
+      it 'extracts BuildError.opts[:log]' do
+        expect(silence_stream(STDOUT) {
+          begin
+            Utils.bower('/', 'info jquery#0.0.0')
+          rescue BuildError => e
+            e.opts[:log]
+          end
+        }).to include("Available versions")
+      end
+    end
     
     context '#fix_version_string' do
       specify do
