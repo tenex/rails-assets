@@ -16,11 +16,11 @@ module Build
     end
 
     def name
-      @name ||= "#{GEM_PREFIX}#{@bower_component.full_name}"
+      @name ||= "#{GEM_PREFIX}#{short_name}"
     end
 
     def short_name
-      @short_name ||= @bower_component.full_name
+      @short_name ||= fix_gem_name(@bower_component.full_name, @bower_component.version)
     end
 
     def version

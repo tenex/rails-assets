@@ -9,8 +9,14 @@ class MainController < ApplicationController
       .flat_map do |name|
 
       component_name = name.gsub(GEM_PREFIX, "")
+      component = Component.where(name: component_name).first
 
-      if component = (Component.where(name: component_name).first || build(component_name))
+      if component.blank? || component.versions.built.count == 0
+        build(component_name)
+        Reindex.new.perform
+      end
+
+      if component
         component.versions.built.map do |v|
           {
             name:         name,

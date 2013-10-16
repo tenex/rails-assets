@@ -69,15 +69,15 @@ describe Build::Convert do
       gem_file "vendor/assets/javascripts/leaflet.js"
       gem_file "vendor/assets/javascripts/leaflet/leaflet.js"
 
-      gem_file "vendor/assets/stylesheets/leaflet.css"
-      gem_file "vendor/assets/stylesheets/leaflet/leaflet.ie.css"
-      gem_file "vendor/assets/stylesheets/leaflet/leaflet.css"
+      gem_file "vendor/assets/stylesheets/leaflet/leaflet.scss"
+      gem_file "vendor/assets/stylesheets/leaflet/leaflet.ie.scss"
+      gem_file "vendor/assets/stylesheets/leaflet.scss"
 
-      gem_file "vendor/assets/images/leaflet/images/layers-2x.png"
-      gem_file "vendor/assets/images/leaflet/images/layers.png"
-      gem_file "vendor/assets/images/leaflet/images/marker-icon-2x.png"
-      gem_file "vendor/assets/images/leaflet/images/marker-icon.png"
-      gem_file "vendor/assets/images/leaflet/images/marker-shadow.png"
+      gem_file "vendor/assets/images/leaflet/dist/images/layers-2x.png"
+      gem_file "vendor/assets/images/leaflet/dist/images/layers.png"
+      gem_file "vendor/assets/images/leaflet/dist/images/marker-icon-2x.png"
+      gem_file "vendor/assets/images/leaflet/dist/images/marker-icon.png"
+      gem_file "vendor/assets/images/leaflet/dist/images/marker-shadow.png"
     end
 
     component "resizeend", "1.1.2" do
@@ -88,6 +88,13 @@ describe Build::Convert do
     component "rails-assets/jquery-waypoints", nil, :gem_name => "rails-assets--jquery-waypoints" do
       gem_file "vendor/assets/javascripts/jquery-waypoints.js"
       gem_file "vendor/assets/javascripts/jquery-waypoints/waypoints.js"
+    end
+
+    component "selectize", '0.8.0' do
+      gem_file "vendor/assets/javascripts/selectize.js"
+      gem_file "vendor/assets/javascripts/selectize/selectize.js"
+      gem_file "vendor/assets/stylesheets/selectize.scss"
+      gem_file "vendor/assets/stylesheets/selectize/selectize.scss"
     end
   end
 end

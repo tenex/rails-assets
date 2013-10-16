@@ -37,11 +37,12 @@ gem 'thin'
 
 gem 'rails_12factor'
 
-group :development, :test do
-  gem 'pry-rails'
+group :development do
   gem 'better_errors'
+  gem 'foreman'
 end
 
-group :test do
+group :development, :test do
   gem 'rspec-rails'
+  gem 'pry-rails'
 end
