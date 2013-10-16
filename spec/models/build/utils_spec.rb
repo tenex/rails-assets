@@ -60,6 +60,10 @@ module Build
           'https://github.com/voodootikigod/node-csv/tarball/v2.3.1-foo'
         )).to eq('2.3.1.foo')
       end
+
+      specify do
+        expect(utils.fix_version_string('~1.x')).to eq('~> 1.0')
+      end
     end
 
     context '#fix_gem_name' do

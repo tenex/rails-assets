@@ -58,13 +58,13 @@ module Build
           nil
         end
       else
-        version.gsub!('-', '.')
-        version.gsub!(/~\s?(\d)/, '~> \1')
-
         if version.match('.x')
           version.gsub!('.x', '.0')
-          version = "~> #{version}"
+          version = "~> #{version.gsub('~', '')}"
         end
+
+        version.gsub!('-', '.')
+        version.gsub!(/~[^>]\s?(\d)/, '~> \1')
 
         version
       end
