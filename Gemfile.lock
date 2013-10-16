@@ -197,6 +197,8 @@ GEM
       json
       redis (>= 3.0)
       redis-namespace
+    sidekiq-failures (0.2.2)
+      sidekiq (>= 2.9.0)
     sidekiq-unique-jobs (2.6.7)
       sidekiq (~> 2.6)
     sidetiq (0.3.6)
@@ -271,6 +273,7 @@ DEPENDENCIES
   schema_plus
   sentry-raven
   sidekiq
+  sidekiq-failures
   sidekiq-unique-jobs
   sidetiq
   sinatra (>= 1.3.0)

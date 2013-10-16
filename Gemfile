@@ -22,7 +22,9 @@ gem 'redis',      "~> 3.0.0"
 gem 'sidekiq'
 gem 'sidetiq'
 gem 'sidekiq-unique-jobs'
+gem 'sidekiq-failures'
 gem 'sinatra', '>= 1.3.0', :require => nil
+
 
 gem 'builder'
 gem 'autoprefixer-rails', '>= 0.6.20130728'
