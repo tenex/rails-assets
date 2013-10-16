@@ -1,0 +1,6 @@
+/ Generic template for errors
+.dialog
+  h1
+    = Rack::Utils::HTTP_STATUS_CODES[status_code] || "Internal Server Error"
+    = " (#{status_code})"
+p= error_message

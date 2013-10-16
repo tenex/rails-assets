@@ -51,5 +51,9 @@ app.controller "ConvertCtrl", ["$scope", "$http", ($scope, $http) ->
         $scope.error =
           message: "Package #{component} already exist"
       else
-        $scope.error = data
+        console.log(data)
+        if data?
+          $scope.error = data
+        else
+          $scope.error = "There was an critical error. It was reported to our administrator."
 ]
