@@ -21,7 +21,7 @@ module Build
       else
         raise BuildError.new(
           "Command '#{cmd}' failed with exit code #{status.to_i}",
-          :log => output + error
+          :log => error
         )
       end
     end
