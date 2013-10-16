@@ -14,7 +14,6 @@ module Build
         end
 
         stderr.each do |line|
-          output << line
           Rails.logger.warn(line.chomp)
         end
 
