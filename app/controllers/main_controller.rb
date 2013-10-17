@@ -36,6 +36,11 @@ class MainController < ApplicationController
   protected
 
   def build(name)
-    Build::Convert.new(name).try_convert(debug: params[:_debug]).try(:[], :component)
+    Build::BowerComponent.
+      from_bower(name).
+      convert!(debug: params[:_debug])[:component]
+  rescue BuildError => e
+    Rails.logger.warn(e)
+    nil
   end
 end

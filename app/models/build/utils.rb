@@ -7,9 +7,11 @@ module Build
       command = "#{BOWER_BIN} #{command.join(' ')} --json --quiet"
       JSON.parse(Utils.sh(path, command))
     rescue BuildError => e
-      error_json = JSON.parse(e.opts[:log])[0]
+      raise if e.opts[:log].blank?
 
-      raise BuildError.new(error_json['message'],
+      error_json = JSON.parse(e.opts[:log])[0]
+      raise BuildError.new(
+        error_json['message'],
         :log => error_json['details']
       )
     end

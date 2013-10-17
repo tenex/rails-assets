@@ -23,7 +23,7 @@ module Build
 
     def build!(opts = {})
       Rails.logger.tagged(name) do
-        @bower_component = BowerComponent.from_manifests(@bower_dir, name)
+        @bower_component = BowerComponent.from_bower(name)
 
         if github?
           @bower_component.github!(@user)

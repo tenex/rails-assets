@@ -63,7 +63,9 @@ class ComponentsController < ApplicationController
   end
 
   def build(name, version)
-    result = Build::Convert.new(name, version).convert!(
+    result = Build::BowerComponent.from_bower(
+      name, version
+    ).convert!(
       debug: params[:_debug],
       force: true
     )

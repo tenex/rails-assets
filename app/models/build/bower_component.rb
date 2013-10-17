@@ -1,5 +1,9 @@
 module Build
   class BowerComponent
+    include Convert
+
+    extend Utils
+
     MANIFESTS = ["component.json", "package.json", "bower.json"]
 
     attr_accessor :name, :version, :description,
@@ -22,7 +26,7 @@ module Build
       self.user = user
 
       self.repository = "git://github.com/#{user}/#{name}.git"
-      self.homepage = self.class.get_homepage_from_repository(repository)
+      self.homepage = "http://github.com/#{user}/#{name}"
     end
 
     def github?
@@ -53,43 +57,17 @@ module Build
       @gem ||= GemComponent.new(self)
     end
 
-    class << self
-      def from_manifests(dir, name)
-        data = MANIFESTS
-                .map {|m| File.join(dir, m) }
-                .select {|f| File.exists?(f) }
-                .map {|f| read_manifest(f) }
-                .inject({}){|h,e| h.merge(e) }
+    def self.from_bower(name, version = nil)
+      full_name = version ?  name + "##{version}" : name
+      json = Utils.bower('/tmp', "info #{full_name}")
+      data = version ? json : json["latest"]
 
-        self.new(name, data[:version]).tap do |c|
-          c.description   = data[:description]
-          c.dependencies  = (data[:dependencies] || {})
-          c.main          = data[:main]
-          c.repository    = data[:repository]
-          c.homepage      = data[:homepage]
-          c.homepage      = get_homepage_from_repository(data[:repository]) if c.homepage.blank?
-        end
-      end
-
-      def get_homepage_from_repository(repo)
-        case repo.to_s
-        when %r|//github.com/(.+)/(.+?)(\.git)?$|
-            "http://github.com/#{$1}/#{$2}"
-        end
-      end
-
-      def read_manifest(path)
-        Rails.logger.info "Reading manifest file #{path}"
-        data = JSON.parse(File.read(path))
-
-        {
-          version:      data["version"],
-          description:  data["description"],
-          main:         data["main"] ? [data["main"]].flatten.reject {|e| e.nil?} : nil,
-          dependencies: data["dependencies"],
-          repository:   data["repository"].is_a?(Hash) ? data["repository"]["url"] : data["repository"],
-          homepage:     data["homepage"]
-        }.reject {|k,v| v.blank? }
+      self.new(name, data['version']).tap do |c|
+        c.main = data['main'] ? [data['main']].flatten.compact : nil
+        c.description = data['description'] || ""
+        c.repository = "#{data['homepage']}.git"
+        c.homepage = data['homepage']
+        c.dependencies = data['dependencies'] || {}
       end
     end
   end

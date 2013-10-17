@@ -55,7 +55,9 @@ desc "Rebuild all"
 task :rebuild => :environment do
   Component.order("name ASC").each do |c|
     c.versions.each do |v|
-      Build::Convert.new(c.name, v.string).convert!(debug: true, force: true)
+      Build::BowerComponent.from_bower(
+        c.name, v.string
+      ).convert!(debug: true, force: true)
     end
   end
 end

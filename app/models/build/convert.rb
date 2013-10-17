@@ -1,9 +1,5 @@
 module Build
-  class Convert
-    def initialize(name, version = nil)
-      @bower_component = BowerComponent.new(name, version)
-    end
-
+  module Convert
     def convert!(opts = {}, &block)
       Rails.logger.tagged("build") do
         @opts = opts
@@ -38,14 +34,14 @@ module Build
       Rails.logger.debug "Building in #{dir}"
 
       file_store.with_lock(file_store.bower_lock) do
-        Bower.install(@bower_component.full, dir)
+        Bower.install(self.full, dir)
       end
 
       results = Dir[File.join(dir, "bower_components", "*")].map do |file|
         name = File.basename(file)
 
-        if name == @bower_component.name && @bower_component.github?
-          name = @bower_component.github_name
+        if name == self.name && self.github?
+          name = self.github_name
         end
 
         GemBuilder.new(dir, name).build!(@opts)
@@ -61,7 +57,7 @@ module Build
 
       block.call(dir) if block
 
-      results.find {|r| r[:bower_component].name == @bower_component.name }
+      results.find { |r| r[:bower_component].name == self.name }
     end
   end
 end
