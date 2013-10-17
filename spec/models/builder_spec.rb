@@ -12,7 +12,8 @@ describe Build::Convert do
 
         silence_stream(STDOUT) do
           bower_component = Build::BowerComponent.from_bower(
-            name, version)
+            name, version
+          )
           
           bower_component.convert!(force: true) do |dir|
             @gem_root = File.join(dir, "gems", gem_name)
@@ -93,6 +94,10 @@ describe Build::Convert do
     component "resizeend", "1.1.2" do
       gem_file "vendor/assets/javascripts/resizeend.js"
       gem_file "vendor/assets/javascripts/resizeend/resizeend.coffee"
+    end
+
+    component "rails-assets/jquery-waypoints", nil, :gem_name => "rails-assets--jquery-waypoints" do
+      gem_file "vendor/assets/javascripts/jquery-waypoints/waypoints.js"
     end
 
     component "selectize", '0.8.0' do
