@@ -9,7 +9,7 @@ This README concerns the development aspect of the project. **[Visit the site](h
 ### Setup
 
 ```sh
-git clone git@github.com:rails-assets/rails-assets.git && cd $_
+git clone git@github.com:rails-assets/rails-assets.git && cd rails-assets
 bundle install && npm install
 ln -sf ../data/{latest_specs.4.8.gz,prerelease_specs.4.8.gz,quick,specs.4.8.gz,gems} public
 foreman start
