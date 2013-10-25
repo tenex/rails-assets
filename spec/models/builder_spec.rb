@@ -40,6 +40,12 @@ describe Build::Convert do
       expect(ex).to eq true
     end
 
+    def file_contains(path, fragment)
+      log "Checking contents of #{path}"
+      contents = File.read(File.join(@gem_root, path))
+      expect(contents).to include(fragment)
+    end
+
     component "angular", "1.2.0-rc.1" do
       gem_file "vendor/assets/javascripts/angular.js"
       gem_file "vendor/assets/javascripts/angular/angular.js"
@@ -53,6 +59,7 @@ describe Build::Convert do
     component "sugar", "1.3.9" do
       gem_file "vendor/assets/javascripts/sugar.js"
       gem_file "vendor/assets/javascripts/sugar/sugar-full.development.js"
+      file_contains 'vendor/assets/javascripts/sugar.js', 'sugar/sugar-full.development'
     end
 
     component "purl", "2.3.1" do
@@ -96,5 +103,13 @@ describe Build::Convert do
       gem_file "vendor/assets/stylesheets/selectize.scss"
       gem_file "vendor/assets/stylesheets/selectize/selectize.scss"
     end
+
+    ## Currently fails because jquery.cookie ignores package.json
+    # component "jquery.cookie", '1.4.0' do
+    #   gem_file "vendor/assets/javascripts/jquery.cookie.js"
+    #   gem_file "vendor/assets/javascripts/jquery-cookie/jquery.cookie.js"
+    #   file_contains 'vendor/assets/javascripts/jquery.cookie.js',
+    #     'require jquery-cookie/jquery.cookie'
+    # end
   end
 end
