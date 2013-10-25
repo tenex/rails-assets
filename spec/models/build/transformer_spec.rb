@@ -151,5 +151,39 @@ module Build
         )).to eq(Path.new('fiz/img.png'))
       end
     end
+
+    context '#shorten_filename' do
+      it 'leaves custom extensions' do
+        filename = Transformer.shorten_filename(
+          'jquery.cookie.css', Path.extension_classes[:stylesheets]
+        )
+
+        expect(filename).to eq('jquery.cookie')
+      end
+      
+      it 'removes all non-custom extension' do
+        filename = Transformer.shorten_filename(
+          'jquery.js.cookie.css.scss', Path.extension_classes[:stylesheets]
+        )
+
+        expect(filename).to eq('jquery.js.cookie')
+      end
+
+      it 'also deals with paths' do
+        filename = Transformer.shorten_filename(
+          '/foo/bar/jquery.cookie.sass', Path.extension_classes[:stylesheets]
+        )
+
+        expect(filename).to eq('/foo/bar/jquery.cookie')
+      end
+
+      it 'deals with Path object' do
+        filename = Transformer.shorten_filename(
+          Path.new('/jquery.cookie.sass'), Path.extension_classes[:stylesheets]
+        )
+
+        expect(filename).to eq('/jquery.cookie')
+      end
+    end
   end
 end

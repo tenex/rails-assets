@@ -129,8 +129,6 @@ module Build
       Path.new(new_img.to_s.sub(/.*?vendor\/assets\/images\//, ""))
     end
 
-    private
-
     def process_asset(file_name, source, transformations)
       return source if file_name.nil?
 
@@ -149,8 +147,8 @@ module Build
         javascripts: {
           extension: 'js',
           processor: lambda { |files|
-            files.map do |file_name|
-              "//= require #{file_name.to_s[/\/?([^\/]*\/)*[^\.]+/]}"
+            files.map do |filename|
+              "//= require #{shorten_filename(filename, Path.extension_classes[:javascripts])}"
             end.join("\n")
           }
         },
@@ -158,13 +156,19 @@ module Build
           extension: 'css',
           processor: lambda { |files|
             "/*\n" +
-            files.map { |file_name|
-              " *= require #{file_name.to_s[/\/?([^\/]*\/)*[^\.]+/]}"
+            files.map { |filename|
+              " *= require #{shorten_filename(filename, Path.extension_classes[:stylesheets])}"
             }.join("\n") +
             "\n */"
           }
         }
       }
+    end
+
+    def shorten_filename(filename, extensions)
+      filename.to_s.split('.').reverse.
+        drop_while { |e| extensions.include?(e.downcase) }.
+        reverse.join('.')
     end
   end
 end
