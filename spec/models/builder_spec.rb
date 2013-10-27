@@ -63,7 +63,7 @@ describe Build::Convert do
     component "sugar", "1.3.9" do
       gem_file "vendor/assets/javascripts/sugar.js"
       gem_file "vendor/assets/javascripts/sugar/sugar-full.development.js"
-      file_contains 'vendor/assets/javascripts/sugar.js', 'sugar/sugar-full.development'
+      file_contains 'vendor/assets/javascripts/sugar.js', 'sugar/sugar.min'
     end
 
     component "purl", "2.3.1" do
