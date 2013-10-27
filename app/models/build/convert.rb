@@ -1,63 +1,43 @@
 module Build
-  module Convert
-    def convert!(opts = {}, &block)
-      Rails.logger.tagged("build") do
-        @opts = opts
+  module Convert # extends BowerComponent
 
-        if @opts[:debug]
-          dir = "/tmp/build"
-          FileUtils.rm_rf(dir)
-          FileUtils.mkdir_p(dir)
-          build_in_dir(dir, &block)
-        else
-          Dir.mktmpdir do |dir|
-            build_in_dir(dir, &block)
+    def convert!(options = {}, &block)
+      Dir.mktmpdir do |dir|
+        Rails.logger.debug "Building in #{dir}"
+
+        file_store.with_lock(file_store.bower_lock) do
+          Bower.install(self.full, dir)
+        end
+
+        results = Dir[File.join(dir, "bower_components", "*")].map do |file|
+          name = File.basename(file)
+
+          if name == self.name && self.github?
+            name = self.github_name
+          end
+
+          GemBuilder.new(dir, name).build!(options)
+        end
+
+        results.each do |result|
+          if result[:pkg]
+            file_store.save(result[:gem_component], result[:pkg])
           end
         end
+
+        Reindex.perform_async
+
+        block.call(dir) if block
+
+        results.find { |r| r[:bower_component].name == self.name }
       end
     end
 
-    def try_convert(opts = {})
-      convert!(opts)
-    rescue Build::BuildError => ex
-      Rails.logger.error ex.message
-      nil
-    end
+    protected
 
     def file_store
       @file_store ||= FileStore.new
     end
 
-    protected
-
-    def build_in_dir(dir, &block)
-      Rails.logger.debug "Building in #{dir}"
-
-      file_store.with_lock(file_store.bower_lock) do
-        Bower.install(self.full, dir)
-      end
-
-      results = Dir[File.join(dir, "bower_components", "*")].map do |file|
-        name = File.basename(file)
-
-        if name == self.name && self.github?
-          name = self.github_name
-        end
-
-        GemBuilder.new(dir, name).build!(@opts)
-      end
-
-      results.each do |result|
-        if result[:pkg]
-          file_store.save(result[:gem_component], result[:pkg])
-        end
-      end
-
-      Reindex.perform_async
-
-      block.call(dir) if block
-
-      results.find { |r| r[:bower_component].name == self.name }
-    end
   end
 end
