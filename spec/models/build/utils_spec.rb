@@ -7,28 +7,14 @@ module Build
     context '#bower' do
       it 'executes bower command and returns JSON' do
         expect(silence_stream(STDOUT) {
-          Utils.bower('/', 'info jquery#2.0.3')["name"]
-        }).to be_a(String)
+          Utils.bower('/', 'info jquery#2.0.3')
+        }).to be_a(Hash)
       end
 
-      it 'extracts BuildError.message' do
-        expect(silence_stream(STDOUT) {
-          begin
-            Utils.bower('/', 'info jquery#0.0.0')
-          rescue BuildError => e
-            e.message
-          end
-        }).to eq("No tag found that was able to satisfy 0.0.0")
-      end
-
-      it 'extracts BuildError.opts[:log]' do
-        expect(silence_stream(STDOUT) {
-          begin
-            Utils.bower('/', 'info jquery#0.0.0')
-          rescue BuildError => e
-            e.opts[:log]
-          end
-        }).to include("Available versions")
+      it 'raises BowerError on bower error' do
+        expect{silence_stream(STDOUT) {
+          Utils.bower('/', 'info jquery#0.0.0')
+        }}.to raise_error(BowerError)
       end
     end
     

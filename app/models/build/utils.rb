@@ -3,19 +3,17 @@ require "open3"
 module Build
   module Utils extend self
 
+    # Returns The Hash result if command succeeded.
+    # Raises The BowerError if command failed.
     def bower(path, *command)
       command = "#{BOWER_BIN} #{command.join(' ')} --json --quiet"
       JSON.parse(Utils.sh(path, command))
-    rescue BuildError => e
-      raise if e.opts[:log].blank?
-
-      error_json = JSON.parse(e.opts[:log])[0]
-      raise BuildError.new(
-        error_json['message'],
-        :log => error_json['details']
-      )
+    rescue ShellError => e
+      raise BowerError.from_shell_error(e)
     end
 
+    # Returns The String stdout if command succeeded.
+    # Raises The ShellError if command failed.
     def sh(cwd, *cmd)
       cmd = cmd.join(" ")
 
@@ -29,14 +27,9 @@ module Build
       Rails.logger.info("#{cmd}\n#{output}") if output.present?
       Rails.logger.warn("#{cmd}\n#{error}") if error.present?
 
-      if status.success?
-        output
-      else
-        raise BuildError.new(
-          "Command '#{cmd}' failed with exit code #{status.to_i}",
-          :log => error
-        )
-      end
+      raise ShellError.new(error, cwd, cmd) unless status.success?
+      
+      output
     end
 
     def fix_version_string(version)

@@ -32,13 +32,9 @@ class ComponentsController < ApplicationController
     end
 
     render json: component_data(component)
-  rescue Build::BuildError => ex
-    Raven.capture_exception(ex)
-
-    render json: {
-      message:  discover_error_cause(ex.opts[:log]) || ex.message,
-      log:      ex.opts[:log]
-    }, status: :unprocessable_entity
+  rescue Build::BuildError => e
+    Raven.capture_exception(e)
+    render json: { message: e.message }, status: :unprocessable_entity
   end
 
   protected
@@ -51,15 +47,6 @@ class ComponentsController < ApplicationController
       versions:     component.versions.built.map {|v| v.string },
       dependencies: component.versions.built.last.dependencies.to_a
     }
-  end
-
-  def discover_error_cause(log)
-    return unless log
-    if data = (JSON.parse(log) rescue nil)
-      if error = Array(data).select {|e| e["level"] == "error" }.first
-        error["message"]
-      end
-    end
   end
 
   def build(name, version)
