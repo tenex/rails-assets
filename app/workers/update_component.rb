@@ -5,7 +5,8 @@ class UpdateComponent
   sidekiq_options queue: 'update_component', unique: true
 
   def perform(name)
-    versions = Build::Bower.info(name)["versions"] || []
+    versions = Build::Utils.bower('/tmp', 'info', name)['versions'] || []
+
     versions = versions.map { |version| fix_version_string(version) }
 
     if component = Component.where(name: name).first

@@ -6,7 +6,7 @@ module Build
         Rails.logger.debug "Building in #{dir}"
 
         file_store.with_lock(file_store.bower_lock) do
-          Bower.install(self.full, dir)
+          Utils.bower(dir, 'install --force-latest --production', self.full)
         end
 
         results = Dir[File.join(dir, "bower_components", "*")].map do |file|
