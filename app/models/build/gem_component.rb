@@ -13,7 +13,7 @@ module Build
     end
 
     def short_name
-      bower_component.full_name.sub('/', '--')
+      bower_component.full_name.sub('/', '--').gsub('.', '-')
     end
 
     def version
@@ -27,9 +27,8 @@ module Build
     end
 
     def module
-      # TODO: this can be simpler...
-      "#{GEM_PREFIX}#{bower_component.name.gsub(/\./, "_")}".split("-").
-        map { |e| e.capitalize }.join('')
+      # TODO: not so sure of it. What about conflicts?
+      name.split("-").map { |e| e.capitalize }.join('')
     end
 
     def get_component_and_version!

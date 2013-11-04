@@ -62,7 +62,7 @@ module Build
 
         Transformer.process_transformations!(
           transformations[:all].merge(generate_gem_structure(bower_component)),
-          bower_component.cache_dir, output_dir
+          bower_component.component_dir, output_dir
         )
         
         yield [output_dir, asset_paths, main_paths]
@@ -140,7 +140,7 @@ module Build
         FileUtils.mkdir_p(data_dir.join('gems').to_s)
         gem_paths.each do |gem_path|
           destination = data_dir.join('gems', File.basename(gem_path))
-          FileUtils.mv(gem_path.to_s, destination.to_s)
+          FileUtils.mv(gem_path.to_s, destination.to_s, :force => true)
           stdout = capture(:stdout) do
             begin
               HackedIndexer.new(data_dir.to_s).update_index

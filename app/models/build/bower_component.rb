@@ -79,13 +79,13 @@ module Build
     end
 
     def paths
-      Paths.from(cache_dir).map(:relative_path_from, cache_dir)
+      Paths.from(component_dir).map(:relative_path_from, component_dir)
     end
 
     def main_paths
       Paths.new(main).
-        map(:expand_path, cache_dir).select(:exist?).
-        map(:relative_path_from, cache_dir)
+        map(:expand_path, component_dir).select(:exist?).
+        map(:relative_path_from, component_dir)
     end
 
     def gem
