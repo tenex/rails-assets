@@ -41,6 +41,8 @@ gem 'rails_12factor'
 
 gem 'quiet_assets'
 
+gem 'peach'
+
 group :development do
   gem 'better_errors'
   gem 'foreman'
@@ -49,4 +51,8 @@ end
 group :development, :test do
   gem 'rspec-rails'
   gem 'pry-rails'
+end
+
+group :test do
+  gem 'database_cleaner'
 end

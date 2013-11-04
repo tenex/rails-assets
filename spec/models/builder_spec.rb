@@ -1,6 +1,7 @@
 require 'spec_helper'
 
-describe Build::Convert do
+# TODO: fix this tests
+describe Build::Converter do
   context 'generates proper files in conversion', slow: true do
     before { Component.destroy_all }
 
@@ -10,18 +11,10 @@ describe Build::Convert do
       it "properly compile #{name} #{version} to #{gem_name}" do
         STDERR.puts "\n\e[34mBuilding package #{name} #{version}\e[0m"
 
-        silence_stream(STDOUT) do
-          bower_component = Build::BowerComponent.from_bower(
-            name, version
-          )
-          
-          bower_component.convert!(force: true) do |dir|
-            @gem_root = File.join(dir, "gems", gem_name)
-            instance_exec(&block)
-          end
-        end
+        Build::Converter.run!(name, version)
 
-        Component.where(:name => gem_name).first.should_not be_nil
+        @component = Component.where(:name => gem_name).first
+        @component.should_not be_nil
       end
     end
 

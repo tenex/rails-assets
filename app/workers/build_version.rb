@@ -5,6 +5,6 @@ class BuildVersion
 
   def perform(name, version)
     Rails.logger.info "Building #{name}##{version}..."
-    Build::Convert.new(name, version).convert!
+    Build::Converter.run!(name, version)
   end
 end

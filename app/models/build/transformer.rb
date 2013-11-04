@@ -9,16 +9,11 @@
 module Build
   module Transformer extend self
 
-    def component_transformations(bower_component, bower_path)
-      bower_path = Path.new(bower_path)
-
-      # Pass only relative, existent paths to transformator
+    def component_transformations(bower_component)
       compute_transformations(
         bower_component.name,
-        Paths.from(bower_path).map(:relative_path_from, bower_path),
-        Paths.new(bower_component.main).
-          map(:expand_path, bower_path).select(:exist?).
-          map(:relative_path_from, bower_path)
+        bower_component.paths,
+        bower_component.main_paths
       )
     end
   

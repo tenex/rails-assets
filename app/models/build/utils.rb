@@ -24,8 +24,8 @@ module Build
           [thr.value, stdout.read, stderr.read]
         end
 
-      Rails.logger.info("#{cmd}\n#{output}") if output.present?
-      Rails.logger.warn("#{cmd}\n#{error}") if error.present?
+      Rails.logger.debug("#{cmd}\n#{output}") if output.present?
+      Rails.logger.warn("#{cmd}\n#{error}") if error.present? && !status.success?
 
       raise ShellError.new(error, cwd, cmd) unless status.success?
       

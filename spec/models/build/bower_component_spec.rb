@@ -2,11 +2,53 @@ require 'spec_helper'
 
 module Build
   describe BowerComponent do
-    context '#from_bower for latest version' do
+    let(:jquery_meta) {
+      JSON.parse('{
+        "endpoint": {
+          "name": "jquery",
+          "source": "srigi/jquery",
+          "target": "~2.0.3"
+        },
+        "canonicalDir": "/Users/sheerun/Source/rails-assets/bower_components/jquery",
+        "pkgMeta": {
+          "name": "jquery",
+          "version": "2.0.3",
+          "description": "jQuery component",
+          "keywords": [
+            "jquery",
+            "component"
+          ],
+          "main": "jquery.js",
+          "license": "MIT",
+          "homepage": "https://github.com/srigi/jquery",
+          "_release": "2.0.3",
+          "_resolution": {
+            "type": "version",
+            "tag": "2.0.3",
+            "commit": "452a56b52b8f4a032256cdb8b6838f25f0bdb3d2"
+          },
+          "_source": "git://github.com/srigi/jquery.git",
+          "_target": "~2.0.3",
+          "_originalSource": "srigi/jquery",
+          "_direct": true
+        },
+        "extraneous": true,
+        "dependencies": {},
+        "nrDependants": 1,
+        "versions": [
+          "2.0.3",
+          "2.0.2"
+        ],
+        "update": {
+          "target": "2.0.3",
+          "latest": "2.0.3"
+        }
+      }')
+    }
+
+    context '#new' do
       let(:subject) {
-        silence_stream(STDOUT) do
-          BowerComponent.from_bower('angular-tagger')
-        end
+        BowerComponent.new(Path.new('/tmp'), jquery_meta)
       }
 
       it 'properly generates BowerComponent' do
@@ -14,39 +56,93 @@ module Build
       end
 
       it 'properly extract dependencies' do
-        expect(subject.dependencies).to be_a(Hash)
+        expect(subject.dependencies).to eq({})
       end
 
       it 'properly extract main files' do
-        expect(subject.main).to be_an(Array)
+        expect(subject.main).to eq(['jquery.js'])
       end
 
       it 'properly extracts description' do
-        expect(subject.description).to be_a(String)
+        expect(subject.description).to eq('jQuery component')
+      end
+
+      it 'recognizes it is custom repository' do
+        expect(subject.github?).to be(true)
+      end
+
+      it 'renders proper full_name' do
+        expect(subject.full_name).to eq('srigi/jquery')
+      end
+
+      it 'renders proper repo' do
+        expect(subject.repo).to eq('jquery')
+      end
+
+      it 'renders proper user' do
+        expect(subject.user).to eq('srigi')
+      end
+
+      it 'renders proper repository' do
+        expect(subject.repository).to eq('git://github.com/srigi/jquery.git')
+      end
+
+      it 'renders proper homepage' do
+        expect(subject.homepage).to eq('https://github.com/srigi/jquery')
+      end
+
+      it 'render proper component_dir' do
+        expect(subject.component_dir).
+          to eq(Path.new('/tmp/bower_components/jquery'))
       end
     end
 
-    context '#from_bower for specific version' do
+    context '#gem' do
       let(:subject) {
-        silence_stream(STDOUT) do
-          BowerComponent.from_bower('angular-tagger', '0.1.2')
-        end
+        BowerComponent.new(Path.new('/tmp'), jquery_meta)
       }
 
-      it 'properly generates BowerComponent' do
-        expect(subject).to be_a(BowerComponent)
+      it 'instantiates GemComponent delefator' do
+        expect(subject.gem).to be_a(GemComponent)
       end
 
-      it 'properly extract dependencies' do
-        expect(subject.dependencies).to be_a(Hash)
+      it 'allows for running self methods on delegator' do
+        expect(subject.gem.homepage).to eq('https://github.com/srigi/jquery')
       end
 
-      it 'properly extract main files' do
-        expect(subject.main).to be_an(Array)
+      it 'introduces new methods on gem delegator' do
+        expect(subject.gem.short_name).to eq('srigi--jquery')
+      end
+    end
+
+    context '#version_model' do
+      let(:subject) {
+        BowerComponent.new(Path.new('/tmp'), jquery_meta)
+      }
+
+      it 'returns unsaved Version model' do
+        expect(subject.version_model).to be_a(Version)
+        expect(subject.version_model).to be_a(Version)
       end
 
-      it 'properly extracts description' do
-        expect(subject.description).to be_a(String)
+      it 'returns component association on Version' do
+        expect(subject.version_model.component).to be_a(Component)
+      end
+
+      it 'sets proper version on Version model' do
+        expect(subject.version_model.string).to eq('2.0.3')
+      end
+
+      it 'sets proper gem name on Component model' do
+        expect(subject.version_model.component.name).to eq('srigi--jquery')
+      end
+
+      it 'saves both component and version when calling save! on result' do
+        expect { subject.version_model.save! }.
+          to change { Component.count + Version.count }.by(2)
+
+        expect { subject.version_model.save! }.
+          to change { Component.count + Version.count }.by(0)
       end
     end
   end

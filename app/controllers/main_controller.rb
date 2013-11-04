@@ -12,11 +12,12 @@ class MainController < ApplicationController
       component = Component.where(name: component_name).first
 
       if component.blank? || component.versions.built.count == 0
-        build(component_name)
-        Reindex.new.perform
+        Build::Converter.run!(component_name)
       end
 
-      if component
+      component = Component.where(name: component_name).first
+
+      unless component.blank? || component.versions.built.count == 0
         component.versions.built.map do |v|
           {
             name:         name,

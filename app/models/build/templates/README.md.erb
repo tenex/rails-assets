@@ -1,4 +1,4 @@
-# <%= gem_component.name %>
+# <%= gem.name %>
 
 > The Bower package inside a gem
 
@@ -11,7 +11,7 @@ Add these two lines to your application’s `Gemfile`:
 ```ruby
 source "http://rails-assets.org"
 
-gem <%= gem_component.name.dump %>
+gem <%= gem.name.dump %>
 ```
 
 Then, import the asset using Sprockets’ `require` directive:
