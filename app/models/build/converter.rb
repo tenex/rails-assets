@@ -52,6 +52,7 @@ module Build
                 Converter.build!(component, output_dir, gems_dir)
               end
             rescue Build::BuildError => e
+              Raven.capture_exception(e)
               version.build_status = 'error'
               version.build_message = e.message
               nil
