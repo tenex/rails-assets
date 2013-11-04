@@ -3,21 +3,18 @@ class MainController < ApplicationController
   end
 
   def dependencies
-    gems = params[:gems].to_s
+    gem_names = params[:gems].to_s
       .split(",")
       .select {|e| e.start_with?(GEM_PREFIX) }
-      .flat_map do |name|
+      .map { |e| e.gsub(GEM_PREFIX, "") }
+    
+    gems = gem_names.flat_map do |name|
 
-      component_name = name.gsub(GEM_PREFIX, "")
-      component = Component.where(name: component_name).first
-
-      if component.blank? || component.versions.built.count == 0
-        Build::Converter.run!(component_name)
-      end
+      Build::Converter.run!(component_name) if Component.needs_build?(name)
 
       component = Component.where(name: component_name).first
 
-      unless component.blank? || component.versions.built.count == 0
+      if component && component.built?
         component.versions.built.map do |v|
           {
             name:         name,
@@ -34,14 +31,4 @@ class MainController < ApplicationController
     params[:json] ? render(json: gems) : render(text: Marshal.dump(gems))
   end
 
-  protected
-
-  def build(name)
-    Build::BowerComponent.
-      from_bower(name).
-      convert!(debug: params[:_debug])[:component]
-  rescue BuildError => e
-    Rails.logger.warn(e)
-    nil
-  end
 end

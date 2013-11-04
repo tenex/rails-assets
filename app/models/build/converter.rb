@@ -21,6 +21,16 @@ module Build
       # TODO: should component be saved if some of the dependencies failed?
       Converter.process!(name, version) do |versions, paths|
         Converter.persist!(versions, paths)
+
+        if versions.any? { |v| v.build_status == 'error' }
+          raise BuildError.new(
+            versions.slect { |v| v.build_status == 'error' }.
+            map { |v| "#{v.name}: #{v.build_message}" }.join("\n")
+          )
+        end
+
+        # TODO: Is always correct version first in list?
+        versions.first
       end
     end
 
@@ -41,8 +51,6 @@ module Build
         arr = Converter.install!(component_name, component_version) do |components|
           components.map do |component|
             version = component.version_model
-
-            next unless version.needs_build?
             
             gem_path = begin
               Converter.convert!(component) do |output_dir, asset_paths, main_paths|

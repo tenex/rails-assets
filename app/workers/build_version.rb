@@ -1,7 +1,7 @@
 class BuildVersion
   include Sidekiq::Worker
 
-  sidekiq_options queue: 'default', unique: true, retry: 5
+  sidekiq_options queue: 'default', unique: true, retry: 3, failures: :exhausted
 
   def perform(name, version)
     Rails.logger.info "Building #{name}##{version}..."

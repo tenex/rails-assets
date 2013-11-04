@@ -17,17 +17,11 @@ class ComponentsController < ApplicationController
   end
 
   def create
-    name, version = component_params[:name].to_s.strip, component_params[:version]
+    # Always force build
+    name, version = component_params[:name], component_params[:version]
+    version_model = Build::Converter.run!(name, version)
 
-    Build::Converter.run!(name, version)
-
-    component = Component.where(name: name).first
-    component = nil if component.versions.built.string(version).first
-
-    render json: component_data(component)
-  rescue Build::BuildError => e
-    Raven.capture_exception(e)
-    render json: { message: e.message }, status: :unprocessable_entity
+    render json: component_data(version_model.component)
   end
 
   protected

@@ -12,7 +12,12 @@ class ErrorsController < ActionController::Base
 
     respond_to do |format|
       format.html { render action: custom_template ? status_code.to_s : 'show' }
-      format.json { render json: { status: status_code, message: error_message, log: error_trace }, status: status_code }
+
+      if Rails.env.production?
+        format.json { render json: { status: status_code, message: error_message }, status: status_code }
+      else
+        format.json { render json: { status: status_code, message: error_message, log: error_trace }, status: status_code }
+      end
     end
   end
 
