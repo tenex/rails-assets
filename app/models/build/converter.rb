@@ -10,8 +10,71 @@ require "rubygems/indexer"
 
 module Build
   module Converter extend self
+    # Public: Performs full processing of given component
+    #
+    # name - component name to process
+    # version - component version to process
+    #
+    # Returns The Version, already persisted
+    # Raises Build::BuildError on any
+    def run!(name, version = nil)
+      # TODO: should component be saved if some of the dependencies failed?
+      Converter.process!(name, version) do |versions, paths|
+        Converter.persist!(versions, paths)
+      end
+    end
 
-    # Public: Installs component to temporary directory and yields path to it.
+    # Public: processes (converts and builds) given bower_components
+    #
+    # bower_components - component and its deps yielded from install! method
+    # gems_dir - directory to which .gem files should be written
+    #
+    # Yields [Array of Version, Array of Path]
+    #  - paths to builded .gem files to insert into index
+    #  - versions to save with build_status set to success or error + message
+    #    and asset_paths + main_paths filled; not yet persisted
+    #
+    #  All builded gem files are removed after block finishes
+    #  Path for failed versions is nil!
+    def process!(component_name, component_version = nil)
+      Dir.mktmpdir do |gems_dir|
+        arr = Converter.install!(component_name, component_version) do |components|
+          components.map do |component|
+            version = component.version_model
+
+            next unless version.needs_build?
+            
+            gem_path = begin
+              Converter.convert!(component) do |output_dir, asset_paths, main_paths|
+                version.build_status = 'success'
+                version.asset_paths = asset_paths.map(&:to_s)
+                version.main_paths = main_paths.map(&:to_s)
+                Converter.build!(component, output_dir, gems_dir)
+              end
+            rescue Build::BuildError => e
+              version.build_status = 'error'
+              version.build_message = e.message
+              nil
+            end
+
+            [version, gem_path]
+          end.compact
+        end
+
+        yield [arr.map(&:first), arr.map(&:last).compact]
+      end
+    end
+
+    # Public: Persists versions and .gem files returned from convert! method
+    #
+    # versions - Array of Version returned from convert! method
+    # gem_paths - Array of Path returned from convert! method
+    def persist!(versions, gem_paths)
+      Converter.index!(gem_paths, Path.new(DATA_DIR)) unless gem_paths.empty?
+      Version.transaction { versions.each(&:save!) } unless versions.empty?
+    end
+
+    # Internal: Installs component to temporary directory and yields path to it.
     #
     # Later functions can use `bower cache list <name>` to show any dependency.
     #
@@ -90,47 +153,6 @@ module Build
       gem_path
     end
 
-    # Public: processes (converts and builds) given bower_components
-    #
-    # bower_components - component and its deps yielded from install! method
-    # gems_dir - directory to which .gem files should be written
-    #
-    # Yields [Array of Version, Array of Path]
-    #  - paths to builded .gem files to insert into index
-    #  - versions to save with build_status set to success or error + message
-    #    and asset_paths + main_paths filled; not yet persisted
-    #
-    #  All builded gem files are removed after block finishes
-    #  Path for failed versions is nil!
-    def process!(component_name, component_version = nil)
-      Dir.mktmpdir do |gems_dir|
-        arr = Converter.install!(component_name, component_version) do |components|
-          components.map do |component|
-            version = component.version_model
-
-            next unless version.needs_build?
-            
-            gem_path = begin
-              Converter.convert!(component) do |output_dir, asset_paths, main_paths|
-                version.build_status = 'success'
-                version.asset_paths = asset_paths.map(&:to_s)
-                version.main_paths = main_paths.map(&:to_s)
-                Converter.build!(component, output_dir, gems_dir)
-              end
-            rescue Build::BuildError => e
-              version.build_status = 'error'
-              version.build_message = e.message
-              nil
-            end
-
-            [version, gem_path]
-          end.compact
-        end
-
-        yield [arr.map(&:first), arr.map(&:last).compact]
-      end
-    end
-
     # Public: Copies gems in lock and updates index
     #
     # gem_paths - Array of Build::Path returned from calls to build! method
@@ -151,25 +173,6 @@ module Build
 
           Rails.logger.debug stdout
         end
-      end
-    end
-
-    def persist!(versions, gem_paths)
-      Converter.index!(gem_paths, Path.new(DATA_DIR)) unless gem_paths.empty?
-      Version.transaction { versions.each(&:save!) } unless versions.empty?
-    end
-
-    # Public: Performs full processing of given component
-    #
-    # name - component name to process
-    # version - component version to process
-    #
-    # Returns The Version, already persisted
-    # Raises Build::BuildError on any
-    def run!(name, version = nil)
-      # TODO: should component be saved if some of the dependencies failed?
-      Converter.process!(name, version) do |versions, paths|
-        Converter.persist!(versions, paths)
       end
     end
 
