@@ -24,7 +24,7 @@ module Build
 
         if versions.any? { |v| v.build_status == 'error' }
           raise BuildError.new(
-            versions.slect { |v| v.build_status == 'error' }.
+            versions.select { |v| v.build_status == 'error' }.
             map { |v| "#{v.name}: #{v.build_message}" }.join("\n")
           )
         end
