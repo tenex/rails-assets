@@ -174,16 +174,17 @@ module Build
         gem_paths.each do |gem_path|
           destination = data_dir.join('gems', File.basename(gem_path))
           FileUtils.mv(gem_path.to_s, destination.to_s, :force => true)
-          stdout = capture(:stdout) do
-            begin
-              HackedIndexer.new(data_dir.to_s).update_index
-            rescue
-              HackedIndexer.new(data_dir.to_s).generate_index
-            end
-          end
-
-          Rails.logger.debug stdout
         end
+
+        stdout = capture(:stdout) do
+          begin
+            HackedIndexer.new(data_dir.to_s).update_index
+          rescue
+            HackedIndexer.new(data_dir.to_s).generate_index
+          end
+        end
+
+        Rails.logger.debug stdout
       end
     end
 
