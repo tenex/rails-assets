@@ -1,7 +1,7 @@
 class BuildVersion
   include Sidekiq::Worker
 
-  sidekiq_options queue: 'default', unique: true, retry: 2, failures: :exhausted
+  sidekiq_options queue: 'default', unique: true, retry: 0
 
   def perform(bower_name, version)
     Rails.logger.info "Building #{bower_name}##{version}..."
