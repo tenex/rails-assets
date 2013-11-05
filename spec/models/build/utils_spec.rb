@@ -91,13 +91,13 @@ module Build
       it 'uses repository name if version is github url' do
         expect(Utils.fix_gem_name(
           'node-csv', 'https://github.com/voodootikigod/node-csv/tarball/v2.3.1-foo'
-        )).to eq('voodootikigod/node-csv')
+        )).to eq('voodootikigod--node-csv')
       end
 
       it 'removes .git postfix from git url' do
         expect(Utils.fix_gem_name(
           'tinymce', 'git://github.com/jozzhart/tinymce.git#4.0.0'
-        )).to eq('jozzhart/tinymce')
+        )).to eq('jozzhart--tinymce')
       end
     end
   end

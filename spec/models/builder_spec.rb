@@ -111,12 +111,23 @@ describe Build::Converter do
       gem_file "vendor/assets/stylesheets/selectize/selectize.scss"
     end
 
-    ## Currently fails because jquery.cookie ignores package.json
-    # component "jquery.cookie", '1.4.0' do
-    #   gem_file "vendor/assets/javascripts/jquery.cookie.js"
-    #   gem_file "vendor/assets/javascripts/jquery-cookie/jquery.cookie.js"
-    #   file_contains 'vendor/assets/javascripts/jquery.cookie.js',
-    #     'require jquery-cookie/jquery.cookie'
-    # end
+    component "jquery.cookie", '1.4.0' do
+      gem_file "vendor/assets/javascripts/jquery.cookie.js"
+      gem_file "vendor/assets/javascripts/jquery.cookie/jquery.cookie.js"
+      file_contains 'vendor/assets/javascripts/jquery.cookie.js',
+        'require jquery.cookie/jquery.cookie'
+    end
+    
+
+    component "angular-ui-tinymce", '0.0.4' do
+      gem_file 'vendor/assets/javascripts/angular-ui-tinymce.js'
+      gem_file 'vendor/assets/javascripts/angular-ui-tinymce/tinymce.js'
+      file_contains 'rails-assets-angular-ui-tinymce.gemspec', 'spec.add_dependency "rails-assets-jozzhart--tinymce"'
+    end
+
+    component "jozzhart--tinymce", '4.0.0' do
+      gem_file 'vendor/assets/javascripts/tinymce/tinymce.min.js'
+      gem_file 'vendor/assets/javascripts/tinymce.js'
+    end
   end
 end

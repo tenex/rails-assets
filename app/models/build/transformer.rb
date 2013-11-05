@@ -26,7 +26,10 @@ module Build
     # Returns file transformations to be made
     #   each transform is in form [source_path, target_path] or [source, target_path]
     def compute_transformations(gem_name, all_source_paths, all_main_paths = Paths.new)
-      all_source_paths = all_source_paths.reject(:minified?)
+      all_source_paths = Paths.new(all_source_paths.reject do |file|
+        file.minified? &&
+          all_source_paths.include?(Path.new(file.to_s.sub('.min.', '.')))
+      end)
 
       transformations = [:javascripts, :stylesheets, :images].flat_map do |type|
         main_paths = all_main_paths.select(:member_of?, type)

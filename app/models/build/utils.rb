@@ -81,7 +81,7 @@ module Build
       if version.match(/^[^\/]+\/[^\/]+$/) 
         version.sub('/', '--')
       elsif version =~ /github\.com\/([^\/]+\/[^\/]+)/
-        $1
+        $1.sub('/', '--')
       else
         gem_name
       end

@@ -52,6 +52,8 @@ module Build
     #  All builded gem files are removed after block finishes
     #  Path for failed versions is nil!
     def process!(component_name, component_version = nil)
+      component_name = component_name.sub('--', '/')
+
       Dir.mktmpdir do |gems_dir|
         arr = Converter.install!(component_name, component_version) do |components|
           components.map do |component|
