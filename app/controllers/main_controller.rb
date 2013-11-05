@@ -17,16 +17,19 @@ class MainController < ApplicationController
       if component && component.built?
         component.versions.built.map do |v|
           {
-            name:         name,
+            name:         "#{GEM_PREFIX}#{name}",
             platform:     "ruby",
             number:       v.string,
-            dependencies: v.dependencies.to_a.map {|n,v| ["#{GEM_PREFIX}#{n}", v] }
+            dependencies: v.dependencies || {}
           }
         end
       else
         []
       end
     end
+
+    Rails.logger.info(params)
+    Rails.logger.info(gems)
 
     params[:json] ? render(json: gems) : render(text: Marshal.dump(gems))
   end

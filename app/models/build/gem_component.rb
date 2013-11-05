@@ -13,7 +13,7 @@ module Build
     end
 
     def short_name
-      bower_component.full_name.sub('/', '--').gsub('.', '-')
+      bower_component.full_name.sub('/', '--')
     end
 
     def version
@@ -22,13 +22,12 @@ module Build
 
     def dependencies
       Hash[bower_component.dependencies.map do |name, version|
-        [Utils.fix_gem_name(name, version), Utils.fix_version_string(version)]
+        ["#{GEM_PREFIX}#{Utils.fix_gem_name(name, version)}", Utils.fix_version_string(version)]
       end]
     end
 
     def module
-      # TODO: not so sure of it. What about conflicts?
-      name.split("-").map { |e| e.capitalize }.join('')
+      name.gsub('.', '-').gsub('_', '-').split("-").map { |e| e.capitalize }.join('')
     end
 
     def get_component_and_version!
