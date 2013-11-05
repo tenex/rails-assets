@@ -6,7 +6,7 @@ module Build
       JSON.parse('{
         "endpoint": {
           "name": "jquery",
-          "source": "srigi/jquery",
+          "source": "git://github.com/srigi/jquery.git",
           "target": "~2.0.3"
         },
         "canonicalDir": "/Users/sheerun/Source/rails-assets/bower_components/jquery",

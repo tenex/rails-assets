@@ -18,11 +18,11 @@ module Build
     end
 
     def user
-      data['endpoint']['source'].split('/')[0]
+      full_name.split('/')[0]
     end
 
     def repo
-      data['endpoint']['source'].split('/')[1]
+      full_name.split('/')[1]
     end
 
     def version
@@ -64,11 +64,13 @@ module Build
 
     def full_name
       source = data['endpoint']['source']
+      source = source.sub(/#.*$/, '')
+      source = source.sub(/\.git$/, '')
 
       if source.match(/^[^\/]+(\/[^\/]+)?$/) 
         source
       elsif source =~ /github\.com\/([^\/]+\/[^\/]+)/
-        $1 # TODO: get rid of it
+        $1
       else
         raise BuildError.new("#{source} is not valid source for rails-assets")
       end

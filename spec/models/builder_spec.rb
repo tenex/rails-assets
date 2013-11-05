@@ -122,12 +122,15 @@ describe Build::Converter do
     component "angular-ui-tinymce", '0.0.4' do
       gem_file 'vendor/assets/javascripts/angular-ui-tinymce.js'
       gem_file 'vendor/assets/javascripts/angular-ui-tinymce/tinymce.js'
-      file_contains 'rails-assets-angular-ui-tinymce.gemspec', 'spec.add_dependency "rails-assets-jozzhart--tinymce"'
+      file_contains 'rails-assets-angular-ui-tinymce.gemspec',
+        'spec.add_dependency "rails-assets-jozzhart--tinymce"'
     end
 
     component "jozzhart--tinymce", '4.0.0' do
       gem_file 'vendor/assets/javascripts/tinymce/tinymce.min.js'
       gem_file 'vendor/assets/javascripts/tinymce.js'
+      file_contains 'rails-assets-jozzhart--tinymce.gemspec',
+        'spec.name          = "rails-assets-jozzhart--tinymce"'
     end
   end
 end
