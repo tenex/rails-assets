@@ -18,7 +18,7 @@ module Build
     # Returns The Version, already persisted
     # Raises Build::BuildError on any
     def run!(name, version = nil)
-      lock_name = Utils.fix_gem_name(name, version).gsub('/', '--')
+      lock_name = "#{Utils.fix_gem_name(name, version).gsub('/', '--')}.#{version}"
 
       # Lock here prevents multiple builds on same requests at the same time
       FileStore.with_lock(lock_name) do
