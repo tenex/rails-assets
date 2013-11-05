@@ -23,6 +23,6 @@ node_modules
 /public/*specs.*
 /public/specs.4.8.gz
 /public/data
-/public/*.lock
+/public/locks/
 
 /rails-assets-*
