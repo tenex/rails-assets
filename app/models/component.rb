@@ -16,7 +16,7 @@ class Component < ActiveRecord::Base
     end
   end
 
-  def needs_build?(name, version = nil)
+  def self.needs_build?(name, version = nil)
     component = Component.where(name: name).first
 
     if version.nil?

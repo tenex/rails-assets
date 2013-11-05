@@ -10,9 +10,9 @@ class MainController < ApplicationController
     
     gems = gem_names.flat_map do |name|
 
-      Build::Converter.run!(component_name) if Component.needs_build?(name)
+      Build::Converter.run!(name) if Component.needs_build?(name)
 
-      component = Component.where(name: component_name).first
+      component = Component.where(name: name).first
 
       if component && component.built?
         component.versions.built.map do |v|
