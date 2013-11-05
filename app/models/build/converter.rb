@@ -51,6 +51,8 @@ module Build
         arr = Converter.install!(component_name, component_version) do |components|
           components.map do |component|
             version = component.version_model
+
+            next unless version.needs_build?
             
             gem_path = begin
               Converter.convert!(component) do |output_dir, asset_paths, main_paths|

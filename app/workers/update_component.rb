@@ -3,19 +3,20 @@ class UpdateComponent
 
   sidekiq_options queue: 'update_component', unique: true
 
-  def perform(name)
-    versions = Build::Utils.bower('/tmp', 'info', name)['versions'] || []
+  def perform(bower_name)
 
-    versions = versions.map { |version| Build::Utils.fix_version_string(version) }
+    versions = Build::FileStore.with_lock(:bower) do
+      Build::Utils.bower('/tmp', 'info', bower_name)['versions'] || []
+    end
 
-    if component = Component.where(name: name).first
+    if component = Component.where(bower_name: bower_name).first
       versions = versions - component.versions.processed.map(&:string)
     end
 
     if versions.size > 0
-      puts "Scheduling #{versions.size} versions of #{name} for build..."
+      puts "Scheduling #{versions.size} versions of #{bower_name} for build..."
       versions.each do |version|
-        BuildVersion.perform_async(name, version)
+        BuildVersion.perform_async(bower_name, version)
       end
     end
   end

@@ -107,7 +107,7 @@ module Build
         version.component = component
         version
       else
-        component = Component.new(name: gem.short_name)
+        component = Component.new(name: gem.short_name, bower_name: full_name)
         version = component.versions.new(string: gem.version)
         version.component = component
         version
