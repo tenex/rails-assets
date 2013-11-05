@@ -11,7 +11,18 @@ describe Build::Converter do
       it "properly compile #{name} #{version} to #{gem_name}" do
         STDERR.puts "\n\e[34mBuilding package #{name} #{version}\e[0m"
 
-        Build::Converter.run!(name, version)
+        version = Build::Converter.run!(name, version)
+
+        @gem_root = File.join(DATA_DIR, 'gems',
+          "rails-assets-#{version.component.name}-#{version.string}").to_s
+
+        gem_path = @gem_root + '.gem'
+
+        expect(File.exist?(gem_path.to_s)).to be_true
+        Build::Utils.sh(File.join(DATA_DIR, 'gems'), 'gem unpack', gem_path.to_s)
+        expect(Dir.exist?(@gem_root.to_s)).to be_true
+
+        instance_eval(&block)
 
         @component = Component.where(:name => gem_name).first
         @component.should_not be_nil
@@ -86,7 +97,7 @@ describe Build::Converter do
 
     component "resizeend", "1.1.2" do
       gem_file "vendor/assets/javascripts/resizeend.js"
-      gem_file "vendor/assets/javascripts/resizeend/resizeend.coffee"
+      gem_file "vendor/assets/javascripts/resizeend/resizeend.js"
     end
 
     component "rails-assets/jquery-waypoints", nil, :gem_name => "rails-assets--jquery-waypoints" do
