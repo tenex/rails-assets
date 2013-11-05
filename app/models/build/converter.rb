@@ -18,19 +18,22 @@ module Build
     # Returns The Version, already persisted
     # Raises Build::BuildError on any
     def run!(name, version = nil)
-      # TODO: should component be saved if some of the dependencies failed?
-      Converter.process!(name, version) do |versions, paths|
-        Converter.persist!(versions, paths)
+      # Lock here prevents multiple builds on same requests at the same time
+      FileStore.with_lock(name) do
+        # TODO: should component be saved if some of the dependencies failed?
+        Converter.process!(name, version) do |versions, paths|
+          Converter.persist!(versions, paths)
 
-        if versions.any? { |v| v.build_status == 'error' }
-          raise BuildError.new(
-            versions.select { |v| v.build_status == 'error' }.
-            map { |v| "#{v.name}: #{v.build_message}" }.join("\n")
-          )
+          if versions.any? { |v| v.build_status == 'error' }
+            raise BuildError.new(
+              versions.select { |v| v.build_status == 'error' }.
+              map { |v| "#{v.name}: #{v.build_message}" }.join("\n")
+            )
+          end
+
+          # TODO: Is always correct version first in list?
+          versions.first
         end
-
-        # TODO: Is always correct version first in list?
-        versions.first
       end
     end
 
