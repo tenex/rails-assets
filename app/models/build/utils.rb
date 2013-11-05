@@ -75,11 +75,12 @@ module Build
     end
 
     def fix_gem_name(gem_name, version)
-      version = version.to_s
+      version = version.to_s.gsub(/#.*$/, '')
+      version = version.gsub(/\.git$/, '')
 
       if version.match(/^[^\/]+\/[^\/]+$/) 
         version.sub('/', '--')
-      elsif version =~ /github\.com\/([^\/]+\/[^\/]+?)(\.git)?$/
+      elsif version =~ /github\.com\/([^\/]+\/[^\/]+)/
         $1
       else
         gem_name
