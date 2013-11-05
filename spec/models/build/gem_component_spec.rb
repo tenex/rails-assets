@@ -53,7 +53,7 @@ module Build
       its(:name) { should == 'rails-assets-srigi--jquery' }
       its(:short_name) { should == 'srigi--jquery' }
       its(:version) { should == '2.0.3' }
-      its(:module) { should == 'RailsAssetsJquery' }
+      its(:module) { should == 'RailsAssetsSrigiJquery' }
     end
   end
 end
