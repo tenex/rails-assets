@@ -5,9 +5,7 @@ class UpdateComponent
 
   def perform(bower_name)
 
-    versions = Build::FileStore.with_lock(:bower) do
-      Build::Utils.bower('/tmp', 'info', bower_name)['versions'] || []
-    end
+    versions = Build::Utils.bower('/tmp', 'info', bower_name)['versions'] || []
 
     if component = Component.where(bower_name: bower_name).first
       versions = versions - component.versions.processed.map(&:string)

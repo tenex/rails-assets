@@ -2,7 +2,7 @@ development:
   adapter: postgresql
   encoding: unicode
   database: rails_assets_development
-  pool: 5
+  pool: 30
   username: postgres
   password:
 
@@ -10,6 +10,6 @@ test:
   adapter: postgresql
   encoding: unicode
   database: rails_assets_test
-  pool: 5
+  pool: 30
   username: postgres
   password:
