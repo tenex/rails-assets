@@ -43,6 +43,8 @@ gem 'quiet_assets'
 
 gem 'peach'
 
+gem 'rb-readline'
+
 group :development do
   gem 'better_errors'
   gem 'foreman'
