@@ -19,9 +19,12 @@ class ComponentsController < ApplicationController
   def create
     # Always force build
     name, version = component_params[:name], component_params[:version]
-    version_model = Build::Converter.run!(name, version)
 
-    render json: component_data(version_model.component)
+    version_model = Build::Converter.run!(name, version)
+    
+    com, ver = Component.get(name, version)
+
+    render json: component_data(com)
   end
 
   protected
