@@ -20,14 +20,25 @@ class ComponentsController < ApplicationController
     # Always force build
     name, version = component_params[:name], component_params[:version]
 
+
     version_model = Build::Converter.run!(name, version)
     
-    com, ver = Component.get(name, version)
-
-    if ver.build_status == 'success'
-      render json: component_data(com)
+    component = Component.find_by(name: name)
+    ver = if ver.present?
+      component.versions.
+        where(string: Build::Utils.fix_version_string(version)).first
     else
-      render json: { message: ver.build_message }, status: :unprocessable_entity
+      component.versions.last
+    end
+
+    if ver.blank?
+      render json: { message: 'Build failed for unknown reason' },
+        status: :unprocessable_entity
+    elsif ver.build_status == 'success'
+      render json: component_data(component)
+    else
+      render json: { message: ver.build_message },
+        status: :unprocessable_entity
     end
   end
 
