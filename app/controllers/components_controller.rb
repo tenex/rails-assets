@@ -24,7 +24,11 @@ class ComponentsController < ApplicationController
     
     com, ver = Component.get(name, version)
 
-    render json: component_data(com)
+    if ver.build_status == 'success'
+      render json: component_data(com)
+    else
+      render json: { message: ver.build_message }, status: :unprocessable_entity
+    end
   end
 
   protected

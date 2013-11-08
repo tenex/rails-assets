@@ -61,6 +61,8 @@ module Build
 
             next unless version.needs_build?
             
+            ::Rails.logger.info "Building #{component.name}##{version.string}..."
+
             gem_path = begin
               Converter.convert!(component) do |output_dir, asset_paths, main_paths|
                 version.build_status = 'success'
