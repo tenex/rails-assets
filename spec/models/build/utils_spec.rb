@@ -2,112 +2,106 @@ require 'spec_helper'
 
 module Build
   describe Utils do
-    let(:utils) { Object.new.send(:extend, subject) }
-
     context '#bower' do
       it 'executes bower command and returns JSON' do
         expect(silence_stream(STDOUT) {
-          Utils.bower('/', 'info jquery#2.0.3')["name"]
-        }).to be_a(String)
+          Utils.bower('/', 'info jquery#2.0.3')
+        }).to be_a(Hash)
       end
 
-      it 'extracts BuildError.message' do
-        expect(silence_stream(STDOUT) {
-          begin
-            Utils.bower('/', 'info jquery#0.0.0')
-          rescue BuildError => e
-            e.message
-          end
-        }).to eq("No tag found that was able to satisfy 0.0.0")
-      end
-
-      it 'extracts BuildError.opts[:log]' do
-        expect(silence_stream(STDOUT) {
-          begin
-            Utils.bower('/', 'info jquery#0.0.0')
-          rescue BuildError => e
-            e.opts[:log]
-          end
-        }).to include("Available versions")
+      it 'raises BowerError on bower error' do
+        expect{silence_stream(STDOUT) {
+          Utils.bower('/', 'info jquery#0.0.0')
+        }}.to raise_error(BowerError)
       end
     end
     
     context '#fix_version_string' do
       specify do
-        expect(utils.fix_version_string('master')).to be_nil
+        expect(Utils.fix_version_string('master')).to be_nil
       end
 
       specify do
-        expect(utils.fix_version_string('latest')).to be_nil
+        expect(Utils.fix_version_string('latest')).to be_nil
       end
 
       specify do
-        expect(utils.fix_version_string('2.0.3-foo')).to eq('2.0.3.foo')
+        expect(Utils.fix_version_string('2.0.3-foo')).to eq('2.0.3.foo')
       end
 
       specify do
-        expect(utils.fix_version_string('>=2.0.1')).to eq('>= 2.0.1')
+        expect(Utils.fix_version_string('>=2.0.1')).to eq('>= 2.0.1')
       end
 
       specify do
-        expect(utils.fix_version_string('>= 2.0.1 < 2.1.0')).to eq('~> 2.0.1')
+        expect(Utils.fix_version_string('>= 2.0.1 < 2.1.0')).to eq('~> 2.0.1')
       end
 
       specify do
-        expect(utils.fix_version_string('>= 2.0.1-foo < 2.1.0')).to eq('~> 2.0.1.foo')
+        expect(Utils.fix_version_string('>= 2.0.1-foo < 2.1.0')).to eq('~> 2.0.1.foo')
       end
 
       specify do
-        expect(utils.fix_version_string('>= 2.1.2 < 3.0.0')).to eq('~> 2.1')
+        expect(Utils.fix_version_string('>= 2.1.2 < 3.0.0')).to eq('~> 2.1')
       end
 
       specify do
-        expect(utils.fix_version_string('~ 2.1.2')).to eq('~> 2.1.2')
+        expect(Utils.fix_version_string('~ 2.1.2')).to eq('~> 2.1.2')
       end
 
       specify do
-        expect(utils.fix_version_string('2.3.x')).to eq('~> 2.3.0')
+        expect(Utils.fix_version_string('2.3.x')).to eq('~> 2.3.0')
       end
 
       specify do
-        expect(utils.fix_version_string('v2.3.x')).to eq('~> 2.3.0')
+        expect(Utils.fix_version_string('v2.3.x')).to eq('~> 2.3.0')
       end
 
       specify do
-        expect(utils.fix_version_string('foo/bar2')).to eq(nil)
+        expect(Utils.fix_version_string('foo/bar2')).to eq(nil)
       end
 
       specify do
-        expect(utils.fix_version_string(
+        expect(Utils.fix_version_string(
           'https://github.com/voodootikigod/node-csv/tarball/master')
         ).to eq(nil)
       end
 
       specify do
-        expect(utils.fix_version_string(
+        expect(Utils.fix_version_string(
           'https://github.com/voodootikigod/node-csv/tarball/v2.3.1-foo'
         )).to eq('2.3.1.foo')
       end
 
       specify do
-        expect(utils.fix_version_string('~1.x')).to eq('~> 1.0')
+        expect(Utils.fix_version_string('~1.x')).to eq('~> 1.0')
       end
 
       specify do
-        expect(utils.fix_version_string('~3.4')).to eq('~> 3.4')
+        expect(Utils.fix_version_string('~3.4')).to eq('~> 3.4')
+      end
+
+      specify do
+        expect(Utils.fix_version_string('*')).to eq(nil)
       end
     end
 
     context '#fix_gem_name' do
       it 'does notthing if version is normal' do
-        expect(utils.fix_gem_name('foobar', '0.2.1')).to eq('foobar')
-        expect(utils.fix_gem_name('foobar', nil)).to eq('foobar')
+        expect(Utils.fix_gem_name('foobar', '0.2.1')).to eq('foobar')
+        expect(Utils.fix_gem_name('foobar', nil)).to eq('foobar')
       end
 
       it 'uses repository name if version is github url' do
-        expect(utils.fix_gem_name(
+        expect(Utils.fix_gem_name(
           'node-csv', 'https://github.com/voodootikigod/node-csv/tarball/v2.3.1-foo'
-        )).to eq('voodootikigod/node-csv')
+        )).to eq('voodootikigod--node-csv')
+      end
+
+      it 'removes .git postfix from git url' do
+        expect(Utils.fix_gem_name(
+          'tinymce', 'git://github.com/jozzhart/tinymce.git#4.0.0'
+        )).to eq('jozzhart--tinymce')
       end
     end
   end

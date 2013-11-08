@@ -2,7 +2,7 @@
 #= require sugar
 #= require angular
 #= require resizeend
-#= require leaflet
+#= require leaflet/src/Leaflet
 #= require jquery.cookie
 #= require purl
 #= require select2

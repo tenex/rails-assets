@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131016123853) do
+ActiveRecord::Schema.define(version: 20131104235454) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -50,6 +54,7 @@ ActiveRecord::Schema.define(version: 20131016123853) do
     t.string   "homepage"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "bower_name"
     t.index ["name"], :name => "index_components_on_name", :unique => true, :order => {"name" => :asc}
   end
 

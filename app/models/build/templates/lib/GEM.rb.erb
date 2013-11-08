@@ -1,11 +1,11 @@
-require "<%= gem_component.name %>/version"
+require "<%= gem.name %>/version"
 
-<% gem_component.dependencies.each do |gem| %>
-require <%= gem.name.dump %>
+<% gem.dependencies.each do |dep_name, _| %>
+require <%= dep_name.dump %>
 <% end %>
 
 if defined?(Rails)
-  module <%= gem_component.module %>
+  module <%= gem.module %>
     class Engine < ::Rails::Engine
       # Rails -> use vendor directory.
     end

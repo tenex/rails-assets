@@ -1,6 +1,7 @@
 require 'spec_helper'
 
-describe Build::Convert do
+# TODO: fix this tests
+describe Build::Converter do
   context 'generates proper files in conversion', slow: true do
     before { Component.destroy_all }
 
@@ -10,14 +11,21 @@ describe Build::Convert do
       it "properly compile #{name} #{version} to #{gem_name}" do
         STDERR.puts "\n\e[34mBuilding package #{name} #{version}\e[0m"
 
-        silence_stream(STDOUT) do
-          Build::Convert.new(name, version).convert!(force: true) do |dir|
-            @gem_root = File.join(dir, "gems", gem_name)
-            instance_exec(&block)
-          end
+        version = Build::Converter.run!(name, version)
 
-          Component.where(:name => gem_name).first.should_not be_nil
-        end
+        @gem_root = File.join(DATA_DIR, 'gems',
+          "rails-assets-#{version.component.name}-#{version.string}").to_s
+
+        gem_path = @gem_root + '.gem'
+
+        expect(File.exist?(gem_path.to_s)).to be_true
+        Build::Utils.sh(File.join(DATA_DIR, 'gems'), 'gem unpack', gem_path.to_s)
+        expect(Dir.exist?(@gem_root.to_s)).to be_true
+
+        instance_eval(&block)
+
+        @component = Component.where(:name => gem_name).first
+        @component.should_not be_nil
       end
     end
 
@@ -59,7 +67,7 @@ describe Build::Convert do
     component "sugar", "1.3.9" do
       gem_file "vendor/assets/javascripts/sugar.js"
       gem_file "vendor/assets/javascripts/sugar/sugar-full.development.js"
-      file_contains 'vendor/assets/javascripts/sugar.js', 'sugar/sugar-full.development'
+      file_contains 'vendor/assets/javascripts/sugar.js', 'sugar/sugar.min'
     end
 
     component "purl", "2.3.1" do
@@ -93,7 +101,6 @@ describe Build::Convert do
     end
 
     component "rails-assets/jquery-waypoints", nil, :gem_name => "rails-assets--jquery-waypoints" do
-      gem_file "vendor/assets/javascripts/jquery-waypoints.js"
       gem_file "vendor/assets/javascripts/jquery-waypoints/waypoints.js"
     end
 
@@ -104,12 +111,26 @@ describe Build::Convert do
       gem_file "vendor/assets/stylesheets/selectize/selectize.scss"
     end
 
-    ## Currently fails because jquery.cookie ignores package.json
-    # component "jquery.cookie", '1.4.0' do
-    #   gem_file "vendor/assets/javascripts/jquery.cookie.js"
-    #   gem_file "vendor/assets/javascripts/jquery-cookie/jquery.cookie.js"
-    #   file_contains 'vendor/assets/javascripts/jquery.cookie.js',
-    #     'require jquery-cookie/jquery.cookie'
-    # end
+    component "jquery.cookie", '1.4.0' do
+      gem_file "vendor/assets/javascripts/jquery.cookie.js"
+      gem_file "vendor/assets/javascripts/jquery.cookie/jquery.cookie.js"
+      file_contains 'vendor/assets/javascripts/jquery.cookie.js',
+        'require jquery.cookie/jquery.cookie'
+    end
+    
+
+    component "angular-ui-tinymce", '0.0.4' do
+      gem_file 'vendor/assets/javascripts/angular-ui-tinymce.js'
+      gem_file 'vendor/assets/javascripts/angular-ui-tinymce/tinymce.js'
+      file_contains 'rails-assets-angular-ui-tinymce.gemspec',
+        'spec.add_dependency "rails-assets-jozzhart--tinymce"'
+    end
+
+    component "jozzhart--tinymce", '4.0.0' do
+      gem_file 'vendor/assets/javascripts/tinymce/tinymce.min.js'
+      gem_file 'vendor/assets/javascripts/tinymce.js'
+      file_contains 'rails-assets-jozzhart--tinymce.gemspec',
+        'spec.name          = "rails-assets-jozzhart--tinymce"'
+    end
   end
 end

@@ -43,6 +43,12 @@ module Build
         ).to eq(Paths.new(['vendor/assets/javascripts/foobar/foo.js']))
       end
 
+      it 'leaves minified files that dont have unminified versions' do
+        expect(
+          targets(['foo.min.js'])
+        ).to eq(Paths.new(['vendor/assets/javascripts/foobar/foo.min.js']))
+      end
+
       it 'generates manifest for javascript files' do
         expect(
           targets(['foo.js'], ['foo.js'])

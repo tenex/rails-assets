@@ -1,32 +1,31 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require '<%= gem_component.name %>/version'
+require '<%= gem.name %>/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = <%= gem_component.name.dump %>
-  spec.version       = <%= gem_component.module %>::VERSION
+  spec.name          = <%= gem.name.dump %>
+  spec.version       = <%= gem.module %>::VERSION
   spec.authors       = ["rails-assets.org"]
-  spec.description   = <%= gem_component.description.to_s.dump %>
-  spec.summary       = <%= gem_component.description.to_s.dump %>
-  spec.homepage      = <%= gem_component.homepage.to_s.dump %>
+  spec.description   = <%= gem.description.to_s.dump %>
+  spec.summary       = <%= gem.description.to_s.dump %>
+  spec.homepage      = <%= gem.homepage.to_s.dump %>
 
   spec.files         = `find ./* -type f | cut -b 3-`.split($/)
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
-  <% gem_component.dependencies.each do |gem| %>
-    <% if gem.version %>
-  spec.add_dependency <%= gem.name.dump %>, <%= gem.version.dump %>
-    <% else %>
-  spec.add_dependency <%= gem.name.dump %>
-    <% end %>
-  <% end %>
 
-  <% if bower_component.main.nil? %>
+<% gem.dependencies.each do |dep_name, dep_version| %>
+<% if dep_version %>
+  spec.add_dependency <%= dep_name.dump %>, <%= dep_version.dump %>
+<% else %>
+  spec.add_dependency <%= dep_name.dump %>
+<% end %>
+<% end %>
+<% if main.nil? %>
+
     spec.post_install_message = "This component doesn't define main assets in bower.json.\nPlease open new pull request in component's repository:\n<%= bower_component.homepage %>"
-  <% end %>
 
+<% end %>
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
 end

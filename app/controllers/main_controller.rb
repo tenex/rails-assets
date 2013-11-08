@@ -3,26 +3,24 @@ class MainController < ApplicationController
   end
 
   def dependencies
-    gems = params[:gems].to_s
+    gem_names = params[:gems].to_s
       .split(",")
       .select {|e| e.start_with?(GEM_PREFIX) }
-      .flat_map do |name|
+      .map { |e| e.gsub(GEM_PREFIX, "") }
+    
+    gems = gem_names.flat_map do |name|
 
-      component_name = name.gsub(GEM_PREFIX, "")
-      component = Component.where(name: component_name).first
+      Build::Converter.run!(name) if Component.needs_build?(name)
 
-      if component.blank? || component.versions.built.count == 0
-        build(component_name)
-        Reindex.new.perform
-      end
+      component = Component.where(name: name).first
 
-      if component
+      if component && component.built?
         component.versions.built.map do |v|
           {
-            name:         name,
+            name:         "#{GEM_PREFIX}#{name}",
             platform:     "ruby",
             number:       v.string,
-            dependencies: v.dependencies.to_a.map {|n,v| ["#{GEM_PREFIX}#{n}", v] }
+            dependencies: v.dependencies || {}
           }
         end
       else
@@ -30,12 +28,10 @@ class MainController < ApplicationController
       end
     end
 
+    Rails.logger.info(params)
+    Rails.logger.info(gems)
+
     params[:json] ? render(json: gems) : render(text: Marshal.dump(gems))
   end
 
-  protected
-
-  def build(name)
-    Build::Convert.new(name).try_convert(debug: params[:_debug]).try(:[], :component)
-  end
 end

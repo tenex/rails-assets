@@ -17,28 +17,29 @@ class ComponentsController < ApplicationController
   end
 
   def create
-    name, version = component_params[:name].to_s.strip, component_params[:version]
+    # Always force build
+    name, version = component_params[:name], component_params[:version]
 
-    component = if params[:_force]
-      build(name, version)
-    elsif component = Component.where(name: name).first
-      if component.versions.built.string(version).first
-        component
-      else
-        build(name, version)
-      end
+
+    version_model = Build::Converter.run!(name, version)
+    
+    component = Component.find_by(name: name)
+    ver = if ver.present?
+      component.versions.
+        where(string: Build::Utils.fix_version_string(version)).first
     else
-      build(name, version)
+      component.versions.last
     end
 
-    render json: component_data(component)
-  rescue Build::BuildError => ex
-    Raven.capture_exception(ex)
-
-    render json: {
-      message:  discover_error_cause(ex.opts[:log]) || ex.message,
-      log:      ex.opts[:log]
-    }, status: :unprocessable_entity
+    if ver.blank?
+      render json: { message: 'Build failed for unknown reason' },
+        status: :unprocessable_entity
+    elsif ver.build_status == 'success'
+      render json: component_data(component)
+    else
+      render json: { message: ver.build_message },
+        status: :unprocessable_entity
+    end
   end
 
   protected
@@ -51,23 +52,6 @@ class ComponentsController < ApplicationController
       versions:     component.versions.built.map {|v| v.string },
       dependencies: component.versions.built.last.dependencies.to_a
     }
-  end
-
-  def discover_error_cause(log)
-    return unless log
-    if data = (JSON.parse(log) rescue nil)
-      if error = Array(data).select {|e| e["level"] == "error" }.first
-        error["message"]
-      end
-    end
-  end
-
-  def build(name, version)
-    result = Build::Convert.new(name, version).convert!(
-      debug: params[:_debug],
-      force: true
-    )
-    result[:component]
   end
 
   def component_params

@@ -2,6 +2,6 @@
   "name": "rails-assets",
   "version": "0.0.0",
   "dependencies": {
-    "bower": "1.2.6"
+    "bower": "sheerun/bower#2bfeea8e9dd4d30ffecbdb876d368d55d860e9ef"
   }
 }

@@ -15,4 +15,19 @@ class Component < ActiveRecord::Base
       [component, component.versions.new(string: version)]
     end
   end
+
+  def self.needs_build?(name, version = nil)
+    component = Component.where(name: name).first
+
+    if version.nil?
+      component.blank? || component.versions.built.count == 0
+    else
+      version_model = component.versions.where(version: version)
+      version_model.blank? || version_model.needs_build?
+    end
+  end
+
+  def built?
+    versions.built.count > 0
+  end
 end

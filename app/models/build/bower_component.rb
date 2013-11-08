@@ -1,95 +1,123 @@
 module Build
   class BowerComponent
-    MANIFESTS = ["component.json", "package.json", "bower.json"]
+    attr_reader :cache_dir, :data
 
-    attr_accessor :name, :version, :description,
-                  :dependencies, :repository, :main,
-                  :homepage, :user, :repo
-
-    def initialize(name, version = nil)
-      @name, @version = name, version
-
-      if name.include?("/") # github repo
-        @version ||= "master" # defaults to master
-        @user, @name = name.split("/", 2)
-      end
-
-      # Validation
-      raise BuildError.new("Empty bower component name") if @name.blank?
+    # cache_dir - Build::Path to which component has been installed
+    # data - The component's Hash returned by `bower info` or similar
+    def initialize(cache_dir, data)
+      @cache_dir = Path.new(cache_dir)
+      @data = data
     end
 
-    def github!(user)
-      self.user = user
+    def component_dir
+      cache_dir.join('bower_components', name)
+    end
 
-      self.repository = "git://github.com/#{user}/#{name}.git"
-      self.homepage = self.class.get_homepage_from_repository(repository)
+    def name
+      data['pkgMeta']['name']
+    end
+
+    def user
+      full_name.split('/')[0]
+    end
+
+    def repo
+      full_name.split('/')[1]
+    end
+
+    def version
+      if data['pkgMeta']['version']
+        data['pkgMeta']['version']
+      else
+        raise BuildError.new(
+          "#{full_name} has no verions defined. " +
+          "Please create an issue in component's repository."
+        )
+      end
+    end
+
+    def description
+      data['pkgMeta']['description'] || ""
+    end
+
+    def repository
+      data['pkgMeta']['_source']
+    end
+
+    def homepage
+      data['pkgMeta']['homepage']
+    end
+
+    def dependencies
+      data['pkgMeta']['dependencies'] || {}
+    end
+
+    def main
+      if data['pkgMeta']['main']
+        [data['pkgMeta']['main']].flatten.compact
+      end
     end
 
     def github?
-      !!user
+      data['endpoint']['source'].include?('/')
     end
 
     def full_name
-      if github?
-        "#{user}--#{name}"
-      else
-        name
-      end
-    end
+      source = data['endpoint']['source']
+      source = source.sub(/#.*$/, '')
+      source = source.sub(/\.git$/, '')
 
-    def github_name
-      "#{user}/#{name}"
+      if source.match(/^[^\/]+(\/[^\/]+)?$/) 
+        source
+      elsif source =~ /github\.com\/([^\/]+\/[^\/]+)/
+        $1
+      else
+        raise BuildError.new("#{source} is not valid source for rails-assets")
+      end
     end
 
     def full
-      if github?
-        "#{user}/#{name}##{version}"
-      else
-        version.blank? ? name : "#{name}##{version}"
-      end
+      "#{data['endpoint']['source']}##{data['endpoint']['target']}"
+    end
+
+    def paths
+      Paths.from(component_dir).map(:relative_path_from, component_dir)
+    end
+
+    def main_paths
+      Paths.new(main).
+        map(:expand_path, component_dir).select(:exist?).
+        map(:relative_path_from, component_dir)
     end
 
     def gem
       @gem ||= GemComponent.new(self)
     end
 
-    class << self
-      def from_manifests(dir, name)
-        data = MANIFESTS
-                .map {|m| File.join(dir, m) }
-                .select {|f| File.exists?(f) }
-                .map {|f| read_manifest(f) }
-                .inject({}){|h,e| h.merge(e) }
+    def needs_build?
+      Component.where
+    end
 
-        self.new(name, data[:version]).tap do |c|
-          c.description   = data[:description]
-          c.dependencies  = (data[:dependencies] || {})
-          c.main          = data[:main]
-          c.repository    = data[:repository]
-          c.homepage      = data[:homepage]
-          c.homepage      = get_homepage_from_repository(data[:repository]) if c.homepage.blank?
+    def version_model
+      if component = Component.where(name: gem.short_name).first
+        version = if ver = component.versions.string(gem.version).first
+          ver
+        else
+          component.versions.new(string: gem.version)
         end
-      end
 
-      def get_homepage_from_repository(repo)
-        case repo.to_s
-        when %r|//github.com/(.+)/(.+?)(\.git)?$|
-            "http://github.com/#{$1}/#{$2}"
-        end
-      end
-
-      def read_manifest(path)
-        Rails.logger.info "Reading manifest file #{path}"
-        data = JSON.parse(File.read(path))
-
-        {
-          version:      data["version"],
-          description:  data["description"],
-          main:         data["main"] ? [data["main"]].flatten.reject {|e| e.nil?} : nil,
-          dependencies: data["dependencies"],
-          repository:   data["repository"].is_a?(Hash) ? data["repository"]["url"] : data["repository"],
-          homepage:     data["homepage"]
-        }.reject {|k,v| v.blank? }
+        version.component = component
+        version
+      else
+        component = Component.new(
+          name: gem.short_name,
+          bower_name: full_name,
+          description: description,
+          homepage: homepage
+        )
+        version = component.versions.new(string: gem.version)
+        version.component = component
+        version
       end
     end
   end

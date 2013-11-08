@@ -7,8 +7,8 @@ class UpdateScheduler
   recurrence { hourly }
 
   def perform
-    Component.select(:name).find_each do |component|
-      UpdateComponent.perform_async(component.name)
+    Component.select(:bower_name).find_each do |component|
+      UpdateComponent.perform_async(component.bower_name)
     end
   end
 end
