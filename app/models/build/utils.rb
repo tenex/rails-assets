@@ -51,7 +51,7 @@ module Build
         version = ">= #{$1.strip}"
       end
 
-      if version.strip == "latest" || version.strip == "master"
+      if ['latest', 'master', '*'].include?(version.strip)
         nil
       elsif version.match(/^[^\/]+\/[^\/]+$/) 
         nil
