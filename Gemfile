@@ -33,7 +33,7 @@ gem 'figaro'
 
 gem 'sentry-raven'
 
-gem 'activeadmin', :github => "gregbell/active_admin", :branch => "rails4"
+gem 'activeadmin', :github => "gregbell/active_admin"
 
 gem 'thin'
 
