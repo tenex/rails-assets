@@ -27,6 +27,9 @@ app.controller "IndexCtrl", ["$scope", "$http", ($scope, $http) ->
 
   $scope.search =
     name: ""
+
+  $scope.$watch 'search.name', (name) ->
+    $scope.$broadcast('component.name', name)
 ]
 
 app.controller "ConvertCtrl", ["$scope", "$http", ($scope, $http) ->
@@ -36,6 +39,9 @@ app.controller "ConvertCtrl", ["$scope", "$http", ($scope, $http) ->
     version: null
 
   $scope.error = null
+
+  $scope.$on 'component.name', (event, name) ->
+    $scope.component.name = name
 
   $scope.convert = ->
     $scope.converting = true

@@ -1,4 +1,4 @@
-section.section.gem-list ng-controller="ConvertCtrl" ng-init="component.name = '#{params[:name]}'"
+section.section.gem-list
   .wrap
     h1.section__header.header.header--gamma
       | New component
@@ -6,26 +6,5 @@ section.section.gem-list ng-controller="ConvertCtrl" ng-init="component.name = '
     .notice.content.content--small
       p <b>Notice:</b> Currently, due to the way Bundler works, there is no way to automatically convert a&nbsp;package for a&nbsp;specific gem version referenced in&nbsp;<code>Gemfile</code>. In such cases, Rails Assets will always build the&nbsp;newest version causing Bundler to raise an&nbsp;error.
       p If you need an&nbsp;older component version, add it using this form first—then lock the version in your&nbsp;<code>Gemfile</code>.
-
-    form.gem-list__form.grid
-      .grid__cell.unit-2-4
-        input type="text" ng-model="component.name" placeholder="Package name"
-      .grid__cell.grid__cell--unpadded.unit-1-4
-        input type="text" ng-model="component.version" placeholder="Version (optional)"
-      .grid__cell.unit-1-4
-        button ng-click="convert()" ng-disabled="converting" Convert
-
-    p.gem-list__item.util__dimmed ng-show="converting"
-      | Conversion in progress…
-
-    .gem-list__item ng-show="gem"
-      p.notice.notice--success.content.content--small
-        b> Success:
-        code> rails-assets-{{ gem.name }}
-        | has been created.
-
-    pre.gem-list__item.util__dimmed ng-show="error"
-      code
-        | {{ error.message }}
-      code ng-show="error.log"
-        = "\n\n{{ error.log }}"
+    
+    = render 'components/convert'
