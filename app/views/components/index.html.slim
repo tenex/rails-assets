@@ -10,7 +10,7 @@ section.section.gem-list ng-controller="IndexCtrl"
     .gem-list__form
       input#gem-search type="search" ng-model="search.name" placeholder="Search"
 
-    .gem-list__item ng-hide="(gems | filter:search).length > 0"
+    .gem-list__item ng-hide="(gems | filter:search).length > 0" ng-cloak=""
       ' Package <code>{{ search.name }}</code> not found. You can always try to convert it below:
       = render 'components/convert'
 
