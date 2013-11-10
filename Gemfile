@@ -43,7 +43,7 @@ gem 'quiet_assets'
 
 gem 'peach'
 
-gem 'rb-readline', '~> 0.4.2'
+gem 'rb-readline', '~> 0.5.0', require: false
 gem 'awesome_print'
 
 group :development do
