@@ -55,6 +55,8 @@ GEM
     better_errors (0.9.0)
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
+    binding_of_caller (0.7.2)
+      debug_inspector (>= 0.0.1)
     bourbon (3.1.8)
       sass (>= 3.2.0)
       thor
@@ -72,6 +74,7 @@ GEM
     connection_pool (1.1.0)
     daemons (1.1.9)
     database_cleaner (1.2.0)
+    debug_inspector (0.0.2)
     devise (3.2.0)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
@@ -259,6 +262,7 @@ DEPENDENCIES
   autoprefixer-rails (>= 0.6.20130728)
   awesome_print
   better_errors
+  binding_of_caller
   builder
   coffee-rails (~> 4.0.0)
   database_cleaner

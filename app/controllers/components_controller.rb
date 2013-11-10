@@ -42,6 +42,28 @@ class ComponentsController < ApplicationController
     end
   end
 
+  def assets
+    component = Component.find_by!(name: params[:name])
+    version = component.versions.find_by!(string: params[:version])
+
+    main_paths = version.main_paths
+    paths = version.asset_paths.map
+
+    # TODO: exclude manifest assets from asset_paths at all...
+    paths = paths.reject { |f| f.match(/vendor\/assets\/javascripts\/[^\/]+\.js/) }
+    paths = paths.reject { |f| f.match(/vendor\/assets\/stylesheets\/[^\/]+\.css/) }
+    
+    paths = paths.map do |path|
+      {
+        path: path.match(/vendor\/assets\/[^\/]+\/(.+)/)[1],
+        main: version.main_paths.include?(path),
+        type: path[/javascript|stylesheet|image/]
+      }
+    end
+
+    render json: paths
+  end
+
   protected
 
   def component_data(component)
