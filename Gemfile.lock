@@ -101,6 +101,7 @@ GEM
       activesupport (>= 3.2, < 5)
     hashie (2.0.5)
     hike (1.2.3)
+    honey_badger (0.0.4)
     i18n (0.6.5)
     ice_cube (0.11.0)
     inherited_resources (1.4.1)
@@ -268,6 +269,7 @@ DEPENDENCIES
   database_cleaner
   figaro
   foreman
+  honey_badger
   peach
   pg
   pry-rails

@@ -46,6 +46,8 @@ gem 'peach'
 gem 'rb-readline', '~> 0.5.0', require: false
 gem 'awesome_print'
 
+gem 'honey_badger'
+
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
