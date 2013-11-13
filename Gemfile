@@ -20,7 +20,6 @@ gem 'slim-rails'
 gem 'redis',      "~> 3.0.0"
 
 gem 'sidekiq'
-gem 'sidetiq'
 gem 'sidekiq-unique-jobs'
 gem 'sidekiq-failures'
 gem 'sinatra', '>= 1.3.0', :require => nil
