@@ -47,6 +47,8 @@ gem 'awesome_print'
 
 gem 'honey_badger'
 
+gem 'filelock'
+
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
