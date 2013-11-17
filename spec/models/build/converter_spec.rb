@@ -24,6 +24,23 @@ module Build
           end
         end
       end
+
+      it 'raises an BuildError if converted component has no files in it' do
+        Dir.mktmpdir do |dir|
+          # Probably replace with fixtures
+          Utils.sh(dir, 'git init')
+          Utils.sh(dir, 'touch .gitignore')
+          Utils.sh(dir, 'git add -f .gitignore')
+          Utils.sh(dir, 'git config user.email "you@example.com"')
+          Utils.sh(dir, 'git config user.name "Your Name"')
+          Utils.sh(dir, 'git commit -m init')
+          component = BowerComponent.new(dir,
+            'pkgMeta' => { 'name' => 'foobar' })
+          expect {
+            Converter.convert!(component) do; end
+          }.to raise_error(BuildError)
+        end
+      end
     end
 
     context '#build!' do

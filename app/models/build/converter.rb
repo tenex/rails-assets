@@ -143,6 +143,8 @@ module Build
         asset_paths = transformations[:all].values
         main_paths = transformations[:main].values
 
+        raise BuildError.new("No files to convert") if asset_paths.empty?
+
         Transformer.process_transformations!(
           transformations[:all].merge(generate_gem_structure(bower_component)),
           bower_component.component_dir, output_dir
