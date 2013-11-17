@@ -10,7 +10,7 @@ module Build
     end
 
     def component_dir
-      cache_dir.join('bower_components', name)
+      Path.new(data['canonicalDir'])
     end
 
     def name

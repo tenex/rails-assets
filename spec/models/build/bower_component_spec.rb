@@ -9,7 +9,7 @@ module Build
           "source": "git://github.com/srigi/jquery.git",
           "target": "~2.0.3"
         },
-        "canonicalDir": "/Users/sheerun/Source/rails-assets/bower_components/jquery",
+        "canonicalDir": "/Users/sheerun/Source/rails-assets/bower_components/awesome-jquery",
         "pkgMeta": {
           "name": "jquery",
           "version": "2.0.3",
@@ -93,7 +93,9 @@ module Build
 
       it 'render proper component_dir' do
         expect(subject.component_dir).
-          to eq(Path.new('/tmp/bower_components/jquery'))
+          to eq(Path.new('/Users/sheerun/Source/rails-assets/bower_components/awesome-jquery'))
+
+        expect(subject.component_dir).to be_a(Path)
       end
     end
 
