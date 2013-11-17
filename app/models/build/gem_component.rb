@@ -29,16 +29,5 @@ module Build
     def module
       name.gsub('.', '-').gsub('_', '-').split("-").map { |e| e.capitalize }.join('')
     end
-
-    def get_component_and_version!
-      component, version = Component.get(self.short_name, self.version)
-
-      component.description = self.description
-      component.homepage    = self.homepage
-      version.string        = self.version
-      version.dependencies  = self.dependencies
-
-      [component, version]
-    end
   end
 end

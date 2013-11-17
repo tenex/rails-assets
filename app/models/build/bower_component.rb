@@ -115,7 +115,10 @@ module Build
           description: description,
           homepage: homepage
         )
-        version = component.versions.new(string: gem.version)
+        version = component.versions.new(
+          string: gem.version,
+          dependencies: gem.dependencies
+        )
         version.component = component
         version
       end
