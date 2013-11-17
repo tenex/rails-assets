@@ -34,8 +34,10 @@ module Build
           Utils.sh(dir, 'git config user.email "you@example.com"')
           Utils.sh(dir, 'git config user.name "Your Name"')
           Utils.sh(dir, 'git commit -m init')
-          component = BowerComponent.new(dir,
-            'pkgMeta' => { 'name' => 'foobar' })
+          component = BowerComponent.new(dir, {
+            'endpoint' => { 'source' => 'https://github.com/sheerun/foobar' },
+            'pkgMeta' => { 'name' => 'foobar' }
+          })
           expect {
             Converter.convert!(component) do; end
           }.to raise_error(BuildError)
