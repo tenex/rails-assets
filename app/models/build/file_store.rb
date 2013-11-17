@@ -9,7 +9,7 @@ module Build
         FileUtils.mkdir_p(File.join(DATA_DIR, 'locks').to_s)
       end
 
-      Filelock(lock_name, timeout: 60, &block)
+      Filelock(lock_name, timeout: 240, &block)
     end
 
   end
