@@ -45,6 +45,11 @@ module Build
       Path.new(File.expand_path("../#{exp}", "/#{self.to_s}")[1..-1])
     end
 
+    def in_directory?(dirnames)
+      [*dirnames].any? do |dirname|
+        self.each_filename.to_a.include?(dirname)
+      end
+    end
   end
 
 end

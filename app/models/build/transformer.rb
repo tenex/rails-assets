@@ -27,8 +27,17 @@ module Build
     #   each transform is in form [source_path, target_path] or [source, target_path]
     def compute_transformations(gem_name, all_source_paths, all_main_paths = Paths.new)
       all_source_paths = Paths.new(all_source_paths.reject do |file|
-        file.minified? &&
-          all_source_paths.include?(Path.new(file.to_s.sub('.min.', '.')))
+        has_unminified = all_source_paths.
+          include?(Path.new(file.to_s.sub('.min.', '.')))
+        in_special_dir = file.in_directory?(
+          %w(spec test perf minified docs examples min))
+
+        main_in_same_dir = all_main_paths.map(:dirname).any? do |dir|
+          file.descendant?(dir)
+        end
+
+        (file.minified? && has_unminified) ||
+        (in_special_dir && !main_in_same_dir)
       end)
 
       transformations = [:javascripts, :stylesheets, :images].flat_map do |type|

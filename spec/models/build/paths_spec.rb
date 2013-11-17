@@ -217,5 +217,27 @@ module Build
           to eq(Path.new('foo/foo/image.png'))
       end
     end
+
+    context '#in_directory?' do
+      it 'recognizes if file is in directory of given name' do
+        expect(Path.new("/usr/local/test/foo.js").in_directory?('test')).
+          to eq(true)
+      end
+
+      it 'returns false if there is no full match' do
+        expect(Path.new("/usr/local/tests/foo.js").in_directory?('test')).
+          to eq(false)
+      end
+
+      it 'works for array of dirnames' do
+        expect(
+          Path.new("/usr/local/test/foo.js").in_directory?(['test', 'foo'])
+        ).to eq(true)
+
+        expect(
+          Path.new("/usr/local/test/foo.js").in_directory?(['bar', 'foo'])
+        ).to eq(false)
+      end
+    end
   end
 end

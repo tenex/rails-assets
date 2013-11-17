@@ -124,6 +124,39 @@ module Build
           'vendor/assets/stylesheets/foobar/foo.scss'
         ]))
       end
+
+      it 'it excludes all files in special directories like test or docs' do
+        expect(
+          targets([
+            'test/foo.coffee',
+            'test/foo/bar.js',
+            'spec/foo.js',
+            'perf/foo.js',
+            'docs/README.md',
+            'examples/foo/bar.js',
+            'min/foo.js'
+          ])
+        ).to eq(Paths.new())
+      end
+
+      it 'it leaves main files in special directories' do
+        expect(
+          targets([
+            'test/foo.coffee',
+            'test/foo/bar.js',
+            'spec/foo.js',
+            'perf/foo.js',
+            'docs/README.md',
+            'examples/foo/bar.js',
+            'min/bar/foo.js',
+            'min/bar/foo-require.js'
+          ], ['min/bar/foo.js'])
+        ).to eq(Paths.new([
+          'vendor/assets/javascripts/foobar/foo.js',
+          'vendor/assets/javascripts/foobar/foo-require.js',
+          'vendor/assets/javascripts/foobar.js'
+        ]))
+      end
     end
 
     context '#process_transformations!' do
