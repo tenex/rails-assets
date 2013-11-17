@@ -26,6 +26,6 @@ class Version < ActiveRecord::Base
   end
 
   def needs_build?
-    build_status != 'success' && build_status != 'error'
+    build_status != 'success'
   end
 end

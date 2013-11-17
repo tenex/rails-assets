@@ -59,6 +59,8 @@ module Build
           components.map do |component|
             version = component.version_model
 
+            next unless version.needs_build?
+
             ::Rails.logger.info "Building #{component.name}##{version.string}..."
 
             gem_path = begin
