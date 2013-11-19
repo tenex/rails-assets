@@ -18,11 +18,11 @@ module Build
     
     context '#fix_version_string' do
       specify do
-        expect(Utils.fix_version_string('master')).to be_nil
+        expect(Utils.fix_version_string('master')).to eq(">= 0")
       end
 
       specify do
-        expect(Utils.fix_version_string('latest')).to be_nil
+        expect(Utils.fix_version_string('latest')).to eq(">= 0")
       end
 
       specify do
@@ -58,13 +58,13 @@ module Build
       end
 
       specify do
-        expect(Utils.fix_version_string('foo/bar2')).to eq(nil)
+        expect(Utils.fix_version_string('foo/bar2')).to eq(">= 0")
       end
 
       specify do
         expect(Utils.fix_version_string(
           'https://github.com/voodootikigod/node-csv/tarball/master')
-        ).to eq(nil)
+        ).to eq(">= 0")
       end
 
       specify do
@@ -82,7 +82,7 @@ module Build
       end
 
       specify do
-        expect(Utils.fix_version_string('*')).to eq(nil)
+        expect(Utils.fix_version_string('*')).to eq(">= 0")
       end
     end
 

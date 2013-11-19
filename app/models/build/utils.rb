@@ -52,14 +52,14 @@ module Build
       end
 
       if ['latest', 'master', '*'].include?(version.strip)
-        nil
+        ">= 0"
       elsif version.match(/^[^\/]+\/[^\/]+$/) 
-        nil
+        ">= 0"
       elsif version.match(/^(http|git|ssh)/)
         if version.split('/').last =~ /^v?([\w\.-]+)$/
           fix_version_string($1.strip)
         else
-          nil
+          ">= 0"
         end
       else
         if version.match('.x')
