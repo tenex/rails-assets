@@ -117,7 +117,6 @@ describe Build::Converter do
       file_contains 'vendor/assets/javascripts/jquery.cookie.js',
         'require jquery.cookie/jquery.cookie'
     end
-    
 
     component "angular-ui-tinymce", '0.0.4' do
       gem_file 'vendor/assets/javascripts/angular-ui-tinymce.js'
@@ -131,6 +130,11 @@ describe Build::Converter do
       gem_file 'vendor/assets/javascripts/tinymce.js'
       file_contains 'rails-assets-jozzhart--tinymce.gemspec',
         'spec.name          = "rails-assets-jozzhart--tinymce"'
+    end
+
+    component "swipe", "2.0.0" do
+      gem_file "vendor/assets/javascripts/swipe.js"
+      gem_file "vendor/assets/javascripts/swipe/swipe.js"
     end
   end
 end
