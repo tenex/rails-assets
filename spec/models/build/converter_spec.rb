@@ -35,7 +35,7 @@ module Build
           Utils.sh(dir, 'git config user.name "Your Name"')
           Utils.sh(dir, 'git commit -m init')
           component = BowerComponent.new(dir, {
-            'endpoint' => { 'source' => 'https://github.com/sheerun/foobar' },
+            'endpoint' => { 'name' => 'foobar', 'source' => 'https://github.com/sheerun/foobar' },
             'pkgMeta' => { 'name' => 'foobar' }
           })
           expect {

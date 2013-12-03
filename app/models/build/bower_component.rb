@@ -14,7 +14,7 @@ module Build
     end
 
     def name
-      data['pkgMeta']['name']
+      data['endpoint']['name']
     end
 
     def user
