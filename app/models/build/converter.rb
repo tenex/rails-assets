@@ -111,7 +111,7 @@ module Build
       Dir.mktmpdir do |cache_dir|
           result = Utils.bower(
             cache_dir,
-            'install -p',
+            'install -p -F',
             "#{component_name}##{component_version || "latest"}"
           )
 
