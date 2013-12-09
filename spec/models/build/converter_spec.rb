@@ -19,6 +19,20 @@ module Build
         expect(values[1]).to eq(values[0])
         expect(values[2]).to eq(values[0])
       end
+
+      it 'should include builded component in first each request' do
+        threads = (0..2).map do
+          Thread.new do
+            Converter.run!('flight', 'latest')
+          end
+        end
+
+        values = threads.map(&:join).map(&:value)
+
+        expect(values[0].component.name).to eq("flight")
+        expect(values[1].component.name).to eq("flight")
+        expect(values[2].component.name).to eq("flight")
+      end
     end
 
     context '#install!' do
