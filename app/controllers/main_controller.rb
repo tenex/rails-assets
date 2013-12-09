@@ -17,7 +17,7 @@ class MainController < ApplicationController
 
       Build::Converter.run!(name) if Component.needs_build?(name)
 
-      component = Component.where(name: name).first
+      component = Component.where(name: name).first.reload
 
       if component && component.built?
         component.versions.built.map do |v|
