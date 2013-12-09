@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-source 'https://rails-assets.org'
 
 ruby '2.0.0'
 
@@ -13,8 +12,7 @@ gem 'sass-rails', '~> 4.0.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.0.0'
 
-gem 'rails-assets-angular'
-gem 'rails-assets-griddle'
+gem 'angularjs-rails'
 
 gem 'slim-rails'
 gem 'redis',      "~> 3.0.0"

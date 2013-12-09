@@ -1,0 +1,162 @@
+/* ==========================================================================
+   Grid
+   ========================================================================== */
+
+/*
+ * Example uses:
+ *
+ * <div class="grid">
+ *     <div class="grid__cell unit-1-2"></div>
+ *     <div class="grid__cell unit-1-2"></div>
+ *     <div class="grid__cell unit-1-3"></div>
+ *     <div class="grid__cell unit-1-3"></div>
+ * </div>
+ *
+ * <div class="grid grid--center">
+ *     <div class="grid__cell unit-1-3"></div>
+ *     <div class="grid__cell unit-1-3"></div>
+ * </div>
+ */
+
+@import "griddle-build";
+
+$grid-direction: left !default; // switch to 'right' for rtl
+$grid-gutter: 20px !default; // can be px, em, or %
+
+
+/* Grid core
+   ========================================================================== */
+
+/**
+ * Grid container
+ * Must only contain `.grid` or `.grid__cell` components as children.
+ *
+ * 1. Adjustment for child element margins.
+ * 2. Ensure consistent default alignment/
+ * 3. Remove inter-unit whitespace that appears between `inline-block` child
+ *    elements. Work for all non-monospace font-families.  If you're using a
+ *    monospace base font, you will need to set the `grid` font-family to
+ *   `sans-serif` and then redeclare the monospace font on the `grid__cell`
+ *    objects.
+ * 4. Protect against WebKit bug with optimizelegibility.
+ */
+
+.grid {
+    display: block;
+    padding: 0;
+    margin: 0 -0.5 * $grid-gutter; /* 1 */
+    text-align: $grid-direction; /* 2 */
+    letter-spacing: -0.31em; /* 3 */
+    text-rendering: optimizespeed; /* 4 */
+}
+
+/**
+ * Opera hack
+ */
+
+.opera:-o-prefocus,
+.grid {
+    word-spacing: -0.43em; /* 3 */
+}
+
+/**
+ * Child `grid` object adjustments
+ * Used for more complex fixed-fluid hybrid grids.
+ */
+
+.grid > .grid {
+    overflow: hidden;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+/**
+ * Grid units
+ * No explicit width by default. Apply `.unit-x-y` classes.
+ *
+ * 1. Fundamentals of the non-float grid layout mechanism.
+ * 2. Apply grid gutter.
+ * 3. Controls vertical positioning of units.
+ * 4. Keeps content correctly aligned with the grid direction.
+ * 5. Reset text defaults.
+ */
+
+.grid__cell {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    display: inline-block; /* 1 */
+    margin: 0;
+    padding: 0 0.5 * $grid-gutter; /* 2 */
+    vertical-align: top; /* 3 */
+    text-align: $grid-direction; /* 4 */
+    letter-spacing: normal; /* 5 */
+    word-spacing: normal; /* 5 */
+    text-rendering: auto; /* 5 */
+}
+
+/* Grid modifiers
+   ========================================================================== */
+
+/**
+ * Modifier: horizontally center all grid units
+ * Allows for automatic unit centering irrespective of the number of
+ * units in the grid.
+ */
+
+.grid--center {
+    text-align: center;
+}
+
+/**
+ * Modifier: align horizontally all grid units to the left
+ */
+
+.grid--left {
+    text-align: left;
+}
+
+/**
+ * Modifier: align horizontally all grid units to the right
+ */
+
+.grid--right {
+    text-align: right;
+}
+
+/* Grid cell modifiers
+   ========================================================================== */
+
+/**
+ * Modifier: horizontally center one unit
+ * Set a specific unit to be horizontally centered. Doesn't affect
+ * any other units. Can still contain a child `grid` object.
+ */
+
+.grid__cell--center {
+    display: block;
+    margin: 0 auto;
+}
+
+/**
+ * Modifier: align horizontally one unit to the left
+ * Set a specific unit to be horizontally on the left. Doesn't affect
+ * any other units. Can still contain a child `grid` object.
+ */
+
+.grid__cell--left {
+    display: block;
+    margin-right: auto;
+}
+
+/**
+ * Modifier: align horizontally one unit to the right
+ * Set a specific unit to be horizontally on the right. Doesn't affect
+ * any other units. Can still contain a child `grid` object.
+ */
+
+.grid__cell--right {
+    display: block;
+    margin-left: auto;
+}
+
