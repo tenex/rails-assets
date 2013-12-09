@@ -1,4 +1,6 @@
 class MainController < ApplicationController
+  before_action :redirect_to_https, :only => ["home"]
+
   def home
     if params[:debug]
       render :json => request.env.inspect and return
@@ -37,4 +39,9 @@ class MainController < ApplicationController
     params[:json] ? render(json: gems) : render(text: Marshal.dump(gems))
   end
 
+  private
+
+  def redirect_to_https
+    redirect_to :protocol => "https://" unless (request.ssl? || request.local?)
+  end
 end
