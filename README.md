@@ -11,7 +11,6 @@ This README concerns the development aspect of the project. **[Visit the site](h
 ```sh
 git clone git@github.com:rails-assets/rails-assets.git && cd rails-assets
 bundle install && npm install
-ln -sf ../data/{latest_specs.4.8.gz,prerelease_specs.4.8.gz,quick,specs.4.8.gz,gems} public
 foreman start
 ```
 
@@ -23,22 +22,12 @@ rake "convert[NAME]"
 
 This will create `rails-assets-NAME-VERSION.gem` file.
 
-### Symlinks
-
-```
-/gems                       -> DATA_DIR/gems
-/quick                      -> DATA_DIR/quick
-/latest_specs.4.8.gz        -> DATA_DIR/latest_specs.4.8.gz
-/prerelease_specs.4.8.gz    -> DATA_DIR/prerelease_specs.4.8.gz
-/specs.4.8.gz               -> DATA_DIR/specs.4.8.gz
-```
-
 ## Credits
 
 Rails Assets *used to* be the fork of [Gem in a Box](https://github.com/geminabox/geminabox).
 
 ---
 
-Created by [@teamon](http://github.com/teamon) and [@porada](http://github.com/porada).
+Created by [@teamon](http://github.com/teamon), [@sheerun](http://github.com/sheerun), and [@porada](http://github.com/porada).
 
-Thanks for help to [@sheerun](http://github.com/sheerun), [@jandudulski](http://github.com/jandudulski) and [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors).
+Thanks for help to [@jandudulski](http://github.com/jandudulski) and [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors).
