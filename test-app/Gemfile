@@ -1,5 +1,5 @@
-source 'http://rubygems.org'
-# source 'http://rails-assets.org'
+source 'https://rubygems.org'
+# source 'https://rails-assets.org'
 # source 'http://localhost:9292'
 source 'http://rails-assets.dev'
 

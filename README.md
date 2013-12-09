@@ -2,7 +2,7 @@
 
 > [Bundler](http://bundler.io) to [Bower](http://bower.io) proxy
 
-This README concerns the development aspect of the project. **[Visit the site](http://rails-assets.org) to learn how to use Rails Assets in your application.**
+This README concerns the development aspect of the project. **[Visit the site](https://rails-assets.org) to learn how to use Rails Assets in your application.**
 
 ## Development
 
