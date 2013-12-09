@@ -17,9 +17,9 @@ class MainController < ApplicationController
 
       Build::Converter.run!(name) if Component.needs_build?(name)
 
-      component = Component.where(name: name).first.reload
+      component = Component.where(name: name).first
 
-      if component && component.built?
+      if component # && component.built?
         component.versions.built.map do |v|
           {
             name:         "#{GEM_PREFIX}#{name}",
