@@ -1,7 +1,7 @@
 class ComponentsController < ApplicationController
   def index
     components = Component.includes(:versions).
-      all.
+      to_a.
       select { |c| c.versions.any? { |v| v.built? } }.
       map { |c| component_data(c) }
 
