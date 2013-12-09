@@ -1,7 +1,4 @@
 RailsAssets::Application.routes.draw do
-  devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
-
   resources :components, only: [:index, :new, :create] do
     collection do
       get '/:name/:version' => 'components#assets', constraints: { version: /[^\/]+/ }
