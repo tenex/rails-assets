@@ -17,9 +17,10 @@ class ComponentsController < ApplicationController
   end
 
   def create
-    # Always force build
     name, version = component_params[:name], component_params[:version]
 
+    name, version = Build::Utils.fix_gem_name(name, version).gsub('/', '--'),
+      Build::Utils.fix_version_string(version)
 
     version_model = Build::Converter.run!(name, version)
     

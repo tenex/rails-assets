@@ -103,6 +103,12 @@ module Build
           'tinymce', 'git://github.com/jozzhart/tinymce.git#4.0.0'
         )).to eq('jozzhart--tinymce')
       end
+
+      it 'removes rails-assets- prefix' do
+        expect(Utils.fix_gem_name(
+          'rails-assets-tinymce', '1.0.0'
+        )).to eq('tinymce')
+      end
     end
   end
 end
