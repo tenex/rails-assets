@@ -1,5 +1,8 @@
 class MainController < ApplicationController
   def home
+    if params[:debug]
+      render :json => request.env.inspect and return
+    end
   end
 
   def dependencies
