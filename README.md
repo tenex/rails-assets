@@ -17,10 +17,16 @@ foreman start
 ### Convert Bower package into Ruby gem using CLI
 
 ```sh
-rake "convert[NAME]"
+bundle exec rake 'component:convert[jquery,2.0.3]'
 ```
 
 This will create `rails-assets-NAME-VERSION.gem` file.
+
+You can remove this component by issuing:
+
+```sh
+bundle exec rake 'component:destroy[jquery,2.0.3]'
+```
 
 ## Credits
 

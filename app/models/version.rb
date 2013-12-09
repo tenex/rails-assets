@@ -28,4 +28,8 @@ class Version < ActiveRecord::Base
   def needs_build?
     build_status != 'success'
   end
+
+  def gem_path
+    Rails.root.join('public', 'gems', "#{GEM_PREFIX}#{component.name}-#{string}.gem")
+  end
 end
