@@ -2,8 +2,27 @@ require 'spec_helper'
 
 module Build
   describe Converter do
+    context '#run!' do
+      it 'should produce the same output when executed in parallel' do
+        threads = (0..2).map do
+          Thread.new do
+            Converter.run!('moment-timezone', 'latest')
+          end
+        end
+
+        values = threads.map(&:join).map(&:value)
+
+        expect(values[0]).to_not eq(nil)
+        expect(values[1]).to_not eq(nil)
+        expect(values[2]).to_not eq(nil)
+
+        expect(values[1]).to eq(values[0])
+        expect(values[2]).to eq(values[0])
+      end
+    end
+
     context '#install!' do
-      it 'installs component and retunr all dependencies' do
+      it 'installs component and return all dependencies' do
         expect {
           Converter.install! 'jquery' do |dependencies|
             expect(dependencies.size).to eq(1)

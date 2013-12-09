@@ -24,7 +24,7 @@ module Build
       FileStore.with_lock(lock_name) do
         # TODO: should component be saved if some of the dependencies failed?
         Converter.process!(name, version) do |versions, paths|
-          Converter.persist!(versions, paths)
+          Converter.persist!(versions, paths.compact)
 
           if versions.any? { |v| v.build_status == 'error' }
             raise BuildError.new(
@@ -59,7 +59,7 @@ module Build
           components.map do |component|
             version = component.version_model
 
-            next unless version.needs_build?
+            next [version, nil] unless version.needs_build?
 
             ::Rails.logger.info "Building #{component.name}##{version.string}..."
 
@@ -81,7 +81,7 @@ module Build
           end.compact
         end
 
-        yield [arr.map(&:first), arr.map(&:last).compact]
+        yield [arr.map(&:first), arr.map(&:last)]
       end
     end
 
