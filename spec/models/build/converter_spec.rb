@@ -35,6 +35,26 @@ module Build
     #     expect(values[2].component.name).to eq("flight")
     #   end
     # end
+    #
+
+    context '#run!' do
+      it 'should fill component dependencies' do
+        Converter.run!('angular-route', '1.2.2')
+        _, angular_route = Component.get('angular-route', '1.2.2')
+
+        expect(angular_route.reload.dependencies.keys).to_not be_empty
+      end
+
+      it 'should not mess with component dependencies afterwards' do
+        Converter.run!('angular-route', '1.2.2')
+        Converter.run!('angular-route', '1.2.3')
+        Converter.run!('angular-route', 'latest')
+
+        _, angular_route = Component.get('angular-route', '1.2.3')
+
+        expect(angular_route.reload.dependencies.keys).to_not be_empty
+      end
+    end
 
     context '#install!' do
       it 'installs component and return all dependencies' do

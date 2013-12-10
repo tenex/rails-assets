@@ -99,29 +99,29 @@ module Build
     end
 
     def version_model
-      if component = Component.where(name: gem.short_name).first
-        version = if ver = component.versions.string(gem.version).first
-          ver
-        else
-          component.versions.new(string: gem.version)
-        end
+      component = Component.where(name: gem.short_name).first
 
-        version.component = component
-        version
-      else
+      if component.blank?
         component = Component.new(
           name: gem.short_name,
           bower_name: full_name,
           description: description,
           homepage: homepage
         )
+      end
+
+      version = component.versions.string(gem.version).first
+
+      if version.blank?
         version = component.versions.new(
           string: gem.version,
           dependencies: gem.dependencies
         )
+
         version.component = component
-        version
       end
+
+      version
     end
   end
 end
