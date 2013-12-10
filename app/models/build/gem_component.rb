@@ -21,9 +21,7 @@ module Build
     end
 
     def dependencies
-      Hash[bower_component.dependencies.map do |name, version|
-        ["#{GEM_PREFIX}#{Utils.fix_gem_name(name, version)}", Utils.fix_version_string(version)]
-      end]
+      Utils.fix_dependencies(bower_component.dependencies)
     end
 
     def module

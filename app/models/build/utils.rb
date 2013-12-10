@@ -87,5 +87,15 @@ module Build
         gem_name.sub(/^#{Regexp.escape(GEM_PREFIX)}/, '')
       end
     end
+
+    # TODO: tests
+    def fix_dependencies(dependencies)
+      Hash[dependencies.map do |name, version|
+        [
+          "#{GEM_PREFIX}#{Utils.fix_gem_name(name, version)}",
+          Utils.fix_version_string(version)
+        ]
+      end]
+    end
   end
 end
