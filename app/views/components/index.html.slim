@@ -30,11 +30,11 @@ section.section.gem-list ng-controller="IndexCtrl"
 
         div ng-show="jsManifest" style="margin-top: 10px"
           h5 Include following in application.js:
-          code = "// {{ gem.name }}"
+          code = "//= require {{ gem.name }}"
         
         div ng-show="cssManifest" style="margin-top: 10px"
           h5 Include following in application.css:
-          code = "/* {{ gem.name }}"
+          code = "*= require {{ gem.name }}"
 
       .grid__cell.unit-1-2.content.content--small
         .gem__description ng-show="gem.description"
