@@ -33,7 +33,7 @@ module Build
     end
 
     def fix_version_string(version)
-      version = version.to_s
+      version = version.dup.to_s
 
       if version =~ /^v(.+)/
         version = $1.strip

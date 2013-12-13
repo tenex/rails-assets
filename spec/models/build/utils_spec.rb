@@ -17,6 +17,12 @@ module Build
     end
     
     context '#fix_version_string' do
+      it 'should not mutate argument' do
+        foo = '2.0.0-beta.3'
+        Utils.fix_version_string(foo)
+        expect(foo).to eq('2.0.0-beta.3')
+      end
+
       specify do
         expect(Utils.fix_version_string('master')).to eq(">= 0")
       end
