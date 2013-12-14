@@ -149,7 +149,7 @@ module Build
           transformations[:all].merge(generate_gem_structure(bower_component)),
           bower_component.component_dir, output_dir
         )
-        
+
         yield [output_dir, asset_paths, main_paths]
       end
     end
@@ -159,7 +159,7 @@ module Build
     # bower_component - BowerComponent to build yielded from install!
     # output_dir - Path to builded gem yielded from build!
     #
-    # Returns Path to builded .gem file, 
+    # Returns Path to builded .gem file
     def build!(bower_component, output_dir, gems_dir)
       Utils.sh(output_dir, RAKE_BIN, "build")
       pkg_path = output_dir.join('pkg', bower_component.gem.filename)
@@ -169,7 +169,7 @@ module Build
       FileUtils.mv(pkg_path.to_s, gem_path.to_s)
 
       unless File.exist?(gem_path.to_s)
-        raise BuildError.new('Gem file generation failed for unknown reason') 
+        raise BuildError.new('Gem file generation failed for unknown reason')
       end
 
       gem_path
