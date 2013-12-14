@@ -90,6 +90,11 @@ module Build
       specify do
         expect(Utils.fix_version_string('*')).to eq(">= 0")
       end
+
+      specify do
+        expect(Utils.fix_version_string('v1.2.6-build.1989+sha.b0474cb')).
+          to eq("1.2.6.build.1989.sha.b0474cb")
+      end
     end
 
     context '#fix_gem_name' do
