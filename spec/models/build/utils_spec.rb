@@ -15,7 +15,7 @@ module Build
         }}.to raise_error(BowerError)
       end
     end
-    
+
     context '#fix_version_string' do
       it 'should not mutate argument' do
         foo = '2.0.0-beta.3'
@@ -37,18 +37,6 @@ module Build
 
       specify do
         expect(Utils.fix_version_string('>=2.0.1')).to eq('>= 2.0.1')
-      end
-
-      specify do
-        expect(Utils.fix_version_string('>= 2.0.1 < 2.1.0')).to eq('~> 2.0.1')
-      end
-
-      specify do
-        expect(Utils.fix_version_string('>= 2.0.1-foo < 2.1.0')).to eq('~> 2.0.1.foo')
-      end
-
-      specify do
-        expect(Utils.fix_version_string('>= 2.1.2 < 3.0.0')).to eq('~> 2.1')
       end
 
       specify do
@@ -95,6 +83,47 @@ module Build
         expect(Utils.fix_version_string('v1.2.6-build.1989+sha.b0474cb')).
           to eq("1.2.6.build.1989.sha.b0474cb")
       end
+
+      specify do
+        expect(Utils.fix_version_string('>= 2.0.1 < 2.1.0')).
+          to eq('>= 2.0.1, < 2.1.0')
+      end
+
+      specify do
+        expect(Utils.fix_version_string('>= 2.0.1-foo < 2.1.0')).
+          to eq('>= 2.0.1.foo, < 2.1.0')
+      end
+
+      specify do
+        expect(Utils.fix_version_string('>= 2.1.2 <3.0.0')).
+          to eq('>= 2.1.2, < 3.0.0')
+      end
+
+      specify do
+        expect(Utils.fix_version_string(' >=1  <2 ')).
+          to eq(">= 1, < 2")
+      end
+
+      specify do
+        expect {
+          Utils.fix_version_string(' 1.0.x  ||>=1.0.5 ')
+        }.to raise_error(BuildError)
+      end
+
+      specify do
+        expect(Utils.fix_version_string('desandro/doc-ready#>=1.0.1 <2.0')).
+          to eq(">= 1.0.1, < 2.0")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('!=1.0.0')).
+          to eq("!= 1.0.0")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('=1.0.0')).
+          to eq("1.0.0")
+      end
     end
 
     context '#fix_gem_name' do
@@ -119,6 +148,22 @@ module Build
         expect(Utils.fix_gem_name(
           'rails-assets-tinymce', '1.0.0'
         )).to eq('tinymce')
+      end
+
+      it 'replaces / with -- even if # is present' do
+        expect(Utils.fix_gem_name(
+          'matches-selector', 'desandro/matches-selector#>=0.2.0'
+        )).to eq('desandro--matches-selector')
+      end
+    end
+
+    context '#fix_dependencies' do
+      specify do
+        expect(Utils.fix_dependencies(
+          "desandro/matches-selector" => ">=0.2.0"
+        )).to eq(
+          "rails-assets-desandro--matches-selector" => ">= 0.2.0"
+        )
       end
     end
   end

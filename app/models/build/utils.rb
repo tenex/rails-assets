@@ -28,32 +28,43 @@ module Build
       Rails.logger.warn("#{cmd}\n#{error}") if error.present? && !status.success?
 
       raise ShellError.new(error, cwd, cmd) unless status.success?
-      
+
       output
     end
 
     def fix_version_string(version)
-      version = version.dup.to_s
+      version = version.to_s.dup
 
-      if version =~ /^v(.+)/
-        version = $1.strip
+      if version.include?('||')
+        raise BuildError.new(
+          "Rubygems does not support || in version string '#{version}'"
+        )
       end
 
-      if version =~ />=(.+)<(.+)/
-        if $1.strip[0] != $2.strip[0]
-          version = "~> #{$1.strip.match(/\d+\.\d+/)}"
-        else
-          version = "~> #{$1.strip}"
-        end
+      # Remove any unnecessary spaces
+      version = version.split(' ').join(' ')
+
+      specifiers = ['>', '<', '>=', '<=', '~', '~>', '=', '!=']
+
+      specifiers.each do |specifier|
+        version = version.gsub(/#{specifier}\s/) { specifier }
       end
 
-      if version =~ />=(.+)/
-        version = ">= #{$1.strip}"
+      if version.include?(' ')
+        return version.split(' ').map do |v|
+          Utils.fix_version_string(v)
+        end.join(', ')
       end
 
-      if ['latest', 'master', '*'].include?(version.strip)
+      if version.include?('#')
+        return Utils.fix_version_string(version.split('#').last)
+      end
+
+      version = version[1..-1] if version[0] == 'v'
+
+      version = if ['latest', 'master', '*'].include?(version)
         ">= 0"
-      elsif version.match(/^[^\/]+\/[^\/]+$/) 
+      elsif version.match(/^[^\/]+\/[^\/]+$/)
         ">= 0"
       elsif version.match(/^(http|git|ssh)/)
         if version.split('/').last =~ /^v?([\w\.-]+)$/
@@ -68,24 +79,34 @@ module Build
         end
 
         version.gsub!(/[+-]/, '.')
+
         version.gsub!(/~(?!>)\s?(\d)/, '~> \1')
+
+        version = version[1..-1].strip if version[0] == '='
 
         version
       end
+
+      specifiers.each do |specifier|
+        version = version.gsub(/#{specifier}(\d)/) { specifier + ' ' + $1 }
+      end
+
+      version
     end
 
     def fix_gem_name(gem_name, version)
-      
       version = version.to_s.gsub(/#.*$/, '')
       version = version.gsub(/\.git$/, '')
 
-      if version.match(/^[^\/]+\/[^\/]+$/) 
-        version.sub('/', '--')
+      gem_name = if version.match(/^[^\/]+\/[^\/]+$/)
+        version
       elsif version =~ /github\.com\/([^\/]+\/[^\/]+)/
-        $1.sub('/', '--')
+        $1
       else
         gem_name.sub(/^#{Regexp.escape(GEM_PREFIX)}/, '')
       end
+
+      gem_name.sub('/', '--')
     end
 
     # TODO: tests

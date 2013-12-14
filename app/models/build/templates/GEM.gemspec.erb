@@ -15,8 +15,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
 <% gem.dependencies.each do |dep_name, dep_version| %>
-<% if dep_version %>
-  spec.add_dependency <%= dep_name.dump %>, <%= dep_version.dump %>
+<% if dep_version.present? %>
+  spec.add_dependency <%= dep_name.dump %>, <%= dep_version.split(', ').map(&:dump).join(', ') %>
 <% else %>
   spec.add_dependency <%= dep_name.dump %>
 <% end %>
