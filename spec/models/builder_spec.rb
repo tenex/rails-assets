@@ -122,7 +122,7 @@ describe Build::Converter do
       gem_file 'vendor/assets/javascripts/angular-ui-tinymce.js'
       gem_file 'vendor/assets/javascripts/angular-ui-tinymce/tinymce.js'
       file_contains 'rails-assets-angular-ui-tinymce.gemspec',
-        'spec.add_dependency "rails-assets-jozzhart--tinymce"'
+        'spec.add_dependency "rails-assets-jozzhart--tinymce", "4.0.0"'
     end
 
     component "jozzhart--tinymce", '4.0.0' do
@@ -142,6 +142,17 @@ describe Build::Converter do
       gem_file "vendor/assets/javascripts/Swipe.js"
       gem_file "vendor/assets/javascripts/Swipe/swipe.js"
       file_contains "vendor/assets/javascripts/Swipe.js", "require Swipe/swipe"
+    end
+
+    component "isotope", "2.0.0-beta.3" do
+      gem_file "vendor/assets/javascripts/isotope.js"
+      gem_file "vendor/assets/javascripts/isotope/isotope.js"
+      gem_file "vendor/assets/javascripts/isotope/item.js"
+      gem_file "vendor/assets/javascripts/isotope/layout-mode.js"
+      gem_file "vendor/assets/javascripts/isotope/layout-modes/vertical.js"
+
+      file_contains 'rails-assets-isotope.gemspec',
+        'spec.add_dependency "rails-assets-get-size", ">= 1.1.4", "< 2.0"'
     end
   end
 end

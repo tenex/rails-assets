@@ -109,11 +109,11 @@ module Build
     #   For each component a Version and Component is created in database.
     def install!(component_name, component_version = nil)
       Dir.mktmpdir do |cache_dir|
-          result = Utils.bower(
-            cache_dir,
-            'install -p -F',
-            "#{component_name}##{component_version || "latest"}"
-          )
+        result = Utils.bower(
+          cache_dir,
+          'install -p -F',
+          "#{component_name}##{component_version || "latest"}"
+        )
 
         bower_components = FileStore.with_lock(:components) do
           result.values.map do |data|

@@ -165,6 +165,22 @@ module Build
           "rails-assets-desandro--matches-selector" => ">= 0.2.0"
         )
       end
+
+      specify do
+        expect(Utils.fix_dependencies(
+          "tinymce" => "git://github.com/jozzhart/tinymce.git#4.0.0"
+        )).to eq(
+          "rails-assets-jozzhart--tinymce" => "4.0.0"
+        )
+      end
+
+      specify do
+        expect(Utils.fix_dependencies(
+          "git://github.com/jozzhart/tinymce.git" => "4.0.0"
+        )).to eq(
+          "rails-assets-jozzhart--tinymce" => "4.0.0"
+        )
+      end
     end
   end
 end

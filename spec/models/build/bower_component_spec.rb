@@ -18,6 +18,9 @@ module Build
             "jquery",
             "component"
           ],
+          "dependencies": {
+            "eventie": "desandro/eventie"
+          },
           "main": "jquery.js",
           "license": "MIT",
           "homepage": "https://github.com/srigi/jquery",
@@ -33,7 +36,33 @@ module Build
           "_direct": true
         },
         "extraneous": true,
-        "dependencies": {},
+        "dependencies": {
+          "eventie": {
+            "endpoint": {
+              "name": "eventie",
+              "source": "awesome/eventie",
+              "target": ">=1.0.3 <2.0"
+            },
+            "canonicalDir": "/Users/sheerun/Source/rails-assets/test-app/bower_components/eventie",
+            "pkgMeta": {
+              "name": "eventie",
+              "version": "1.0.3",
+              "main": "eventie.js",
+              "description": "event binding helper",
+              "homepage": "https://github.com/desandro/eventie",
+              "_release": "1.0.3",
+              "_resolution": {
+                "type": "version",
+                "tag": "v1.0.3",
+                "commit": "1f43e215030d7b39be02311b49734d530ab85650"
+              },
+              "_source": "git://github.com/desandro/eventie.git",
+              "_target": ">=1.0.3 <2.0"
+            },
+            "dependencies": {},
+            "nrDependants": 1
+          }
+        },
         "nrDependants": 1,
         "versions": [
           "2.0.3",
@@ -56,7 +85,7 @@ module Build
       end
 
       it 'properly extract dependencies' do
-        expect(subject.dependencies).to eq({})
+        expect(subject.dependencies).to eq({ "awesome/eventie" => ">=1.0.3 <2.0" })
       end
 
       it 'properly extract main files' do
