@@ -43,6 +43,35 @@ namespace :component do
     end
   end
 
+  desc "Removes all .gem files with no matching db entry"
+  task :clean_gems => [:environment] do
+    to_remove = []
+
+    Dir[Rails.root.join('public', 'gems', '*.gem')].each do |path|
+      filename = File.basename(path).sub('.gem', '').sub(GEM_PREFIX, '')
+      gem_name, gem_version = filename.split(/\-(?=\d)/)
+      if component = Component.find_by(name: gem_name)
+        version = component.versions.find_by(string: gem_version)
+
+        if version.blank?
+          to_remove << path
+        end
+      end
+    end
+
+    STDOUT.puts "This will delete:"
+    STDOUT.puts to_remove.map { |p| " * #{p}\n" }
+    STDOUT.print "Are you sure? (y/n) "
+    input = STDIN.gets.strip
+    if input == 'y'
+      to_remove.each do |path|
+        File.delete(path)
+      end
+
+      STDOUT.puts "#{to_remove.size} gems deleted from filesystem"
+    end
+  end
+
   desc "Reindex"
   task :reindex => [:environment] do
     Version.all.load.each do |version|
