@@ -19,9 +19,9 @@ module Build
 
       Rails.logger.debug "cd #{cwd} && #{cmd}"
 
-      status, output, error =
+      output, error, status =
         Open3.popen3(cmd, :chdir => cwd) do |stdin, stdout, stderr, thr|
-          [thr.value, stdout.read, stderr.read]
+          [stdout.read, stderr.read, thr.value]
         end
 
       Rails.logger.debug("#{cmd}\n#{output}") if output.present?
