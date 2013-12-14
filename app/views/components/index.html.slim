@@ -26,7 +26,7 @@ section.section.gem-list ng-controller="IndexCtrl"
               a ng-bind="version" ng-click="fetchAssets(version)" style="cursor: pointer" title="Available files"
               | {{{true: '', false: ', '}[$last]}}
         code.gem__code
-          | gem "rails-assets-{{ gem.name }}"
+          | gem 'rails-assets-{{ gem.name }}'
 
         div ng-show="jsManifest" style="margin-top: 10px"
           h5 Include following in application.js:
