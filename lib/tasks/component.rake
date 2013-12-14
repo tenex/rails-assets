@@ -46,11 +46,7 @@ namespace :component do
   desc "Reindex"
   task :reindex => [:environment] do
     Version.all.load.each do |version|
-      version.update_attributes(
-        :build_status => nil, :build_message => nil,
-        :asset_paths => [], :main_paths => []
-      )
-
+      version.update_attributes(:rebuild => true)
       UpdateScheduler.perform_async
     end
   end

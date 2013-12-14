@@ -12,7 +12,7 @@ class MainController < ApplicationController
       .split(",")
       .select {|e| e.start_with?(GEM_PREFIX) }
       .map { |e| e.gsub(GEM_PREFIX, "") }
-    
+
     gems = gem_names.flat_map do |name|
 
       Build::Converter.run!(name) if Component.needs_build?(name)

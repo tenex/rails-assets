@@ -23,8 +23,10 @@ module Build
       # Lock here prevents multiple builds on same requests at the same time
       FileStore.with_lock(lock_name) do
         # TODO: should component be saved if some of the dependencies failed?
-        Converter.process!(name, version) do |versions, paths|
-          Converter.persist!(versions, paths.compact)
+        Converter.process!(name, version) do |versions_paths|
+          Converter.persist!(versions_paths)
+
+          versions = versions_paths.map(&:first).compact
 
           if versions.any? { |v| v.build_status == 'error' }
             raise BuildError.new(
@@ -55,7 +57,7 @@ module Build
       component_name = component_name.sub('--', '/')
 
       Dir.mktmpdir do |gems_dir|
-        arr = Converter.install!(component_name, component_version) do |components|
+        results = Converter.install!(component_name, component_version) do |components|
           components.map do |component|
             version = component.version_model
 
@@ -81,7 +83,7 @@ module Build
           end.compact
         end
 
-        yield [arr.map(&:first), arr.map(&:last)]
+        yield results
       end
     end
 
@@ -89,7 +91,17 @@ module Build
     #
     # versions - Array of Version returned from convert! method
     # gem_paths - Array of Path returned from convert! method
-    def persist!(versions, gem_paths)
+    def persist!(versions_paths)
+      to_persist = versions_paths.select do |version, path|
+        version.build_status == "success" &&
+          (version.new_record? || version.rebuild?) &&
+          path.present? &&
+          version.valid?
+      end
+
+      versions = to_persist.map(&:first)
+      gem_paths = to_persist.map(&:last)
+
       Converter.index!(gem_paths, Path.new(DATA_DIR)) unless gem_paths.empty?
       Version.transaction { versions.each(&:save!) } unless versions.empty?
     end
@@ -115,13 +127,10 @@ module Build
           "#{component_name}##{component_version || "latest"}"
         )
 
-        bower_components = FileStore.with_lock(:components) do
+        bower_components =
           result.values.map do |data|
-            bower_component = BowerComponent.new(Path.new(cache_dir), data)
-            bower_component.version_model.save!
-            bower_component
+            BowerComponent.new(Path.new(cache_dir), data)
           end
-        end
 
         yield bower_components
       end

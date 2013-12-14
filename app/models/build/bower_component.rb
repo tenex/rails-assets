@@ -105,27 +105,24 @@ module Build
     end
 
     def version_model
-      component = Component.where(name: gem.short_name).first
+      component = Component.find_or_create_by(name: gem.short_name)
 
-      if component.blank?
-        component = Component.new(
-          name: gem.short_name,
-          bower_name: full_name,
-          description: description,
-          homepage: homepage
-        )
-      end
+      component.attributes = {
+        bower_name: full_name,
+        description: description,
+        homepage: homepage
+      }
 
       version = component.versions.string(gem.version).first
 
       if version.blank?
-        version = component.versions.new(
-          string: gem.version,
-          dependencies: gem.dependencies
-        )
-
+        version = component.versions.new(string: gem.version)
         version.component = component
       end
+
+      version.attributes = {
+        dependencies: gem.dependencies
+      }
 
       version
     end

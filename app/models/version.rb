@@ -5,6 +5,8 @@ class Version < ActiveRecord::Base
 
   validates :string, presence: true
 
+  validates :string, uniqueness: { scope: :component_id }
+
   scope :built, lambda { where(:build_status => "success") }
 
   scope :processed, lambda {
@@ -26,7 +28,7 @@ class Version < ActiveRecord::Base
   end
 
   def needs_build?
-    build_status != 'success'
+    build_status != 'success' || rebuild?
   end
 
   def gem_path

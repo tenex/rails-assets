@@ -54,17 +54,50 @@ module Build
 
         expect(angular_route.reload.dependencies.keys).to_not be_empty
       end
+
+      it 'leaves component fields if component.rebuild = false' do
+        Converter.run!('angular-route', '1.2.2')
+
+        Version.all.each do |c|
+          c.update_attributes(
+            :dependencies => { "yolo" => "1.2.3" }
+          )
+        end
+
+        Converter.run!('angular-route', '1.2.2')
+
+        Version.all.reload.map(&:dependencies).each do |d|
+          expect(d).to eq("yolo" => "1.2.3")
+        end
+      end
+
+      it 'updates component fields if component.rebuild = true' do
+        Converter.run!('angular-route', '1.2.2')
+
+        Version.all.each do |c|
+          c.update_attributes(
+            :rebuild => true,
+            :dependencies => { "yolo" => "1.2.3" }
+          )
+        end
+
+        Converter.run!('angular-route', '1.2.2')
+
+        Version.all.each do |d|
+          expect(d.dependencies).to_not eq("yolo" => "1.2.3")
+        end
+      end
     end
 
     context '#install!' do
-      it 'installs component and return all dependencies' do
+      it 'installs component and return all dependencies but not persists' do
         expect {
           Converter.install! 'jquery' do |dependencies|
             expect(dependencies.size).to eq(1)
             expect(dependencies.first).to be_a(BowerComponent)
             expect(Dir.exists?(dependencies.first.component_dir)).to eq(true)
           end
-        }.to change { Version.count + Component.count }.by(2)
+        }.to_not change { Component.count + Version.count }
       end
     end
 
@@ -131,9 +164,11 @@ module Build
 
     context '#process!' do
       it 'processes given bower component' do
-        Converter.process!('jquery', '2.0.3') do |versions, paths|
-          expect(versions.first).to be_a(Version)
-          expect(paths.first).to be_a(Path)
+        Converter.process!('jquery', '2.0.3') do |version_paths|
+          version_paths.each do |version, path|
+            expect(version).to be_a(Version)
+            expect(path).to be_a(Path)
+          end
         end
       end
     end
