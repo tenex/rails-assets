@@ -2,6 +2,7 @@
 
 set -e
 
+gem list | grep rails-assets | cut -d ' ' -f 1 | xargs gem uninstall
 rm -rf public/gems public/quick
 rm -f public/*.gz public/*4.8 public/*.lock
 rake db:drop db:create db:migrate
