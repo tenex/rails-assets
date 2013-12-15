@@ -93,8 +93,7 @@ module Build
     # gem_paths - Array of Path returned from convert! method
     def persist!(versions_paths)
       to_persist = versions_paths.select do |version, path|
-        version.build_status == "success" &&
-          (version.new_record? || version.rebuild?) &&
+        (version.new_record? || version.rebuild?) &&
           path.present? &&
           version.valid?
       end
