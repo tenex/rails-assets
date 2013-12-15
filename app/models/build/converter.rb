@@ -196,11 +196,11 @@ module Build
         end
 
         stdout = capture(:stdout) do
-          begin
-            HackedIndexer.new(data_dir.to_s).update_index
-          rescue
+          # begin
+            # HackedIndexer.new(data_dir.to_s).update_index
+          # rescue
             HackedIndexer.new(data_dir.to_s).generate_index
-          end
+          # end
         end
 
         Rails.logger.debug stdout
