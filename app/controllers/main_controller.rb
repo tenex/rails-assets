@@ -8,35 +8,55 @@ class MainController < ApplicationController
   end
 
   def dependencies
-    gem_names = params[:gems].to_s
-      .split(",")
-      .select {|e| e.start_with?(GEM_PREFIX) }
-      .map { |e| e.gsub(GEM_PREFIX, "") }
+    lock_name = "request-#{Digest::MD5.hexdigest(params[:gems].to_s)}.lock"
 
-    gems = gem_names.flat_map do |name|
+    Build::FileStore.with_lock(lock_name) do
+      gem_names = params[:gems].to_s
+        .split(",")
+        .select {|e| e.start_with?(GEM_PREFIX) }
+        .map { |e| e.gsub(GEM_PREFIX, "") }
 
-      Build::Converter.run!(name) if Component.needs_build?(name)
+      pool = Thread.pool(5)
 
-      component = Component.where(name: name).first
-
-      if component # && component.built?
-        component.versions.built.map do |v|
-          {
-            name:         "#{GEM_PREFIX}#{name}",
-            platform:     "ruby",
-            number:       v.string,
-            dependencies: v.dependencies || {}
-          }
+      gem_names.each do |name|
+        if Component.needs_build?(name)
+          pool.process do
+            begin
+              Build::Converter.run!(name, "latest")
+            rescue Exception => e
+              Rails.logger.error(e)
+              Rails.logger.error(e.backtrace)
+              capture_exception(e)
+            end
+          end
         end
-      else
-        []
       end
+
+      pool.shutdown
+
+      gems = gem_names.flat_map do |name|
+
+        component = Component.find_by(name: name)
+
+        if component # && component.built?
+          component.versions.built.map do |v|
+            {
+              name:         "#{GEM_PREFIX}#{name}",
+              platform:     "ruby",
+              number:       v.string,
+              dependencies: v.dependencies || {}
+            }
+          end
+        else
+          []
+        end
+      end
+
+      Rails.logger.info(params)
+      Rails.logger.info(gems)
+
+      params[:json] ? render(json: gems) : render(text: Marshal.dump(gems))
     end
-
-    Rails.logger.info(params)
-    Rails.logger.info(gems)
-
-    params[:json] ? render(json: gems) : render(text: Marshal.dump(gems))
   end
 
   private

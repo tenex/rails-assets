@@ -47,6 +47,8 @@ gem 'honey_badger'
 
 gem 'filelock'
 
+gem 'thread', require: 'thread/pool'
+
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
