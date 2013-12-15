@@ -29,7 +29,7 @@ class Component < ActiveRecord::Base
     if version.nil?
       component.blank? || component.versions.built.count == 0
     else
-      version_model = component.versions.where(version: version)
+      version_model = component.versions.find_by(version: version)
       version_model.blank? || version_model.needs_build?
     end
   end
