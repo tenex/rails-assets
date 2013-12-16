@@ -30,7 +30,7 @@ module Build
         data['pkgMeta']['version']
       else
         raise BuildError.new(
-          "#{full_name} has no verions defined. " +
+          "#{full_name} has no versions defined. " +
           "Please create an issue in component's repository."
         )
       end
