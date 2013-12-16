@@ -85,6 +85,7 @@ module Build
 
         Version.all.each do |d|
           expect(d.dependencies).to_not eq("yolo" => "1.2.3")
+          expect(d.rebuild).to eq(false)
         end
       end
     end

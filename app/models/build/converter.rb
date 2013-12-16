@@ -99,6 +99,8 @@ module Build
       end
 
       versions = to_persist.map(&:first)
+      versions.each { |v| v.rebuild = false }
+
       gem_paths = to_persist.map(&:last)
 
       Converter.index!(gem_paths, Path.new(DATA_DIR)) unless gem_paths.empty?
