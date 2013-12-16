@@ -105,7 +105,7 @@ module Build
     end
 
     def version_model
-      component = Component.find_or_create_by(name: gem.short_name)
+      component = Component.find_or_initialize_by(name: gem.short_name)
 
       component.attributes = {
         bower_name: full_name,
