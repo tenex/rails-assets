@@ -79,4 +79,22 @@ namespace :component do
       UpdateScheduler.perform_async
     end
   end
+
+  desc "Updates version.bower_version field"
+  task :update_bower_version => [:environment] do
+    Component.all.load.each do |component|
+      puts "Processing #{component.bower_name}..."
+
+      versions = Build::Utils.bower('/tmp', 'info', component.bower_name)['versions'] || []
+
+      versions.each do |version|
+        if model = Version.find_by(string: Build::Utils.fix_version_string(version))
+          model.update_attributes(:bower_version => version)
+          puts "SUCCESS: updated #{component.bower_name}##{version}"
+        else
+          puts "WARNING: no matching version for #{component.bower_name}##{version}"
+        end
+      end
+    end
+  end
 end
