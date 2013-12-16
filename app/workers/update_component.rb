@@ -7,12 +7,13 @@ class UpdateComponent
 
     versions = Build::Utils.bower('/tmp', 'info', bower_name)['versions'] || []
 
-    if component = Component.where(bower_name: bower_name).first
-      versions = versions - component.versions.processed.map(&:string)
+    if component = Component.find_by(bower_name: bower_name)
+      versions = versions - component.versions.processed.map(&:bower_version)
     end
 
     if versions.size > 0
       puts "Scheduling #{versions.size} versions of #{bower_name} for build..."
+
       versions.each do |version|
         BuildVersion.perform_async(bower_name, version)
       end

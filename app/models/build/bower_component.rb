@@ -121,6 +121,7 @@ module Build
       end
 
       version.attributes = {
+        bower_version: self.version,
         dependencies: gem.dependencies
       }
 

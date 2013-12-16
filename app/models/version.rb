@@ -10,7 +10,7 @@ class Version < ActiveRecord::Base
   scope :built, lambda { where(:build_status => "success") }
 
   scope :processed, lambda {
-    where(:build_status => ["success", "error"])
+    where(:build_status => ["success", "error"], :rebuild => false)
   }
 
   scope :string, lambda { |string| where(:string => self.fix_version_string(string)) }
