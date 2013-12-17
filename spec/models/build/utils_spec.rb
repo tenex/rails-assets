@@ -124,6 +124,16 @@ module Build
         expect(Utils.fix_version_string('=1.0.0')).
           to eq("1.0.0")
       end
+
+      xspecify do
+        expect(Utils.fix_version_string('1.0 - 1.2')).
+          to eq(">= 1.0 && < 1.3")
+      end
+
+      xspecify do
+        expect(Utils.fix_version_string('1.0 || 1.1')).
+          to eq(">= 1.0 && < 1.2")
+      end
     end
 
     context '#fix_gem_name' do
