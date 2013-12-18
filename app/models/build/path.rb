@@ -7,7 +7,8 @@ module Build
       {
         javascripts: ['coffee', 'js'],
         stylesheets: ['sass', 'scss', 'less', 'css'],
-        images: ['png', 'jpg', 'jpeg', 'gif']
+        images: ['png', 'jpg', 'jpeg', 'gif'],
+        fonts: ['woff', 'ttf', 'otf', 'eot', 'svg']
       }
     end
 
