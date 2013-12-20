@@ -10,7 +10,7 @@ class MainController < ApplicationController
   def dependencies
     lock_name = "request-#{Digest::MD5.hexdigest(params[:gems].to_s)}.lock"
 
-    Build::FileStore.with_lock(lock_name) do
+    Build::Locking.with_lock(lock_name) do
       gem_names = params[:gems].to_s
         .split(",")
         .select {|e| e.start_with?(GEM_PREFIX) }
