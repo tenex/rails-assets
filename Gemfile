@@ -30,8 +30,6 @@ gem 'figaro'
 
 gem 'sentry-raven'
 
-gem 'activeadmin', :git => "https://github.com/gregbell/active_admin.git"
-
 gem 'thin'
 
 gem 'rails_12factor'
