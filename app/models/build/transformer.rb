@@ -40,7 +40,8 @@ module Build
         (in_special_dir && !main_in_same_dir)
       end)
 
-      transformations = [:javascripts, :stylesheets, :images].flat_map do |type|
+      transformations = [:javascripts, :stylesheets,
+                         :images, :fonts].flat_map do |type|
         main_paths = all_main_paths.select(:member_of?, type)
 
         target_dir = Path.new.join('vendor', 'assets', type.to_s)
@@ -130,20 +131,28 @@ module Build
       transformations.values
     end
 
-    def transform_relative_path(relative_path, source_path, transformations)
+    def transform_relative_path(ext_class, relative_path, source_path, transformations)
       mapping = Hash[transformations]
       new_img = mapping[source_path.append_relative_path(relative_path)]
-      Path.new(new_img.to_s.sub(/.*?vendor\/assets\/images\//, ""))
+      Path.new(new_img.to_s.sub(/.*?vendor\/assets\/#{ext_class}\//, ""))
     end
 
     def process_asset(file_name, source, transformations)
       return source if file_name.nil?
 
       if file_name.member_of?(:stylesheets)
-        extensions = Path.extension_classes[:images]
-        source.gsub /url\(["'\s]?([^\)]+\.(#{extensions.join('|')}))["'\s]?\)/i do |match|
-          "image-url(\"#{transform_relative_path($1, file_name, transformations)}\")"
+        new_source = source.dup
+
+        {images: :image, fonts: :font}.each do |ext_class, asset_type|
+          extensions = Path.extension_classes.fetch(ext_class)
+          new_source.gsub! /[^-]?url\(["'\s]?([^\)]+\.(?:#{extensions.join('|')}))(\??#?[^"'\)]*)["'\s]?\)/i do |match|
+
+            " #{asset_type}-url(\"#{transform_relative_path(ext_class, $1, file_name, transformations)}#{$2}\")"
+
+          end
         end
+
+        new_source
       else
         source
       end

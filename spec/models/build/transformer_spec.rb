@@ -166,21 +166,55 @@ module Build
 
         transformations = Hash[[
           [source_file, target_file],
-          [Path.new('foo/bar.png'), Path.new('vendor/assets/images/foo.png')]
+          [Path.new('foo/bar.png'), Path.new('vendor/assets/images/foo.png')],
+          [Path.new('foo/spam.eot'), Path.new('vendor/assets/fonts/spam.eot')],
+          [Path.new('foo/spam.woff'), Path.new('vendor/assets/fonts/spam.woff')],
+          [Path.new('foo/spam.ttf'), Path.new('vendor/assets/fonts/spam.ttf')],
+          [Path.new('foo/spam.otf'), Path.new('vendor/assets/fonts/spam.otf')],
+          [Path.new('foo/spam.svg'), Path.new('vendor/assets/fonts/spam.svg')]
         ]]
 
-        File.write('/tmp/style.css', "body {\n  background-image: url(foo/bar.png)\n}")
+        css_sample = <<-CSS.gsub(/^ {8}/, '')
+        @font-family {
+          src: url('foo/spam.eot'); /* IE9 Compat Modes */
+          src: url('foo/spam.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+               url('foo/spam.woff') format('woff'), /* Modern Browsers */
+               url('foo/spam.ttf')  format('truetype'), /* Safari, Android, iOS */
+               url('foo/spam.otf')  format('opentype'),
+               url('foo/spam.svg#svgFontName') format('svg'); /* Legacy iOS */
+          }
+        }
+        body {
+          background-image: url(foo/bar.png)
+        }
+        CSS
+
+        File.write('/tmp/style.css', css_sample)
         FileUtils.mkdir_p('/tmp/foo')
         File.write('/tmp/foo/bar.png', "BINARY")
+        %w(eot woff ttf otf svg).each do |font_ext|
+          File.write("/tmp/foo/spam.#{font_ext}", "BINARY")
+        end
 
         Transformer.process_transformations!(transformations, '/tmp', '/tmp')
-        expect(File.read('/tmp/style.scss')).to include('image-url("foo.png")')
+        actual_content = File.read('/tmp/style.scss')
+        [
+          'image-url("foo.png")',
+          'src: font-url("spam.eot")',
+          'src: font-url("spam.eot?#iefix") format(\'embedded-opentype\')',
+          'font-url("spam.woff") format(\'woff\')',
+          'font-url("spam.ttf")  format(\'truetype\')',
+          'font-url("spam.otf")  format(\'opentype\')',
+          'font-url("spam.svg#svgFontName") format(\'svg\')',
+        ].each do |content|
+          expect(actual_content).to include(content)
+        end
       end
     end
 
     context '#transform_relative_path' do
       it 'properly transforms relative path' do
-        expect(Transformer.transform_relative_path(
+        expect(Transformer.transform_relative_path(:images,
           Path.new('../images/image.png'), Path.new('dist/css/foobar.css'),
           Hash[[
             [Path.new('./dist/css/foobar.css'), Path.new('css/foobar.css')],
@@ -199,7 +233,7 @@ module Build
 
         expect(filename).to eq('jquery.cookie')
       end
-      
+
       it 'removes all non-custom extension' do
         filename = Transformer.shorten_filename(
           'jquery.js.cookie.css.scss', Path.extension_classes[:stylesheets]
