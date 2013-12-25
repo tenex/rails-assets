@@ -18,10 +18,10 @@ module Build
     # Returns The Version, already persisted
     # Raises Build::BuildError on any
     def run!(name, version = nil)
-      lock_name = "#{Utils.fix_gem_name(name, version).gsub('/', '--')}.#{version}"
+      lock_name = "build-converter-run-#{Utils.fix_gem_name(name, version).gsub('/', '--')}.#{version}"
 
       # Lock here prevents multiple builds on same requests at the same time
-      FileStore.with_lock(lock_name) do
+      Build::Locking.with_lock(lock_name) do
         # TODO: should component be saved if some of the dependencies failed?
         Converter.process!(name, version) do |versions_paths|
           Converter.persist!(versions_paths)
@@ -190,7 +190,7 @@ module Build
     # gem_paths - Array of Build::Path returned from calls to build! method
     # data_dir - Directory where gems will be moved and index updated
     def index!(gem_paths, data_dir)
-      FileStore.with_lock(:gems) do
+      Build::Locking.with_lock(:gems) do
         FileUtils.mkdir_p(data_dir.join('gems').to_s)
         gem_paths.each do |gem_path|
           destination = data_dir.join('gems', File.basename(gem_path))

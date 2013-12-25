@@ -45,7 +45,7 @@ gem 'awesome_print'
 
 gem 'honey_badger'
 
-gem 'filelock'
+gem 'redis-mutex'
 
 gem 'thread', require: 'thread/pool'
 
