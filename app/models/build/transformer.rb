@@ -169,13 +169,11 @@ module Build
           }
         },
         stylesheets: {
-          extension: 'css',
+          extension: 'scss',
           processor: lambda { |files|
-            "/*\n" +
             files.map { |filename|
-              " *= require #{shorten_filename(filename, Path.extension_classes[:stylesheets])}"
-            }.join("\n") +
-            "\n */"
+              "@import '#{shorten_filename(filename, Path.extension_classes[:stylesheets])}';"
+            }.join("\n") + "\n"
           }
         }
       }

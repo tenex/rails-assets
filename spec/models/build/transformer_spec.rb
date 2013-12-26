@@ -88,7 +88,7 @@ module Build
           mappings(
             ['foo.css'], ['foo.css']
           )['vendor/assets/stylesheets/foobar.scss']
-        ).to include('require foobar/foo')
+        ).to include("@import 'foobar/foo';")
       end
 
       it 'does not include extensions in required files' do
@@ -96,7 +96,7 @@ module Build
           mappings(
             ['foo.css'], ['foo.css']
           )['vendor/assets/stylesheets/foobar.scss']
-        ).to_not include('require foobar/foo.scss')
+        ).to_not include("@import 'foobar/foo.scss';")
       end
 
       it 'flattens paths for if main javascript is set' do
