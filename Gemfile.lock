@@ -77,6 +77,7 @@ GEM
     minitest (4.7.5)
     multi_json (1.8.2)
     multipart-post (1.2.0)
+    newrelic_rpm (3.6.9.171)
     peach (0.5.1)
     pg (0.16.0)
     polyglot (0.3.3)
@@ -212,6 +213,7 @@ DEPENDENCIES
   figaro
   foreman
   honey_badger
+  newrelic_rpm
   peach
   pg
   pry-rails

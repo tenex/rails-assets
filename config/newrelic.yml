@@ -1,0 +1,38 @@
+common: &default_settings
+  license_key: <%= ENV['NEWRELIC_LICENSE_KEY'] %>
+  app_name: Rails Assets
+  monitor_mode: true
+  developer_mode: false
+  log_level: info
+  browser_monitoring:
+    auto_instrument: false
+  audit_log:
+    enabled: false
+  capture_params: true
+  transaction_tracer:
+    enabled: true
+    transaction_threshold: apdex_f
+    record_sql: obfuscated
+    stack_trace_threshold: 0.500
+  error_collector:
+    enabled: true
+    capture_source: true
+    ignore_errors: "ActionController::RoutingError,Sinatra::NotFound"
+
+development:
+  <<: *default_settings
+  monitor_mode: false
+  developer_mode: true
+
+test:
+  <<: *default_settings
+  monitor_mode: false
+
+production:
+  <<: *default_settings
+  monitor_mode: true
+
+staging:
+  <<: *default_settings
+  monitor_mode: true
+  app_name: Rails Assets (staging)
