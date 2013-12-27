@@ -24,7 +24,7 @@ class ComponentsController < ApplicationController
     version_model = Build::Converter.run!(name, version)
     
     component = Component.find_by(name: name)
-    ver = if ver.present?
+    ver = if version.present?
       component.versions.
         where(string: Build::Utils.fix_version_string(version)).first
     else
