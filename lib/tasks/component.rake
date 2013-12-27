@@ -11,7 +11,7 @@ namespace :component do
 
   desc "Schedules latest versions of given components to be converted"
   task :add, [:names] => [:environment] do |t, args|
-    bower_names = args[:names].strip.split(' ')
+    bower_names = args[:names].strip.split(';')
 
     STDOUT.print "Add #{bower_names.size} components? (y/n) "
     input = STDIN.gets.strip
