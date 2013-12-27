@@ -73,9 +73,13 @@ module Build
           ">= 0"
         end
       else
+
         if version.match('.x')
           version.gsub!('.x', '.0')
-          version = "~> #{version.gsub('~', '')}"
+
+          unless version.include?('>')
+            version = "~> #{version.gsub('~', '')}"
+          end
         end
 
         version.gsub!(/[+-]/, '.')
