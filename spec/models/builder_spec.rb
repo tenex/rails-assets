@@ -13,13 +13,13 @@ describe Build::Converter do
 
         version = Build::Converter.run!(name, version)
 
-        @gem_root = File.join(DATA_DIR, 'gems',
+        @gem_root = File.join(Figaro.env.data_dir, 'gems',
           "rails-assets-#{version.component.name}-#{version.string}").to_s
 
         gem_path = @gem_root + '.gem'
 
         expect(File.exist?(gem_path.to_s)).to be_true
-        Build::Utils.sh(File.join(DATA_DIR, 'gems'), 'gem unpack', gem_path.to_s)
+        Build::Utils.sh(File.join(Figaro.env.data_dir, 'gems'), 'gem unpack', gem_path.to_s)
         expect(Dir.exist?(@gem_root.to_s)).to be_true
 
         instance_eval(&block)

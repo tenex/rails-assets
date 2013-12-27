@@ -103,7 +103,7 @@ module Build
 
       gem_paths = to_persist.map(&:last)
 
-      Converter.index!(gem_paths, Path.new(DATA_DIR)) unless gem_paths.empty?
+      Converter.index!(gem_paths, Path.new(Figaro.env.data_dir)) unless gem_paths.empty?
       Version.transaction { versions.each(&:save!) } unless versions.empty?
     end
 

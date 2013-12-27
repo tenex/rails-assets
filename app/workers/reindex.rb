@@ -6,7 +6,7 @@ class Reindex
   def perform
     Build::Locking.with_lock(:gems) do
       Rails.logger.info "Performing full reindex..."
-      HackedIndexer.new(DATA_DIR).generate_index
+      HackedIndexer.new(Figaro.env.data_dir).generate_index
     end
   end
 end
