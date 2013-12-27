@@ -9,6 +9,11 @@ namespace :component do
     puts Build::Converter.run!(args[:name], args[:version]).inspect
   end
 
+  desc "Schedules update of all components"
+  task :update_all => [:environment] do |t, args|
+    UpdateScheduler.perform_async
+  end
+
   desc "Schedules latest versions of given components to be converted"
   task :add, [:names] => [:environment] do |t, args|
     bower_names = args[:names].strip.split(':')
