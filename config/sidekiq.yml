@@ -1,3 +1,4 @@
+:concurrency: 5
 :queues:
   - update_scheduler
   - update_component
