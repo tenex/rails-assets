@@ -9,6 +9,23 @@ namespace :component do
     puts Build::Converter.run!(args[:name], args[:version]).inspect
   end
 
+  desc "Schedules latest versions of given components to be converted"
+  task :add, [:names] => [:environment] do |t, args|
+    bower_names = args[:names].strip.split(' ')
+
+    STDOUT.print "Add #{bower_names.size} components? (y/n) "
+    input = STDIN.gets.strip
+    if input == 'y'
+      bower_names.each do |bower_name|
+        BuildVersion.perform_async(bower_name, 'latest')
+      end
+
+      STDOUT.print "Done.\n"
+    else
+      STDOUT.print "No action has been performed.\n"
+    end
+  end
+
   desc "Removes given component from database and index"
   task :destroy, [:name, :version] => [:environment] do |t, args|
     component, version = Component.get(args[:name], args[:version])
