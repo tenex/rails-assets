@@ -62,6 +62,8 @@ module Build
 
       version = version[1..-1] if version[0] == 'v'
 
+      version = version.gsub('.*', '.x')
+
       version = if ['latest', 'master', '*'].include?(version)
         ">= 0"
       elsif version.match(/^[^\/]+\/[^\/]+$/)

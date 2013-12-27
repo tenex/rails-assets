@@ -72,6 +72,18 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string('1.x')).to eq('~> 1.0')
+      end
+
+      specify do
+        expect(Utils.fix_version_string('~1.*')).to eq('~> 1.0')
+      end
+
+      specify do
+        expect(Utils.fix_version_string('1.*')).to eq('~> 1.0')
+      end
+
+      specify do
         expect(Utils.fix_version_string('~3.4')).to eq('~> 3.4')
       end
 
