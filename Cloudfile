@@ -12,3 +12,4 @@ rails-assets:
       databases:
         - postgresql
         - redis
+      whenever: on
