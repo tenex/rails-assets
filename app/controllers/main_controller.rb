@@ -1,5 +1,5 @@
 class MainController < ApplicationController
-  # before_action :redirect_to_https, :only => ["home"]
+  before_action :redirect_to_https, :only => ["home"]
 
   def home
     if params[:debug]
