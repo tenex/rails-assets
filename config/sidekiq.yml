@@ -1,0 +1,5 @@
+:queues:
+  - update_scheduler
+  - update_component
+  - default
+  - reindex

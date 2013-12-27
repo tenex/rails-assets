@@ -1,0 +1,9 @@
+set -e
+
+if [ ! -L "public/assets" ]; then
+  if [ -d "public/assets" ]; then
+    rmdir public/assets
+  fi
+  mkdir -p disk/assets
+  ln -s ../disk/assets public/assets
+fi

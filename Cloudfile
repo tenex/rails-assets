@@ -1,0 +1,14 @@
+rails-assets:
+  ruby_version: 2.0.0
+  environment: production
+  monitoring_email: sheerun@sher.pl
+  domains:
+    - rails-assets.shellyapp.com
+  servers:
+    app1:
+      size: large
+      thin: 4
+      sidekiq: 2
+      databases:
+        - postgresql
+        - redis
