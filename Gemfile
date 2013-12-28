@@ -15,7 +15,7 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'angularjs-rails'
 
 gem 'slim-rails'
-gem 'redis',      "~> 3.0.0"
+gem 'redis',      '~> 3.0.0'
 
 gem 'sidekiq'
 gem 'sidekiq-unique-jobs'
@@ -31,6 +31,7 @@ gem 'figaro'
 gem 'sentry-raven'
 
 gem 'thin'
+gem 'puma', '>= 2.1.1'
 
 gem 'rails_12factor'
 

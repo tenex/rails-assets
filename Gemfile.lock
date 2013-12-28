@@ -88,6 +88,8 @@ GEM
       slop (~> 3.4)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
+    puma (2.7.1)
+      rack (>= 1.1, < 2.0)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rack (1.5.2)
@@ -221,6 +223,7 @@ DEPENDENCIES
   peach
   pg
   pry-rails
+  puma (>= 2.1.1)
   quiet_assets
   rails (= 4.0.2)
   rails_12factor
