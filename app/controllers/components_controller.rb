@@ -74,8 +74,8 @@ class ComponentsController < ApplicationController
       name:         component.name,
       description:  component.description,
       homepage:     component.homepage,
-      versions:     component.versions.built.map {|v| v.string },
-      dependencies: component.versions.built.last.dependencies.to_a
+      versions:     component.versions.indexed.map {|v| v.string },
+      dependencies: component.versions.indexed.last.dependencies.to_a
     }
   end
 
