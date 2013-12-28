@@ -12,7 +12,5 @@ require_relative '../app/workers/update_scheduler'
 module RailsAssets
   class Application < Rails::Application
     config.exceptions_app = self.routes
-
-    puts "DATA_DIR: #{Figaro.env.data_dir}"
   end
 end
