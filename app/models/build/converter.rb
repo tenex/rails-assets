@@ -92,26 +92,27 @@ module Build
     # versions - Array of Version returned from convert! method
     # gem_paths - Array of Path returned from convert! method
     def persist!(versions_paths)
-      to_persist = versions_paths.select do |version, path|
-        (version.new_record? || version.rebuild?) &&
-          path.present? &&
-          version.valid?
-      end
-
-      versions = to_persist.map(&:first)
-      versions.each { |v| v.rebuild = false }
-
-      gem_paths = to_persist.map(&:last)
-
-      Converter.index!(gem_paths, Path.new(Figaro.env.data_dir)) unless gem_paths.empty?
-
-      unless versions.empty?
+      Build::Locking.with_lock(:persist) do
         Version.transaction do
-          versions.each do |version|
-            version.component.save!
-            version.component_id = version.component.id
-            version.save!
+          to_persist = versions_paths.select do |version, path|
+            if (version.new_record? || version.rebuild?) && path.present?
+              version.component.save!
+              version.component_id = version.component.id
+              version.rebuild = false
+              version.save!
+            else
+              false
+            end
           end
+
+          versions = to_persist.map(&:first)
+          gem_paths = to_persist.map(&:last)
+
+          unless gem_paths.empty?
+            Converter.index!(gem_paths, Path.new(Figaro.env.data_dir))
+          end
+
+          versions.each(&:save!) unless versions.empty?
         end
       end
     end
@@ -199,7 +200,7 @@ module Build
     # gem_paths - Array of Build::Path returned from calls to build! method
     # data_dir - Directory where gems will be moved and index updated
     def index!(gem_paths, data_dir)
-      Build::Locking.with_lock(:gems) do
+      Build::Locking.with_lock(:index) do
         FileUtils.mkdir_p(data_dir.join('gems').to_s)
         gem_paths.each do |gem_path|
           destination = data_dir.join('gems', File.basename(gem_path))
