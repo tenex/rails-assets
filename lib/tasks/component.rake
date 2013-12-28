@@ -7,7 +7,7 @@ namespace :component do
     version.update_attribute(:rebuild, true) if version.present?
 
     result = Build::Converter.run!(args[:name], args[:version]).inspect
-    Build::Converter.index!
+    Build::Converter.index!(true)
     result
   end
 
@@ -41,14 +41,14 @@ namespace :component do
       puts "Removing #{version.gem_path}..."
       File.delete(version.gem_path) rescue nil
       version.destroy
-      Build::Converter.index!
+      Build::Converter.index!(true)
     elsif args[:version].blank?
       component.versions.map(&:gem_path).each do |path|
         puts "Removing #{path}"
         File.delete(path) rescue nil
       end
       component.destroy
-      Build::Converter.index!
+      Build::Converter.index!(true)
     end
   end
 
@@ -57,10 +57,10 @@ namespace :component do
     STDOUT.print "Are you sure? (y/n) "
     input = STDIN.gets.strip
     if input == 'y'
-      FileUtils.rm_rf(Rails.root.join('public', 'gems', '*'))
+      FileUtils.rm_rf(File.join(Figaro.env.data_dir, 'gems'))
       Component.delete_all
       Version.delete_all
-      Build::Converter.index!
+      Build::Converter.index!(true)
 
       STDOUT.puts "All gems have been removed..."
     else

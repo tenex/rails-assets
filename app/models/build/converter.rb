@@ -209,12 +209,12 @@ module Build
     # If reindex failed, it:
     #   * removes .gem files from disk
     #   * sets status of such gem to "failed" and sets build_message
-    def index!
+    def index!(force = false)
       Build::Locking.with_lock(:index) do
         data_dir = Figaro.env.data_dir
         versions = Version.pending_index.includes(:component).to_a
         
-        if versions.empty?
+        if versions.empty? && force == false
           Rails.logger.info "Nothing to reindex"
           return true
         end
