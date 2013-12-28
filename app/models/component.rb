@@ -1,7 +1,7 @@
 class Component < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
 
-  has_many :versions, dependent: :destroy
+  has_many :versions, dependent: :destroy, autosave: false
 
   def self.get(name, version)
     if component = where(name: name).first
