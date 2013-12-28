@@ -18,7 +18,7 @@ class MainController < ApplicationController
       .select {|e| e.start_with?(GEM_PREFIX) }
       .map { |e| e.gsub(GEM_PREFIX, "") }
 
-    pool = Thread.pool(5)
+    pool = Thread.pool(8)
 
     gem_names.each do |name|
       pool.process do
