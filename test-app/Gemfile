@@ -25,7 +25,7 @@ gem 'jquery-rails'
 gem "rails-assets-sugar"
 gem "rails-assets-angular"
 gem "rails-assets-angular-mousewheel"
-gem "rails-assets-angular-leaflet"     # Missing main js file
+# gem "rails-assets-angular-leaflet"     # No versions defined
 gem "rails-assets-resizeend"
 gem "rails-assets-leaflet"
 gem "rails-assets-jquery.cookie"
