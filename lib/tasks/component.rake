@@ -57,8 +57,9 @@ namespace :component do
     STDOUT.print "Are you sure? (y/n) "
     input = STDIN.gets.strip
     if input == 'y'
-      FileUtils.rm_rf(Rails.root.join('public', 'gems'))
-      Component.destroy_all
+      FileUtils.rm_rf(Rails.root.join('public', 'gems', '*'))
+      Component.delete_all
+      Version.delete_all
       Build::Converter.index!
 
       STDOUT.puts "All gems have been removed..."
