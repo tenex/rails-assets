@@ -5,11 +5,16 @@ rails-assets:
   domains:
     - rails-assets.shellyapp.com
   servers:
+  servers:
     app1:
       size: large
-      puma: 6
-      sidekiq: 2
+      puma: 3
+      sidekiq: 1
       databases:
-        - postgresql
-        - redis
-      whenever: on
+      - postgresql
+      - redis
+      whenever: true
+    app2:
+      size: large
+      puma: 5
+      sidekiq: 1
