@@ -34,6 +34,8 @@ class ComponentsController < ApplicationController
 
     Build::Converter.index!
 
+    ver.reload
+
     if ver.blank?
       render json: { message: 'Build failed for unknown reason' },
         status: :unprocessable_entity
