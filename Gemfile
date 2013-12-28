@@ -30,7 +30,7 @@ gem 'figaro'
 
 gem 'sentry-raven'
 
-gem 'puma', '>= 2.1.1'
+gem 'thin'
 
 gem 'rails_12factor'
 
