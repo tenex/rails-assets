@@ -31,6 +31,8 @@ class MainController < ApplicationController
               Rails.logger.error(e.backtrace)
               capture_exception(e)
             end
+
+            UpdateComponent.perform_in(2.minutes, name)
           end
         end
       end

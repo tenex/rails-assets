@@ -36,6 +36,8 @@ class ComponentsController < ApplicationController
 
     ver.reload
 
+    UpdateComponent.perform_async(name)
+
     if ver.blank?
       render json: { message: 'Build failed for unknown reason' },
         status: :unprocessable_entity
