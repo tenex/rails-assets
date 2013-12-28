@@ -104,7 +104,16 @@ module Build
       gem_paths = to_persist.map(&:last)
 
       Converter.index!(gem_paths, Path.new(Figaro.env.data_dir)) unless gem_paths.empty?
-      Version.transaction { versions.each(&:save!) } unless versions.empty?
+
+      unless versions.empty?
+        Version.transaction do
+          versions.each do |version|
+            version.component.save!
+            version.component_id = version.component.id
+            version.save!
+          end
+        end
+      end
     end
 
     # Internal: Installs component to temporary directory and yields path to it.
