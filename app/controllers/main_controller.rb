@@ -8,6 +8,11 @@ class MainController < ApplicationController
   end
 
   def dependencies
+    if params[:gems].blank?
+      params[:json] ? render(json: []) : render(text: Marshal.dump([]))
+      return
+    end
+
     gem_names = params[:gems].to_s
       .split(",")
       .select {|e| e.start_with?(GEM_PREFIX) }
@@ -33,21 +38,17 @@ class MainController < ApplicationController
 
     pool.shutdown
 
-    gems = gem_names.flat_map do |name|
+    # Blocking reindex
+    Build::Converter.index!
 
-      component = Component.find_by(name: name)
-
-      if component # && component.built?
-        component.versions.built.map do |v|
-          {
-            name:         "#{GEM_PREFIX}#{name}",
-            platform:     "ruby",
-            number:       v.string,
-            dependencies: v.dependencies || {}
-          }
-        end
-      else
-        []
+    gems = Component.where(name: gem_names).to_a.flat_map do |component|
+      component.versions.indexed.map do |v|
+        {
+          name:         "#{GEM_PREFIX}#{component.name}",
+          platform:     "ruby",
+          number:       v.string,
+          dependencies: v.dependencies || {}
+        }
       end
     end
 

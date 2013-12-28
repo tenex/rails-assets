@@ -4,9 +4,11 @@ namespace :component do
   task :convert, [:name, :version] => [:environment] do |t, args|
     # Remove component to force rebuild
     component, version = Component.get(args[:name], args[:version])
-    version.destroy if version.present?
+    version.update_attribute(:rebuild, true) if version.present?
 
-    puts Build::Converter.run!(args[:name], args[:version]).inspect
+    result = Build::Converter.run!(args[:name], args[:version]).inspect
+    Build::Converter.index!
+    result
   end
 
   desc "Schedules update of all components"
@@ -39,14 +41,14 @@ namespace :component do
       puts "Removing #{version.gem_path}..."
       File.delete(version.gem_path) rescue nil
       version.destroy
-      Reindex.new.perform
+      Build::Converter.index!
     elsif args[:version].blank?
       component.versions.map(&:gem_path).each do |path|
         puts "Removing #{path}"
         File.delete(path) rescue nil
       end
       component.destroy
-      Reindex.new.perform
+      Build::Converter.index!
     end
   end
 
@@ -57,7 +59,7 @@ namespace :component do
     if input == 'y'
       FileUtils.rm_rf(Rails.root.join('public', 'gems'))
       Component.destroy_all
-      Reindex.new.perform
+      Build::Converter.index!
 
       STDOUT.puts "All gems have been removed..."
     else

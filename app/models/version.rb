@@ -7,13 +7,17 @@ class Version < ActiveRecord::Base
 
   validates :string, uniqueness: { scope: :component_id }
 
-  scope :built, lambda { where(:build_status => "success") }
+  scope :indexed, lambda { where(:build_status => "indexed") }
+  scope :builded, lambda { where(:build_status => ["builded", "indexed"]) }
+  scope :pending_index, lambda { where(:build_status => "builded") }
 
   scope :processed, lambda {
-    where(:build_status => ["success", "error"], :rebuild => false)
+    where(build_status: ["builded", "indexed", "failed"], rebuild: false)
   }
 
-  scope :string, lambda { |string| where(:string => self.fix_version_string(string)) }
+  scope :string, lambda { |string|
+    where(:string => self.fix_version_string(string))
+  }
 
   def gem
     @gem ||= Build::GemComponent.new(name: "#{GEM_PREFIX}#{component.name}", version: string)
@@ -23,12 +27,20 @@ class Version < ActiveRecord::Base
     self[:string] = self.class.fix_version_string(string)
   end
 
-  def built?
-    build_status == 'success'
+  def indexed?
+    build_status == 'indexed'
+  end
+
+  def builded?
+    build_status == 'builded' || build_status == 'indexed'
+  end
+
+  def failed?
+    build_status == 'failed'
   end
 
   def needs_build?
-    build_status != 'success' || rebuild?
+    (build_status != 'builded' && build_status != 'indexed') || rebuild?
   end
 
   def gem_path

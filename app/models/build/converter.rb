@@ -28,9 +28,9 @@ module Build
 
           versions = versions_paths.map(&:first).compact
 
-          if versions.any? { |v| v.build_status == 'error' }
+          if versions.any? { |v| v.failed? }
             raise BuildError.new(
-              versions.select { |v| v.build_status == 'error' }.
+              versions.select { |v| v.failed? }.
               map { |v| "#{v.component.name}##{v.string}: #{v.build_message}" }.join("\n")
             )
           end
@@ -48,8 +48,9 @@ module Build
     #
     # Yields [Array of Version, Array of Path]
     #  - paths to builded .gem files to insert into index
-    #  - versions to save with build_status set to success or error + message
-    #    and asset_paths + main_paths filled; not yet persisted
+    #  - versions to save with build_status set to "builded" or "failed"
+    #  - build_message and asset_paths + main_paths filled
+    #  - no version is yet persisted
     #
     #  All builded gem files are removed after block finishes
     #  Path for failed versions is nil!
@@ -67,14 +68,14 @@ module Build
 
             gem_path = begin
               Converter.convert!(component) do |output_dir, asset_paths, main_paths|
-                version.build_status = 'success'
+                version.build_status = 'builded'
                 version.asset_paths = asset_paths.map(&:to_s)
                 version.main_paths = main_paths.map(&:to_s)
                 Converter.build!(component, output_dir, gems_dir)
               end
             rescue Build::BuildError => e
               Raven.capture_exception(e)
-              version.build_status = 'error'
+              version.build_status = 'failed'
               version.build_message = e.message
               nil
             end
@@ -94,6 +95,8 @@ module Build
     def persist!(versions_paths)
       Build::Locking.with_lock(:persist) do
         Version.transaction do
+          data_dir = Path.new(Figaro.env.data_dir)
+
           to_persist = versions_paths.select do |version, path|
             if (version.new_record? || version.rebuild?) && path.present?
               version.component.save!
@@ -109,7 +112,12 @@ module Build
           gem_paths = to_persist.map(&:last)
 
           unless gem_paths.empty?
-            Converter.index!(gem_paths, Path.new(Figaro.env.data_dir))
+            FileUtils.mkdir_p(data_dir.join('gems').to_s)
+
+            gem_paths.each do |gem_path|
+              destination = data_dir.join('gems', File.basename(gem_path))
+              FileUtils.mv(gem_path.to_s, destination.to_s, :force => true)
+            end
           end
 
           versions.each(&:save!) unless versions.empty?
@@ -195,27 +203,53 @@ module Build
       gem_path
     end
 
-    # Public: Copies gems in lock and updates index
+    # Public: Indexes all gems marked in database as builded
     #
-    # gem_paths - Array of Build::Path returned from calls to build! method
-    # data_dir - Directory where gems will be moved and index updated
-    def index!(gem_paths, data_dir)
+    # On success sets build_status of all such versions to "indexed"
+    # If reindex failed, it:
+    #   * removes .gem files from disk
+    #   * sets status of such gem to "failed" and sets build_message
+    def index!
       Build::Locking.with_lock(:index) do
-        FileUtils.mkdir_p(data_dir.join('gems').to_s)
-        gem_paths.each do |gem_path|
-          destination = data_dir.join('gems', File.basename(gem_path))
-          FileUtils.mv(gem_path.to_s, destination.to_s, :force => true)
+        data_dir = Figaro.env.data_dir
+        versions = Version.pending_index.includes(:component).to_a
+        
+        if versions.empty?
+          Rails.logger.info "Nothing to reindex"
+          return true
         end
 
-        stdout = capture(:stdout) do
-          # begin
-            # HackedIndexer.new(data_dir.to_s).update_index
-          # rescue
-            HackedIndexer.new(data_dir.to_s).generate_index
-          # end
-        end
+        gem_paths = versions.map(&:gem_path)
 
-        Rails.logger.debug stdout
+        pretty_paths = gem_paths.map { |p| " * #{File.basename(p)}\n" }.join
+        Rails.logger.info "Indexing following gems: #{pretty_paths}"
+
+        begin
+          Version.transaction do
+            stdout = capture(:stdout) do
+              HackedIndexer.new(data_dir).generate_index
+            end
+
+            Rails.logger.debug stdout
+
+            versions.each do |version|
+              version.build_status = 'indexed'
+              version.save!
+            end
+          end
+
+          true
+        rescue Exception => e
+          versions.each do |version|
+            version.build_status = 'failed'
+            version.build_message = e.message
+            version.save!
+          end
+
+          raise if Rails.env.development? || Rails.env.test?
+
+          false
+        end
       end
     end
 

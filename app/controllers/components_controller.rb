@@ -1,9 +1,10 @@
 class ComponentsController < ApplicationController
   def index
-    components = Component.includes(:versions).
-      to_a.
-      select { |c| c.versions.any? { |v| v.built? } }.
-      map { |c| component_data(c) }
+    ids = Version.indexed.select(:component_id).
+      to_a.map(&:component_id)
+
+    components = Component.includes(:versions).where(id: ids).
+      to_a.map { |c| component_data(c) }
 
     respond_to do |format|
       format.html {}
@@ -21,7 +22,7 @@ class ComponentsController < ApplicationController
 
     name = Build::Utils.fix_gem_name(name, version).gsub('/', '--')
 
-    version_model = Build::Converter.run!(name, version)
+    Build::Converter.run!(name, version)
     
     component = Component.find_by(name: name)
     ver = if version.present?
@@ -31,10 +32,12 @@ class ComponentsController < ApplicationController
       component.versions.last
     end
 
+    Build::Converter.index!
+
     if ver.blank?
       render json: { message: 'Build failed for unknown reason' },
         status: :unprocessable_entity
-    elsif ver.build_status == 'success'
+    elsif ver.indexed?
       render json: component_data(component)
     else
       render json: { message: ver.build_message },

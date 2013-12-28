@@ -157,7 +157,7 @@ module Build
               end
             end
 
-            Converter.index!([gem_path], Path.new(install_dir))
+            Converter.index!
           end
         end
       end
