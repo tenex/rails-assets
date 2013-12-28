@@ -45,6 +45,9 @@ class ComponentsController < ApplicationController
       render json: { message: ver.build_message },
         status: :unprocessable_entity
     end
+  rescue BuildError => e
+      render json: { message: e.message },
+        status: :unprocessable_entity
   end
 
   def assets
