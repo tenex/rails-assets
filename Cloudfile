@@ -7,7 +7,7 @@ rails-assets:
   servers:
     app1:
       size: large
-      thin: 4
+      puma: 1
       sidekiq: 2
       databases:
         - postgresql
