@@ -1,17 +1,17 @@
 class ComponentsController < ApplicationController
   def index
-    ids = Version.indexed.select(:component_id).
-      to_a.map(&:component_id)
-
-    components = Component.includes(:versions).references(:versions).
-      where(id: ids).
-      where("versions.build_status = 'indexed'").
-      select('components.*, versions.string').
-      to_a.map { |c| component_data(c) }
-
     respond_to do |format|
       format.html {}
       format.json do
+        ids = Version.indexed.select(:component_id).
+          to_a.map(&:component_id)
+
+        components = Component.includes(:versions).references(:versions).
+          where(id: ids).
+          where("versions.build_status = 'indexed'").
+          select('components.*, versions.string').
+          to_a.map { |c| component_data(c) }
+
         render(json: components)
       end
     end
