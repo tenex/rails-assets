@@ -6,7 +6,7 @@ module Build
     def self.extension_classes
       {
         javascripts: ['coffee', 'js'],
-        stylesheets: ['sass', 'scss', 'less', 'css'],
+        stylesheets: ['sass', 'scss', 'less', 'css', 'styl'],
         images: ['png', 'jpg', 'jpeg', 'gif'],
         fonts: ['woff', 'ttf', 'otf', 'eot', 'svg']
       }
