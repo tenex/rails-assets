@@ -3,7 +3,10 @@ class ComponentsController < ApplicationController
     ids = Version.indexed.select(:component_id).
       to_a.map(&:component_id)
 
-    components = Component.includes(:versions).where(id: ids).
+    components = Component.includes(:versions).references(:versions).
+      where(id: ids).
+      where("versions.build_status = 'indexed'").
+      select('components.*, versions.string').
       to_a.map { |c| component_data(c) }
 
     respond_to do |format|
@@ -81,8 +84,7 @@ class ComponentsController < ApplicationController
       name:         component.name,
       description:  component.description,
       homepage:     component.homepage,
-      versions:     component.versions.indexed.map {|v| v.string },
-      dependencies: component.versions.indexed.last.dependencies.to_a
+      versions:     component.versions.map(&:string)
     }
   end
 
