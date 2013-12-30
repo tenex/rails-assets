@@ -8,9 +8,9 @@ section.section.gem-list ng-controller="IndexCtrl"
       p If you need a&nbsp;specific version of any&nbsp;component, #{link_to 'add one&nbsp;manually'.html_safe, new_component_path}.
 
     .gem-list__form
-      input#gem-search type="search" ng-model="search.name" placeholder="Search"
+      input#gem-search type="search" ng-model="search.name" placeholder="{{gems ? 'Search' : 'Loading components...'}}"
 
-    .gem-list__item ng-hide="(gems | filter:search).length > 0" ng-cloak=""
+    .gem-list__item ng-hide="(gems | filter:search).length > 0 || search.name.length == 0" ng-cloak=""
       ' Package <code>{{ search.name }}</code> not found. You can always try to convert it below:
       = render 'components/convert'
 
