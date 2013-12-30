@@ -5,7 +5,7 @@ module Build
     # Extensioins are sorted by priority
     def self.extension_classes
       {
-        javascripts: ['coffee', 'js'],
+        javascripts: ['coffee', 'js', 'json'],
         stylesheets: ['sass', 'scss', 'less', 'css', 'styl'],
         images: ['png', 'jpg', 'jpeg', 'gif'],
         fonts: ['woff', 'ttf', 'otf', 'eot', 'svg']
