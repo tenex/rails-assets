@@ -18,12 +18,12 @@ class MainController < ApplicationController
       .select {|e| e.start_with?(GEM_PREFIX) }
       .map { |e| e.gsub(GEM_PREFIX, "") }
 
-    pool = Thread.pool(8)
+    pool = Thread.pool(5)
 
-    gem_names.each do |name|
-      pool.process do
-        Build::Locking.with_lock("build-in-dependencies-#{name}") do
-          if Component.needs_build?(name)
+    if Component.needs_build?(name)
+      gem_names.each do |name|
+        pool.process do
+          Build::Locking.with_lock("build-in-dependencies-#{name}") do
             begin
               Build::Converter.run!(name, "latest")
             rescue Exception => e
