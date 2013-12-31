@@ -20,8 +20,8 @@ class MainController < ApplicationController
 
     pool = Thread.pool(5)
 
-    if Component.needs_build?(name)
-      gem_names.each do |name|
+    gem_names.each do |name|
+      if Component.needs_build?(name)
         pool.process do
           Build::Locking.with_lock("build-in-dependencies-#{name}") do
             begin

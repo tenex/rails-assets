@@ -28,7 +28,7 @@ class Component < ActiveRecord::Base
       where(name: name).first
 
     if version.nil?
-      component.blank? || component.versions.built.count == 0
+      component.blank? || component.versions.builded.count == 0
     else
       version_model = component.versions.find_by(version: version)
       version_model.blank? || version_model.needs_build?
@@ -36,6 +36,6 @@ class Component < ActiveRecord::Base
   end
 
   def built?
-    versions.built.count > 0
+    versions.builded.count > 0
   end
 end
