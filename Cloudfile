@@ -16,5 +16,5 @@ rails-assets:
       whenever: true
     app2:
       size: large
-      puma: 5
+      puma: 3
       sidekiq: 1
