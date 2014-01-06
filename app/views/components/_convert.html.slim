@@ -7,7 +7,7 @@
     .grid__cell.unit-1-4
       button ng-click="convert()" ng-disabled="converting" Convert
 
-  p.gem-list__item.util__dimmed ng-show="converting"
+  p.gem-list__item.u__dimmed ng-show="converting"
     | Conversion in progress…
 
   .gem-list__item ng-show="gem"
@@ -16,7 +16,7 @@
       code> rails-assets-{{ gem.name }}
       | has been created.
 
-  pre.gem-list__item.util__dimmed ng-show="error"
+  pre.gem-list__item.u__dimmed ng-show="error"
     code
       | {{ error.message }}
     code ng-show="error.log"
