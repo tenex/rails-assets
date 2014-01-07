@@ -72,7 +72,7 @@ namespace :component do
   task :clean_gems => [:environment] do
     to_remove = []
 
-    Dir[Rails.root.join('public', 'gems', '*.gem')].each do |path|
+    Dir[File.join(Figaro.env.data_dir, 'gems', '*.gem')].each do |path|
       filename = File.basename(path).sub('.gem', '').sub(GEM_PREFIX, '')
       gem_name, gem_version = filename.split(/\-(?=\d)/)
       if component = Component.find_by(name: gem_name)
