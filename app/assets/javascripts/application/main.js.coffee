@@ -1,4 +1,14 @@
 app = angular.module("app", [])
+
+app.filter 'semverSort', ->
+  (items) ->
+    filtered = []
+    angular.forEach items, (item) ->
+      filtered.push(item)
+    filtered.sort (a, b) ->
+      semver.gt(a, b)
+    filtered
+
 app.directive "ngHtml", ->
   (scope, element, attrs) ->
     scope.$watch attrs.ngHtml, (value) ->
