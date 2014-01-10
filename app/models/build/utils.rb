@@ -62,8 +62,7 @@ module Build
         return Utils.fix_version_string(version.split('#').last)
       end
 
-      version = version[1..-1] if version[0] == 'v'
-
+      version = version.gsub(/^([^\d]*)v/) { $1 }
       version = version.gsub('.*', '.x')
 
       version = if ['latest', 'master', '*'].include?(version)

@@ -142,6 +142,21 @@ module Build
           to eq(">= 1.0.0")
       end
 
+      specify do
+        expect(Utils.fix_version_string('~v1.0.0')).
+          to eq("~> 1.0.0")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('~v1.0.x')).
+          to eq("~> 1.0.0")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('1.0.v0')).
+          to eq("1.0.v0")
+      end
+
       xspecify do
         # Not sure if it means "> 1.0" or "> 1.0.0"
         expect(Utils.fix_version_string('>1.0.x')).
