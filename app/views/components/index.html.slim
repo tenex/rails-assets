@@ -22,7 +22,7 @@ section.section.gem-list ng-controller="IndexCtrl"
           span ng-hide="gem.homepage"
             | {{ gem.name }}
           span.gem__versions<
-            span ng-repeat="version in gem.versions.sort()"
+            span ng-repeat="version in gem.versions | semverSort"
               a ng-bind="version" ng-click="fetchAssets(version)" style="cursor: pointer" title="Available files"
               | {{{true: '', false: ', '}[$last]}}
         code.gem__code
