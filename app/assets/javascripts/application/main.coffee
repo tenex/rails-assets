@@ -1,4 +1,5 @@
-app = angular.module("app", [])
+app = angular.module('app', ['semverSort'])
+
 app.directive "ngHtml", ->
   (scope, element, attrs) ->
     scope.$watch attrs.ngHtml, (value) ->

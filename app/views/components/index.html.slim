@@ -8,7 +8,7 @@ section.section.gem-list ng-controller="IndexCtrl"
       p If you need a&nbsp;specific version of any&nbsp;component, #{link_to 'add one&nbsp;manually'.html_safe, new_component_path}.
 
     .gem-list__form
-      input#gem-search type="search" ng-model="search.name" placeholder="{{gems ? 'Search' : 'Loading components...'}}"
+      input#gem-search type="search" ng-model="search.name" placeholder="{{gems ? 'Search' : 'Loading components…'}}"
 
     .gem-list__item ng-hide="(gems | filter:search).length > 0 || search.name.length == 0" ng-cloak=""
       ' Package <code>{{ search.name }}</code> not found. You can always try to convert it below:
@@ -22,7 +22,7 @@ section.section.gem-list ng-controller="IndexCtrl"
           span ng-hide="gem.homepage"
             | {{ gem.name }}
           span.gem__versions<
-            span ng-repeat="version in gem.versions.sort()"
+            span ng-repeat="version in gem.versions | semverSort"
               a ng-bind="version" ng-click="fetchAssets(version)" style="cursor: pointer" title="Available files"
               | {{{true: '', false: ', '}[$last]}}
         code.gem__code
@@ -31,7 +31,7 @@ section.section.gem-list ng-controller="IndexCtrl"
         div ng-show="jsManifest" style="margin-top: 10px"
           h5 Include following in application.js:
           code = "//= require {{ gem.name }}"
-        
+
         div ng-show="cssManifest" style="margin-top: 10px"
           h5 Include following in application.css:
           code = "*= require {{ gem.name }}"
