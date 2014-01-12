@@ -1,10 +1,12 @@
+#= require angular
+#= require angular-semver-sort
+
 app = angular.module('app', ['semverSort'])
 
 app.directive "ngHtml", ->
   (scope, element, attrs) ->
     scope.$watch attrs.ngHtml, (value) ->
       element[0].innerHTML = value
-
 
 app.directive "dependencies", ->
   (scope, element, attrs) ->
@@ -17,7 +19,6 @@ app.directive "dependencies", ->
         html.push h
 
       element[0].innerHTML = html.join(", ")
-
 
 app.controller "IndexCtrl", ["$scope", "$http", ($scope, $http) ->
   $scope.fetch = ->
