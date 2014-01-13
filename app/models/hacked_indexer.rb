@@ -29,7 +29,7 @@ class HackedIndexer < Gem::Indexer
 
     if updated_gems.empty? then
       say 'No new gems'
-      terminate_interaction 0
+      return false
     end
 
     specs = map_gems_to_specs updated_gems
