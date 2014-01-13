@@ -31,13 +31,15 @@ module Build
           include?(Path.new(file.to_s.sub('.min.', '.')))
         in_special_dir = file.in_directory?(
           %w(spec test perf minified docs examples min))
+        is_unsupported = file.to_s.match(/(gzip|map|nuspec)$/)
 
         main_in_same_dir = all_main_paths.map(:dirname).any? do |dir|
           file.descendant?(dir)
         end
 
         (file.minified? && has_unminified) ||
-        (in_special_dir && !main_in_same_dir)
+        (in_special_dir && !main_in_same_dir) ||
+        is_unsupported
       end)
 
       transformations = [:javascripts, :stylesheets,

@@ -43,6 +43,12 @@ module Build
         ).to eq(Paths.new(['vendor/assets/javascripts/foobar/foo.js']))
       end
 
+      it 'ignores gzip, map and nuspec files' do
+        expect(
+          targets(['foo.min.js.gzip', 'foo.js.nuspec', 'foo.js.map', 'foo.nuspec.js'])
+        ).to eq(Paths.new(['vendor/assets/javascripts/foobar/foo.nuspec.js']))
+      end
+
       it 'leaves minified files that dont have unminified versions' do
         expect(
           targets(['foo.min.js'])
