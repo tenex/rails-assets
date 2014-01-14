@@ -4,8 +4,8 @@ section.section.gem-list ng-controller="IndexCtrl"
       | Component list
 
     .notice.content--small
-      p You can always reference Rails Assets gems in your <code>Gemfile</code>, even if&nbsp;they aren’t listed&nbsp;below.
-      p If you need a&nbsp;specific version of any&nbsp;component, #{link_to 'add one&nbsp;manually'.html_safe, new_component_path}.
+      p You can always reference Rails Assets gems in your <code>Gemfile</code>, even if&nbsp;they aren’t listed&nbsp;below
+      p For new components you'll need <code>bundle install</code> two times because Rubygems index update is asynchronous.
 
     .gem-list__form
       input#gem-search type="search" ng-model="search.name" placeholder="{{gems ? 'Search' : 'Loading components…'}}"

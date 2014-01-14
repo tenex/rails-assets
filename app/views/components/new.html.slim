@@ -4,7 +4,6 @@ section.section.gem-list
       | New component
 
     .notice.content.content--small
-      p <b>Notice:</b> Currently, due to the way Bundler works, there is no way to automatically convert a&nbsp;package for a&nbsp;specific gem version referenced in&nbsp;<code>Gemfile</code>. In such cases, Rails Assets will always build the&nbsp;newest version causing Bundler to raise an&nbsp;error.
-      p If you need an&nbsp;older component version, add it using this form first—then lock the version in your&nbsp;<code>Gemfile</code>.
+      p <b>Notice:</b> Because reindex is asynchronous, sometimes you'll need to wait few minutes for new component to be available through bundler.
     
     = render 'components/convert'
