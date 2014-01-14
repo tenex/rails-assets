@@ -35,20 +35,13 @@ class ComponentsController < ApplicationController
       component.versions.last
     end
 
-    Build::Converter.index!
-
     ver.reload
-
-    UpdateComponent.perform_async(name)
 
     if ver.blank?
       render json: { message: 'Build failed for unknown reason' },
         status: :unprocessable_entity
-    elsif ver.indexed?
-      render json: component_data(component)
     else
-      render json: { message: ver.build_message },
-        status: :unprocessable_entity
+      render json: component_data(component)
     end
   rescue Build::BuildError => e
       render json: { message: e.message },
