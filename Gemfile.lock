@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/laserlemon/figaro.git
+  revision: e16f2d47f6516e8420ce21c9de76785d9f244bae
+  specs:
+    figaro (0.7.0)
+      rails (>= 3, < 5)
+      thor (~> 0.14)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -60,9 +68,6 @@ GEM
     execjs (2.0.1)
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
-    figaro (0.7.0)
-      bundler (~> 1.0)
-      rails (>= 3, < 5)
     foreman (0.63.0)
       dotenv (>= 0.7)
       thor (>= 0.13.6)
@@ -218,7 +223,7 @@ DEPENDENCIES
   builder
   coffee-rails (~> 4.0.0)
   database_cleaner
-  figaro
+  figaro!
   foreman
   honey_badger
   newrelic_rpm

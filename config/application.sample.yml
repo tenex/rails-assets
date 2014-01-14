@@ -2,3 +2,5 @@ DATA_DIR: <%= File.expand_path("../public", __FILE__) %>
 RAVEN_DSN: ""
 SIDEKIQ_PASSWORD: ""
 NEWRELIC_LICENSE_KEY: ""
+BOWER_TMP:
+BOWER_CACHE:

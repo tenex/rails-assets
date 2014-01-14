@@ -27,7 +27,7 @@ gem 'sinatra', '>= 1.3.0', :require => nil
 gem 'builder'
 gem 'autoprefixer-rails', '>= 0.6.20130728'
 gem 'redcarpet'
-gem 'figaro'
+gem 'figaro', github: 'laserlemon/figaro'
 
 gem 'sentry-raven'
 

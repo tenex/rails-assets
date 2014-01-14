@@ -7,6 +7,8 @@ module Build
     # Raises The BowerError if command failed.
     def bower(path, *command)
       command = "#{BOWER_BIN} #{command.join(' ')} --json --quiet"
+      command += " --config.tmp=#{Figaro.env.bower_tmp}" if Figaro.env.bower_tmp.present?
+      command += " --config.storage.packages=#{Figaro.env.bower_cache}" if Figaro.env.bower_cache.present?
       JSON.parse(Utils.sh(path, command))
     rescue ShellError => e
       raise BowerError.from_shell_error(e)
