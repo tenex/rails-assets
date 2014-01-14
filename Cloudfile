@@ -8,13 +8,17 @@ rails-assets:
   servers:
     app1:
       size: large
-      puma: 3
-      sidekiq: 1
+      puma: 4
       databases:
       - postgresql
       - redis
       whenever: true
     app2:
       size: large
-      puma: 3
+      puma: 4
+    worker1:
+      size: large
+      sidekiq: 1
+    worker2:
+      size: large
       sidekiq: 1
