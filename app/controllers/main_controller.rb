@@ -18,30 +18,11 @@ class MainController < ApplicationController
       .select {|e| e.start_with?(GEM_PREFIX) }
       .map { |e| e.gsub(GEM_PREFIX, "") }
 
-    pool = Thread.pool(5)
-
     gem_names.each do |name|
       if Component.needs_build?(name)
-        pool.process do
-          Build::Locking.with_lock("build-in-dependencies-#{name}") do
-            begin
-              Build::Converter.run!(name, "latest")
-            rescue Exception => e
-              Rails.logger.error(e)
-              Rails.logger.error(e.backtrace)
-              capture_exception(e)
-            end
-
-            UpdateComponent.perform_in(2.minutes, name)
-          end
-        end
+        ::BuildVersion.perform_async(name, "latest")
       end
     end
-
-    pool.shutdown
-
-    # Blocking reindex
-    Build::Converter.index!
 
     gems = Component.where(name: gem_names).to_a.flat_map do |component|
       component.versions.indexed.map do |v|

@@ -21,6 +21,7 @@ gem 'redis',      '~> 3.0.0'
 gem 'sidekiq'
 gem 'sidekiq-unique-jobs'
 gem 'sidekiq-failures'
+gem 'sidekiq-limit_fetch'
 gem 'sinatra', '>= 1.3.0', :require => nil
 
 

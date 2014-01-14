@@ -4,3 +4,5 @@
   - update_component
   - default
   - reindex
+:blocking:
+  - default

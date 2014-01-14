@@ -162,6 +162,8 @@ GEM
       redis-namespace (>= 1.3.1)
     sidekiq-failures (0.2.2)
       sidekiq (>= 2.9.0)
+    sidekiq-limit_fetch (2.1.2)
+      sidekiq (>= 2.6.5, < 3)
     sidekiq-unique-jobs (2.6.7)
       sidekiq (~> 2.6)
     sinatra (1.4.3)
@@ -244,6 +246,7 @@ DEPENDENCIES
   sentry-raven
   sidekiq
   sidekiq-failures
+  sidekiq-limit_fetch
   sidekiq-unique-jobs
   sinatra (>= 1.3.0)
   slim-rails

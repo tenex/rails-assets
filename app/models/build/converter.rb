@@ -25,6 +25,7 @@ module Build
         # TODO: should component be saved if some of the dependencies failed?
         Converter.process!(name, version) do |versions_paths|
           Converter.persist!(versions_paths)
+          ::Reindex.perform_async
 
           versions = versions_paths.map(&:first).compact
 
@@ -102,7 +103,7 @@ module Build
               version.component.save!
               version.component_id = version.component.id
               version.rebuild = false
-              version.save!
+              version.save
             else
               false
             end
@@ -119,8 +120,6 @@ module Build
               FileUtils.mv(gem_path.to_s, destination.to_s, :force => true)
             end
           end
-
-          versions.each(&:save!) unless versions.empty?
         end
       end
     end
@@ -213,7 +212,7 @@ module Build
       Build::Locking.with_lock(:index) do
         data_dir = Figaro.env.data_dir
         versions = Version.pending_index.includes(:component).to_a
-        
+
         if versions.empty? && force == false
           Rails.logger.info "Nothing to reindex"
           return true
@@ -227,15 +226,7 @@ module Build
         begin
           Version.transaction do
             stdout = capture(:stdout) do
-              if force
-                HackedIndexer.new(data_dir).generate_index
-              else
-                begin
-                  HackedIndexer.new(data_dir).update_index
-                rescue Exception => e
-                  HackedIndexer.new(data_dir).generate_index
-                end
-              end
+              HackedIndexer.new(data_dir).generate_index
             end
 
             Rails.logger.debug stdout

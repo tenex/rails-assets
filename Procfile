@@ -1,2 +1,2 @@
-web: bin/rails s --port "$PORT"
-sidekiq: bin/sidekiq -q update_scheduler -q update_component -q default -q reindex -c 10
+web: bin/rails s --port 3000
+sidekiq: bin/sidekiq --config config/sidekiq.yml
