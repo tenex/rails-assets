@@ -3,7 +3,7 @@ class Reindex
 
   sidekiq_options queue: 'reindex', unique: true, retry: 0
 
-  def perform
-    Build::Converter.index!
+  def perform(force = false)
+    Build::Converter.index!(force)
   end
 end

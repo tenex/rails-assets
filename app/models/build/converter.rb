@@ -227,7 +227,15 @@ module Build
         begin
           Version.transaction do
             stdout = capture(:stdout) do
-              HackedIndexer.new(data_dir).generate_index
+              if force
+                HackedIndexer.new(data_dir).generate_index
+              else
+                begin
+                  HackedIndexer.new(data_dir).update_index
+                rescue Exception => e
+                  HackedIndexer.new(data_dir).generate_index
+                end
+              end
             end
 
             Rails.logger.debug stdout
