@@ -3,4 +3,5 @@ Raven.configure do |config|
   config.environments = %w[ production ]
   config.current_environment = Rails.env
   config.tags = { environment: Rails.env }
+  config.excluded_exceptions = ['Build::BuildError']
 end
