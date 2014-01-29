@@ -3,6 +3,10 @@ class Component < ActiveRecord::Base
 
   has_many :versions, dependent: :destroy, autosave: false, validate: false
 
+  def full_name
+    GEM_PREFIX + name
+  end
+
   def self.get(name, version)
     if component = where(name: name).first
       if version.blank?

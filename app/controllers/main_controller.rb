@@ -7,6 +7,14 @@ class MainController < ApplicationController
     end
   end
 
+  def status
+    @new_components = Component.order(created_at: :desc).limit(10).to_a
+    @pending_index = Version.includes(:component).pending_index.load
+    @failed_builds = Version.includes(:component).failed.load
+    @pending_builds = Sidekiq::Queue.new("default").map(&:as_json).map { |i| i["item"]["args"] }
+    @failed_jobs = Sidekiq.redis { |c| c.lrange(:failed, 0, 50) }.map { |j| JSON.parse(j) }
+  end
+
   def dependencies
     if params[:gems].blank?
       params[:json] ? render(json: []) : render(text: Marshal.dump([]))

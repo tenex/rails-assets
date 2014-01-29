@@ -1,0 +1,56 @@
+article.section
+  .wrap
+    h1.section__header.header--beta Components Builds
+    .grid
+      .grid__cell.unit-4-4.content
+        article.pending-reindex
+          h1 Pending reindex
+          - if @pending_index.empty?
+            | None
+          - else
+            ul
+              - @pending_index.each do |version|
+                li = "#{version.component.name}##{version.string}"
+
+        article.pending-builds style="margin-top: 2em"
+          h1 Pending build
+          - if @pending_builds.empty?
+            | None
+          - else
+            ul
+              - @pending_builds.each do |args|
+                li = args.join('#')
+
+        article.failed-builds style="margin-top: 2em"
+          h1 Rake build errors
+          - if @failed_builds.empty?
+            | None
+          - else
+            table style="width: 100%"
+              thead
+                th.unit-1-4 Component
+                th.unit-3-4 Error
+              tbody
+                - @failed_builds.each do |version|
+                  tr
+                    td = "#{version.component.name}##{version.string}"
+                    td = version.build_message
+
+        article.failed-builds style="margin-top: 2em"
+          h1 Failed jobs (last 50)
+          - if @failed_jobs.empty?
+            | None
+          - else
+            table style="width: 100%"
+              thead
+                th.unit-1-4 Job Type
+                th.unit-3-4 Error Message
+              tbody
+                - @failed_jobs.each do |job|
+                  tr
+                    td
+                      = job["payload"]["class"]
+                      br
+                      = job["payload"]["args"].join(", ")
+
+                    td = job["error"]

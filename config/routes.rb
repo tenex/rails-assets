@@ -15,7 +15,10 @@ RailsAssets::Application.routes.draw do
   end
   mount Sidekiq::Web => '/sidekiq'
 
+  get '/status', to: 'main#status'
+
   root to: "main#home"
+
   get '/home', to: redirect('/')
 
   match '(errors)/:status', to: 'errors#show',

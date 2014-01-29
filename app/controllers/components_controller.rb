@@ -26,7 +26,7 @@ class ComponentsController < ApplicationController
     name = Build::Utils.fix_gem_name(name, version).gsub('/', '--')
 
     Build::Converter.run!(name, version)
-    
+
     component = Component.find_by(name: name)
     ver = if version.present?
       component.versions.
@@ -58,7 +58,7 @@ class ComponentsController < ApplicationController
     # TODO: exclude manifest assets from asset_paths at all...
     paths = paths.reject { |f| f.match(/vendor\/assets\/javascripts\/[^\/]+\.js/) }
     paths = paths.reject { |f| f.match(/vendor\/assets\/stylesheets\/[^\/]+\.css/) }
-    
+
     paths = paths.map do |path|
       {
         path: path.match(/vendor\/assets\/[^\/]+\/(.+)/)[1],
