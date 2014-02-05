@@ -11,6 +11,9 @@ This README concerns the development aspect of the project. **[Visit the site](h
 ```sh
 git clone git@github.com:rails-assets/rails-assets.git && cd rails-assets
 bundle install && npm install
+cp config/database{.sample,}.yml
+cp config/application{.sample,}.yml
+# edit config/database.yml and config/application.yml if necessary.
 foreman start
 ```
 
