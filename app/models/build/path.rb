@@ -2,12 +2,12 @@ module Build
 
   class Path < Pathname
 
-    # Extensioins are sorted by priority
+    # Extensions are sorted by priority
     def self.extension_classes
       {
         javascripts: ['coffee', 'js', 'json'],
         stylesheets: ['sass', 'scss', 'less', 'css', 'styl'],
-        images: ['png', 'jpg', 'jpeg', 'gif'],
+        images: ['png', 'jpg', 'jpeg', 'gif', 'cur'],
         fonts: ['woff', 'ttf', 'otf', 'eot', 'svg']
       }
     end
