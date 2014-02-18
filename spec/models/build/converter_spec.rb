@@ -93,8 +93,8 @@ module Build
     context '#install!' do
       it 'installs component and return all dependencies but not persists' do
         expect {
-          Converter.install! 'jquery' do |dependencies|
-            expect(dependencies.size).to eq(1)
+          Converter.install! 'jquery', '2.1.0' do |dependencies|
+            expect(dependencies.size).to eq(2)
             expect(dependencies.first).to be_a(BowerComponent)
             expect(Dir.exists?(dependencies.first.component_dir)).to eq(true)
           end
