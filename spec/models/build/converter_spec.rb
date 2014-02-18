@@ -2,40 +2,6 @@ require 'spec_helper'
 
 module Build
   describe Converter do
-    ## Need to enable more than one connection on travis (pool)
-    # context '#run!' do
-    #   it 'should produce the same output when executed in parallel' do
-    #     threads = (0..2).map do
-    #       Thread.new do
-    #         Converter.run!('moment-timezone', 'latest')
-    #       end
-    #     end
-
-    #     values = threads.map(&:join).map(&:value)
-
-    #     expect(values[0]).to_not eq(nil)
-    #     expect(values[1]).to_not eq(nil)
-    #     expect(values[2]).to_not eq(nil)
-
-    #     expect(values[1]).to eq(values[0])
-    #     expect(values[2]).to eq(values[0])
-    #   end
-
-    #   it 'should include builded component in first each request' do
-    #     threads = (0..2).map do
-    #       Thread.new do
-    #         Converter.run!('flight', 'latest')
-    #       end
-    #     end
-
-    #     values = threads.map(&:join).map(&:value)
-
-    #     expect(values[0].component.name).to eq("flight")
-    #     expect(values[1].component.name).to eq("flight")
-    #     expect(values[2].component.name).to eq("flight")
-    #   end
-    # end
-    #
 
     context '#run!' do
       it 'should fill component dependencies' do
