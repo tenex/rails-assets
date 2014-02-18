@@ -104,7 +104,7 @@ module Build
 
     context '#convert!' do
       it 'converts component to new temp directory and yields it' do
-        Converter.install!('jquery') do |dependencies|
+        Converter.install!('jquery', '2.0.3') do |dependencies|
           Converter.convert!(dependencies.first) do |dir, paths, mains|
             expect(Dir.exist?(dir.to_s)).to be_true
             expect(paths.all? { |p| File.exist?(dir.join(p)) }).to be_true
@@ -136,7 +136,7 @@ module Build
     context '#build!' do
       it 'builds gem to given directory and returns path to it' do
         Dir.mktmpdir do |tmpdir|
-          gem_path = Converter.install!('jquery') do |dependencies|
+          gem_path = Converter.install!('jquery', '2.0.3') do |dependencies|
             Converter.convert!(dependencies.first) do |dir, paths, mains|
               Converter.build!(dependencies.first, dir, tmpdir)
             end
@@ -151,7 +151,7 @@ module Build
       it 'moves generated gems to data_dir and reindexes' do
         Dir.mktmpdir do |install_dir|
           Dir.mktmpdir do |tmpdir|
-            gem_path = Converter.install!('jquery') do |dependencies|
+            gem_path = Converter.install!('jquery', '2.0.3') do |dependencies|
               Converter.convert!(dependencies.first) do |dir, paths, mains|
                 Converter.build!(dependencies.first, dir, tmpdir)
               end
