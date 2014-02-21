@@ -14,13 +14,14 @@ bundle install && npm install
 cp config/database{.sample,}.yml
 cp config/application{.sample,}.yml
 # edit config/database.yml and config/application.yml if necessary.
+bin/rake db:setup
 foreman start
 ```
 
 ### Convert Bower package into Ruby gem using CLI
 
 ```sh
-bundle exec rake 'component:convert[jquery,2.0.3]'
+bin/rake 'component:convert[jquery,2.0.3]'
 ```
 
 This will create `rails-assets-NAME-VERSION.gem` file.
@@ -28,7 +29,7 @@ This will create `rails-assets-NAME-VERSION.gem` file.
 You can remove this component by issuing:
 
 ```sh
-bundle exec rake 'component:destroy[jquery,2.0.3]'
+bin/rake 'component:destroy[jquery,2.0.3]'
 ```
 
 ## Credits
