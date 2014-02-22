@@ -4,14 +4,14 @@ section.section.gem-list ng-controller="IndexCtrl"
       | Component list
 
     .notice.content--small
-      p You can always reference Rails Assets gems in your <code>Gemfile</code>, even if&nbsp;they aren’t listed&nbsp;below
+      p You can always reference Rails Assets gems in your <code>Gemfile</code>, even if&nbsp;they aren’t listed&nbsp;below.
       p For new components you'll need <code>bundle install</code> two times because Rubygems index update is asynchronous.
 
     .gem-list__form
       input#gem-search type="search" ng-model="search.name" placeholder="{{gems ? 'Search' : 'Loading components…'}}"
 
     .gem-list__item ng-hide="(gems | filter:search).length > 0 || search.name.length == 0" ng-cloak=""
-      ' Package <code>{{ search.name }}</code> not found. You can always try to convert it below:
+      ' Package <code>{{ search.name }}</code> not found. You can always add&nbsp;it:
       = render 'components/convert'
 
     article.grid.gem-list__item.gem ng-repeat="gem in gems | filter:search | orderBy:'name'" ng-controller="GemCtrl"
