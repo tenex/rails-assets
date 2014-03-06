@@ -133,16 +133,16 @@ module Build
 
           Converter.index!
 
-          expect(Paths.relative_from(Figaro.env.data_dir)).to eq([
+          paths = Set.new(Paths.relative_from(Figaro.env.data_dir))
+
+          expect(paths.superset?(Set.new([
             Path.new('gems/rails-assets-jquery-2.0.3.gem'),
             Path.new('latest_specs.4.8'),
             Path.new('latest_specs.4.8.gz'),
-            Path.new('prerelease_specs.4.8'),
-            Path.new('prerelease_specs.4.8.gz'),
             Path.new('quick/Marshal.4.8/rails-assets-jquery-2.0.3.gemspec.rz'),
             Path.new('specs.4.8'),
             Path.new('specs.4.8.gz')
-          ])
+          ]))).to be_true
 
           expect {
             Converter.index!
@@ -155,18 +155,18 @@ module Build
 
             Converter.index!
 
-            expect(Paths.relative_from(Figaro.env.data_dir)).to eq([
+            paths = Set.new(Paths.relative_from(Figaro.env.data_dir))
+
+            expect(paths.superset?(Set.new([
               Path.new('gems/rails-assets-jquery-2.0.3.gem'),
               Path.new('gems/rails-assets-jquery-2.1.0.gem'),
               Path.new('latest_specs.4.8'),
               Path.new('latest_specs.4.8.gz'),
-              Path.new('prerelease_specs.4.8'),
-              Path.new('prerelease_specs.4.8.gz'),
               Path.new('quick/Marshal.4.8/rails-assets-jquery-2.0.3.gemspec.rz'),
               Path.new('quick/Marshal.4.8/rails-assets-jquery-2.1.0.gemspec.rz'),
               Path.new('specs.4.8'),
               Path.new('specs.4.8.gz')
-            ])
+            ]))).to be_true
           }.to change { File.read(File.join(Figaro.env.data_dir, 'specs.4.8')) }
         end
       end
