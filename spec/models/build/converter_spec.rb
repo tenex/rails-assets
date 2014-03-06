@@ -2,6 +2,14 @@ require 'spec_helper'
 
 module Build
   describe Converter do
+    before(:each) do
+      tmp_dir = Dir.mktmpdir
+      Figaro.env.stub(:data_dir) { tmp_dir }
+    end
+
+    after(:each) do
+      FileUtils.rm_rf(Figaro.env.data_dir)
+    end
 
     context '#run!' do
       it 'should fill component dependencies' do
@@ -60,7 +68,7 @@ module Build
       it 'installs component and return all dependencies but not persists' do
         expect {
           Converter.install! 'jquery', '2.1.0' do |dependencies|
-            expect(dependencies.size).to eq(2)
+            expect(dependencies.size).to eq(1)
             expect(dependencies.first).to be_a(BowerComponent)
             expect(Dir.exists?(dependencies.first.component_dir)).to eq(true)
           end
@@ -116,15 +124,25 @@ module Build
     context '#index!' do
       it 'moves generated gems to data_dir and reindexes' do
         Dir.mktmpdir do |install_dir|
-          Dir.mktmpdir do |tmpdir|
-            gem_path = Converter.install!('jquery', '2.0.3') do |dependencies|
-              Converter.convert!(dependencies.first) do |dir, paths, mains|
-                Converter.build!(dependencies.first, dir, tmpdir)
-              end
-            end
-
-            Converter.index!
+          gem_path = Converter.process!('jquery', '2.0.3') do |vp|
+            Converter.persist!(vp)
           end
+
+          expect(Paths.relative_from(Figaro.env.data_dir)).
+            to eq([Path.new('gems/rails-assets-jquery-2.0.3.gem')])
+
+          Converter.index!
+
+          expect(Paths.relative_from(Figaro.env.data_dir)).to eq([
+            Path.new('gems/rails-assets-jquery-2.0.3.gem'),
+            Path.new('latest_specs.4.8'),
+            Path.new('latest_specs.4.8.gz'),
+            Path.new('prerelease_specs.4.8'),
+            Path.new('prerelease_specs.4.8.gz'),
+            Path.new('quick/Marshal.4.8/rails-assets-jquery-2.0.3.gemspec.rz'),
+            Path.new('specs.4.8'),
+            Path.new('specs.4.8.gz')
+          ])
         end
       end
     end

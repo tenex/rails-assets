@@ -178,7 +178,7 @@ GEM
       activesupport (>= 3.0, < 4.1)
       railties (>= 3.0, < 4.1)
       slim (~> 2.0)
-    slop (3.4.6)
+    slop (3.4.7)
     sprockets (2.10.1)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -231,6 +231,7 @@ DEPENDENCIES
   newrelic_rpm
   peach
   pg
+  pry (= 0.9.12.2)
   pry-rails
   puma (>= 2.1.1)
   quiet_assets

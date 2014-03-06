@@ -60,6 +60,7 @@ end
 
 group :development, :test do
   gem 'rspec-rails'
+  gem 'pry', '0.9.12.2'
   gem 'pry-rails'
 end
 

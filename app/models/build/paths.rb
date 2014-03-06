@@ -12,6 +12,11 @@ module Build
       new(Dir[File.join(directory, '**', '*')]).select(:file?)
     end
 
+    def self.relative_from(directory)
+      directory = Path.new(directory)
+      from(directory).map(:relative_path_from, directory)
+    end
+
     def select(*args, &block)
       brock = proc { |e| e.send(*args) }
       args.size > 0 ? Paths.new(super(&brock)) : super(&block)

@@ -45,6 +45,9 @@ class Version < ActiveRecord::Base
   end
 
   def gem_path
-    Rails.root.join('public', 'gems', "#{GEM_PREFIX}#{component.name}-#{string}.gem")
+    Pathname.new(Figaro.env.data_dir).join(
+      'gems',
+      "#{GEM_PREFIX}#{component.name}-#{string}.gem"
+    )
   end
 end
