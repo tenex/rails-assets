@@ -78,7 +78,6 @@ module Build
       it 'fetches all files from given directory' do
         FileUtils.mkdir_p('/tmp/testing/foo')
         FileUtils.touch('/tmp/testing/foo/file.js')
-        FileUtils.touch('/tmp/testing/foo/file.txt')
         expect(Paths.relative_from('/tmp/testing').first).
           to eq Path.new("foo/file.js")
       end
