@@ -143,6 +143,31 @@ module Build
             Path.new('specs.4.8'),
             Path.new('specs.4.8.gz')
           ])
+
+          expect {
+            Converter.index!
+          }.to_not change { File.read(File.join(Figaro.env.data_dir, 'specs.4.8')) }
+
+          expect {
+            gem_path = Converter.process!('jquery', '2.1.0') do |vp|
+              Converter.persist!(vp)
+            end
+
+            Converter.index!
+
+            expect(Paths.relative_from(Figaro.env.data_dir)).to eq([
+              Path.new('gems/rails-assets-jquery-2.0.3.gem'),
+              Path.new('gems/rails-assets-jquery-2.1.0.gem'),
+              Path.new('latest_specs.4.8'),
+              Path.new('latest_specs.4.8.gz'),
+              Path.new('prerelease_specs.4.8'),
+              Path.new('prerelease_specs.4.8.gz'),
+              Path.new('quick/Marshal.4.8/rails-assets-jquery-2.0.3.gemspec.rz'),
+              Path.new('quick/Marshal.4.8/rails-assets-jquery-2.1.0.gemspec.rz'),
+              Path.new('specs.4.8'),
+              Path.new('specs.4.8.gz')
+            ])
+          }.to change { File.read(File.join(Figaro.env.data_dir, 'specs.4.8')) }
         end
       end
     end

@@ -210,44 +210,74 @@ module Build
     #   * sets status of such gem to "failed" and sets build_message
     def index!(force = false)
       Build::Locking.with_lock(:index) do
-        data_dir = Figaro.env.data_dir
-        versions = Version.pending_index.includes(:component).to_a
+        Dir.mktmpdir do |index_dir|
+          index_dir = Path.new(index_dir)
+          data_dir = Path.new(Figaro.env.data_dir)
 
-        if versions.empty? && force == false
-          Rails.logger.info "Nothing to reindex"
-          return true
-        end
+          File.symlink(data_dir.join('gems'), index_dir.join('gems'))
 
-        gem_paths = versions.map(&:gem_path)
+          versions = Version.pending_index.includes(:component).to_a
 
-        pretty_paths = gem_paths.map { |p| " * #{File.basename(p)}\n" }.join
-        Rails.logger.info "Indexing following gems: #{pretty_paths}"
+          if versions.empty? && force == false
+            Rails.logger.info "Nothing to reindex"
+            return true
+          end
 
-        begin
-          Version.transaction do
-            stdout = capture(:stdout) do
-              HackedIndexer.new(data_dir).generate_index
+          gem_paths = versions.map(&:gem_path)
+
+          pretty_paths = gem_paths.map { |p| " * #{File.basename(p)}\n" }.join
+          Rails.logger.info "Indexing following gems: #{pretty_paths}"
+
+          begin
+            Version.transaction do
+              stdout = capture(:stdout) do
+                HackedIndexer.new(index_dir).generate_index
+              end
+
+              Rails.logger.debug stdout
+
+              FileUtils.rm(index_dir.join('gems'))
+              FileUtils.mkdir_p(data_dir.join('quick', 'Marshal.4.8'))
+
+              # Overwrite only new quick marashal files
+              Paths.relative_from(index_dir.join('quick')).each do |relative|
+                unless File.exist?(data_dir.join('quick').join(relative))
+                  FileUtils.cp(
+                    index_dir.join('quick').join(relative),
+                    data_dir.join('quick').join(relative)
+                  )
+                end
+              end
+
+              FileUtils.rm_r(index_dir.join('quick'))
+
+              # Overwrite all index files
+              Paths.relative_from(index_dir).each do |relative|
+                FileUtils.copy_file(
+                  index_dir.join(relative),
+                  data_dir.join(relative),
+                  :remove_destination => true
+                )
+              end
+
+              versions.each do |version|
+                version.build_status = 'indexed'
+                version.save!
+              end
             end
 
-            Rails.logger.debug stdout
-
+            true
+          rescue Exception => e
             versions.each do |version|
-              version.build_status = 'indexed'
+              version.build_status = 'failed'
+              version.build_message = e.message
               version.save!
             end
+
+            raise if Rails.env.development? || Rails.env.test?
+
+            false
           end
-
-          true
-        rescue Exception => e
-          versions.each do |version|
-            version.build_status = 'failed'
-            version.build_message = e.message
-            version.save!
-          end
-
-          raise if Rails.env.development? || Rails.env.test?
-
-          false
         end
       end
     end
