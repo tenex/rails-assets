@@ -67,19 +67,23 @@ module Build
 
     context '#from' do
       it 'fetches all files from given directory' do
-        FileUtils.mkdir_p('/tmp/testing/foo')
-        FileUtils.touch('/tmp/testing/foo/file.js')
-        FileUtils.touch('/tmp/testing/foo/file.txt')
-        expect(Paths.from('/tmp/testing').size).to eq 2
+        Dir.mktmpdir do |tmp|
+          FileUtils.mkdir_p("#{tmp}/testing/foo")
+          FileUtils.touch("#{tmp}/testing/foo/file.js")
+          FileUtils.touch("#{tmp}/testing/foo/file.txt")
+          expect(Paths.from("#{tmp}/testing").size).to eq 2
+        end
       end
     end
 
     context '#relative_from' do
       it 'fetches all files from given directory' do
-        FileUtils.mkdir_p('/tmp/testing/foo')
-        FileUtils.touch('/tmp/testing/foo/file.js')
-        expect(Paths.relative_from('/tmp/testing').first).
-          to eq Path.new("foo/file.js")
+        Dir.mktmpdir do |tmp|
+          FileUtils.mkdir_p("#{tmp}/foo")
+          FileUtils.touch("#{tmp}/foo/file.js")
+          expect(Paths.relative_from(tmp).first).
+            to eq Path.new("foo/file.js")
+        end
       end
     end
 
