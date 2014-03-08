@@ -1,7 +1,7 @@
 class UpdateComponent
   include Sidekiq::Worker
 
-  sidekiq_options queue: 'update_component', unique: true
+  sidekiq_options queue: 'update_component', unique: true, retry: 0
 
   def perform(bower_name)
 
