@@ -19,6 +19,3 @@ rails-assets:
     worker1:
       size: large
       sidekiq: 1
-    worker2:
-      size: large
-      sidekiq: 1
