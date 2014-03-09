@@ -22,9 +22,7 @@ module Build
       Rails.logger.debug "cd #{cwd} && #{cmd}"
 
       output, error, status =
-        Open3.popen3(cmd, :chdir => cwd) do |stdin, stdout, stderr, thr|
-          [stdout.read, stderr.read, thr.value]
-        end
+        Open3.capture3(cmd, :chdir => cwd)
 
       Rails.logger.debug("#{cmd}\n#{output}") if output.present?
       Rails.logger.warn("#{cmd}\n#{error}") if error.present? && !status.success?
