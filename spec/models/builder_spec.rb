@@ -87,6 +87,8 @@ describe Build::Converter do
       gem_file "vendor/assets/stylesheets/leaflet/leaflet.scss"
       gem_file "vendor/assets/stylesheets/leaflet/leaflet.ie.scss"
       gem_file "vendor/assets/stylesheets/leaflet.scss"
+      file_contains "vendor/assets/stylesheets/leaflet/leaflet.scss",
+        "background-image: image-url"
 
       gem_file "vendor/assets/images/leaflet/dist/images/layers-2x.png"
       gem_file "vendor/assets/images/leaflet/dist/images/layers.png"
@@ -130,6 +132,9 @@ describe Build::Converter do
       gem_file 'vendor/assets/javascripts/tinymce.js'
       file_contains 'rails-assets-jozzhart--tinymce.gemspec',
         'spec.name          = "rails-assets-jozzhart--tinymce"'
+
+      file_contains 'vendor/assets/stylesheets/tinymce/skins/lightgray/content.min.scss',
+        'background:image-url'
     end
 
     component "swipe", "2.0.0" do
