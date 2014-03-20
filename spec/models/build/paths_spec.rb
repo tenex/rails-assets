@@ -180,6 +180,13 @@ module Build
         expect(Paths.new(['dist/bar.css']).find_main_asset(:stylesheets, 'foo')).
           to eq(nil)
       end
+
+      it 'finds file lowest in hierarchy' do
+        expect(
+          Paths.new(['dist/bar.css', 'bar.css']).
+            find_main_asset(:stylesheets, 'bar')
+        ).to eq(Path.new('bar.css'))
+      end
     end
   end
 
