@@ -33,7 +33,7 @@ class MainController < ApplicationController
     end
 
     gems = Component.where(name: gem_names).to_a.flat_map do |component|
-      component.versions.indexed.map do |v|
+      component.versions.builded.map do |v|
         {
           name:         "#{GEM_PREFIX}#{component.name}",
           platform:     "ruby",
