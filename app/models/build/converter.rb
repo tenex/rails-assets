@@ -241,12 +241,13 @@ module Build
 
               # Overwrite only new quick marashal files
               Paths.relative_from(index_dir.join('quick')).each do |relative|
-                unless File.exist?(data_dir.join('quick').join(relative))
-                  FileUtils.cp(
+                # unless File.exist?(data_dir.join('quick').join(relative))
+                  FileUtils.copy_file(
                     index_dir.join('quick').join(relative),
-                    data_dir.join('quick').join(relative)
+                    data_dir.join('quick').join(relative),
+                    :remove_destination => true
                   )
-                end
+                # end
               end
 
               FileUtils.rm_r(index_dir.join('quick'))
