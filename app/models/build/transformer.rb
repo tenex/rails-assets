@@ -31,7 +31,7 @@ module Build
           include?(Path.new(file.to_s.sub('.min.', '.')))
         in_special_dir = file.in_directory?(
           %w(spec test perf minified docs examples min))
-        is_unsupported = file.to_s.match(/(gzip|map|nuspec)$/)
+        is_unsupported = file.to_s.match(/(gzip|map|nuspec|gz|jar|php|orig|pre|post|sh|cfg|md|txt|~)$/)
 
         main_in_same_dir = all_main_paths.map(:dirname).any? do |dir|
           file.descendant?(dir)
