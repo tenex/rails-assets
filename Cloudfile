@@ -16,10 +16,6 @@ rails-assets:
     app2:
       size: large
       puma: 1
-      sidekiq: 1
     worker1:
-      size: large
-      sidekiq: 1
-    worker2:
       size: large
       sidekiq: 1
