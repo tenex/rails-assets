@@ -26,7 +26,7 @@ bin/rake 'component:convert[jquery,2.0.3]'
 
 This will create `rails-assets-NAME-VERSION.gem` file.
 
-You can remove this component by issuing:
+You can remove this component by:
 
 ```sh
 bin/rake 'component:destroy[jquery,2.0.3]'
