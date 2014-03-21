@@ -80,6 +80,7 @@ describe Build::Converter do
       gem_file "vendor/assets/javascripts/angular-mousewheel/mousewheel.js"
     end
 
+
     component "leaflet", "0.6.2" do
       gem_file "vendor/assets/javascripts/leaflet.js"
       gem_file "vendor/assets/javascripts/leaflet/leaflet.js"
@@ -125,6 +126,8 @@ describe Build::Converter do
       gem_file 'vendor/assets/javascripts/angular-ui-tinymce/tinymce.js'
       file_contains 'rails-assets-angular-ui-tinymce.gemspec',
         'spec.add_dependency "rails-assets-jozzhart--tinymce", "4.0.0"'
+      file_contains 'rails-assets-angular-ui-tinymce.gemspec',
+        'spec.add_dependency "rails-assets-jozzhart--tinymce", "4.0.0"'
     end
 
     component "jozzhart--tinymce", '4.0.0' do
@@ -132,7 +135,6 @@ describe Build::Converter do
       gem_file 'vendor/assets/javascripts/tinymce.js'
       file_contains 'rails-assets-jozzhart--tinymce.gemspec',
         'spec.name          = "rails-assets-jozzhart--tinymce"'
-
       file_contains 'vendor/assets/stylesheets/tinymce/skins/lightgray/content.min.scss',
         'background:image-url'
     end
@@ -159,6 +161,21 @@ describe Build::Converter do
       ## This is for some reason non-deterministic
       # file_contains 'rails-assets-isotope.gemspec',
       #   'spec.add_dependency "rails-assets-desandro--get-size", ">= 1.1.4", "< 2.0"'
+    end
+
+    # This is strange example because colorbox has only
+    # colorbox.css files that are examples (about 5 of them)
+    # Rails Assets algorithm select first example colorbox.css
+    # because it is named the same way as the gem
+    #
+    # I'm not sure it is bug of feature, so I'm leaving it :-)
+    component "colorbox", "1.5.5" do
+      gem_file "vendor/assets/stylesheets/colorbox.scss"
+      gem_file "vendor/assets/stylesheets/colorbox/colorbox.scss"
+      file_contains "vendor/assets/stylesheets/colorbox/colorbox.scss",
+        "background:image-url(images/overlay.png)"
+      file_contains "vendor/assets/stylesheets/colorbox.scss",
+        "@import 'colorbox/colorbox';"
     end
   end
 end
