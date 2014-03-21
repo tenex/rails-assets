@@ -40,7 +40,7 @@ module Build
         (file.minified? && has_unminified) ||
         (in_special_dir && !main_in_same_dir) ||
         is_unsupported
-      end)
+      end.sort_by(&:to_s))
 
       transformations = [:javascripts, :stylesheets,
                          :images, :fonts].flat_map do |type|

@@ -187,6 +187,13 @@ module Build
             find_main_asset(:stylesheets, 'bar')
         ).to eq(Path.new('bar.css'))
       end
+
+      it 'if the same in hierarchy, alphabetically' do
+        expect(
+          Paths.new(['dist2/bar.css', 'dist1/bar.css']).
+            find_main_asset(:stylesheets, 'bar')
+        ).to eq(Path.new('dist1/bar.css'))
+      end
     end
   end
 

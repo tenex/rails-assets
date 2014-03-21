@@ -67,6 +67,7 @@ module Build
 
       (paths_by_extension.
         find { |files| !files.empty? } || []).
+        sort_by { |file| file.to_s }.
         sort_by { |file| file.to_s.count("/") }.
         first
     end
