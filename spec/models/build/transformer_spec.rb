@@ -116,8 +116,35 @@ module Build
 
       it 'flattens paths for if main stylesheet is set' do
         expect(
-          targets(['dist/css/foo.css'], ['dist/css/foo.scss'])
+          targets(['dist/css/foo.css'], ['dist/css/foo.css'])
         ).to eq(Paths.new([
+          'vendor/assets/stylesheets/foobar/foo.scss',
+          'vendor/assets/stylesheets/foobar.scss'
+        ]))
+      end
+
+      it 'flattens paths separately for js and css assets' do
+        expect(
+          targets(
+            ['dist/css/foo.css', 'dist/js/foo.js'],
+            ['dist/css/foo.css', 'dist/js/foo.js']
+          )
+        ).to eq(Paths.new([
+          'vendor/assets/javascripts/foobar/foo.js',
+          'vendor/assets/javascripts/foobar.js',
+          'vendor/assets/stylesheets/foobar/foo.scss',
+          'vendor/assets/stylesheets/foobar.scss'
+        ]))
+      end
+
+      it 'preserves paths of other asset type if only one main' do
+        expect(
+          targets(
+            ['dist/css/foo.css', 'dist/js/foo.js'],
+            ['dist/css/foo.css']
+          )
+        ).to eq(Paths.new([
+          'vendor/assets/javascripts/foobar/dist/js/foo.js',
           'vendor/assets/stylesheets/foobar/foo.scss',
           'vendor/assets/stylesheets/foobar.scss'
         ]))
