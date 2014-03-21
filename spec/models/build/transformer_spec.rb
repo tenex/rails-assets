@@ -185,8 +185,8 @@ module Build
             'min/bar/foo-require.js'
           ], ['min/bar/foo.js'])
         ).to eq(Paths.new([
-          'vendor/assets/javascripts/foobar/foo.js',
           'vendor/assets/javascripts/foobar/foo-require.js',
+          'vendor/assets/javascripts/foobar/foo.js',
           'vendor/assets/javascripts/foobar.js'
         ]))
       end
