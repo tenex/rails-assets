@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-# TODO: fix this tests
 describe Build::Converter do
   context 'generates proper files in conversion', slow: true do
     before { Component.destroy_all }
@@ -173,7 +172,7 @@ describe Build::Converter do
       gem_file "vendor/assets/stylesheets/colorbox.scss"
       gem_file "vendor/assets/stylesheets/colorbox/colorbox.scss"
       file_contains "vendor/assets/stylesheets/colorbox/colorbox.scss",
-        "background:image-url(images/overlay.png)"
+        'background:image-url("colorbox/example1/images/overlay.png")'
       file_contains "vendor/assets/stylesheets/colorbox.scss",
         "@import 'colorbox/colorbox';"
     end

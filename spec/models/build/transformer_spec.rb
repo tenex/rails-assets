@@ -229,7 +229,7 @@ module Build
         actual_content = File.read('/tmp/style.scss')
         [
           'background-image:image-url("foo.png")',
-          'src: font-url("spam.eot")',
+          'src:font-url("spam.eot")',
           'src: font-url("spam.eot?#iefix") format(\'embedded-opentype\')',
           'font-url("spam.woff") format(\'woff\')',
           ',font-url("spam.ttf")  format(\'truetype\')',
