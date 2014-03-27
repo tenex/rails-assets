@@ -147,6 +147,7 @@ module Build
 
         {images: :image, fonts: :font}.each do |ext_class, asset_type|
           extensions = Path.extension_classes.fetch(ext_class)
+          new_source.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
           new_source.gsub! /(?<!-)url\((["'\s]*)([^\)]+\.(?:#{extensions.join('|')}))(\??#?[^"'\)]*)\1\)/i do |match|
 
             "#{asset_type}-url(\"#{transform_relative_path(ext_class, $2, file_name, transformations)}#{$3}\")"
