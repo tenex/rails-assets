@@ -83,6 +83,10 @@ module Build
           end
         end
 
+        if version.match(/\d+\s?\*/)
+          version.gsub!(/(\d+)\s?\*/) { $1 }
+        end
+
         version.gsub!(/[+-]/, '.')
 
         version.gsub!(/~(?!>)\s?(\d)/, '~> \1')
