@@ -177,11 +177,18 @@ describe Build::Converter do
         "@import 'colorbox/colorbox';"
     end
 
+    # main is hash
     component "orbicular", "1.0.3" do
       gem_file "vendor/assets/stylesheets/orbicular.scss"
       gem_file "vendor/assets/stylesheets/orbicular/orbicular.scss"
       gem_file "vendor/assets/javascripts/orbicular.js"
       gem_file "vendor/assets/javascripts/orbicular/orbicular.js"
+    end
+
+    # ^1.2.3 kind of dependency
+    component "jquery-masonry", "3.1.5" do
+      gem_file "vendor/assets/javascripts/masonry.js"
+      gem_file "vendor/assets/javascripts/masonry/masonry.js"
     end
   end
 end
