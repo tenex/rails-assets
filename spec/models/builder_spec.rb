@@ -187,8 +187,8 @@ describe Build::Converter do
 
     # ^1.2.3 kind of dependency
     component "jquery-masonry", "3.1.5" do
-      gem_file "vendor/assets/javascripts/masonry.js"
-      gem_file "vendor/assets/javascripts/masonry/masonry.js"
+      gem_file "vendor/assets/javascripts/jquery-masonry.js"
+      gem_file "vendor/assets/javascripts/jquery-masonry/masonry.js"
     end
   end
 end
