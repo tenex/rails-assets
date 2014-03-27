@@ -44,14 +44,14 @@ module Build
       # Remove any unnecessary spaces
       version = version.split(' ').join(' ')
 
-      specifiers = ['>', '<', '>=', '<=', '~', '~>', '=', '!=']
+      specifiers = ['>', '<', '>=', '<=', '~', '~>', '=', '!=', '^']
 
       specifiers.each do |specifier|
-        version = version.gsub(/#{specifier}\s/) { specifier }
+        version = version.gsub(/#{Regexp.escape(specifier)}\s/) { specifier }
       end
 
       if version.include?(' ')
-        return version.split(' ').map do |v|
+        return version.chomp.split(' ').map do |v|
           Utils.fix_version_string(v)
         end.join(', ')
       end
@@ -96,8 +96,22 @@ module Build
         version
       end
 
+      if version[0] == "^"
+        version = version[1..-1] 
+
+        major = version.split('.')[0].to_i
+
+        if major == 0
+          minor = version.split('.')[1].to_i
+
+          version = ">= #{version}, < #{major}.#{minor + 1}"
+        else
+          version = ">= #{version}, < #{major + 1}"
+        end
+      end
+
       specifiers.each do |specifier|
-        version = version.gsub(/#{specifier}(\d)/) { specifier + ' ' + $1 }
+        version = version.gsub(/#{Regexp.escape(specifier)}(\d)/) { specifier + ' ' + $1 }
       end
 
       version
