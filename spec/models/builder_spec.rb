@@ -176,5 +176,12 @@ describe Build::Converter do
       file_contains "vendor/assets/stylesheets/colorbox.scss",
         "@import 'colorbox/colorbox';"
     end
+
+    component "orbicular", "1.0.3" do
+      gem_file "vendor/assets/stylesheets/orbicular.scss"
+      gem_file "vendor/assets/stylesheets/orbicular/orbicular.scss"
+      gem_file "vendor/assets/javascripts/orbicular.js"
+      gem_file "vendor/assets/javascripts/orbicular/orbicular.js"
+    end
   end
 end

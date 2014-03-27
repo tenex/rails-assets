@@ -59,8 +59,14 @@ module Build
     end
 
     def main
-      if data['pkgMeta']['main']
-        [data['pkgMeta']['main']].flatten.compact
+      if mains = data['pkgMeta']['main']
+        if mains.kind_of?(Hash)
+          mains.values.flatten.compact
+        elsif mains.kind_of?(Array)
+          mains.flatten.compact
+        elsif mains.kind_of?(String)
+          [mains]
+        end
       end
     end
 
@@ -73,7 +79,7 @@ module Build
       source = source.sub(/#.*$/, '')
       source = source.sub(/\.git$/, '')
 
-      if source.match(/^[^\/]+(\/[^\/]+)?$/) 
+      if source.match(/^[^\/]+(\/[^\/]+)?$/)
         source
       elsif source =~ /github\.com\/([^\/]+\/[^\/]+)/
         $1

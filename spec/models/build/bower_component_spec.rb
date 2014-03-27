@@ -75,6 +75,31 @@ module Build
       }')
     }
 
+    let(:strange_main) {
+      JSON.parse('{
+        "canonicalDir": "/Users/sheerun/Source/rails-assets/bower_components/awesome-jquery",
+        "pkgMeta": {
+          "main": {
+            "scripts": ["jquery.js"],
+            "stylesheets": "jquery.css"
+          }
+        }
+      }')
+    }
+
+    context '#main_paths' do
+      let(:subject) {
+        BowerComponent.new(Path.new('/tmp'), strange_main)
+      }
+
+      it 'parses correctly main as hash' do
+        expect(subject.main).to eq([
+          "jquery.js",
+          "jquery.css"
+        ])
+      end
+    end
+
     context '#new' do
       let(:subject) {
         BowerComponent.new(Path.new('/tmp'), jquery_meta)
