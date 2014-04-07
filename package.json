@@ -2,6 +2,6 @@
   "name": "rails-assets",
   "version": "0.0.0",
   "dependencies": {
-    "bower": "bower/bower#master"
+    "bower": "1.3.2"
   }
 }
