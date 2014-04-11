@@ -178,20 +178,42 @@ module Build
           to eq(">= 0.1.3, < 0.2")
       end
 
-      xspecify do
+      specify do
         # Not sure if it means "> 1.0" or "> 1.0.0"
+        # I am sure - https://github.com/isaacs/node-semver#ranges
         expect(Utils.fix_version_string('>1.0.x')).
-          to eq("> 1.0")
+          to eq(">= 1.0.0, < 1.1.0")
       end
 
-      xspecify do
+      specify do
+        expect(Utils.fix_version_string('<2.0.x')).
+          to eq(">= 1.0.0, < 2.0.0")
+      end
+
+      specify do
         expect(Utils.fix_version_string('1.0 - 1.2')).
-          to eq(">= 1.0 && < 1.3")
+          to eq(">= 1.0, < 1.3")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('1.2 - 1.3.4')).
+          to eq(">= 1.2, < 1.3.5")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('1.1.5 - 1.2.4')).
+          to eq(">= 1.1.5, < 1.2.5")
+      end
+
+      specify do
+        # without spaces
+        expect(Utils.fix_version_string('1.2.1-1.5.4')).
+          to eq(">= 1.2.1, < 1.5.5")
       end
 
       xspecify do
         expect(Utils.fix_version_string('1.0 || 1.1')).
-          to eq(">= 1.0 && < 1.2")
+          to eq(">= 1.0, < 1.2")
       end
     end
 
