@@ -36,6 +36,9 @@ module Build
     def fix_version_string(version)
       version = version.to_s.dup
 
+      sem_version = semversion_fix(version)
+      return sem_version unless sem_version.nil?
+
       if version.include?('||')
         raise BuildError.new(
           "Rubygems does not support || in version string '#{version}'"
@@ -154,5 +157,56 @@ module Build
         ]
       end]
     end
+
+    private
+
+    def semversion_fix(version)
+      # for >1.0.x
+      semVerReg = /([\<\>])(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+).x/
+      if version.match(semVerReg)
+        res = version.match(semVerReg)
+
+        version_token = res[2..4].reject(&:nil?).map(&:to_i)
+        version_last_token = version_token.dup
+        case res[1]
+          when ">"
+            version_last_token[-1] += 1
+          when "<"
+            index = version_token.size - 1
+            while version_token[index] && 0 == version_token[index]
+              index =- 1
+              break if -1 == index
+            end
+            if index == -1
+              version_token[0] = 1
+            else
+              version_token[index] -= 1
+            end
+        end
+        return ">= #{version_token.join(".")}.0, < #{version_last_token.join(".")}.0"
+      end
+      # sem version with "-"
+      semVerRegSlash = /(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)\s?-\s?(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)/
+      if version.match(semVerRegSlash)
+        res = version.match(semVerRegSlash)
+
+        version_first_token = res[1..3].reject(&:nil?).map(&:to_i)
+        version_last_token = res[4..6].reject(&:nil?).map(&:to_i)
+
+        index = version_last_token.size - 1
+        while version_last_token[index] && 0 == version_last_token[index]
+          index =- 1
+          break if -1 == index
+        end
+        if -1 == index
+          version_last_token[0] = 1
+        else
+          version_last_token[index] += 1
+        end
+        return ">= #{version_first_token.join(".")}, < #{version_last_token.join(".")}"
+      end
+      return nil
+    end
+
   end
 end
