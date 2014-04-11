@@ -190,5 +190,11 @@ describe Build::Converter do
       gem_file "vendor/assets/javascripts/jquery-masonry.js"
       gem_file "vendor/assets/javascripts/jquery-masonry/masonry.js"
     end
+
+    # 1.0 - 1.1 kind of dependency
+    component "marionette", "1.7.4" do
+      gem_file "vendor/assets/javascripts/marionette.js"
+      gem_file "vendor/assets/javascripts/marionette/backbone.marionette.js"
+    end
   end
 end
