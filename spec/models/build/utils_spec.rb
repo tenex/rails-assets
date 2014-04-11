@@ -206,9 +206,24 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string('1 - 2.2 != 2.0')).
+          to eq(">= 1, < 2.3, != 2.0")
+      end
+
+      specify do
         # without spaces
         expect(Utils.fix_version_string('1.2.1-1.5.4')).
           to eq(">= 1.2.1, < 1.5.5")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('1-2')).
+          to eq(">= 1, < 3")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('1-2 < 1.9.3')).
+          to eq(">= 1, < 3, < 1.9.3")
       end
 
       xspecify do

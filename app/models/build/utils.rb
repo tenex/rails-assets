@@ -36,8 +36,7 @@ module Build
     def fix_version_string(version)
       version = version.to_s.dup
 
-      sem_version = semversion_fix(version)
-      return sem_version unless sem_version.nil?
+      version = semversion_fix(version)
 
       if version.include?('||')
         raise BuildError.new(
@@ -163,8 +162,9 @@ module Build
     def semversion_fix(version)
       # for >1.0.x
       semVerReg = /([\<\>])(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+).x/
-      if version.match(semVerReg)
-        res = version.match(semVerReg)
+
+      version.gsub!(semVerReg) do |match|
+        res = match.match(semVerReg)
 
         version_token = res[2..4].reject(&:nil?).map(&:to_i)
         version_last_token = version_token.dup
@@ -183,12 +183,13 @@ module Build
               version_token[index] -= 1
             end
         end
-        return ">= #{version_token.join(".")}.0, < #{version_last_token.join(".")}.0"
+
+        ">= #{version_token.join(".")}.0 < #{version_last_token.join(".")}.0"
       end
       # sem version with "-"
       semVerRegSlash = /(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)\s?-\s?(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)/
-      if version.match(semVerRegSlash)
-        res = version.match(semVerRegSlash)
+      version.gsub!(semVerRegSlash) do |match|
+        res = match.match(semVerRegSlash)
 
         version_first_token = res[1..3].reject(&:nil?).map(&:to_i)
         version_last_token = res[4..6].reject(&:nil?).map(&:to_i)
@@ -203,9 +204,11 @@ module Build
         else
           version_last_token[index] += 1
         end
-        return ">= #{version_first_token.join(".")}, < #{version_last_token.join(".")}"
+
+        ">= #{version_first_token.join(".")} < #{version_last_token.join(".")}"
       end
-      return nil
+
+      version
     end
 
   end
