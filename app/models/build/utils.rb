@@ -38,6 +38,19 @@ module Build
 
       version = semversion_fix(version)
 
+      basic_specifiers = ['>', '<', '>=', '<=']
+      specifiers = ['>', '<', '>=', '<=', '~', '~>', '=', '!=', '^']
+
+      basic_specifiers.each do |specifier|
+        # for >1.0.x etc.
+        semVerReg = /#{Regexp.escape(specifier)}\s*(\d+\.)*[x\*]/
+
+        version.gsub!(semVerReg) do |match|
+          match.strip[0..-3]
+        end
+      end
+
+
       if version.include?('||')
         raise BuildError.new(
           "Rubygems does not support || in version string '#{version}'"
@@ -46,8 +59,6 @@ module Build
 
       # Remove any unnecessary spaces
       version = version.split(' ').join(' ')
-
-      specifiers = ['>', '<', '>=', '<=', '~', '~>', '=', '!=', '^']
 
       specifiers.each do |specifier|
         version = version.gsub(/#{Regexp.escape(specifier)}\s/) { specifier }
@@ -160,32 +171,7 @@ module Build
     private
 
     def semversion_fix(version)
-      # for >1.0.x
-      semVerReg = /([\<\>])(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+).x/
 
-      version.gsub!(semVerReg) do |match|
-        res = match.match(semVerReg)
-
-        version_token = res[2..4].reject(&:nil?).map(&:to_i)
-        version_last_token = version_token.dup
-        case res[1]
-          when ">"
-            version_last_token[-1] += 1
-          when "<"
-            index = version_token.size - 1
-            while version_token[index] && 0 == version_token[index]
-              index =- 1
-              break if -1 == index
-            end
-            if index == -1
-              version_token[0] = 1
-            else
-              version_token[index] -= 1
-            end
-        end
-
-        ">= #{version_token.join(".")}.0 < #{version_last_token.join(".")}.0"
-      end
       # sem version with "-"
       semVerRegSlash = /(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)\s?-\s?(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)/
       version.gsub!(semVerRegSlash) do |match|
@@ -193,17 +179,8 @@ module Build
 
         version_first_token = res[1..3].reject(&:nil?).map(&:to_i)
         version_last_token = res[4..6].reject(&:nil?).map(&:to_i)
-
-        index = version_last_token.size - 1
-        while version_last_token[index] && 0 == version_last_token[index]
-          index =- 1
-          break if -1 == index
-        end
-        if -1 == index
-          version_last_token[0] = 1
-        else
-          version_last_token[index] += 1
-        end
+         
+        version_last_token[version_last_token.size - 1] += 1
 
         ">= #{version_first_token.join(".")} < #{version_last_token.join(".")}"
       end

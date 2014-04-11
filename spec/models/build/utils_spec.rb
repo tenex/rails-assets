@@ -139,7 +139,7 @@ module Build
 
       specify do
         expect(Utils.fix_version_string('>=1.0.x')).
-          to eq(">= 1.0.0")
+          to eq(">= 1.0")
       end
 
       specify do
@@ -179,15 +179,17 @@ module Build
       end
 
       specify do
-        # Not sure if it means "> 1.0" or "> 1.0.0"
-        # I am sure - https://github.com/isaacs/node-semver#ranges
+        # semver.satisfies('1.0.1', '>1.0.x') => false
+        # semver.satisfies('1.1.0', '>1.0.x') => true
         expect(Utils.fix_version_string('>1.0.x')).
-          to eq(">= 1.0.0, < 1.1.0")
+          to eq("> 1.0")
       end
 
       specify do
-        expect(Utils.fix_version_string('<2.0.x')).
-          to eq(">= 1.0.0, < 2.0.0")
+        # semver.satisfies('1.0.1', '>1.0.x') => true
+        # semver.satisfies('1.1.0', '>1.0.x') => true
+        expect(Utils.fix_version_string('<=1.0.x')).
+          to eq("<= 1.0")
       end
 
       specify do
@@ -219,6 +221,11 @@ module Build
       specify do
         expect(Utils.fix_version_string('1-2')).
           to eq(">= 1, < 3")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('1.4.4 - 1.6.0')).
+          to eq(">= 1.4.4, < 1.6.1")
       end
 
       specify do
