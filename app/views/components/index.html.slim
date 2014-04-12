@@ -14,7 +14,7 @@ section.section.gem-list ng-controller="IndexCtrl"
       ' Package <code>{{ search.name }}</code> not found. You can always add&nbsp;it:
       = render 'components/convert'
 
-    article.grid.gem-list__item.gem ng-repeat="gem in gems | filter:search | orderBy:'name'" ng-controller="GemCtrl"
+    article.grid.gem-list__item.gem ng-repeat="gem in filtered = (gems | filter:search) | limitTo:limit track by $index" ng-controller="GemCtrl"
       header.grid__cell.unit-1-2
         h1.gem__name
           a ng-show="gem.homepage" href="{{ gem.homepage }}"
@@ -53,3 +53,6 @@ section.section.gem-list ng-controller="IndexCtrl"
           h3 All stylesheets:
           ul: li ng-repeat="asset in stylesheets | orderBy:'main':true"
             code ng-class="{ bold: asset.main }" ng-bind="asset.path"
+    article.u__text-center ng-if="filtered.length > 5 && limit != gems.length"
+      button ng-click="expand()"
+        | Load all {{ filtered.length }} gems

@@ -20,10 +20,12 @@ app.directive "dependencies", ->
 
       element[0].innerHTML = html.join(", ")
 
-app.controller "IndexCtrl", ["$scope", "$http", ($scope, $http) ->
+app.controller "IndexCtrl", ["$scope", "$http", "$filter", ($scope, $http, $filter) ->
+  $scope.limit = 5
+
   $scope.fetch = ->
     $http.get("/components.json").then (res) ->
-      $scope.gems = res.data
+      $scope.gems = $filter('orderBy')(res.data, 'name')
 
       if $scope.gems.length == 1
         $scope.$broadcast 'showAssets'
@@ -34,7 +36,11 @@ app.controller "IndexCtrl", ["$scope", "$http", ($scope, $http) ->
     name: ""
 
   $scope.$watch 'search.name', (name) ->
+    $scope.limit = 5
     $scope.$broadcast('component.name', name)
+
+  $scope.expand = ->
+    $scope.limit = $scope.gems.length
 ]
 
 app.controller 'GemCtrl', ['$scope', '$http', ($scope, $http) ->
