@@ -173,7 +173,7 @@ module Build
     def semversion_fix(version)
 
       # sem version with "-"
-      semVerRegSlash = /(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)\s?-\s?(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)/
+      semVerRegSlash = /(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)\s-\s(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)/
       version.gsub!(semVerRegSlash) do |match|
         res = match.match(semVerRegSlash)
 

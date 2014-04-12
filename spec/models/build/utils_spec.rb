@@ -213,14 +213,20 @@ module Build
       end
 
       specify do
-        # without spaces
+        # without spaces it is treated as normal version
+        # with prelelease
         expect(Utils.fix_version_string('1.2.1-1.5.4')).
-          to eq(">= 1.2.1, < 1.5.5")
+          to eq("1.2.1.1.5.4")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('1.0.9-1')).
+          to eq("1.0.9.1")
       end
 
       specify do
         expect(Utils.fix_version_string('1-2')).
-          to eq(">= 1, < 3")
+          to eq("1.2")
       end
 
       specify do
@@ -229,7 +235,7 @@ module Build
       end
 
       specify do
-        expect(Utils.fix_version_string('1-2 < 1.9.3')).
+        expect(Utils.fix_version_string('1 - 2 < 1.9.3')).
           to eq(">= 1, < 3, < 1.9.3")
       end
 
