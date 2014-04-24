@@ -6,7 +6,7 @@ module Build
     # Returns The Hash result if command succeeded.
     # Raises The BowerError if command failed.
     def bower(path, *command)
-      command = "#{BOWER_BIN} #{command.join(' ')} --json --quiet"
+      command = "#{BOWER_BIN} #{command.join(' ')} --json"
       command += " --config.tmp=#{Figaro.env.bower_tmp}" if Figaro.env.bower_tmp.present?
       command += " --config.storage.packages=#{Figaro.env.bower_cache}" if Figaro.env.bower_cache.present?
       command += " --config.interactive=false"
