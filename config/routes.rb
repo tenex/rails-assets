@@ -1,4 +1,7 @@
 RailsAssets::Application.routes.draw do
+  get '/packages' => 'main#packages'
+  get '/packages/:name' => 'main#package'
+
   resources :components, only: [:index, :new, :create] do
     collection do
       get '/:name/:version' => 'components#assets', constraints: { version: /[^\/]+/ }
