@@ -8,6 +8,11 @@ if defined?(Rails)
   module <%= gem.module %>
     class Engine < ::Rails::Engine
       # Rails -> use vendor directory.
+      initializer "<%= gem.name %>.assets.precompile" do |app|
+        app.config.assets.precompile << Proc.new do |path, fn|
+          fn =~ /vendor\/assets\/(images|fonts)\/<%= gem.short_name %>/ && !%w(.js .css).include?(File.extname(path))
+        end
+      end
     end
   end
 end
