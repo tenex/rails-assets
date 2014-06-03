@@ -6,16 +6,18 @@ rails-assets:
     - rails-assets.shellyapp.com
   servers:
   servers:
-    app1:
-      size: large
-      puma: 4
+    db1:
+      size: small
       databases:
-      - postgresql
-      - redis
+        - postgresql
+        - redis
       whenever: true
+    app1:
+      size: small
+      puma: 4
     app2:
-      size: large
-      puma: 1
+      size: small
+      puma: 4
     worker1:
       size: large
       sidekiq: 1
