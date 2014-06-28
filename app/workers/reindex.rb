@@ -17,6 +17,9 @@ class Reindex
       end
     end
 
+    # Clear cache for components.json api endpoint
+    Rails.cache.delete('components_json')
+
     true
   end
 

@@ -12,5 +12,7 @@ require_relative '../app/workers/update_scheduler'
 module RailsAssets
   class Application < Rails::Application
     config.exceptions_app = self.routes
+
+    config.cache_store = :redis_store, ENV['REDIS_URL']
   end
 end

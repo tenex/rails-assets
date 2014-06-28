@@ -3,14 +3,9 @@ class ComponentsController < ApplicationController
     respond_to do |format|
       format.html {}
       format.json do
-        ids = Version.indexed.select(:component_id).
-          to_a.map(&:component_id)
-
-        components = Component.includes(:versions).references(:versions).
-          where(id: ids).
-          where("versions.build_status = 'indexed'").
-          select('components.*, versions.string').
-          to_a.map { |c| component_data(c) }
+        components = Rails.cache.fetch('components_json') do
+          ComponentHelper.generate_components_json
+        end
 
         render(json: components)
       end
@@ -71,15 +66,6 @@ class ComponentsController < ApplicationController
   end
 
   protected
-
-  def component_data(component)
-    {
-      name:         component.name,
-      description:  component.description,
-      homepage:     component.homepage,
-      versions:     component.versions.map(&:string)
-    }
-  end
 
   def component_params
     params.require(:component).permit(:name, :version)
