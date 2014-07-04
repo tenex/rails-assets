@@ -17,6 +17,7 @@ gem 'angular-semver-sort-rails'
 
 gem 'slim-rails'
 gem 'redis',      '~> 3.0.0'
+gem 'redis-rails', '~> 4.0.0'
 
 gem 'sidekiq'
 gem 'sidekiq-unique-jobs'
