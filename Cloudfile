@@ -19,5 +19,5 @@ rails-assets:
       size: small
       puma: 2
     worker1:
-      size: large
+      size: xlarge
       sidekiq: 1
