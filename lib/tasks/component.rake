@@ -81,6 +81,8 @@ namespace :component do
         if version.blank?
           to_remove << path
         end
+      else
+        to_remove << path
       end
     end
 
