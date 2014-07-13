@@ -86,6 +86,8 @@ namespace :component do
       end
     end
 
+    next if to_remove.blank?
+
     STDOUT.puts "This will delete:"
     STDOUT.puts to_remove.map { |p| " * #{p}\n" }
     STDOUT.print "Are you sure? (y/n) "
@@ -96,6 +98,33 @@ namespace :component do
       end
 
       STDOUT.puts "#{to_remove.size} gems deleted from filesystem"
+    end
+  end
+
+  desc "Removes all db entries without matching .gem file"
+  task :clean_db => [:environment] do
+    to_remove = []
+
+    gems = Dir[File.join(Figaro.env.data_dir, 'gems', '*.gem')]
+
+    Version.includes(:component).find_each do |version|
+      unless gems.include?(version.gem_path.to_s)
+        to_remove << version
+      end
+    end
+
+    next if to_remove.blank?
+
+    STDOUT.puts "This will delete from database:"
+    STDOUT.puts to_remove.map { |p| " * #{p.component.name}##{p.string}\n" }
+    STDOUT.print "Are you sure? (y/n) "
+    input = STDIN.gets.strip
+    if input == 'y'
+      to_remove.each do |version|
+        version.destroy
+      end
+
+      STDOUT.puts "#{to_remove.size} versions destroyed"
     end
   end
 
