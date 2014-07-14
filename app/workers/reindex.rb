@@ -104,7 +104,7 @@ class Reindex
     data = yield
 
     data.each do |d|
-      d[0] = "#{GEM_PREFIX}-#{d[0]}"
+      d[0] = "#{GEM_PREFIX}#{d[0]}"
       d << 'ruby'
     end
 
