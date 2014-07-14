@@ -101,6 +101,40 @@ namespace :component do
     end
   end
 
+  desc "Removes all gemspecs without matching .gem file"
+  task :clean_gemspecs => [:environment] do
+    to_remove = []
+
+    gems = Dir[File.join(
+      Figaro.env.data_dir, 'gems', '*.gem'
+    )].map { |s| s.split('/').last[0..-5] }
+
+    gemspecs = Dir[File.join(
+      Figaro.env.data_dir, 'quick', 'Marshal.4.8', '*.gemspec.rz'
+    )].map { |s| s.split('/').last[0..-12] }
+
+    (gemspecs - gems).each do |missing|
+      to_remove << File.join(
+        Figaro.env.data_dir, 'quick', 'Marshal.4.8',
+        missing + '.gemspec.rz'
+      )
+    end
+
+    next if to_remove.blank?
+
+    STDOUT.puts "This will delete:"
+    STDOUT.puts to_remove.map { |p| " * #{p}\n" }
+    STDOUT.print "Are you sure? (y/n) "
+    input = STDIN.gets.strip
+    if input == 'y'
+      to_remove.each do |path|
+        File.delete(path)
+      end
+
+      STDOUT.puts "#{to_remove.size} gemspecs deleted from filesystem"
+    end
+  end
+
   desc "Removes all db entries without matching .gem file"
   task :clean_db => [:environment] do
     to_remove = []
@@ -127,6 +161,9 @@ namespace :component do
       STDOUT.puts "#{to_remove.size} versions destroyed"
     end
   end
+
+  desc "Cleans .gem, .gemspec.rz, and database"
+  task :clean_all => [:clean_gems, :clean_gemspecs, :clean_db]
 
   desc "Reindex"
   task :reindex => [:environment] do
