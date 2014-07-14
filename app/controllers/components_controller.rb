@@ -36,7 +36,7 @@ class ComponentsController < ApplicationController
       render json: { message: 'Build failed for unknown reason' },
         status: :unprocessable_entity
     else
-      render json: component_data(component)
+      render json: ComponentHelper.component_data(component)
     end
   rescue Build::BuildError => e
       render json: { message: e.message },
