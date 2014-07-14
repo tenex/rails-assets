@@ -28,7 +28,7 @@ class MainController < ApplicationController
 
     gem_names.each do |name|
       if Component.needs_build?(name)
-        ::BuildVersion.perform_async(name, "latest")
+        ::UpdateComponent.perform_async(name)
       end
     end
 

@@ -6,6 +6,5 @@ class BuildVersion
   def perform(bower_name, version)
     Rails.logger.info "Building #{bower_name}##{version}..."
     Build::Converter.run!(bower_name, version)
-    ::UpdateComponent.perform_in(2.minutes, bower_name) if version == "latest"
   end
 end
