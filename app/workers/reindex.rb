@@ -6,11 +6,6 @@ class Reindex
   sidekiq_options queue: 'reindex', unique: true, retry: 0
 
   def perform(force = false)
-    if Version.pending_index.count == 0 && !force
-      Rails.logger.info "Nothing to reindex..."
-      return true
-    end
-
     Build::Locking.with_lock(:index) do
       Version.transaction do
         Version.pending_index.
