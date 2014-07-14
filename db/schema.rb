@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131228013000) do
+ActiveRecord::Schema.define(version: 20140713225251) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,14 +35,18 @@ ActiveRecord::Schema.define(version: 20131228013000) do
     t.datetime "updated_at"
     t.string   "build_status"
     t.text     "build_message"
-    t.text     "asset_paths",   default: [],    array: true
-    t.text     "main_paths",    default: [],    array: true
-    t.boolean  "rebuild",       default: false
+    t.text     "asset_paths",                default: [],    array: true
+    t.text     "main_paths",                 default: [],    array: true
+    t.boolean  "rebuild",                    default: false
     t.string   "bower_version"
+    t.string   "position",      limit: 1023
+    t.boolean  "prerelease",                 default: false
     t.index ["component_id"], :name => "fk__versions_component_id", :order => {"component_id" => :asc}
     t.index ["bower_version"], :name => "index_versions_on_bower_version", :order => {"bower_version" => :asc}
     t.index ["build_status"], :name => "index_versions_on_build_status", :order => {"build_status" => :asc}
     t.index ["component_id"], :name => "index_versions_on_component_id", :order => {"component_id" => :asc}
+    t.index ["position"], :name => "index_versions_on_position", :order => {"position" => :asc}
+    t.index ["prerelease"], :name => "index_versions_on_prerelease", :order => {"prerelease" => :asc}
     t.index ["rebuild"], :name => "index_versions_on_rebuild", :order => {"rebuild" => :asc}
     t.index ["string"], :name => "index_versions_on_string", :order => {"string" => :asc}
     t.foreign_key ["component_id"], "components", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_versions_component_id"

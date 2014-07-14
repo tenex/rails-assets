@@ -1,3 +1,5 @@
+require 'rubygems/version'
+
 class Version < ActiveRecord::Base
   extend Build::Utils
 
@@ -19,6 +21,38 @@ class Version < ActiveRecord::Base
   scope :string, lambda { |string|
     where(:string => self.fix_version_string(string))
   }
+
+  def gem_version
+    @gem_version ||= Gem::Version.new(string)
+  end
+
+  after_destroy :remove_component
+
+  def remove_component
+    if component.versions.count == 0
+      component.destroy
+    end
+  end
+
+  before_save :update_caches
+
+  def update_caches
+    self.position = gem_version.segments.to_a.map do |s|
+      Integer === s ?
+        ".#{s.to_s[0...14].rjust(14, '0')}" :
+        "-#{s[0...14].ljust(14, '0')}"
+    end.join('') + '.'
+
+    self.prerelease = gem_version.prerelease?
+
+    self
+  end
+
+  def self.update_caches
+    find_each do |version|
+      version.update_caches.save!
+    end
+  end
 
   def gem
     @gem ||= Build::GemComponent.new(name: "#{GEM_PREFIX}#{component.name}", version: string)
@@ -48,6 +82,13 @@ class Version < ActiveRecord::Base
     Pathname.new(Figaro.env.data_dir).join(
       'gems',
       "#{GEM_PREFIX}#{component.name}-#{string}.gem"
+    )
+  end
+
+  def gemspec_path
+    Pathname.new(Figaro.env.data_dir).join(
+      'quick', 'Marshal.4.8',
+      "#{GEM_PREFIX}#{component.name}-#{string}.gemspec.rz"
     )
   end
 end
