@@ -32,6 +32,10 @@ class MainController < ApplicationController
       end
     end
 
+    if Version.pending_index.count > 0
+      Reindex.new.perform
+    end
+
     gems = Component.where(name: gem_names).to_a.flat_map do |component|
       component.versions.builded.map do |v|
         {
