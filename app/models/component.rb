@@ -11,10 +11,10 @@ class Component < ActiveRecord::Base
     if component = where(name: name).first
       if version.blank?
         [component]
-      elsif version = component.versions.string(version).first
-        [component, version]
+      elsif the_version = component.versions.string(version).first
+        [component, the_version]
       else
-        [component, component.versions.new(string: version)]
+        [component, component.versions.build(string: version)]
       end
     else
       component = new(name: name)
@@ -22,7 +22,7 @@ class Component < ActiveRecord::Base
       if version.blank?
         [component]
       else
-        [component, component.versions.new(string: version)]
+        [component, component.versions.build(string: version)]
       end
     end
   end
