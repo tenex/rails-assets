@@ -17,7 +17,7 @@ class Component < ActiveRecord::Base
         [component, component.versions.build(string: version)]
       end
     else
-      component = new(name: name)
+      component = create(name: name)
 
       if version.blank?
         [component]

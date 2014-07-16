@@ -87,6 +87,20 @@ module Build
 
         yield results
       end
+    rescue Build::BowerError => e
+      gem_name = Build::Utils.fix_gem_name(component_name, component_version)
+      gem_version = Build::Utils.fix_version_string(component_version)
+      component, version = Component.get(gem_name, gem_version)
+
+      if version
+        version.build_status = 'failed'
+        version.build_message = e.message
+        binding.pry
+        version.save!
+        nil
+      else
+        raise
+      end
     end
 
     # Public: Persists versions and .gem files returned from convert! method
