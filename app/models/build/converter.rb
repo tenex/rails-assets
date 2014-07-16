@@ -95,7 +95,6 @@ module Build
       if version
         version.build_status = 'failed'
         version.build_message = e.message
-        binding.pry
         version.save!
         nil
       else
