@@ -17,20 +17,17 @@ class ComponentsController < ApplicationController
 
   def create
     name, version = component_params[:name], component_params[:version]
-
     name = Build::Utils.fix_gem_name(name, version).gsub('/', '--')
+
+    component, ver = get_version(name, version)
+
+    if ver.present? && ver.build_status == "failed"
+      ver.destroy
+    end
 
     Build::Converter.run!(name, version)
 
-    component = Component.find_by(name: name)
-    ver = if version.present?
-      component.versions.
-        where(string: Build::Utils.fix_version_string(version)).first
-    else
-      component.versions.last
-    end
-
-    ver.reload
+    component, ver = get_version(name, version)
 
     if ver.blank?
       render json: { message: 'Build failed for unknown reason' },
@@ -47,7 +44,6 @@ class ComponentsController < ApplicationController
     component = Component.find_by!(name: params[:name])
     version = component.versions.find_by!(string: params[:version])
 
-    main_paths = version.main_paths
     paths = version.asset_paths.map
 
     # TODO: exclude manifest assets from asset_paths at all...
@@ -63,6 +59,27 @@ class ComponentsController < ApplicationController
     end
 
     render json: paths
+  end
+
+
+  def get_version(name, version)
+
+    component = Component.find_by(name: name)
+
+    return unless component.present?
+
+    ver = if version.present?
+      component.versions.
+        where(string: Build::Utils.fix_version_string(version)).first
+    else
+      component.versions.last
+    end
+
+    return unless ver.present?
+
+    ver.reload
+
+    [component, ver]
   end
 
   protected
