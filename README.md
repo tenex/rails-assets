@@ -38,6 +38,6 @@ Rails Assets *used to* be the fork of [Gem in a Box](https://github.com/geminabo
 
 ---
 
-Created by [@teamon](http://github.com/teamon), [@sheerun](http://github.com/sheerun), and [@porada](http://github.com/porada).
+Created by [@teamon](http://github.com/teamon) and [@porada](http://github.com/porada). Maintained by [@sheerun](http://github.com/sheerun).
 
 Thanks for help to [@jandudulski](http://github.com/jandudulski) and [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors).
