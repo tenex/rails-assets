@@ -17,41 +17,43 @@ class MainController < ApplicationController
 
   def dependencies
     if params[:gems].blank?
-      params[:json] ? render(json: []) : render(text: Marshal.dump([]))
-      return
-    end
+      gems = []
+    else
+      gem_names = params[:gems].to_s
+        .split(",")
+        .select {|e| e.start_with?(GEM_PREFIX) }
+        .map { |e| e.gsub(GEM_PREFIX, "") }
 
-    gem_names = params[:gems].to_s
-      .split(",")
-      .select {|e| e.start_with?(GEM_PREFIX) }
-      .map { |e| e.gsub(GEM_PREFIX, "") }
-
-    gem_names.each do |name|
-      if Component.needs_build?(name)
-        ::BuildVersion.new.perform(name, 'latest') rescue nil
-        ::UpdateComponent.perform_async(name)
+      gem_names.each do |name|
+        if Component.needs_build?(name)
+          ::BuildVersion.new.perform(name, 'latest') rescue nil
+          ::UpdateComponent.perform_async(name)
+        end
       end
-    end
 
-    if Version.pending_index.count > 0
-      Reindex.new.perform
-    end
-
-    gems = Component.where(name: gem_names).to_a.flat_map do |component|
-      component.versions.builded.map do |v|
-        {
-          name:         "#{GEM_PREFIX}#{component.name}",
-          platform:     "ruby",
-          number:       v.string,
-          dependencies: v.dependencies || {}
-        }
+      if Version.pending_index.count > 0
+        Reindex.new.perform
       end
+
+      gems = Component.where(name: gem_names).to_a.flat_map do |component|
+        component.versions.builded.map do |v|
+          {
+            name:         "#{GEM_PREFIX}#{component.name}",
+            platform:     "ruby",
+            number:       v.string,
+            dependencies: v.dependencies || {}
+          }
+        end
+      end
+
+      Rails.logger.info(params)
+      Rails.logger.info(gems)
     end
 
-    Rails.logger.info(params)
-    Rails.logger.info(gems)
-
-    params[:json] ? render(json: gems) : render(text: Marshal.dump(gems))
+    respond_to do |format|
+      format.all { render text: Marshal.dump(gems) }
+      format.json { render json: gems }
+    end
   end
 
   def packages
