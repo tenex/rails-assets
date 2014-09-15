@@ -69,15 +69,7 @@ module Build
           mappings(
             ['foo.js'], ['foo.js']
           )['vendor/assets/javascripts/foobar.js']
-        ).to include('require foobar/foo')
-      end
-
-      it 'does not include extensions in required files' do
-        expect(
-          mappings(
-            ['foo.js'], ['foo.js']
-          )['vendor/assets/javascripts/foobar.js']
-        ).to_not include('require foobar/foo.js')
+        ).to include('require foobar/foo.js')
       end
 
       it 'generates manifest for stylesheet files' do
@@ -94,15 +86,7 @@ module Build
           mappings(
             ['foo.css'], ['foo.css']
           )['vendor/assets/stylesheets/foobar.scss']
-        ).to include("@import 'foobar/foo';")
-      end
-
-      it 'does not include extensions in required files' do
-        expect(
-          mappings(
-            ['foo.css'], ['foo.css']
-          )['vendor/assets/stylesheets/foobar.scss']
-        ).to_not include("@import 'foobar/foo.scss';")
+        ).to include("@import 'foobar/foo.scss';")
       end
 
       it 'flattens paths for if main javascript is set' do
@@ -266,37 +250,53 @@ module Build
       end
     end
 
-    context '#shorten_filename' do
-      it 'leaves custom extensions' do
-        filename = Transformer.shorten_filename(
-          'jquery.cookie.css', Path.extension_classes[:stylesheets]
+    context '#transform_filename' do
+      it 'leaves less extension' do
+        filename = Transformer.transform_filename(
+          'jquery.cookie.less'
         )
 
-        expect(filename).to eq('jquery.cookie')
+        expect(filename).to eq('jquery.cookie.less')
       end
 
-      it 'removes all non-custom extension' do
-        filename = Transformer.shorten_filename(
-          'jquery.js.cookie.css.scss', Path.extension_classes[:stylesheets]
+      it 'leaves sass extension' do
+        filename = Transformer.transform_filename(
+          'jquery.cookie.sass'
         )
 
-        expect(filename).to eq('jquery.js.cookie')
+        expect(filename).to eq('jquery.cookie.sass')
+      end
+
+      it 'converts css extension to scss' do
+        filename = Transformer.transform_filename(
+          'jquery.cookie.css'
+        )
+
+        expect(filename).to eq('jquery.cookie.scss')
+      end
+
+      it 'leaves all non-custom extension' do
+        filename = Transformer.transform_filename(
+          'jquery.js.cookie.css.scss'
+        )
+
+        expect(filename).to eq('jquery.js.cookie.css.scss')
       end
 
       it 'also deals with paths' do
-        filename = Transformer.shorten_filename(
-          '/foo/bar/jquery.cookie.sass', Path.extension_classes[:stylesheets]
+        filename = Transformer.transform_filename(
+          '/foo/bar/jquery.cookie.sass'
         )
 
-        expect(filename).to eq('/foo/bar/jquery.cookie')
+        expect(filename).to eq('/foo/bar/jquery.cookie.sass')
       end
 
       it 'deals with Path object' do
-        filename = Transformer.shorten_filename(
-          Path.new('/jquery.cookie.sass'), Path.extension_classes[:stylesheets]
+        filename = Transformer.transform_filename(
+          Path.new('/jquery.cookie.sass')
         )
 
-        expect(filename).to eq('/jquery.cookie')
+        expect(filename).to eq('/jquery.cookie.sass')
       end
     end
   end

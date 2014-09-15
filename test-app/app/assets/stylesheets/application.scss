@@ -1,15 +1,14 @@
-/*
- *= require leaflet
- *= require select2
- *
- *= require_self
- *= require_tree .
- */
+@import 'leaflet';
+@import 'select2';
+@import 'colorbox';
+@import 'bourbon';
 
 body {
   font-family: sans-serif;
   overflow: hidden;
+  @include linear-gradient(to right, #eee, #888);
 }
+
 #results {
   width: 300px;
   border: 1px solid black;
@@ -18,12 +17,14 @@ body {
   float: left;
   margin-right: 50px;
 }
-td,th {
+
+td, th {
   padding: 5px;
   border: 1px solid black;
-  text-align: center
+  text-align: center;
 }
-td { color: #fff;}
+
+td { color: #fff; }
 .ok { background-color: green; }
 .error { background-color: red; }
 .pending { background-color: orange; }

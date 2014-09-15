@@ -167,7 +167,7 @@ module Build
           extension: 'js',
           processor: lambda { |files|
             files.map do |filename|
-              "//= require #{shorten_filename(filename, Path.extension_classes[:javascripts])}"
+              "//= require #{transform_filename(filename)}"
             end.join("\n")
           }
         },
@@ -175,17 +175,15 @@ module Build
           extension: 'scss',
           processor: lambda { |files|
             files.map { |filename|
-              "@import '#{shorten_filename(filename, Path.extension_classes[:stylesheets])}';"
+              "@import '#{transform_filename(filename)}';"
             }.join("\n") + "\n"
           }
         }
       }
     end
 
-    def shorten_filename(filename, extensions)
-      filename.to_s.split('.').reverse.
-        drop_while { |e| extensions.include?(e.downcase) }.
-        reverse.join('.')
+    def transform_filename(filename)
+      filename.to_s.gsub(/\.css$/, '.scss')
     end
   end
 end

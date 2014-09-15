@@ -174,7 +174,7 @@ describe Build::Converter do
       file_contains "vendor/assets/stylesheets/colorbox/colorbox.scss",
         'background:image-url("colorbox/example1/images/overlay.png")'
       file_contains "vendor/assets/stylesheets/colorbox.scss",
-        "@import 'colorbox/colorbox';"
+        "@import 'colorbox/colorbox.scss';"
     end
 
     # main is hash

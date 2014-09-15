@@ -8,6 +8,7 @@
 #= require select2
 #= require d3
 #= require underscore
+#= require angular-strap
 
 assert = (label, cond) ->
   res = false
