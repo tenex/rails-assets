@@ -200,6 +200,9 @@ module Build
         transformations = Hash[[
           [source_file, target_file],
           [Path.new('foo/bar.png'), Path.new('vendor/assets/images/foo.png')],
+          [Path.new('foo/before.png'), Path.new('vendor/assets/images/before.png')],
+          [Path.new('foo/around.png'), Path.new('vendor/assets/images/around.png')],
+          [Path.new('foo/after.png'), Path.new('vendor/assets/images/after.png')],
           [Path.new('foo/spam.eot'), Path.new('vendor/assets/fonts/spam.eot')],
           [Path.new('foo/spam.woff'), Path.new('vendor/assets/fonts/spam.woff')],
           [Path.new('foo/spam.ttf'), Path.new('vendor/assets/fonts/spam.ttf')],
@@ -216,11 +219,17 @@ module Build
           }
         }
         body{background-image:url(foo/bar.png)}
+        body{background-image:url( foo/before.png)}
+        body{background-image:url( foo/around.png )}
+        body{background-image:url(foo/after.png )}
         CSS
 
         File.write('/tmp/style.css', css_sample)
         FileUtils.mkdir_p('/tmp/foo')
         File.write('/tmp/foo/bar.png', "BINARY")
+        File.write('/tmp/foo/before.png', "BINARY")
+        File.write('/tmp/foo/around.png', "BINARY")
+        File.write('/tmp/foo/after.png', "BINARY")
         %w(eot woff ttf otf svg).each do |font_ext|
           File.write("/tmp/foo/spam.#{font_ext}", "BINARY")
         end
@@ -229,6 +238,9 @@ module Build
         actual_content = File.read('/tmp/style.scss')
         [
           'background-image:image-url("foo.png")',
+          'background-image:image-url("before.png")',
+          'background-image:image-url("around.png")',
+          'background-image:image-url("after.png")',
           'src:font-url("spam.eot")',
           'src: font-url("spam.eot?#iefix") format(\'embedded-opentype\')',
           'font-url("spam.woff") format(\'woff\')',
