@@ -70,7 +70,8 @@ module Build
             unless manifest_paths.empty?
               [
                 generator[:processor].call(manifest_paths),
-                target_dir.join("#{gem_name}.#{generator[:extension]}")
+                
+                target_dir.join(manifest_path(gem_name, generator))
               ]
             end
           end
@@ -184,6 +185,14 @@ module Build
 
     def transform_filename(filename)
       filename.to_s.gsub(/\.css$/, '.scss')
+    end
+
+    def manifest_path(gem_name, generator)
+      if gem_name.end_with?(generator[:extension])
+        "#{gem_name}/index.#{generator[:extension]}"
+      else
+        "#{gem_name}.#{generator[:extension]}"
+      end
     end
   end
 end

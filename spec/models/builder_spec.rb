@@ -197,6 +197,13 @@ describe Build::Converter do
       gem_file "vendor/assets/javascripts/marionette/backbone.marionette.js"
     end
 
+    component "bignumber.js", "1.4.1" do
+      gem_file "vendor/assets/javascripts/bignumber.js/index.js"
+      gem_file "vendor/assets/javascripts/bignumber.js/bignumber.js"
+      file_contains "vendor/assets/javascripts/bignumber.js/index.js",
+        "require bignumber.js/bignumber.js"
+    end
+
     component "building-blocks", "1.3.1" do
       # This line failed to parse correctly because of a space
       # before the url. The original `url( building-blocks/...)`,
@@ -205,7 +212,8 @@ describe Build::Converter do
     end
 
     component "jquery", '2.0.3' do
-      file_contains 'rails-assets-jquery.gemspec', 'spec.license       = "MIT"'
+      file_contains 'rails-assets-jquery.gemspec',
+        'spec.license       = "MIT"'
     end
   end
 end

@@ -194,6 +194,20 @@ module Build
             find_main_asset(:stylesheets, 'bar')
         ).to eq(Path.new('dist1/bar.css'))
       end
+
+      it 'supports gems with .js extension' do
+        expect(
+          Paths.new(['dist/foo.js']).
+            find_main_asset(:javascripts, 'foo.js')
+        ).to eq(Path.new('dist/foo.js'))
+      end
+
+      it 'supports gems with .css extension' do
+        expect(
+          Paths.new(['dist/foo.css']).
+            find_main_asset(:stylesheets, 'foo.css')
+        ).to eq(Path.new('dist/foo.css'))
+      end
     end
   end
 

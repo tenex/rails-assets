@@ -60,8 +60,10 @@ module Build
     def find_main_asset(type, gem_name)
       paths_by_extension = Path.extension_classes[type].map do |ext|
         self.select do |path|
-          path.extension?([ext]) &&
-            path.basename.to_s.split('.').first == gem_name
+          path.extension?([ext]) && (
+            path.basename.to_s.split('.').first == gem_name ||
+            path.basename.to_s == gem_name
+          )
         end
       end
 
