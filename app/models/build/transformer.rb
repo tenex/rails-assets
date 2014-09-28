@@ -168,16 +168,16 @@ module Build
           extension: 'js',
           processor: lambda { |files|
             files.map do |filename|
-              "//= require #{transform_filename(filename)}"
-            end.join("\n")
+              "//= require #{transform_filename(filename)}\n"
+            end.join("")
           }
         },
         stylesheets: {
           extension: 'scss',
           processor: lambda { |files|
             files.map { |filename|
-              "@import '#{transform_filename(filename)}';"
-            }.join("\n") + "\n"
+              "@import '#{transform_filename(filename)}';\n"
+            }.join("")
           }
         }
       }
@@ -188,11 +188,7 @@ module Build
     end
 
     def manifest_path(gem_name, generator)
-      if gem_name.end_with?(generator[:extension])
-        "#{gem_name}/index.#{generator[:extension]}"
-      else
-        "#{gem_name}.#{generator[:extension]}"
-      end
+      "#{gem_name}.#{generator[:extension]}"
     end
   end
 end

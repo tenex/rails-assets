@@ -9,6 +9,7 @@
 #= require d3
 #= require underscore
 #= require angular-strap
+#= require bignumber.js
 
 assert = (label, cond) ->
   res = false
@@ -51,3 +52,4 @@ $ ->
     $("#select2").select2()
   assert "d3", -> d3.select("body")
   assert "underscore", -> _([1]).map
+  assert "bignumber", -> BigNumber
