@@ -200,7 +200,7 @@ describe Build::Converter do
     component "bignumber.js", "1.4.1" do
       gem_file "vendor/assets/javascripts/bignumber.js/index.js"
       gem_file "vendor/assets/javascripts/bignumber.js/bignumber.js"
-      file_contains "vendor/assets/javascripts/bignumber.js/index.js",
+      file_contains "vendor/assets/javascripts/bignumber.js.js",
         "require bignumber.js/bignumber.js"
     end
 
