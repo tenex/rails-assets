@@ -10,6 +10,11 @@ Gem::Specification.new do |spec|
   spec.description   = <%= gem.description.to_s.dump %>
   spec.summary       = <%= gem.description.to_s.dump %>
   spec.homepage      = <%= gem.homepage.to_s.dump %>
+<% if gem.license? %>
+  spec.license       = <%= gem.license.dump %>
+<% elsif gem.licenses? %>
+  spec.licenses      = <%= gem.licenses.to_s %>
+<% end %>
 
   spec.files         = `find ./* -type f | cut -b 3-`.split($/)
   spec.require_paths = ["lib"]

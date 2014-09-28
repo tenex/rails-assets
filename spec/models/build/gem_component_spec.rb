@@ -54,6 +54,32 @@ module Build
       its(:short_name) { should == 'srigi--jquery' }
       its(:version) { should == '2.0.3' }
       its(:module) { should == 'RailsAssetsSrigiJquery' }
+      its(:license) { should == "MIT" }
+      its(:license?) { should == true }
+    end
+
+    let(:other_bower_component) {
+      BowerComponent.new(Path.new('/tmp'), JSON.parse('{
+        "endpoint": {
+          "name": "jquery",
+          "source": "srigi/jquery",
+          "target": "~2.0.3"
+        },
+        "canonicalDir": "/Users/sheerun/Source/rails-assets/bower_components/jquery",
+        "pkgMeta": {
+          "name": "jquery",
+          "version": "2.0.3",
+          "license": ["MIT", "GPL"]
+        }
+      }'))
+    }
+
+    context '#new (v2)' do
+      subject { other_bower_component.gem }
+
+      its(:licenses) { should == ["MIT", "GPL"] }
+      its(:license?) { should == false }
+      its(:licenses?) { should == true }
     end
   end
 end

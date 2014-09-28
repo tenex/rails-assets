@@ -203,5 +203,9 @@ describe Build::Converter do
       # was being converted to `url(.)`
       file_contains "vendor/assets/stylesheets/building-blocks/style/buttons.scss", "background: image-url(\"building-blocks/style/buttons/images/ui/shadow.png\") repeat-x left bottom / auto 100%;"
     end
+
+    component "jquery", '2.0.3' do
+      file_contains 'rails-assets-jquery.gemspec', 'spec.license       = "MIT"'
+    end
   end
 end

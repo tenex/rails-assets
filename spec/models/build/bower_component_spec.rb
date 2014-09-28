@@ -82,7 +82,8 @@ module Build
           "main": {
             "scripts": ["jquery.js"],
             "stylesheets": "jquery.css"
-          }
+          },
+          "license": ["MIT", "GPL"]
         }
       }')
     }
@@ -96,6 +97,12 @@ module Build
         expect(subject.main).to eq([
           "jquery.js",
           "jquery.css"
+        ])
+      end
+
+      it 'parses correctly licenses as array' do
+        expect(subject.license).to eq([
+          'MIT', 'GPL'
         ])
       end
     end

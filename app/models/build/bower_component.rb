@@ -17,6 +17,10 @@ module Build
       data['endpoint']['name']
     end
 
+    def license
+      data['pkgMeta']['license']
+    end
+
     def user
       full_name.split('/')[0]
     end
