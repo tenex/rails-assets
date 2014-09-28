@@ -9,7 +9,8 @@ module Build
         stylesheets: ['sass', 'scss', 'less', 'css', 'styl'],
         images: ['png', 'jpg', 'jpeg', 'gif', 'cur'],
         fonts: ['woff', 'ttf', 'otf', 'eot', 'svg'],
-        flash: ['swf']
+        flash: ['swf'],
+        templates: ['html']
       }
     end
 
