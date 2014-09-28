@@ -196,5 +196,12 @@ describe Build::Converter do
       gem_file "vendor/assets/javascripts/marionette.js"
       gem_file "vendor/assets/javascripts/marionette/backbone.marionette.js"
     end
+
+    component "building-blocks", "1.3.1" do
+      # This line failed to parse correctly because of a space
+      # before the url. The original `url( building-blocks/...)`,
+      # was being converted to `url(.)`
+      file_contains "vendor/assets/stylesheets/building-blocks/style/buttons.scss", "background: image-url(\"building-blocks/style/buttons/images/ui/shadow.png\") repeat-x left bottom / auto 100%;"
+    end
   end
 end
