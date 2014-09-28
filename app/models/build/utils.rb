@@ -6,11 +6,17 @@ module Build
     # Returns The Hash result if command succeeded.
     # Raises The BowerError if command failed.
     def bower(path, *command)
-      command = "#{BOWER_BIN} #{command.join(' ')} --json"
-      command += " --config.tmp=#{Figaro.env.bower_tmp}" if Figaro.env.bower_tmp.present?
-      command += " --config.storage.packages=#{Figaro.env.bower_cache}" if Figaro.env.bower_cache.present?
-      command += " --config.interactive=false"
-      JSON.parse(Utils.sh(path, command))
+
+      Dir.mktmpdir "bower" do |tmp|
+        command = "#{BOWER_BIN} #{command.join(' ')} --json"
+        command += " --config.tmp=#{tmp}/tmp"
+        command += " --config.storage.packages=#{tmp}/cache"
+        command += " --config.interactive=false"
+
+        Rails.logger.info(command)
+
+        JSON.parse(Utils.sh(path, command))
+      end
     rescue ShellError => e
       raise BowerError.from_shell_error(e)
     end
@@ -111,7 +117,7 @@ module Build
       end
 
       if version[0] == "^"
-        version = version[1..-1] 
+        version = version[1..-1]
 
         major = version.split('.')[0].to_i
 
@@ -179,7 +185,7 @@ module Build
 
         version_first_token = res[1..3].reject(&:nil?).map(&:to_i)
         version_last_token = res[4..6].reject(&:nil?).map(&:to_i)
-         
+
         version_last_token[version_last_token.size - 1] += 1
 
         ">= #{version_first_token.join(".")} < #{version_last_token.join(".")}"
