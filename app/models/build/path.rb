@@ -8,7 +8,8 @@ module Build
         javascripts: ['coffee', 'js', 'json'],
         stylesheets: ['sass', 'scss', 'less', 'css', 'styl'],
         images: ['png', 'jpg', 'jpeg', 'gif', 'cur'],
-        fonts: ['woff', 'ttf', 'otf', 'eot', 'svg']
+        fonts: ['woff', 'ttf', 'otf', 'eot', 'svg'],
+        flash: ['swf']
       }
     end
 

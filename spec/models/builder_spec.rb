@@ -233,5 +233,9 @@ describe Build::Converter do
       file_contains 'vendor/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers-flags.less',
         'image-url("bootstrap-formhelpers/img/bootstrap-formhelpers-currencies.flags.png")'
     end
+
+    component "zeroclipboard", "2.1.6", tags: :focus do
+      gem_file 'vendor/assets/flash/zeroclipboard/ZeroClipboard.swf'
+    end
   end
 end

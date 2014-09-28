@@ -34,11 +34,11 @@ module Build
     end
 
     def license
-      bower_component.license.to_s
+      bower_component.license.to_s[0...64]
     end
 
     def licenses
-      bower_component.license.map(&:to_s)
+      bower_component.license.map(&:to_s).map { |s| s[0...64] }
     end
 
     def module

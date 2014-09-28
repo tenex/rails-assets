@@ -42,8 +42,7 @@ module Build
         is_unsupported
       end.sort_by(&:to_s))
 
-      transformations = [:javascripts, :stylesheets,
-                         :images, :fonts].flat_map do |type|
+      transformations = Path.extension_classes.keys.flat_map do |type|
         main_paths = all_main_paths.select(:member_of?, type)
 
         target_dir = Path.new.join('vendor', 'assets', type.to_s)
