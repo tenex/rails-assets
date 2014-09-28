@@ -134,9 +134,12 @@ module Build
       transformations.values
     end
 
+    def exist_relative_path?(relative_path, source_path, transformations)
+      transformations.has_key?(source_path.append_relative_path(relative_path))
+    end
+
     def transform_relative_path(ext_class, relative_path, source_path, transformations)
-      mapping = Hash[transformations]
-      new_img = mapping[source_path.append_relative_path(relative_path)]
+      new_img = transformations[source_path.append_relative_path(relative_path)]
       Path.new(new_img.to_s.sub(/.*?vendor\/assets\/#{ext_class}\//, ""))
     end
 
@@ -151,7 +154,11 @@ module Build
           new_source.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
           new_source.gsub! /(?<!-)url\(\s*(["']*)([^\)]+\.(?:#{extensions.join('|')}))(\??#?[^\s"'\)]*)\1\s*\)/i do |match|
 
-            "#{asset_type}-url(\"#{transform_relative_path(ext_class, $2, file_name, transformations)}#{$3}\")"
+            if exist_relative_path?($2, file_name, transformations)
+              "#{asset_type}-url(\"#{transform_relative_path(ext_class, $2, file_name, transformations)}#{$3}\")"
+            else
+              match.to_s
+            end
 
           end
         end

@@ -7,7 +7,7 @@ describe Build::Converter do
     def self.component(name, version = nil, opts = {}, &block)
       gem_name = opts[:gem_name] || name
 
-      it "properly compile #{name} #{version} to #{gem_name}" do
+      it "properly compile #{name} #{version} to #{gem_name}", opts[:tags] do
         STDERR.puts "\n\e[34mBuilding package #{name} #{version}\e[0m"
 
         version = Build::Converter.run!(name, version)
@@ -49,8 +49,18 @@ describe Build::Converter do
 
     def file_contains(path, fragment)
       log "Checking contents of #{path}"
-      contents = File.read(File.join(@gem_root, path))
-      expect(contents).to include(fragment)
+      path = File.join(@gem_root, path)
+
+      if File.exist?(path)
+        contents = File.read(path)
+        expect(contents).to include(fragment)
+      else
+        log(@gem_root.to_s)
+        log(Dir.glob("#{File.dirname(@gem_root)}/**/*").
+          map { |p| p.to_s.gsub(@gem_root.to_s, '') }.
+          join("\n"))
+        raise "Cannot find file: #{path}"
+      end
     end
 
     component "angular", "1.2.0-rc.1" do
@@ -198,7 +208,7 @@ describe Build::Converter do
     end
 
     component "bignumber.js", "1.4.1" do
-      gem_file "vendor/assets/javascripts/bignumber.js/index.js"
+      gem_file "vendor/assets/javascripts/bignumber.js.js"
       gem_file "vendor/assets/javascripts/bignumber.js/bignumber.js"
       file_contains "vendor/assets/javascripts/bignumber.js.js",
         "require bignumber.js/bignumber.js"
@@ -214,6 +224,14 @@ describe Build::Converter do
     component "jquery", '2.0.3' do
       file_contains 'rails-assets-jquery.gemspec',
         'spec.license       = "MIT"'
+    end
+
+    component 'bootstrap-formhelpers', '2.3.0' do
+      file_contains 'vendor/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers-flags.less',
+        'url(../img/eu.png)'
+
+      file_contains 'vendor/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers-flags.less',
+        'image-url("bootstrap-formhelpers/img/bootstrap-formhelpers-currencies.flags.png")'
     end
   end
 end
