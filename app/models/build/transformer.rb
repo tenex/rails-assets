@@ -37,7 +37,7 @@ module Build
         ))
 
         is_unsupported = file.to_s.
-          match(/(gzip|map|nuspec|gz|jar|php|orig|pre|post|sh|cfg|md|txt|~)$/)
+          match(/(gzip|map|nuspec|gz|jar|php|orig|pre|post|sh|cfg|md|txt|~|zip|bak|5|git-id|in|ls|map|min|new|old|rej|sample|example)$/)
 
         is_unsupported ||= %w(
           bower.json
