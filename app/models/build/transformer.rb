@@ -27,11 +27,24 @@ module Build
     #   each transform is in form [source_path, target_path] or [source, target_path]
     def compute_transformations(gem_name, all_source_paths, all_main_paths = Paths.new)
       all_source_paths = Paths.new(all_source_paths.reject do |file|
+
         has_unminified = all_source_paths.
           include?(Path.new(file.to_s.sub('.min.', '.')))
-        in_special_dir = file.in_directory?(
-          %w(spec test perf minified docs examples min))
-        is_unsupported = file.to_s.match(/(gzip|map|nuspec|gz|jar|php|orig|pre|post|sh|cfg|md|txt|~)$/)
+
+        in_special_dir = file.in_directory?( %w(
+          spec test perf minified docs examples min
+          node_modules bower_components
+        ))
+
+        is_unsupported = file.to_s.
+          match(/(gzip|map|nuspec|gz|jar|php|orig|pre|post|sh|cfg|md|txt|~)$/)
+
+        is_unsupported ||= %w(
+          bower.json
+          component.json
+          package.json
+          composer.json
+        ).include?(file.to_s.split('/').last)
 
         main_in_same_dir = all_main_paths.map(:dirname).any? do |dir|
           file.descendant?(dir)
@@ -45,7 +58,7 @@ module Build
       transformations = Path.extension_classes.keys.flat_map do |type|
         main_paths = all_main_paths.select(:member_of?, type)
 
-        target_dir = Path.new.join('vendor', 'assets', type.to_s)
+        target_dir = Path.new.join('app', 'assets', type.to_s)
 
         source_paths = all_source_paths.select(:member_of?, type)
 
@@ -139,7 +152,7 @@ module Build
 
     def transform_relative_path(ext_class, relative_path, source_path, transformations)
       new_img = transformations[source_path.append_relative_path(relative_path)]
-      Path.new(new_img.to_s.sub(/.*?vendor\/assets\/#{ext_class}\//, ""))
+      Path.new(new_img.to_s.sub(/.*?app\/assets\/#{ext_class}\//, ""))
     end
 
     def process_asset(file_name, source, transformations)

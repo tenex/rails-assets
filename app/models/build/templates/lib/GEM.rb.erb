@@ -7,7 +7,7 @@ require <%= dep_name.dump %>
 if defined?(Rails)
   module <%= gem.module %>
     class Engine < ::Rails::Engine
-      # Rails -> use vendor directory.
+      # Rails -> use app/assets directory.
     end
   end
 end

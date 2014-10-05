@@ -64,75 +64,75 @@ describe Build::Converter do
     end
 
     component "angular", "1.2.0-rc.1" do
-      gem_file "vendor/assets/javascripts/angular.js"
-      gem_file "vendor/assets/javascripts/angular/angular.js"
+      gem_file "app/assets/javascripts/angular.js"
+      gem_file "app/assets/javascripts/angular/angular.js"
     end
 
     component "angular", "1.0.7" do
-      gem_file "vendor/assets/javascripts/angular.js"
-      gem_file "vendor/assets/javascripts/angular/angular.js"
+      gem_file "app/assets/javascripts/angular.js"
+      gem_file "app/assets/javascripts/angular/angular.js"
     end
 
     component "sugar", "1.3.9" do
-      gem_file "vendor/assets/javascripts/sugar.js"
-      gem_file "vendor/assets/javascripts/sugar/sugar-full.development.js"
-      file_contains 'vendor/assets/javascripts/sugar.js', 'sugar/sugar.min'
+      gem_file "app/assets/javascripts/sugar.js"
+      gem_file "app/assets/javascripts/sugar/sugar-full.development.js"
+      file_contains 'app/assets/javascripts/sugar.js', 'sugar/sugar.min'
     end
 
     component "purl", "2.3.1" do
-      gem_file "vendor/assets/javascripts/purl.js"
-      gem_file "vendor/assets/javascripts/purl/purl.js"
+      gem_file "app/assets/javascripts/purl.js"
+      gem_file "app/assets/javascripts/purl/purl.js"
     end
 
     component "angular-mousewheel", "1.0.2" do
-      gem_file "vendor/assets/javascripts/angular-mousewheel.js"
-      gem_file "vendor/assets/javascripts/angular-mousewheel/mousewheel.js"
+      gem_file "app/assets/javascripts/angular-mousewheel.js"
+      gem_file "app/assets/javascripts/angular-mousewheel/mousewheel.js"
     end
 
 
     component "leaflet", "0.6.2" do
-      gem_file "vendor/assets/javascripts/leaflet.js"
-      gem_file "vendor/assets/javascripts/leaflet/leaflet.js"
+      gem_file "app/assets/javascripts/leaflet.js"
+      gem_file "app/assets/javascripts/leaflet/leaflet.js"
 
-      gem_file "vendor/assets/stylesheets/leaflet/leaflet.scss"
-      gem_file "vendor/assets/stylesheets/leaflet/leaflet.ie.scss"
-      gem_file "vendor/assets/stylesheets/leaflet.scss"
-      file_contains "vendor/assets/stylesheets/leaflet/leaflet.scss",
+      gem_file "app/assets/stylesheets/leaflet/leaflet.scss"
+      gem_file "app/assets/stylesheets/leaflet/leaflet.ie.scss"
+      gem_file "app/assets/stylesheets/leaflet.scss"
+      file_contains "app/assets/stylesheets/leaflet/leaflet.scss",
         "background-image: image-url"
 
-      gem_file "vendor/assets/images/leaflet/dist/images/layers-2x.png"
-      gem_file "vendor/assets/images/leaflet/dist/images/layers.png"
-      gem_file "vendor/assets/images/leaflet/dist/images/marker-icon-2x.png"
-      gem_file "vendor/assets/images/leaflet/dist/images/marker-icon.png"
-      gem_file "vendor/assets/images/leaflet/dist/images/marker-shadow.png"
+      gem_file "app/assets/images/leaflet/dist/images/layers-2x.png"
+      gem_file "app/assets/images/leaflet/dist/images/layers.png"
+      gem_file "app/assets/images/leaflet/dist/images/marker-icon-2x.png"
+      gem_file "app/assets/images/leaflet/dist/images/marker-icon.png"
+      gem_file "app/assets/images/leaflet/dist/images/marker-shadow.png"
     end
 
     component "resizeend", "1.1.2" do
-      gem_file "vendor/assets/javascripts/resizeend.js"
-      gem_file "vendor/assets/javascripts/resizeend/resizeend.js"
+      gem_file "app/assets/javascripts/resizeend.js"
+      gem_file "app/assets/javascripts/resizeend/resizeend.js"
     end
 
     component "rails-assets/jquery-waypoints", nil, :gem_name => "rails-assets--jquery-waypoints" do
-      gem_file "vendor/assets/javascripts/jquery-waypoints/waypoints.js"
+      gem_file "app/assets/javascripts/jquery-waypoints/waypoints.js"
     end
 
     component "selectize", '0.8.0' do
-      gem_file "vendor/assets/javascripts/selectize.js"
-      gem_file "vendor/assets/javascripts/selectize/selectize.js"
-      gem_file "vendor/assets/stylesheets/selectize.scss"
-      gem_file "vendor/assets/stylesheets/selectize/selectize.scss"
+      gem_file "app/assets/javascripts/selectize.js"
+      gem_file "app/assets/javascripts/selectize/selectize.js"
+      gem_file "app/assets/stylesheets/selectize.scss"
+      gem_file "app/assets/stylesheets/selectize/selectize.scss"
     end
 
     component "jquery.cookie", '1.4.0' do
-      gem_file "vendor/assets/javascripts/jquery.cookie.js"
-      gem_file "vendor/assets/javascripts/jquery.cookie/jquery.cookie.js"
-      file_contains 'vendor/assets/javascripts/jquery.cookie.js',
+      gem_file "app/assets/javascripts/jquery.cookie.js"
+      gem_file "app/assets/javascripts/jquery.cookie/jquery.cookie.js"
+      file_contains 'app/assets/javascripts/jquery.cookie.js',
         'require jquery.cookie/jquery.cookie'
     end
 
     component "angular-ui-tinymce", '0.0.4' do
-      gem_file 'vendor/assets/javascripts/angular-ui-tinymce.js'
-      gem_file 'vendor/assets/javascripts/angular-ui-tinymce/tinymce.js'
+      gem_file 'app/assets/javascripts/angular-ui-tinymce.js'
+      gem_file 'app/assets/javascripts/angular-ui-tinymce/tinymce.js'
       file_contains 'rails-assets-angular-ui-tinymce.gemspec',
         'spec.add_dependency "rails-assets-jozzhart--tinymce", "4.0.0"'
       file_contains 'rails-assets-angular-ui-tinymce.gemspec',
@@ -140,32 +140,32 @@ describe Build::Converter do
     end
 
     component "jozzhart--tinymce", '4.0.0' do
-      gem_file 'vendor/assets/javascripts/tinymce/tinymce.min.js'
-      gem_file 'vendor/assets/javascripts/tinymce.js'
+      gem_file 'app/assets/javascripts/tinymce/tinymce.min.js'
+      gem_file 'app/assets/javascripts/tinymce.js'
       file_contains 'rails-assets-jozzhart--tinymce.gemspec',
         'spec.name          = "rails-assets-jozzhart--tinymce"'
-      file_contains 'vendor/assets/stylesheets/tinymce/skins/lightgray/content.min.scss',
+      file_contains 'app/assets/stylesheets/tinymce/skins/lightgray/content.min.scss',
         'background:image-url'
     end
 
     component "swipe", "2.0.0" do
-      gem_file "vendor/assets/javascripts/swipe.js"
-      gem_file "vendor/assets/javascripts/swipe/swipe.js"
-      file_contains "vendor/assets/javascripts/swipe.js", "require swipe/swipe"
+      gem_file "app/assets/javascripts/swipe.js"
+      gem_file "app/assets/javascripts/swipe/swipe.js"
+      file_contains "app/assets/javascripts/swipe.js", "require swipe/swipe"
     end
 
     component "Swipe", "2.0.0" do
-      gem_file "vendor/assets/javascripts/Swipe.js"
-      gem_file "vendor/assets/javascripts/Swipe/swipe.js"
-      file_contains "vendor/assets/javascripts/Swipe.js", "require Swipe/swipe"
+      gem_file "app/assets/javascripts/Swipe.js"
+      gem_file "app/assets/javascripts/Swipe/swipe.js"
+      file_contains "app/assets/javascripts/Swipe.js", "require Swipe/swipe"
     end
 
     component "isotope", "2.0.0-beta.3" do
-      gem_file "vendor/assets/javascripts/isotope.js"
-      gem_file "vendor/assets/javascripts/isotope/isotope.js"
-      gem_file "vendor/assets/javascripts/isotope/item.js"
-      gem_file "vendor/assets/javascripts/isotope/layout-mode.js"
-      gem_file "vendor/assets/javascripts/isotope/layout-modes/vertical.js"
+      gem_file "app/assets/javascripts/isotope.js"
+      gem_file "app/assets/javascripts/isotope/isotope.js"
+      gem_file "app/assets/javascripts/isotope/item.js"
+      gem_file "app/assets/javascripts/isotope/layout-mode.js"
+      gem_file "app/assets/javascripts/isotope/layout-modes/vertical.js"
 
       ## This is for some reason non-deterministic
       # file_contains 'rails-assets-isotope.gemspec',
@@ -179,38 +179,38 @@ describe Build::Converter do
     #
     # I'm not sure it is bug of feature, so I'm leaving it :-)
     component "colorbox", "1.5.5" do
-      gem_file "vendor/assets/stylesheets/colorbox.scss"
-      gem_file "vendor/assets/stylesheets/colorbox/colorbox.scss"
-      file_contains "vendor/assets/stylesheets/colorbox/colorbox.scss",
+      gem_file "app/assets/stylesheets/colorbox.scss"
+      gem_file "app/assets/stylesheets/colorbox/colorbox.scss"
+      file_contains "app/assets/stylesheets/colorbox/colorbox.scss",
         'background:image-url("colorbox/example1/images/overlay.png")'
-      file_contains "vendor/assets/stylesheets/colorbox.scss",
+      file_contains "app/assets/stylesheets/colorbox.scss",
         "@import 'colorbox/colorbox.scss';"
     end
 
     # main is hash
     component "orbicular", "1.0.3" do
-      gem_file "vendor/assets/stylesheets/orbicular.scss"
-      gem_file "vendor/assets/stylesheets/orbicular/orbicular.scss"
-      gem_file "vendor/assets/javascripts/orbicular.js"
-      gem_file "vendor/assets/javascripts/orbicular/orbicular.js"
+      gem_file "app/assets/stylesheets/orbicular.scss"
+      gem_file "app/assets/stylesheets/orbicular/orbicular.scss"
+      gem_file "app/assets/javascripts/orbicular.js"
+      gem_file "app/assets/javascripts/orbicular/orbicular.js"
     end
 
     # ^1.2.3 kind of dependency
     component "jquery-masonry", "3.1.5" do
-      gem_file "vendor/assets/javascripts/jquery-masonry.js"
-      gem_file "vendor/assets/javascripts/jquery-masonry/masonry.js"
+      gem_file "app/assets/javascripts/jquery-masonry.js"
+      gem_file "app/assets/javascripts/jquery-masonry/masonry.js"
     end
 
     # 1.0 - 1.1 kind of dependency
     component "marionette", "1.7.4" do
-      gem_file "vendor/assets/javascripts/marionette.js"
-      gem_file "vendor/assets/javascripts/marionette/backbone.marionette.js"
+      gem_file "app/assets/javascripts/marionette.js"
+      gem_file "app/assets/javascripts/marionette/backbone.marionette.js"
     end
 
     component "bignumber.js", "1.4.1" do
-      gem_file "vendor/assets/javascripts/bignumber.js.js"
-      gem_file "vendor/assets/javascripts/bignumber.js/bignumber.js"
-      file_contains "vendor/assets/javascripts/bignumber.js.js",
+      gem_file "app/assets/javascripts/bignumber.js.js"
+      gem_file "app/assets/javascripts/bignumber.js/bignumber.js"
+      file_contains "app/assets/javascripts/bignumber.js.js",
         "require bignumber.js/bignumber.js"
     end
 
@@ -218,7 +218,7 @@ describe Build::Converter do
       # This line failed to parse correctly because of a space
       # before the url. The original `url( building-blocks/...)`,
       # was being converted to `url(.)`
-      file_contains "vendor/assets/stylesheets/building-blocks/style/buttons.scss", "background: image-url(\"building-blocks/style/buttons/images/ui/shadow.png\") repeat-x left bottom / auto 100%;"
+      file_contains "app/assets/stylesheets/building-blocks/style/buttons.scss", "background: image-url(\"building-blocks/style/buttons/images/ui/shadow.png\") repeat-x left bottom / auto 100%;"
     end
 
     component "jquery", '2.0.3' do
@@ -227,15 +227,15 @@ describe Build::Converter do
     end
 
     component 'bootstrap-formhelpers', '2.3.0' do
-      file_contains 'vendor/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers-flags.less',
+      file_contains 'app/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers-flags.less',
         'url(../img/eu.png)'
 
-      file_contains 'vendor/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers-flags.less',
+      file_contains 'app/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers-flags.less',
         'image-url("bootstrap-formhelpers/img/bootstrap-formhelpers-currencies.flags.png")'
     end
 
     component "zeroclipboard", "2.1.6" do
-      gem_file 'vendor/assets/flash/zeroclipboard/ZeroClipboard.swf'
+      gem_file 'app/assets/flash/zeroclipboard/ZeroClipboard.swf'
     end
   end
 end

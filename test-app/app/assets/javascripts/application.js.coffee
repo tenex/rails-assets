@@ -29,11 +29,9 @@ assert = (label, cond) ->
   text += "<br/>" + ex if ex
   $("#results").append("<tr class='#{cls}'><td>#{label}</td><td>#{text}</td></tr>")
 
-
 $ ->
   assert "sugar", -> "".assign
   assert "angular", -> angular
-  assert "resizeend", -> "pending"
   assert "leaflet", ->
     $("body").append("<div id='leaflet-map'/>")
     map = L.map('leaflet-map').setView([51.505, -0.09], 13)

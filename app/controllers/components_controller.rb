@@ -47,12 +47,12 @@ class ComponentsController < ApplicationController
     paths = version.asset_paths.map
 
     # TODO: exclude manifest assets from asset_paths at all...
-    paths = paths.reject { |f| f.match(/vendor\/assets\/javascripts\/[^\/]+\.js/) }
-    paths = paths.reject { |f| f.match(/vendor\/assets\/stylesheets\/[^\/]+\.css/) }
+    paths = paths.reject { |f| f.match(/(app|vendor)\/assets\/javascripts\/[^\/]+\.js/) }
+    paths = paths.reject { |f| f.match(/(app|vendor)\/assets\/stylesheets\/[^\/]+\.css/) }
 
     paths = paths.map do |path|
       {
-        path: path.match(/vendor\/assets\/[^\/]+\/(.+)/)[1],
+        path: path.match(/(app|vendor)\/assets\/[^\/]+\/(.+)/)[1],
         main: version.main_paths.include?(path),
         type: path[/javascript|stylesheet|image/]
       }

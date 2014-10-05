@@ -22,45 +22,57 @@ module Build
       it 'puts javascript files to javascripts directory' do
         expect(
           targets(['foo.js'])
-        ).to eq(Paths.new(['vendor/assets/javascripts/foobar/foo.js']))
+        ).to eq(Paths.new(['app/assets/javascripts/foobar/foo.js']))
       end
 
       it 'puts stylesheet files to stylesheets directory' do
         expect(
           targets(['foo.css'])
-        ).to eq(Paths.new(['vendor/assets/stylesheets/foobar/foo.scss']))
+        ).to eq(Paths.new(['app/assets/stylesheets/foobar/foo.scss']))
       end
 
       it 'puts image files to images directory' do
         expect(
           targets(['foo.png'])
-        ).to eq(Paths.new(['vendor/assets/images/foobar/foo.png']))
+        ).to eq(Paths.new(['app/assets/images/foobar/foo.png']))
       end
 
       it 'ignores minified files' do
         expect(
           targets(['foo.min.js', 'foo.js'])
-        ).to eq(Paths.new(['vendor/assets/javascripts/foobar/foo.js']))
+        ).to eq(Paths.new(['app/assets/javascripts/foobar/foo.js']))
       end
 
       it 'ignores gzip, map and nuspec files' do
         expect(
           targets(['foo.min.js.gzip', 'foo.js.nuspec', 'foo.js.map', 'foo.nuspec.js'])
-        ).to eq(Paths.new(['vendor/assets/javascripts/foobar/foo.nuspec.js']))
+        ).to eq(Paths.new(['app/assets/javascripts/foobar/foo.nuspec.js']))
+      end
+
+      it 'ignores bower.json' do
+        expect(
+          targets(['bower.json', 'foo.json'])
+        ).to eq(Paths.new(['app/assets/javascripts/foobar/foo.json']))
+      end
+
+      it 'ignores node_modules' do
+        expect(
+          targets(['dist/node_modules/foo.js', 'foo.json'])
+        ).to eq(Paths.new(['app/assets/javascripts/foobar/foo.json']))
       end
 
       it 'leaves minified files that dont have unminified versions' do
         expect(
           targets(['foo.min.js'])
-        ).to eq(Paths.new(['vendor/assets/javascripts/foobar/foo.min.js']))
+        ).to eq(Paths.new(['app/assets/javascripts/foobar/foo.min.js']))
       end
 
       it 'generates manifest for javascript files' do
         expect(
           targets(['foo.js'], ['foo.js'])
         ).to eq(Paths.new([
-          'vendor/assets/javascripts/foobar/foo.js',
-          'vendor/assets/javascripts/foobar.js'
+          'app/assets/javascripts/foobar/foo.js',
+          'app/assets/javascripts/foobar.js'
         ]))
       end
 
@@ -68,7 +80,7 @@ module Build
         expect(
           mappings(
             ['foo.js'], ['foo.js']
-          )['vendor/assets/javascripts/foobar.js']
+          )['app/assets/javascripts/foobar.js']
         ).to include('require foobar/foo.js')
       end
 
@@ -76,8 +88,8 @@ module Build
         expect(
           targets(['foo.css'], ['foo.css'])
         ).to eq(Paths.new([
-          'vendor/assets/stylesheets/foobar/foo.scss',
-          'vendor/assets/stylesheets/foobar.scss'
+          'app/assets/stylesheets/foobar/foo.scss',
+          'app/assets/stylesheets/foobar.scss'
         ]))
       end
 
@@ -85,7 +97,7 @@ module Build
         expect(
           mappings(
             ['foo.css'], ['foo.css']
-          )['vendor/assets/stylesheets/foobar.scss']
+          )['app/assets/stylesheets/foobar.scss']
         ).to include("@import 'foobar/foo.scss';")
       end
 
@@ -93,8 +105,8 @@ module Build
         expect(
           targets(['dist/foo.js'], ['dist/foo.js'])
         ).to eq(Paths.new([
-          'vendor/assets/javascripts/foobar/foo.js',
-          'vendor/assets/javascripts/foobar.js'
+          'app/assets/javascripts/foobar/foo.js',
+          'app/assets/javascripts/foobar.js'
         ]))
       end
 
@@ -102,8 +114,8 @@ module Build
         expect(
           targets(['dist/css/foo.css'], ['dist/css/foo.css'])
         ).to eq(Paths.new([
-          'vendor/assets/stylesheets/foobar/foo.scss',
-          'vendor/assets/stylesheets/foobar.scss'
+          'app/assets/stylesheets/foobar/foo.scss',
+          'app/assets/stylesheets/foobar.scss'
         ]))
       end
 
@@ -114,10 +126,10 @@ module Build
             ['dist/css/foo.css', 'dist/js/foo.js']
           )
         ).to eq(Paths.new([
-          'vendor/assets/javascripts/foobar/foo.js',
-          'vendor/assets/javascripts/foobar.js',
-          'vendor/assets/stylesheets/foobar/foo.scss',
-          'vendor/assets/stylesheets/foobar.scss'
+          'app/assets/javascripts/foobar/foo.js',
+          'app/assets/javascripts/foobar.js',
+          'app/assets/stylesheets/foobar/foo.scss',
+          'app/assets/stylesheets/foobar.scss'
         ]))
       end
 
@@ -128,9 +140,9 @@ module Build
             ['dist/css/foo.css']
           )
         ).to eq(Paths.new([
-          'vendor/assets/javascripts/foobar/dist/js/foo.js',
-          'vendor/assets/stylesheets/foobar/foo.scss',
-          'vendor/assets/stylesheets/foobar.scss'
+          'app/assets/javascripts/foobar/dist/js/foo.js',
+          'app/assets/stylesheets/foobar/foo.scss',
+          'app/assets/stylesheets/foobar.scss'
         ]))
       end
 
@@ -138,7 +150,7 @@ module Build
         expect(
           targets(['foo.css'])
         ).to eq(Paths.new([
-          'vendor/assets/stylesheets/foobar/foo.scss'
+          'app/assets/stylesheets/foobar/foo.scss'
         ]))
       end
 
@@ -169,9 +181,9 @@ module Build
             'min/bar/foo-require.js'
           ], ['min/bar/foo.js'])
         ).to eq(Paths.new([
-          'vendor/assets/javascripts/foobar/foo-require.js',
-          'vendor/assets/javascripts/foobar/foo.js',
-          'vendor/assets/javascripts/foobar.js'
+          'app/assets/javascripts/foobar/foo-require.js',
+          'app/assets/javascripts/foobar/foo.js',
+          'app/assets/javascripts/foobar.js'
         ]))
       end
     end
@@ -183,15 +195,15 @@ module Build
 
         transformations = Hash[[
           [source_file, target_file],
-          [Path.new('foo/bar.png'), Path.new('vendor/assets/images/foo.png')],
-          [Path.new('foo/before.png'), Path.new('vendor/assets/images/before.png')],
-          [Path.new('foo/around.png'), Path.new('vendor/assets/images/around.png')],
-          [Path.new('foo/after.png'), Path.new('vendor/assets/images/after.png')],
-          [Path.new('foo/spam.eot'), Path.new('vendor/assets/fonts/spam.eot')],
-          [Path.new('foo/spam.woff'), Path.new('vendor/assets/fonts/spam.woff')],
-          [Path.new('foo/spam.ttf'), Path.new('vendor/assets/fonts/spam.ttf')],
-          [Path.new('foo/spam.otf'), Path.new('vendor/assets/fonts/spam.otf')],
-          [Path.new('foo/spam.svg'), Path.new('vendor/assets/fonts/spam.svg')]
+          [Path.new('foo/bar.png'), Path.new('app/assets/images/foo.png')],
+          [Path.new('foo/before.png'), Path.new('app/assets/images/before.png')],
+          [Path.new('foo/around.png'), Path.new('app/assets/images/around.png')],
+          [Path.new('foo/after.png'), Path.new('app/assets/images/after.png')],
+          [Path.new('foo/spam.eot'), Path.new('app/assets/fonts/spam.eot')],
+          [Path.new('foo/spam.woff'), Path.new('app/assets/fonts/spam.woff')],
+          [Path.new('foo/spam.ttf'), Path.new('app/assets/fonts/spam.ttf')],
+          [Path.new('foo/spam.otf'), Path.new('app/assets/fonts/spam.otf')],
+          [Path.new('foo/spam.svg'), Path.new('app/assets/fonts/spam.svg')]
         ]]
 
         css_sample = <<-CSS.gsub(/^ {8}/, '')
@@ -243,8 +255,8 @@ module Build
           Path.new('../images/image.png'), Path.new('dist/css/foobar.css'),
           Hash[[
             [Path.new('./dist/css/foobar.css'), Path.new('css/foobar.css')],
-            [Path.new('./dist/images/image.png'), Path.new('vendor/assets/images/fiz/img.png')],
-            [Path.new('./dist/image.png'), Path.new('vendor/assets/images/fuz/img.png')]
+            [Path.new('./dist/images/image.png'), Path.new('app/assets/images/fiz/img.png')],
+            [Path.new('./dist/image.png'), Path.new('app/assets/images/fuz/img.png')]
           ]]
         )).to eq(Path.new('fiz/img.png'))
       end
