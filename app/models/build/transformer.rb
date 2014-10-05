@@ -41,6 +41,7 @@ module Build
 
         is_unsupported ||= %w(
           bower.json
+          .bower.json
           component.json
           package.json
           composer.json
