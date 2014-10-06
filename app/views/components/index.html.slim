@@ -23,7 +23,7 @@ section.section.gem-list ng-controller="IndexCtrl"
             | {{ gem.name }}
           span.gem__versions<
             span ng-repeat="version in gem.versions | semverSort"
-              a ng-bind="version" ng-click="fetchAssets(version)" style="cursor: pointer" title="Available files"
+              a ng-bind="version" ng-click="fetchAssets(version)" style="cursor: pointer; text-decoration: underline" title="Available files"
               | {{{true: '', false: ', '}[$last]}}
         code.gem__code
           | gem 'rails-assets-{{ gem.name }}'
