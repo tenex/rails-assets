@@ -61,6 +61,55 @@ class MainController < ApplicationController
     end
   end
 
+  def index_files
+    cache_buster
+
+    path = File.join(Rails.root, 'public', request.path[1..-1])
+
+    if File.exist?(path)
+      # reindex only if something changed
+      Reindex.new.perform
+    else
+      # force first generation
+      Reindex.new.perform(true)
+    end
+
+    send_file path
+  end
+
+  # Executed only if static .gem or .gemspec.rz does't exist
+  def gem_files
+    data = request.path.match(%r{
+      \A
+      \/(?:gems|quick\/Marshal\.4\.8)
+      \/(?<name>.*)-(?<version>\d+\.\d+\.\d+.*?)
+      \.(?:gem|gemspec\.rz)
+      \z
+    }x)
+
+    return head 404 if data.nil?
+    return head 404 if data[:name].blank? || data[:version].blank?
+    return head 404 unless data[:name].start_with?(GEM_PREFIX)
+
+    name = data[:name].gsub(GEM_PREFIX, "")
+    version = data[:version]
+
+    begin
+      BuildVersion.new.perform(name, version)
+    rescue Exception => e
+      Rails.logger.error(e.message)
+      Rails.logger.error(e.backtrace)
+    end
+
+    path = File.join(Rails.root, 'public', request.path[1..-1])
+
+    if File.exist?(path)
+      send_file path
+    else
+      head 404
+    end
+  end
+
   def packages
     render :file => Rails.root.join('public', 'packages.json'),
       :layout => false

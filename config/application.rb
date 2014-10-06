@@ -14,5 +14,7 @@ module RailsAssets
     config.exceptions_app = self.routes
 
     config.cache_store = :redis_store, ENV['REDIS_URL']
+
+    config.serve_static_assets = false
   end
 end

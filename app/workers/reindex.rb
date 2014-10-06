@@ -7,13 +7,15 @@ class Reindex
 
   def perform(force = false)
     Build::Locking.with_lock(:index) do
-      Version.transaction do
-        Version.pending_index.
-          update_all(build_status: 'indexed')
+      if force || Version.pending_index.count > 0
+        Version.transaction do
+          Version.pending_index.
+            update_all(build_status: 'indexed')
 
-        generate_gemspecs
-
-        generate_indexes
+          generate_indexes
+        end
+      else
+        Rails.logger.info("nothing to reindex, skipping")
       end
     end
 
@@ -21,26 +23,6 @@ class Reindex
     Rails.cache.delete('components_json')
 
     true
-  end
-
-  def generate_gemspecs
-    gemspecs_dir = File.join(
-      Figaro.env.data_dir, 'quick', 'Marshal.4.8'
-    )
-
-    FileUtils.mkdir_p(gemspecs_dir)
-
-    gems = Dir[File.join(
-      Figaro.env.data_dir, 'gems', '*.gem'
-    )].map { |s| s.split('/').last[0..-5] }
-
-    gemspecs = Dir[File.join(
-      gemspecs_dir, '*.gemspec.rz'
-    )].map { |s| s.split('/').last[0..-12] }
-
-    missing = gems - gemspecs
-
-    missing.map(&method(:reindex_spec))
   end
 
   def generate_indexes
@@ -75,6 +57,28 @@ class Reindex
     end
   end
 
+  # For now deprecated, as gemspecs are generated
+  # dynamically in Build::Converter.persist!
+  def generate_gemspecs
+    gemspecs_dir = File.join(
+      Figaro.env.data_dir, 'quick', 'Marshal.4.8'
+    )
+
+    FileUtils.mkdir_p(gemspecs_dir)
+
+    gems = Dir[File.join(
+      Figaro.env.data_dir, 'gems', '*.gem'
+    )].map { |s| s.split('/').last[0..-5] }
+
+    gemspecs = Dir[File.join(
+      gemspecs_dir, '*.gemspec.rz'
+    )].map { |s| s.split('/').last[0..-12] }
+
+    missing = gems - gemspecs
+
+    missing.map(&method(:reindex_spec))
+  end
+
   def reindex_spec(name)
     puts "Generating gemspec.rz for #{name}..."
 
@@ -88,6 +92,9 @@ class Reindex
     )
 
     gemspec = gemspec_rz(read_spec(gem_path))
+
+    FileUtils.mkdir_p(File.dirname(gemspec_path))
+
     open gemspec_path, 'wb' do |io| io.write(gemspec) end
   end
 

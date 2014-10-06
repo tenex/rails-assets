@@ -36,8 +36,6 @@ gem 'sentry-raven'
 gem 'thin'
 gem 'puma', '>= 2.1.1'
 
-gem 'rails_12factor'
-
 gem 'quiet_assets'
 
 gem 'peach'
@@ -52,6 +50,8 @@ gem 'redis-mutex'
 gem 'thread', require: 'thread/pool'
 
 gem 'whenever'
+
+gem 'rack-static-if-present'
 
 group :development do
   gem 'better_errors'

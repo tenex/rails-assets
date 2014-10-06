@@ -3,6 +3,16 @@ RailsAssets::Application.routes.draw do
   get '/packages/:name' => 'main#package',
     constraints: { name: /[^\/]+/ }
 
+  get '/latest_specs.4.8' => 'main#index_files'
+  get '/latest_specs.4.8.gz' => 'main#index_files'
+  get '/prerelease_specs.4.8' => 'main#index_files'
+  get '/prerelease_specs.4.8.gz' => 'main#index_files'
+  get '/specs.4.8' => 'main#index_files'
+  get '/specs.4.8.gz' => 'main#index_files'
+
+  get '/gems/*path' => 'main#gem_files'
+  get '/quick/*path' => 'main#gem_files'
+
   resources :components, only: [:index, :new, :create] do
     collection do
       get '/:name/:version' => 'components#assets',

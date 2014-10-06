@@ -2,6 +2,15 @@ class ApplicationController < ActionController::Base
 
   rescue_from Exception, :with => :show_error
 
+  def cache_buster
+    response.headers["Cache-Control"] =
+      "no-cache, no-store, max-age=0, must-revalidate"
+
+    response.headers["Pragma"] = "no-cache"
+
+    response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
+  end
+
   def show_error(e)
 
     Rails.logger.error(e)
