@@ -7,7 +7,7 @@ module Build
       {
         javascripts: ['coffee', 'js'],
         stylesheets: ['sass', 'scss', 'less', 'css', 'styl'],
-        images: ['png', 'jpg', 'jpeg', 'gif', 'cur'],
+        images: ['png', 'jpg', 'jpeg', 'gif', 'cur', 'ico'],
         fonts: ['woff', 'ttf', 'otf', 'eot', 'svg'],
         flash: ['swf'],
         templates: ['html'],
@@ -18,7 +18,12 @@ module Build
     def self.allowed_main_extensions
       {
         javascripts: ['coffee', 'js'],
-        stylesheets: ['sass', 'scss', 'css']
+        stylesheets: ['sass', 'scss', 'css'],
+        images: ['png', 'jpg', 'jpeg', 'gif', 'cur', 'ico'],
+        fonts: ['woff', 'ttf', 'otf', 'eot', 'svg'],
+        flash: ['swf'],
+        templates: ['html'],
+        documents: ['json']
       }
     end
 
