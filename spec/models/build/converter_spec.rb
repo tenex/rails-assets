@@ -129,7 +129,7 @@ module Build
           end
 
           expect(Paths.relative_from(Figaro.env.data_dir)).
-            to eq([Path.new('gems/rails-assets-jquery-2.0.3.gem')])
+            to include(Path.new('gems/rails-assets-jquery-2.0.3.gem'))
 
           Converter.index!
 
