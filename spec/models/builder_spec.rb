@@ -227,11 +227,11 @@ describe Build::Converter do
     end
 
     component 'bootstrap-formhelpers', '2.3.0' do
-      file_contains 'app/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers-flags.less',
+      file_contains 'app/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers.scss',
         'url(../img/eu.png)'
 
-      file_contains 'app/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers-flags.less',
-        'image-url("bootstrap-formhelpers/img/bootstrap-formhelpers-currencies.flags.png")'
+      file_contains 'app/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers.scss',
+        'image-url("bootstrap-formhelpers/dist/img/bootstrap-formhelpers-currencies.flags.png")'
     end
 
     component "zeroclipboard", "2.1.6" do

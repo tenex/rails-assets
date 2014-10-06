@@ -52,13 +52,13 @@ module Build
       it 'ignores bower.json' do
         expect(
           targets(['bower.json', 'foo.json'])
-        ).to eq(Paths.new(['app/assets/javascripts/foobar/foo.json']))
+        ).to eq(Paths.new(['app/assets/documents/foobar/foo.json']))
       end
 
       it 'ignores node_modules' do
         expect(
           targets(['dist/node_modules/foo.js', 'foo.json'])
-        ).to eq(Paths.new(['app/assets/javascripts/foobar/foo.json']))
+        ).to eq(Paths.new(['app/assets/documents/foobar/foo.json']))
       end
 
       it 'leaves minified files that dont have unminified versions' do
