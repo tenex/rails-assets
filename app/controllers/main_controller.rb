@@ -26,7 +26,12 @@ class MainController < ApplicationController
 
       gem_names.each do |name|
         if Component.needs_build?(name)
-          ::BuildVersion.new.perform(name, 'latest') rescue nil
+          begin
+            ::BuildVersion.new.perform(name, 'latest')
+          rescue Exception => e
+            Rails.logger.error(e)
+          end
+
           ::UpdateComponent.perform_async(name)
         end
       end

@@ -15,6 +15,13 @@ module Build
       }
     end
 
+    def self.allowed_main_extensions
+      {
+        javascripts: ['coffee', 'js'],
+        stylesheets: ['sass', 'scss', 'css']
+      }
+    end
+
     def initialize(path = nil)
       super(path ? Pathname.new(path).cleanpath : Pathname.new('.').cleanpath)
     end
@@ -25,6 +32,10 @@ module Build
 
     def member_of?(klass)
       extension?(Path.extension_classes.fetch(klass, []))
+    end
+
+    def main_of?(klass)
+      extension?(Path.allowed_main_extensions.fetch(klass, []))
     end
 
     def descendant?(directory)

@@ -57,7 +57,7 @@ module Build
       end.sort_by(&:to_s))
 
       transformations = Path.extension_classes.keys.flat_map do |type|
-        main_paths = all_main_paths.select(:member_of?, type)
+        main_paths = all_main_paths.select(:main_of?, type)
 
         target_dir = Path.new.join('app', 'assets', type.to_s)
 
@@ -83,7 +83,7 @@ module Build
             unless manifest_paths.empty?
               [
                 generator[:processor].call(manifest_paths),
-                
+
                 target_dir.join(manifest_path(gem_name, generator))
               ]
             end

@@ -10,3 +10,7 @@ gem 'sprockets-helpers'
 
 gem 'rails-assets-jquery-cookie'
 gem 'rails-assets-bootstrap-css'
+gem 'rails-assets-appear'
+
+gem 'rails-assets-angular-bootstrap'
+gem 'rails-assets-bootstrap-formhelpers'

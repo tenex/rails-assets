@@ -1,5 +1,6 @@
 //= require jquery
 //= require jquery-cookie
+//= require angular-bootstrap
 
 $(function() { 
   if($.cookie) {
