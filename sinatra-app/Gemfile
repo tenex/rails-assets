@@ -1,0 +1,12 @@
+source 'https://rubygems.org'
+source 'http://localhost:3000'
+
+gem 'sinatra'
+gem 'rack-cache'
+
+gem 'sass'
+gem 'sprockets'
+gem 'sprockets-helpers'
+
+gem 'rails-assets-jquery-cookie'
+gem 'rails-assets-bootstrap-css'

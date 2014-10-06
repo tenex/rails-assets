@@ -24,6 +24,12 @@ module Build
       Utils.fix_dependencies(bower_component.dependencies)
     end
 
+    def dependencies_modules
+      dependencies.map(&:first).map do |name|
+        self.class.name_to_module(name)
+      end
+    end
+
     def license?
       bower_component.license.present? && bower_component.license.is_a?(String)
     end
@@ -42,6 +48,10 @@ module Build
     end
 
     def module
+      self.class.name_to_module(name)
+    end
+
+    def self.name_to_module(name)
       name.gsub('.', '-').gsub('_', '-').split("-").map { |e| e.capitalize }.join('')
     end
   end

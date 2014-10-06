@@ -4,10 +4,48 @@ require "<%= gem.name %>/version"
 require <%= dep_name.dump %>
 <% end %>
 
-if defined?(Rails)
-  module <%= gem.module %>
+module <%= gem.module %>
+
+  def self.gem_path
+    Pathname(__FILE__).join('../..')
+  end
+
+  def self.gem_spec
+    Gem::Specification::load(
+      gem_path.join(<%= (gem.name + ".gemspec").dump %>).to_s
+    )
+  end
+
+  def self.load_paths
+    gem_path.join('app/assets').each_child.to_a
+  end
+
+  def self.dependencies
+    [
+      <%= gem.dependencies.to_a.map(&:first).map do |dep|
+        Build::GemComponent.name_to_module(dep.to_s)
+      end.join(",\n      ") %>
+    ]
+  end
+
+  if defined?(Rails)
     class Engine < ::Rails::Engine
       # Rails -> use app/assets directory.
     end
   end
+
 end
+
+class RailsAssets
+  @components ||= []
+
+  class << self
+    attr_accessor :components
+
+    def load_paths
+      components.flat_map(&:load_paths)
+    end
+  end
+end
+
+RailsAssets.components << <%= gem.module %>
