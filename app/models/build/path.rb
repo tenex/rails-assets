@@ -5,12 +5,13 @@ module Build
     # Extensions are sorted by priority
     def self.extension_classes
       {
-        javascripts: ['coffee', 'js', 'json'],
+        javascripts: ['coffee', 'js'],
         stylesheets: ['sass', 'scss', 'less', 'css', 'styl'],
         images: ['png', 'jpg', 'jpeg', 'gif', 'cur'],
         fonts: ['woff', 'ttf', 'otf', 'eot', 'svg'],
         flash: ['swf'],
-        templates: ['html']
+        templates: ['html'],
+        documents: ['json']
       }
     end
 
