@@ -14,4 +14,9 @@ use Rack::Static,
   urls: %w(/gems /quick),
   cache_control: 'public, max-age=31536000'
 
+use Rack::Static,
+  root: Figaro.env.data_dir,
+  urls: %w(/old),
+  cache_control: 'public, max-age=0, must-revalidate'
+
 run Rails.application
