@@ -3,6 +3,7 @@ rails-assets:
   environment: production
   monitoring_email: sheerun@sher.pl
   domains:
+    - rails-assets.org
     - rails-assets.shellyapp.com
   servers:
     db1:
@@ -26,6 +27,7 @@ rails-assets-beta:
   environment: production
   monitoring_email: sheerun@sher.pl
   domains:
+    - beta.rails-assets.org
     - rails-assets-beta.shellyapp.com
   servers:
     db1:
