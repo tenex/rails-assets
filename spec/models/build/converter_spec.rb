@@ -131,6 +131,9 @@ module Build
           expect(Paths.relative_from(Figaro.env.data_dir)).
             to include(Path.new('gems/rails-assets-jquery-2.0.3.gem'))
 
+          expect(Paths.relative_from(Figaro.env.data_dir)).
+            to include(Path.new('quick/Marshal.4.8/rails-assets-jquery-2.0.3.gemspec.rz'))
+
           Converter.index!
 
           paths = Set.new(Paths.relative_from(Figaro.env.data_dir))
