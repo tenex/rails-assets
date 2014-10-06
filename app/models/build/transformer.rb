@@ -33,7 +33,7 @@ module Build
 
         in_special_dir = file.in_directory?( %w(
           spec test perf minified docs examples min
-          node_modules bower_components
+          node_modules bower_components tests
         ))
 
         is_unsupported = file.to_s.
