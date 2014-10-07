@@ -85,7 +85,7 @@ class Reindex
       'quick', 'Marshal.4.8', name + '.gemspec.rz'
     )
 
-    FileUtils.mkdir_p(File.dirname(gem_path))
+    FileUtils.mkdir_p(File.dirname(gemspec_path))
     gemspec = gemspec_rz(read_spec(gem_path))
     open gemspec_path, 'wb' do |io| io.write(gemspec) end
   end
