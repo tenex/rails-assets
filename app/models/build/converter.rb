@@ -130,6 +130,7 @@ module Build
             gem_paths.each do |gem_path|
               destination = data_dir.join('gems', File.basename(gem_path))
               FileUtils.mv(gem_path.to_s, destination.to_s, :force => true)
+              Reindex.new.reindex_spec(File.basename(gem_path).gsub(/\.gem\z/, ''))
             end
           end
         end

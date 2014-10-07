@@ -11,8 +11,6 @@ class Reindex
         Version.pending_index.
           update_all(build_status: 'indexed')
 
-        generate_gemspecs
-
         generate_indexes
       end
     end
@@ -87,6 +85,7 @@ class Reindex
       'quick', 'Marshal.4.8', name + '.gemspec.rz'
     )
 
+    FileUtils.mkdir_p(File.dirname(gem_path))
     gemspec = gemspec_rz(read_spec(gem_path))
     open gemspec_path, 'wb' do |io| io.write(gemspec) end
   end
