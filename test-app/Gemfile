@@ -1,51 +1,27 @@
-source 'https://rubygems.org'
+gem "bundler", ">= 1.7.0"
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.0'
+source 'https://rubygems.org' do
+  # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+  gem 'rails', '4.0.0'
 
-# Use SCSS for stylesheets
-gem 'sass-rails', '5.0.0.beta1'
+  # Use SCSS for stylesheets
+  gem 'sass-rails', '5.0.0.beta1'
 
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
+  # Use Uglifier as compressor for JavaScript assets
+  gem 'uglifier', '>= 1.3.0'
 
-# Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
+  # Use CoffeeScript for .js.coffee assets and views
+  gem 'coffee-rails', '~> 4.0.0'
 
-# See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
+  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+  # gem 'therubyracer', platforms: :ruby
 
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
+  # Use jquery as the JavaScript library
+  gem 'jquery-rails'
+end
 
-# source 'https://rails-assets.org'
-# source 'http://localhost:9292'
 source 'http://localhost:3000' do
+  # source 'https://rails-assets.org'
   gem "rails-assets-sugar"
   gem "rails-assets-angular"
-  # gem "rails-assets-angular-mousewheel"
-  gem "rails-assets-angular-leaflet"     # No versions defined
-  gem "rails-assets-resizeend"
-  gem "rails-assets-leaflet"
-  gem "rails-assets-jquery.cookie"
-  gem "rails-assets-purl"
-  gem "rails-assets-fancybox"           # Missing manifest
-  gem "rails-assets-jquery-mousewheel"
-  gem "rails-assets-spin.js"
-  gem "rails-assets-jquery-waypoints"   # Missing main js file
-  # gem "rails-assets-datejs" # No versions defined
-  # gem "rails-assets-facebox" # No versions defined
-  gem "rails-assets-underscore"
-  gem "rails-assets-backbone"
-  gem "rails-assets-hammerjs"
-  gem "rails-assets-moment"
-  gem "rails-assets-d3"
-  gem "rails-assets-raphael"
-  gem "rails-assets-select2"
-  gem "rails-assets-griddle"
-  gem "rails-assets-colorbox"
-  gem "rails-assets-bourbon"
-  gem "rails-assets-angular-strap"
-  gem "rails-assets-bignumber.js"
-  gem "rails-assets-components-font-awesome"
 end

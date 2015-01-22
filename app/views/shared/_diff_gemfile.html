@@ -1,14 +1,13 @@
 <pre class="diff"><code><span class="diff__file">Gemfile</span>
- source 'https://rubygems.org'
 
- gem 'rails'
+<span class="diff__added-line diff__added-line--first diff__added-line--last"><b>+</b>source 'https://rubygems.org' do</span>
+   gem 'rails'
 
- # Assets
- gem 'sass-rails'
- gem 'uglifier'
- gem 'coffee-rails'
+   gem 'sass-rails'
+   gem 'uglifier'
+   gem 'coffee-rails'
+<span class="diff__added-line diff__added-line--last"><b>+</b>end</span>
 
-<span class="diff__added-line diff__added-line--first diff__added-line--last"><b>+</b># Rails Assets</span>
 <span class="diff__added-line diff__added-line--first diff__added-line--last"><b>+</b>source 'https://rails-assets.org' do</span>
 <span class="diff__added-line diff__added-line--first"><b>+</b>  gem 'rails-assets-bootstrap'</span>
 <span class="diff__added-line"><b>+</b>  gem 'rails-assets-angular'</span>

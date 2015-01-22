@@ -19,10 +19,43 @@ class MainController < ApplicationController
     if params[:gems].blank?
       gems = []
     else
-      gem_names = params[:gems].to_s
-        .split(",")
-        .select {|e| e.start_with?(GEM_PREFIX) }
-        .map { |e| e.gsub(GEM_PREFIX, "") }
+      gem_names = params[:gems].to_s.split(",")
+
+      # TODO: Enable this in future. For now bundler sends all gems
+      # instead only ones defined in source block.
+      # invalid_gemfile = gem_names.find { |e| !e.start_with?(GEM_PREFIX) }.present?
+      
+      invalid_gemfile = !gem_names.include?("bundler")
+
+      if invalid_gemfile
+
+        message = """
+Due to security vulnerability non-block source syntax is now strongly discouraged!
+
+Please require bundler >= 1.7.0 and specify sources in blocks as follows:
+
+```
+gem 'bundler', '>= 1.7.0'
+
+source 'https://rubygems.org' do
+  gem 'rails'
+  # The rest of RubyGems gems...
+end
+
+source 'https://rails-assets.org' do
+  gem 'rails-assets-angular'
+  # The rest of RailsAssets gems...
+end
+```
+        """.strip_heredoc
+
+        render :text => message,
+          :status => :unprocessable_entity
+
+        return
+      end
+
+      gem_names = gem_names.map { |e| e.gsub(GEM_PREFIX, "") }
 
       gem_names.each do |name|
         if Component.needs_build?(name)
