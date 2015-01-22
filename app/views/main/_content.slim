@@ -6,9 +6,13 @@ article.section
         markdown:
           ## Bundler
 
+          **First, make sure you use bundler >= 1.7.0**
+
           Add `https://rails-assets.org` as a&nbsp;new gem source, then reference any Bower components that you need as gems in the&nbsp;following&nbsp;convention:
 
-              gem 'rails-assets-BOWER_PACKAGE_NAME'
+              source 'https://rails-assets.org' do
+                gem 'rails-assets-BOWER_PACKAGE_NAME'
+              end
 
           During `bundle` `install`, if Bundler requests a&nbsp;package like this, Rails Assets’ daemon automatically&nbsp;will:
 
