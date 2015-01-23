@@ -1,27 +1,26 @@
-gem "bundler", ">= 1.7.0"
+source 'https://rubygems.org'
 
-source 'https://rubygems.org' do
-  # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-  gem 'rails', '4.0.0'
+gem 'bundler', '>= 1.7.0'
 
-  # Use SCSS for stylesheets
-  gem 'sass-rails', '5.0.0.beta1'
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '4.0.0'
 
-  # Use Uglifier as compressor for JavaScript assets
-  gem 'uglifier', '>= 1.3.0'
+# Use SCSS for stylesheets
+gem 'sass-rails', '5.0.0.beta1'
 
-  # Use CoffeeScript for .js.coffee assets and views
-  gem 'coffee-rails', '~> 4.0.0'
+# Use Uglifier as compressor for JavaScript assets
+gem 'uglifier', '>= 1.3.0'
 
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  # gem 'therubyracer', platforms: :ruby
+# Use CoffeeScript for .js.coffee assets and views
+gem 'coffee-rails', '~> 4.0.0'
 
-  # Use jquery as the JavaScript library
-  gem 'jquery-rails'
-end
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+# gem 'therubyracer', platforms: :ruby
 
-source 'http://localhost:3000' do
-  # source 'https://rails-assets.org'
+# Use jquery as the JavaScript library
+gem 'jquery-rails'
+
+source 'https://rails-assets.org' do
   gem "rails-assets-sugar"
   gem "rails-assets-angular"
 end

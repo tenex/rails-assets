@@ -24,29 +24,29 @@ class MainController < ApplicationController
       # TODO: Enable this in future. For now bundler sends all gems
       # instead only ones defined in source block.
       # invalid_gemfile = gem_names.find { |e| !e.start_with?(GEM_PREFIX) }.present?
-      
+
       invalid_gemfile = !gem_names.include?("bundler")
 
       if invalid_gemfile
 
         message = """
-Due to security vulnerability non-block source syntax is now strongly discouraged!
+          Due to security vulnerability non-block source syntax is now strongly discouraged!
 
-Please require bundler >= 1.7.0 and specify sources in blocks as follows:
+          Please require bundler >= 1.7.0 and specify sources in blocks as follows:
 
-```
-gem 'bundler', '>= 1.7.0'
+          ```
+          source 'https://rubygems.org'
 
-source 'https://rubygems.org' do
-  gem 'rails'
-  # The rest of RubyGems gems...
-end
+          gem 'bundler', '>= 1.7.0'
 
-source 'https://rails-assets.org' do
-  gem 'rails-assets-angular'
-  # The rest of RailsAssets gems...
-end
-```
+          gem 'rails'
+          # The rest of RubyGems gems...
+
+          source 'https://rails-assets.org' do
+            gem 'rails-assets-angular'
+            # The rest of RailsAssets gems...
+          end
+          ```
         """.strip_heredoc
 
         render :text => message,
