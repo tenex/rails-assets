@@ -27,7 +27,7 @@ class MainController < ApplicationController
 
       invalid_gemfile = !gem_names.include?("bundler")
 
-      if invalid_gemfile
+      if false
 
         message = """
           Due to security vulnerability non-block source syntax is now strongly discouraged!
