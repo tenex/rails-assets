@@ -55,6 +55,7 @@ class MainController < ApplicationController
         return
       end
 
+      gem_names = gem_names.select { |e| e.start_with?(GEM_PREFIX) }
       gem_names = gem_names.map { |e| e.gsub(GEM_PREFIX, "") }
 
       gem_names.each do |name|
