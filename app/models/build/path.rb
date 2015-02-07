@@ -8,7 +8,7 @@ module Build
         javascripts: ['coffee', 'js'],
         stylesheets: ['sass', 'scss', 'less', 'css', 'styl'],
         images: ['png', 'jpg', 'jpeg', 'gif', 'cur', 'ico'],
-        fonts: ['woff', 'ttf', 'otf', 'eot', 'svg'],
+        fonts: ['woff', 'woff2', 'ttf', 'otf', 'eot', 'svg'],
         flash: ['swf'],
         templates: ['html'],
         documents: ['json']
@@ -20,7 +20,7 @@ module Build
         javascripts: ['coffee', 'js'],
         stylesheets: ['sass', 'scss', 'css'],
         images: ['png', 'jpg', 'jpeg', 'gif', 'cur', 'ico'],
-        fonts: ['woff', 'ttf', 'otf', 'eot', 'svg'],
+        fonts: ['woff', 'woff2', 'ttf', 'otf', 'eot', 'svg'],
         flash: ['swf'],
         templates: ['html'],
         documents: ['json']
