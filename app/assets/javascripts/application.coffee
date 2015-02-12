@@ -36,8 +36,13 @@ app.controller "IndexCtrl", ["$scope", "$http", "$filter", ($scope, $http, $filt
     name: ""
 
   $scope.$watch 'search.name', (name) ->
-    $scope.limit = 5
-    $scope.$broadcast('component.name', name)
+
+    if name
+      $scope.limit = 5
+      $scope.$broadcast('component.name', name)
+
+      if document.body.scrollTop < 450
+        document.body.scrollTop = 450
 
   $scope.expand = ->
     $scope.limit = $scope.gems.length
