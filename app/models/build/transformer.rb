@@ -93,7 +93,7 @@ module Build
 
         transforms = transforms.map do |source, target|
           if target.member_of?(:stylesheets) && target.extname == '.css'
-            [source, Path.new(target.to_s.sub(/\.css$/, '.scss'))]
+            [source, Path.new(target.to_s.sub(/\.css$/, '.css.scss'))]
           else
             [source, target]
           end
