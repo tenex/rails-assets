@@ -21,24 +21,3 @@ rails-assets:
     worker1:
       size: large
       sidekiq: 1
-
-rails-assets-beta:
-  ruby_version: 2.0.0
-  environment: production
-  monitoring_email: sheerun@sher.pl
-  domains:
-    - beta.rails-assets.org
-    - rails-assets-beta.shellyapp.com
-  servers:
-    db1:
-      size: small
-      databases:
-        - postgresql
-        - redis
-      whenever: true
-    app1:
-      size: small
-      puma: 4
-    worker1:
-      size: large
-      sidekiq: 1
