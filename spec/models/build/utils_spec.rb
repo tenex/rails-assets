@@ -208,6 +208,16 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string('1.1.x - 1.2.x')).
+          to eq(">= 1.1, < 1.3")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('1.1 - 1.2')).
+          to eq(">= 1.1, < 1.3")
+      end
+
+      specify do
         expect(Utils.fix_version_string('1 - 2.2 != 2.0')).
           to eq(">= 1, < 2.3, != 2.0")
       end

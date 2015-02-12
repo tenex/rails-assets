@@ -179,12 +179,19 @@ module Build
     def semversion_fix(version)
 
       # sem version with "-"
-      semVerRegSlash = /(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)\s-\s(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)/
+      semVerRegSlash = /(?:(\d+)\.)?(?:(\d+)\.)?(x|\*|\d+)\s-\s(?:(\d+)\.)?(?:(\d+)\.)?(x|\*|\d+)/
       version.gsub!(semVerRegSlash) do |match|
         res = match.match(semVerRegSlash)
 
-        version_first_token = res[1..3].reject(&:nil?).map(&:to_i)
-        version_last_token = res[4..6].reject(&:nil?).map(&:to_i)
+        version_first_token = res[1..3].compact.map do |i|
+          next if i == "x" || i == "*"
+          i.to_i
+        end.compact
+
+        version_last_token = res[4..6].compact.map do |i|
+          next if i == "x" || i == "*"
+          i.to_i
+        end.compact
 
         version_last_token[version_last_token.size - 1] += 1
 
