@@ -20,7 +20,34 @@ gem 'coffee-rails', '~> 4.0.0'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
-source 'https://rails-assets.org' do
+# source 'https://rails-assets.org'
+# source 'http://localhost:9292'
+source 'http://localhost:3000' do
   gem "rails-assets-sugar"
   gem "rails-assets-angular"
+  # gem "rails-assets-angular-mousewheel"
+  gem "rails-assets-angular-leaflet"     # No versions defined
+  gem "rails-assets-resizeend"
+  gem "rails-assets-leaflet"
+  gem "rails-assets-jquery.cookie"
+  gem "rails-assets-purl"
+  gem "rails-assets-fancybox"           # Missing manifest
+  gem "rails-assets-jquery-mousewheel"
+  gem "rails-assets-spin.js"
+  gem "rails-assets-jquery-waypoints"   # Missing main js file
+  # gem "rails-assets-datejs" # No versions defined
+  # gem "rails-assets-facebox" # No versions defined
+  gem "rails-assets-underscore"
+  gem "rails-assets-backbone"
+  gem "rails-assets-hammerjs"
+  gem "rails-assets-moment"
+  gem "rails-assets-d3"
+  gem "rails-assets-raphael"
+  gem "rails-assets-select2"
+  gem "rails-assets-griddle"
+  gem "rails-assets-colorbox"
+  gem "rails-assets-bourbon"
+  gem "rails-assets-angular-strap"
+  gem "rails-assets-bignumber.js"
+  gem "rails-assets-components-font-awesome"
 end
