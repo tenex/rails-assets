@@ -189,6 +189,127 @@ module Build
     end
 
     context '#process_transformations!' do
+      it 'removes sourcemaps from css files' do
+        transformations = Hash[[
+          [Path.new('style-old.css'), Path.new('style-new.css')]
+        ]]
+
+        input = <<-CSS.strip_heredoc
+          @media print {
+            .hidden-print {
+              display: none !important;
+            }
+          }
+          /*# sourceMappingURL=bootstrap.css.map */
+        CSS
+
+        output = <<-CSS.strip_heredoc
+          @media print {
+            .hidden-print {
+              display: none !important;
+            }
+          }
+        CSS
+
+        File.write('/tmp/style-old.css', input)
+        Transformer.process_transformations!(transformations, '/tmp', '/tmp')
+        expect(File.read('/tmp/style-new.css')).to eq(output)
+      end
+
+      it 'removes sourcemaps from css files' do
+        transformations = Hash[[
+          [Path.new('style-old.css'), Path.new('style-new.css')]
+        ]]
+
+        input = """
+        @media print {
+          .hidden-print {
+            display: none !important;
+          }
+        }
+        /*# sourceMappingURL=bootstrap.css.map */""".strip_heredoc
+
+        output = """
+        @media print {
+          .hidden-print {
+            display: none !important;
+          }
+        }
+        """.strip_heredoc
+
+        File.write('/tmp/style-old.css', input)
+        Transformer.process_transformations!(transformations, '/tmp', '/tmp')
+        expect(File.read('/tmp/style-new.css')).to eq(output)
+      end
+
+      it 'removes sourcemaps from js files (no trailing newline)' do
+        transformations = Hash[[
+          [Path.new('style-old.js'), Path.new('style-new.js')]
+        ]]
+
+        input = """
+        function () {
+          return 'asda';
+        }
+        //# sourceMappingURL=angular.min.js.map""".strip_heredoc
+
+        output = """
+        function () {
+          return 'asda';
+        }
+        """.strip_heredoc
+
+        File.write('/tmp/style-old.js', input)
+        Transformer.process_transformations!(transformations, '/tmp', '/tmp')
+        expect(File.read('/tmp/style-new.js')).to eq(output)
+      end
+
+      it 'removes sourcemaps from js files (trailing newline)' do
+        transformations = Hash[[
+          [Path.new('style-old.js'), Path.new('style-new.js')]
+        ]]
+
+        input = """
+        function () {
+          return 'asda';
+        }
+        //# sourceMappingURL=angular.min.js.map
+        """.strip_heredoc
+
+        output = """
+        function () {
+          return 'asda';
+        }
+        """.strip_heredoc
+
+        File.write('/tmp/style-old.js', input)
+        Transformer.process_transformations!(transformations, '/tmp', '/tmp')
+        expect(File.read('/tmp/style-new.js')).to eq(output)
+      end
+
+      it 'removes sourcemaps from js files (old syntax)' do
+        transformations = Hash[[
+          [Path.new('style-old.js'), Path.new('style-new.js')]
+        ]]
+
+        input = """
+        function () {
+          return 'asda';
+        }
+        //@ sourceMappingURL=angular.min.js.map
+        """.strip_heredoc
+
+        output = """
+        function () {
+          return 'asda';
+        }
+        """.strip_heredoc
+
+        File.write('/tmp/style-old.js', input)
+        Transformer.process_transformations!(transformations, '/tmp', '/tmp')
+        expect(File.read('/tmp/style-new.js')).to eq(output)
+      end
+
       it 'transforms urls in css files' do
         source_file = Path.new('style.css')
         target_file = Path.new('style.scss')

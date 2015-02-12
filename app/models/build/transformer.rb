@@ -161,10 +161,10 @@ module Build
 
       if file_name.member_of?(:stylesheets)
         new_source = source.dup
+        new_source.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
 
         {images: :image, fonts: :font}.each do |ext_class, asset_type|
           extensions = Path.extension_classes.fetch(ext_class)
-          new_source.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
           new_source.gsub! /(?<!-)url\(\s*(["']*)([^\)]+\.(?:#{extensions.join('|')}))(\??#?[^\s"'\)]*)\1\s*\)/i do |match|
 
             if exist_relative_path?($2, file_name, transformations)
@@ -175,6 +175,16 @@ module Build
 
           end
         end
+
+        new_source.gsub!(/\/\*[#@]\s+sourceMappingURL=[^\*]+\*\/[\r\n|\n]?/i, '')
+
+        new_source
+      elsif file_name.member_of?(:javascripts)
+        new_source = source.dup
+
+        new_source.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+
+        new_source.gsub!(/[ \t]*?\/\/[#@]\s+sourceMappingURL=[^\r\n]+[\r\n|\n]?/i, '')
 
         new_source
       else
