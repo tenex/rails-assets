@@ -116,10 +116,10 @@ module Build
           to eq(">= 1, < 2")
       end
 
+      # Rubygems doesn't support ||, so we fetch only latest
       specify do
-        expect {
-          Utils.fix_version_string(' 1.0.x  ||>=1.0.5 ')
-        }.to raise_error(BuildError)
+        expect(Utils.fix_version_string(' 1.0.x  ||>=1.0.5 ')).
+          to eq(">= 0")
       end
 
       specify do
@@ -249,9 +249,10 @@ module Build
           to eq(">= 1, < 3, < 1.9.3")
       end
 
-      xspecify do
+      # Rubygems doesn't support ||, so we fetch only latest
+      specify do
         expect(Utils.fix_version_string('1.0 || 1.1')).
-          to eq(">= 1.0, < 1.2")
+          to eq(">= 0")
       end
     end
 

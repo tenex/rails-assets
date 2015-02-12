@@ -58,9 +58,7 @@ module Build
 
 
       if version.include?('||')
-        raise BuildError.new(
-          "Rubygems does not support || in version string '#{version}'"
-        )
+        version = "*"
       end
 
       # Remove any unnecessary spaces
