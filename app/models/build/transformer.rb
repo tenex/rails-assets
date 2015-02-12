@@ -204,7 +204,7 @@ module Build
     end
 
     def transform_filename(filename)
-      filename.to_s.gsub(/\.css$/, '.scss')
+      filename.to_s.gsub(/\.css$/, '.css.scss')
     end
 
     def manifest_path(gem_name, generator)

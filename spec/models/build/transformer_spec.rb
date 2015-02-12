@@ -28,7 +28,7 @@ module Build
       it 'puts stylesheet files to stylesheets directory' do
         expect(
           targets(['foo.css'])
-        ).to eq(Paths.new(['app/assets/stylesheets/foobar/foo.scss']))
+        ).to eq(Paths.new(['app/assets/stylesheets/foobar/foo.css.scss']))
       end
 
       it 'puts image files to images directory' do
@@ -88,7 +88,7 @@ module Build
         expect(
           targets(['foo.css'], ['foo.css'])
         ).to eq(Paths.new([
-          'app/assets/stylesheets/foobar/foo.scss',
+          'app/assets/stylesheets/foobar/foo.css.scss',
           'app/assets/stylesheets/foobar.scss'
         ]))
       end
@@ -98,7 +98,7 @@ module Build
           mappings(
             ['foo.css'], ['foo.css']
           )['app/assets/stylesheets/foobar.scss']
-        ).to include("@import 'foobar/foo.scss';")
+        ).to include("@import 'foobar/foo.css.scss';")
       end
 
       it 'flattens paths for if main javascript is set' do
@@ -114,7 +114,7 @@ module Build
         expect(
           targets(['dist/css/foo.css'], ['dist/css/foo.css'])
         ).to eq(Paths.new([
-          'app/assets/stylesheets/foobar/foo.scss',
+          'app/assets/stylesheets/foobar/foo.css.scss',
           'app/assets/stylesheets/foobar.scss'
         ]))
       end
@@ -128,7 +128,7 @@ module Build
         ).to eq(Paths.new([
           'app/assets/javascripts/foobar/foo.js',
           'app/assets/javascripts/foobar.js',
-          'app/assets/stylesheets/foobar/foo.scss',
+          'app/assets/stylesheets/foobar/foo.css.scss',
           'app/assets/stylesheets/foobar.scss'
         ]))
       end
@@ -141,7 +141,7 @@ module Build
           )
         ).to eq(Paths.new([
           'app/assets/javascripts/foobar/dist/js/foo.js',
-          'app/assets/stylesheets/foobar/foo.scss',
+          'app/assets/stylesheets/foobar/foo.css.scss',
           'app/assets/stylesheets/foobar.scss'
         ]))
       end
@@ -150,7 +150,7 @@ module Build
         expect(
           targets(['foo.css'])
         ).to eq(Paths.new([
-          'app/assets/stylesheets/foobar/foo.scss'
+          'app/assets/stylesheets/foobar/foo.css.scss'
         ]))
       end
 
@@ -201,6 +201,7 @@ module Build
           [Path.new('foo/after.png'), Path.new('app/assets/images/after.png')],
           [Path.new('foo/spam.eot'), Path.new('app/assets/fonts/spam.eot')],
           [Path.new('foo/spam.woff'), Path.new('app/assets/fonts/spam.woff')],
+          [Path.new('foo/spam.woff2'), Path.new('app/assets/fonts/spam.woff2')],
           [Path.new('foo/spam.ttf'), Path.new('app/assets/fonts/spam.ttf')],
           [Path.new('foo/spam.otf'), Path.new('app/assets/fonts/spam.otf')],
           [Path.new('foo/spam.svg'), Path.new('app/assets/fonts/spam.svg')]
@@ -210,7 +211,8 @@ module Build
         @font-family {
           src:url('foo/spam.eot'); /* IE9 Compat Modes */
           src: url('foo/spam.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-               url('foo/spam.woff') format('woff'),url('foo/spam.ttf')  format('truetype'), /* Safari, Android, iOS */
+               url('foo/spam.woff') format('woff'),
+               url('foo/spam.woff2') format('woff2'),url('foo/spam.ttf')  format('truetype'), /* Safari, Android, iOS */
                \n\nurl('foo/spam.otf')  format('opentype'),/**/url('foo/spam.svg#svgFontName') format('svg'); /* Legacy iOS */
           }
         }
@@ -226,7 +228,7 @@ module Build
         File.write('/tmp/foo/before.png', "BINARY")
         File.write('/tmp/foo/around.png', "BINARY")
         File.write('/tmp/foo/after.png', "BINARY")
-        %w(eot woff ttf otf svg).each do |font_ext|
+        %w(eot woff2 woff ttf otf svg).each do |font_ext|
           File.write("/tmp/foo/spam.#{font_ext}", "BINARY")
         end
 
@@ -240,6 +242,7 @@ module Build
           'src:font-url("spam.eot")',
           'src: font-url("spam.eot?#iefix") format(\'embedded-opentype\')',
           'font-url("spam.woff") format(\'woff\')',
+          'font-url("spam.woff2") format(\'woff2\')',
           ',font-url("spam.ttf")  format(\'truetype\')',
           "\n\nfont-url(\"spam.otf\")  format('opentype')",
           '/**/font-url("spam.svg#svgFontName") format(\'svg\')',
@@ -284,7 +287,7 @@ module Build
           'jquery.cookie.css'
         )
 
-        expect(filename).to eq('jquery.cookie.scss')
+        expect(filename).to eq('jquery.cookie.css.scss')
       end
 
       it 'leaves all non-custom extension' do
