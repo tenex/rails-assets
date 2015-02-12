@@ -310,6 +310,44 @@ module Build
         expect(File.read('/tmp/style-new.js')).to eq(output)
       end
 
+      it 'does not remove utf-8 characters (e.g. d3 library)' do
+        transformations = Hash[[
+          [Path.new('style-old.js'), Path.new('style-new.js')]
+        ]]
+
+        input = "var ε = 1e-6, ε2 = ε * ε, π = Math.PI, τ = 2 * π, τε = τ - ε, halfπ = π / 2, d3_radians = π / 180, d3_degrees = 180 / π;"
+
+        File.write('/tmp/style-old.js', input)
+        Transformer.process_transformations!(transformations, '/tmp', '/tmp')
+        expect(File.read('/tmp/style-new.js')).to eq(input)
+      end
+
+      it 'does remove invalid utf-8 characters in JS' do
+        transformations = Hash[[
+          [Path.new('style-old.js'), Path.new('style-new.js')]
+        ]]
+
+        input = File.read(Rails.root.join('spec/invalid-utf8.txt'))
+
+        File.write('/tmp/style-old.js', input)
+        Transformer.process_transformations!(transformations, '/tmp', '/tmp')
+        # Following fails for invalid utf-8
+        File.read('/tmp/style-new.js').gsub('foo', 'bar')
+      end
+
+      it 'does remove invalid utf-8 characters in CSS' do
+        transformations = Hash[[
+          [Path.new('style-old.css'), Path.new('style-new.css')]
+        ]]
+
+        input = File.read(Rails.root.join('spec/invalid-utf8.txt'))
+
+        File.write('/tmp/style-old.css', input)
+        Transformer.process_transformations!(transformations, '/tmp', '/tmp')
+        # Following fails for invalid utf-8
+        File.read('/tmp/style-new.css').gsub('foo', 'bar')
+      end
+
       it 'transforms urls in css files' do
         source_file = Path.new('style.css')
         target_file = Path.new('style.scss')

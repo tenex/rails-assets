@@ -160,8 +160,9 @@ module Build
       return source if file_name.nil?
 
       if file_name.member_of?(:stylesheets)
-        new_source = source.dup
-        new_source.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+        new_source = source.dup.
+          encode("UTF-16be", invalid: :replace, replace: '', undef: :replace).
+          encode('UTF-8')
 
         {images: :image, fonts: :font}.each do |ext_class, asset_type|
           extensions = Path.extension_classes.fetch(ext_class)
@@ -180,9 +181,9 @@ module Build
 
         new_source
       elsif file_name.member_of?(:javascripts)
-        new_source = source.dup
-
-        new_source.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+        new_source = source.dup.
+          encode("UTF-16be", invalid: :replace, replace: '', undef: :replace).
+          encode('UTF-8')
 
         new_source.gsub!(/[ \t]*?\/\/[#@]\s+sourceMappingURL=[^\r\n]+[\r\n|\n]?/i, '')
 
