@@ -1,4 +1,4 @@
-article.grid.gem-list__item.gem ng-repeat="gem in filtered = (gems | filter:search) | limitTo:limit track by $index" ng-controller="GemCtrl"
+article.grid.gem-list__item.gem ng-repeat="gem in filtered = (gems | filter:search) | orderBy:'name.length' | limitTo:limit track by $index" ng-controller="GemCtrl"
   header.grid__cell.unit-1-2
     h1.gem__name
       a ng-show="gem.homepage" href="{{ gem.homepage }}"
