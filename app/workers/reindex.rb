@@ -8,10 +8,15 @@ class Reindex
   def perform(force = false)
     Build::Locking.with_lock(:index) do
       Version.transaction do
-        Version.pending_index.
-          update_all(build_status: 'indexed')
+        pending_index_ids = Version.pending_index.pluck(:id)
+
+        Version.pending_index.update_all(build_status: 'indexed')
 
         generate_indexes
+
+        if ENV['DOMAIN'].present? && ENV['SHELLY_CACHE_AUTH'].present?
+          pending_index_ids.each { |id| Refresh.perform_async(id) }
+        end
       end
     end
 

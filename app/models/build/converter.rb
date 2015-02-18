@@ -36,7 +36,6 @@ module Build
             )
           end
 
-          # TODO: Is always correct version first in list?
           versions.first
         end
       end

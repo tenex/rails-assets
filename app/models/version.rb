@@ -92,6 +92,15 @@ class Version < ActiveRecord::Base
     )
   end
 
+  def gem_url
+    "#{ENV['DOMAIN']}/gems/#{GEM_PREFIX}#{component.name}-#{string}.gem"
+  end
+
+  def gemspec_url
+    "#{ENV['DOMAIN']}/quick/Marshal.4.8/" +
+    "#{GEM_PREFIX}#{component.name}-#{string}.gemspec.rz"
+  end
+
   def rebuild_async!
     versions.update_all(rebuild: true)
     UpdateComponent.perform_async(bower_name)

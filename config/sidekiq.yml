@@ -4,5 +4,6 @@
   - update_component
   - default
   - reindex
+  - refresh
 :blocking:
   - default
