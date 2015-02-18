@@ -120,7 +120,7 @@ module Build
         )['app/assets/stylesheets/foobar.scss']
 
         expect(maps).to include("@import 'foobar/css/foo.css.scss';")
-        expect(maps).to include("@import 'foobar/scss/foo.css.scss';")
+        expect(maps).to include("@import 'foobar/scss/foo.scss';")
       end
 
       it 'flattens paths for if main javascript is set' do
@@ -334,6 +334,26 @@ module Build
         File.write('/tmp/style-old.js', input)
         Transformer.process_transformations!(transformations, '/tmp', '/tmp')
         expect(File.read('/tmp/style-new.js')).to eq(output)
+      end
+
+      it 'leaves code that only looks like sourcemap (react)' do
+
+        transformations = Hash[[
+          [Path.new('style-old.js'), Path.new('style-new.js')]
+        ]]
+
+
+        input = "
+        return (
+          transformed.code +
+          '\\n//# sourceMappingURL=data:application/json;base64,' +
+          buffer.Buffer(JSON.stringify(map)).toString('base64')
+        );
+        "
+
+        File.write('/tmp/style-old.js', input)
+        Transformer.process_transformations!(transformations, '/tmp', '/tmp')
+        expect(File.read('/tmp/style-new.js')).to eq(input)
       end
 
       it 'does not remove utf-8 characters (e.g. d3 library)' do
