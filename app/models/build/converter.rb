@@ -215,7 +215,7 @@ module Build
       gem_path
     end
 
-    # Public: Indexes all gems marked in database as builded
+    # Public: Indexes all gems marked in database as built
     #
     # On success sets build_status of all such versions to "indexed"
     # If reindex failed, it:

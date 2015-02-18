@@ -3,20 +3,16 @@ article.section
     h1.section__header.header--beta Components Builds
     .grid
       .grid__cell.unit-4-4.content
-        article.pending-reindex
-          h1 Pending reindex
-          - if @pending_index.empty?
-            | None
-          - else
+        - unless @pending_index.empty?
+          article.pending-reindex
+            h1 Pending reindex
             ul
               - @pending_index.each do |version|
                 li = "#{version.component.name}##{version.string}"
 
-        article.pending-builds style="margin-top: 2em"
-          h1 Pending build
-          - if @pending_builds.empty?
-            | None
-          - else
+        - unless @pending_builds.empty?
+          article.pending-builds style="margin-top: 2em"
+            h1 Pending build
             ul
               - @pending_builds.each do |args|
                 li = args.join('#')
@@ -34,7 +30,7 @@ article.section
                 - @failed_builds.each do |version|
                   tr
                     td = "#{version.component.name}##{version.string}"
-                    td = version.build_message
+                    td: pre = version.build_message
 
         article.failed-builds style="margin-top: 2em"
           h1 Failed jobs (last 50)
