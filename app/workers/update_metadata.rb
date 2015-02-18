@@ -1,7 +1,7 @@
 class UpdateMetadata
   include Sidekiq::Worker
 
-  sidekiq_options queue: 'default', unique: true, retry: 0
+  sidekiq_options queue: 'default', unique: :all, retry: 0
 
   def perform(version_id)
     version = Version.includes(:component).find(version_id)

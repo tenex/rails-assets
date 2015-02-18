@@ -11,7 +11,7 @@ end
 class Refresh
   include Sidekiq::Worker
 
-  sidekiq_options queue: 'refresh', unique: true, retry: 3
+  sidekiq_options queue: 'refresh', unique: :all, retry: 3
 
   def perform(version_id)
     version = Version.find(version_id)

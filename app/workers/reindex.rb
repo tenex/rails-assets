@@ -3,7 +3,7 @@ require 'rubygems/indexer'
 class Reindex
   include Sidekiq::Worker
 
-  sidekiq_options queue: 'reindex', unique: true, retry: 0
+  sidekiq_options queue: 'reindex', unique: :all, retry: 0
 
   def perform(force = false)
     Build::Locking.with_lock(:index) do
