@@ -7,3 +7,4 @@ rm -rf public/gems public/quick
 rm -f public/*.gz public/*4.8 public/*.lock
 rake db:drop db:create db:migrate
 redis-cli FLUSHALL
+rake db:test:prepare

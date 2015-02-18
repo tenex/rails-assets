@@ -19,12 +19,6 @@ class ComponentsController < ApplicationController
     name, version = component_params[:name], component_params[:version]
     name = Build::Utils.fix_gem_name(name, version).gsub('/', '--')
 
-    component, ver = get_version(name, version)
-
-    if ver.present? && ver.build_status == "failed"
-      ver.destroy
-    end
-
     Build::Converter.run!(name, version)
 
     component, ver = get_version(name, version)

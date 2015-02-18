@@ -22,21 +22,11 @@ module Build
 
       # Lock here prevents multiple builds on same requests at the same time
       Build::Locking.with_lock(lock_name) do
-        # TODO: should component be saved if some of the dependencies failed?
         Converter.process!(name, version) do |versions_paths|
           Converter.persist!(versions_paths)
-          ::Reindex.perform_async
+          Reindex.perform_async
 
-          versions = versions_paths.map(&:first).compact
-
-          if versions.any? { |v| v.failed? }
-            raise BuildError.new(
-              versions.select { |v| v.failed? }.
-              map { |v| "#{v.component.name}##{v.string}: #{v.build_message}" }.join("\n")
-            )
-          end
-
-          versions.first
+          versions_paths.first.first
         end
       end
     end
@@ -48,7 +38,8 @@ module Build
     #
     # Yields [Array of Version, Array of Path]
     #  - paths to builded .gem files to insert into index
-    #  - versions to save with build_status set to "builded" or "failed"
+    #    (if path is nil, then component has been alredy built)
+    #  - versions to save with build_status set to "builded"
     #  - build_message and asset_paths + main_paths filled
     #  - no version is yet persisted
     #
@@ -62,42 +53,21 @@ module Build
           components.map do |component|
             version = component.version_model
 
-            next [version, nil] unless version.needs_build?
-
             ::Rails.logger.info "Building #{component.name}##{version.string}..."
 
-            gem_path = begin
-              Converter.convert!(component) do |output_dir, asset_paths, main_paths|
-                version.build_status = 'builded'
-                version.asset_paths = asset_paths.map(&:to_s)
-                version.main_paths = main_paths.map(&:to_s)
-                Converter.build!(component, output_dir, gems_dir)
-              end
-            rescue Build::BuildError => e
-              Raven.capture_exception(e)
-              version.build_status = 'failed'
-              version.build_message = e.message
-              nil
+            gem_filepath = Converter.convert!(component) do |output_dir, asset_paths, main_paths|
+              version.build_status = 'builded'
+              version.asset_paths = asset_paths.map(&:to_s)
+              version.main_paths = main_paths.map(&:to_s)
+              Converter.build!(component, output_dir, gems_dir)
             end
 
-            [version, gem_path]
+            [version, gem_filepath]
           end.compact
         end
 
         yield results
       end
-    rescue Build::BowerError, Build::BuildError => e
-      gem_name = Build::Utils.fix_gem_name(component_name, component_version)
-      gem_version = Build::Utils.fix_version_string(component_version)
-      component, version = Component.get(gem_name, gem_version)
-
-      if version
-        version.build_status = 'failed'
-        version.build_message = e.message
-        version.save!
-      end
-
-      raise
     end
 
     # Public: Persists versions and .gem files returned from convert! method

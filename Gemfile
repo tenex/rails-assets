@@ -54,10 +54,11 @@ gem 'whenever'
 
 gem 'postrank-uri'
 
+gem 'foreman'
+
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'foreman'
 end
 
 group :development, :test do

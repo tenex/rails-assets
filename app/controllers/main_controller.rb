@@ -9,9 +9,11 @@ class MainController < ApplicationController
 
   def status
     @pending_index = Version.includes(:component).pending_index.load
-    @failed_builds = Version.includes(:component).failed.load
-    @pending_builds = Sidekiq::Queue.new("default").map(&:as_json).map { |i| i["item"]["args"] }
-    @failed_jobs = Sidekiq.redis { |c| c.lrange(:failed, 0, 50) }.map { |j| JSON.parse(j) }
+
+    @pending_builds = Sidekiq::Queue.new("default").map(&:as_json)
+      .map { |i| i["item"]["args"] }
+
+    @failed_jobs = FailedJob.all.to_a
   end
 
   def dependencies

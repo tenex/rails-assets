@@ -12,10 +12,9 @@ class Version < ActiveRecord::Base
   scope :indexed, lambda { where(:build_status => "indexed") }
   scope :builded, lambda { where(:build_status => ["builded", "indexed"]) }
   scope :pending_index, lambda { where(:build_status => "builded") }
-  scope :failed, lambda { where(:build_status => "failed") }
 
   scope :processed, lambda {
-    where(build_status: ["builded", "indexed", "failed"], rebuild: false)
+    where(build_status: ["builded", "indexed"], rebuild: false)
   }
 
   scope :string, lambda { |string|
@@ -68,10 +67,6 @@ class Version < ActiveRecord::Base
 
   def builded?
     build_status == 'builded' || build_status == 'indexed'
-  end
-
-  def failed?
-    build_status == 'failed'
   end
 
   def needs_build?

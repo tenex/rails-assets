@@ -1,7 +1,8 @@
 class UpdateComponent
   include Sidekiq::Worker
 
-  sidekiq_options queue: 'update_component', unique: :all, retry: 0
+  # We don't want to retry this kind of job. It's automatically retried by scheduler.
+  sidekiq_options queue: 'update_component', unique: :all, retry: false
 
   def perform(bower_name)
 

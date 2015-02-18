@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140713225251) do
+ActiveRecord::Schema.define(version: 20150218105340) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,16 @@ ActiveRecord::Schema.define(version: 20140713225251) do
     t.datetime "updated_at"
     t.string   "bower_name"
     t.index ["name"], :name => "index_components_on_name", :unique => true, :order => {"name" => :asc}
+  end
+
+  create_table "failed_jobs", force: true do |t|
+    t.string   "name"
+    t.string   "worker"
+    t.text     "args"
+    t.text     "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["name"], :name => "index_failed_jobs_on_name", :order => {"name" => :asc}
   end
 
   create_table "versions", force: true do |t|
