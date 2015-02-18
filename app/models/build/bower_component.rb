@@ -49,7 +49,9 @@ module Build
     end
 
     def homepage
-      data['pkgMeta']['homepage']
+      PostRank::URI.normalize(data['pkgMeta']['homepage']).to_s
+    rescue
+      nil
     end
 
     def dependencies
