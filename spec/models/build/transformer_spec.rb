@@ -8,7 +8,7 @@ module Build
           'foobar',
           Paths.new(asset_paths),
           Paths.new(main_paths)
-        )[:all].values)
+        )[:all].map(&:last))
       end
 
       def mappings(asset_paths, main_paths = [])
@@ -16,7 +16,7 @@ module Build
           'foobar',
           Paths.new(asset_paths),
           Paths.new(main_paths)
-        )[:all].invert.map { |s, t| [s.to_s, t.to_s] }]
+        )[:all].map { |s, t| [t.to_s, s.to_s] }]
       end
 
       it 'puts javascript files to javascripts directory' do
@@ -28,7 +28,10 @@ module Build
       it 'puts stylesheet files to stylesheets directory' do
         expect(
           targets(['foo.css'])
-        ).to eq(Paths.new(['app/assets/stylesheets/foobar/foo.css.scss']))
+        ).to eq(Paths.new([
+          'app/assets/stylesheets/foobar/foo.css.scss',
+          'app/assets/stylesheets/foobar/foo.scss'
+        ]))
       end
 
       it 'puts image files to images directory' do
@@ -89,6 +92,7 @@ module Build
           targets(['foo.css'], ['foo.css'])
         ).to eq(Paths.new([
           'app/assets/stylesheets/foobar/foo.css.scss',
+          'app/assets/stylesheets/foobar/foo.scss',
           'app/assets/stylesheets/foobar.scss'
         ]))
       end
@@ -99,6 +103,24 @@ module Build
             ['foo.css'], ['foo.css']
           )['app/assets/stylesheets/foobar.scss']
         ).to include("@import 'foobar/foo.css.scss';")
+      end
+
+      it 'generates proper stylesheet manifest (font-awesome case)' do
+        maps = mappings(
+          ['css/foo.css', 'scss/foo.scss'], ['css/foo.css']
+        )['app/assets/stylesheets/foobar.scss']
+
+        expect(maps).to include("@import 'foobar/foo.css.scss';")
+      end
+
+      it 'generates proper stylesheet manifest (multple requires)' do
+        maps = mappings(
+          ['css/foo.css', 'scss/foo.scss'],
+          ['css/foo.css', 'scss/foo.scss'],
+        )['app/assets/stylesheets/foobar.scss']
+
+        expect(maps).to include("@import 'foobar/css/foo.css.scss';")
+        expect(maps).to include("@import 'foobar/scss/foo.css.scss';")
       end
 
       it 'flattens paths for if main javascript is set' do
@@ -115,6 +137,7 @@ module Build
           targets(['dist/css/foo.css'], ['dist/css/foo.css'])
         ).to eq(Paths.new([
           'app/assets/stylesheets/foobar/foo.css.scss',
+          'app/assets/stylesheets/foobar/foo.scss',
           'app/assets/stylesheets/foobar.scss'
         ]))
       end
@@ -129,6 +152,7 @@ module Build
           'app/assets/javascripts/foobar/foo.js',
           'app/assets/javascripts/foobar.js',
           'app/assets/stylesheets/foobar/foo.css.scss',
+          'app/assets/stylesheets/foobar/foo.scss',
           'app/assets/stylesheets/foobar.scss'
         ]))
       end
@@ -142,6 +166,7 @@ module Build
         ).to eq(Paths.new([
           'app/assets/javascripts/foobar/dist/js/foo.js',
           'app/assets/stylesheets/foobar/foo.css.scss',
+          'app/assets/stylesheets/foobar/foo.scss',
           'app/assets/stylesheets/foobar.scss'
         ]))
       end
@@ -150,7 +175,8 @@ module Build
         expect(
           targets(['foo.css'])
         ).to eq(Paths.new([
-          'app/assets/stylesheets/foobar/foo.css.scss'
+          'app/assets/stylesheets/foobar/foo.css.scss',
+          'app/assets/stylesheets/foobar/foo.scss'
         ]))
       end
 

@@ -91,19 +91,27 @@ module Build
 
         transforms = (source_paths.zip(target_paths) + [manifest_transform]).compact
 
-        transforms = transforms.map do |source, target|
+        transforms = transforms.flat_map do |source, target|
           if target.member_of?(:stylesheets) && target.extname == '.css'
-            [source, Path.new(target.to_s.sub(/\.css$/, '.css.scss'))]
+            css_scss_path = Path.new(target.to_s.sub(/\.css$/, '.css.scss'))
+            scss_path = Path.new(target.to_s.sub(/\.css$/, '.scss'))
+
+            new_transforms = [[source, css_scss_path]]
+
+            # We don't want to overwrite existing scss file
+            unless source_paths.include?(scss_path)
+              new_transforms << [source, scss_path]
+            end
+
+            new_transforms
           else
-            [source, target]
+            [[source, target]]
           end
         end
 
-        transforms_hash = Hash[transforms]
-
         main_transforms = main_paths.map do |path|
-          [path, transforms_hash[path]]
-        end
+          transforms.find { |source, _| source == path }
+        end.compact
 
         {
           all: transforms,
@@ -112,8 +120,8 @@ module Build
       end
 
       {
-        all: Hash[transformations.flat_map { |t| t[:all] }],
-        main: Hash[transformations.flat_map { |t| t[:main] }]
+        all: transformations.flat_map { |t| t[:all] },
+        main: transformations.flat_map { |t| t[:main] }
       }
     end
 
@@ -144,15 +152,15 @@ module Build
         end
       end
 
-      transformations.values
+      transformations.map(&:last)
     end
 
     def exist_relative_path?(relative_path, source_path, transformations)
-      transformations.has_key?(source_path.append_relative_path(relative_path))
+      transformations.any? { |s, _| s == source_path.append_relative_path(relative_path) }
     end
 
     def transform_relative_path(ext_class, relative_path, source_path, transformations)
-      new_img = transformations[source_path.append_relative_path(relative_path)]
+      new_img = transformations.find { |s, _| s == source_path.append_relative_path(relative_path) }.last
       Path.new(new_img.to_s.sub(/.*?app\/assets\/#{ext_class}\//, ""))
     end
 

@@ -95,9 +95,13 @@ describe Build::Converter do
       gem_file "app/assets/javascripts/leaflet/leaflet.js"
 
       gem_file "app/assets/stylesheets/leaflet/leaflet.css.scss"
+      gem_file "app/assets/stylesheets/leaflet/leaflet.scss"
       gem_file "app/assets/stylesheets/leaflet/leaflet.ie.css.scss"
+      gem_file "app/assets/stylesheets/leaflet/leaflet.ie.scss"
       gem_file "app/assets/stylesheets/leaflet.scss"
       file_contains "app/assets/stylesheets/leaflet/leaflet.css.scss",
+        "background-image: image-url"
+      file_contains "app/assets/stylesheets/leaflet/leaflet.scss",
         "background-image: image-url"
 
       gem_file "app/assets/images/leaflet/dist/images/layers-2x.png"
@@ -121,6 +125,7 @@ describe Build::Converter do
       gem_file "app/assets/javascripts/selectize/selectize.js"
       gem_file "app/assets/stylesheets/selectize.scss"
       gem_file "app/assets/stylesheets/selectize/selectize.css.scss"
+      gem_file "app/assets/stylesheets/selectize/selectize.scss"
     end
 
     component "jquery.cookie", '1.4.0' do
@@ -145,6 +150,8 @@ describe Build::Converter do
       file_contains 'rails-assets-jozzhart--tinymce.gemspec',
         'spec.name          = "rails-assets-jozzhart--tinymce"'
       file_contains 'app/assets/stylesheets/tinymce/skins/lightgray/content.min.css.scss',
+        'background:image-url'
+      file_contains 'app/assets/stylesheets/tinymce/skins/lightgray/content.min.scss',
         'background:image-url'
     end
 
@@ -181,6 +188,7 @@ describe Build::Converter do
     component "colorbox", "1.5.5" do
       gem_file "app/assets/stylesheets/colorbox.scss"
       gem_file "app/assets/stylesheets/colorbox/colorbox.css.scss"
+      gem_file "app/assets/stylesheets/colorbox/colorbox.scss"
       file_contains "app/assets/stylesheets/colorbox/colorbox.css.scss",
         'background:image-url("colorbox/example1/images/overlay.png")'
       file_contains "app/assets/stylesheets/colorbox.scss",
@@ -219,6 +227,7 @@ describe Build::Converter do
       # before the url. The original `url( building-blocks/...)`,
       # was being converted to `url(.)`
       file_contains "app/assets/stylesheets/building-blocks/style/buttons.css.scss", "background: image-url(\"building-blocks/style/buttons/images/ui/shadow.png\") repeat-x left bottom / auto 100%;"
+      file_contains "app/assets/stylesheets/building-blocks/style/buttons.scss", "background: image-url(\"building-blocks/style/buttons/images/ui/shadow.png\") repeat-x left bottom / auto 100%;"
     end
 
     component "jquery", '2.0.3' do
@@ -229,13 +238,22 @@ describe Build::Converter do
     component 'bootstrap-formhelpers', '2.3.0' do
       file_contains 'app/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers.css.scss',
         'url(../img/eu.png)'
+      file_contains 'app/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers.scss',
+        'url(../img/eu.png)'
 
       file_contains 'app/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers.css.scss',
+        'image-url("bootstrap-formhelpers/dist/img/bootstrap-formhelpers-currencies.flags.png")'
+
+      file_contains 'app/assets/stylesheets/bootstrap-formhelpers/bootstrap-formhelpers.scss',
         'image-url("bootstrap-formhelpers/dist/img/bootstrap-formhelpers-currencies.flags.png")'
     end
 
     component "zeroclipboard", "2.1.6" do
       gem_file 'app/assets/flash/zeroclipboard/ZeroClipboard.swf'
     end
+
+    # component "components-font-awesome", "4.3.0" do
+    #   gem_file 'app/assets/flash/zeroclipboard/ZeroClipboard.swf'
+    # end
   end
 end

@@ -180,13 +180,13 @@ module Build
 
         transformations = Transformer.component_transformations(bower_component)
 
-        asset_paths = transformations[:all].values
-        main_paths = transformations[:main].values
+        asset_paths = transformations[:all].map(&:last)
+        main_paths = transformations[:main].map(&:last)
 
         raise BuildError.new("No files to convert") if asset_paths.empty?
 
         Transformer.process_transformations!(
-          transformations[:all].merge(generate_gem_structure(bower_component)),
+          transformations[:all].concat(generate_gem_structure(bower_component)),
           bower_component.component_dir, output_dir
         )
 
@@ -244,14 +244,14 @@ module Build
     end
 
     def generate_gem_structure(bower_component)
-      Hash[[
+      [
         "lib/GEM/version.rb.erb",
         "lib/GEM.rb.erb",
         "Gemfile",
         "Rakefile",
         "README.md.erb",
         "GEM.gemspec.erb"
-      ].map { |file| generate_gem_file(bower_component, file) }]
+      ].map { |file| generate_gem_file(bower_component, file) }
     end
 
     def templates_dir
