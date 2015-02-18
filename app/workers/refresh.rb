@@ -11,7 +11,7 @@ end
 class Refresh
   include Sidekiq::Worker
 
-  sidekiq_options queue: 'reindex', unique: true, retry: 3
+  sidekiq_options queue: 'refresh', unique: true, retry: 3
 
   def perform(version_id)
     version = Version.find(version_id)
@@ -25,12 +25,15 @@ class Refresh
   def purge(url)
     uri = URI.parse(url)
 
-    Net::HTTP.start(uri.host, uri.port) do |http|
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true if uri.scheme == 'https'
+
+    http.start do |http|
       req = Net::HTTP::Purge.new(uri.request_uri)
       req['X-Shelly-Cache-Auth'] = ENV['SHELLY_CACHE_AUTH']
       resp = http.request(req)
       unless (200...400).include?(resp.code.to_i)
-        raise "A problem occurred. PURGE was not performed. Status code: #{resp.code}"
+        raise resp.body
       end
     end
   end

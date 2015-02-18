@@ -101,13 +101,9 @@ class Version < ActiveRecord::Base
     "#{GEM_PREFIX}#{component.name}-#{string}.gemspec.rz"
   end
 
-  def rebuild_async!
-    versions.update_all(rebuild: true)
-    UpdateComponent.perform_async(bower_name)
+  def rebuild!
+    update_attribute(:rebuild, true)
+    BuildVersion.perform_async(component.bower_name, bower_version)
   end
 
-  def self.rebuild_async!
-    Version.update_all(rebuild: true)
-    UpdateScheduler.perform_async
-  end
 end
