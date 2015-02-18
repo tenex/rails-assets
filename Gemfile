@@ -56,6 +56,8 @@ gem 'postrank-uri'
 
 gem 'foreman'
 
+gem 'dotenv'
+
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'

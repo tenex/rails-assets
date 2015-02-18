@@ -249,6 +249,7 @@ DEPENDENCIES
   builder
   coffee-rails (~> 4.0.0)
   database_cleaner
+  dotenv
   figaro!
   foreman
   honey_badger
