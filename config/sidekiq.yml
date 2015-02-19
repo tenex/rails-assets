@@ -1,7 +1,7 @@
 :concurrency: 3
 :queues:
-  - update_scheduler
-  - update_component
-  - default
-  - reindex
-  - refresh
+  - [update_scheduler,1]
+  - [update_component,1]
+  - [reindex,5]
+  - [refresh,10]
+  - [default,100]
