@@ -29,7 +29,6 @@ module Build
         expect(
           targets(['foo.css'])
         ).to eq(Paths.new([
-          'app/assets/stylesheets/foobar/foo.css.scss',
           'app/assets/stylesheets/foobar/foo.scss'
         ]))
       end
@@ -91,7 +90,6 @@ module Build
         expect(
           targets(['foo.css'], ['foo.css'])
         ).to eq(Paths.new([
-          'app/assets/stylesheets/foobar/foo.css.scss',
           'app/assets/stylesheets/foobar/foo.scss',
           'app/assets/stylesheets/foobar.scss'
         ]))
@@ -102,7 +100,7 @@ module Build
           mappings(
             ['foo.css'], ['foo.css']
           )['app/assets/stylesheets/foobar.scss']
-        ).to include("@import 'foobar/foo.css.scss';")
+        ).to include("@import 'foobar/foo.scss';")
       end
 
       it 'generates proper stylesheet manifest (font-awesome case)' do
@@ -110,7 +108,7 @@ module Build
           ['css/foo.css', 'scss/foo.scss'], ['css/foo.css']
         )['app/assets/stylesheets/foobar.scss']
 
-        expect(maps).to include("@import 'foobar/foo.css.scss';")
+        expect(maps).to include("@import 'foobar/foo.scss';")
       end
 
       it 'generates proper stylesheet manifest (multple requires)' do
@@ -119,7 +117,7 @@ module Build
           ['css/foo.css', 'scss/foo.scss'],
         )['app/assets/stylesheets/foobar.scss']
 
-        expect(maps).to include("@import 'foobar/css/foo.css.scss';")
+        expect(maps).to include("@import 'foobar/css/foo.scss';")
         expect(maps).to include("@import 'foobar/scss/foo.scss';")
       end
 
@@ -136,7 +134,6 @@ module Build
         expect(
           targets(['dist/css/foo.css'], ['dist/css/foo.css'])
         ).to eq(Paths.new([
-          'app/assets/stylesheets/foobar/foo.css.scss',
           'app/assets/stylesheets/foobar/foo.scss',
           'app/assets/stylesheets/foobar.scss'
         ]))
@@ -151,7 +148,6 @@ module Build
         ).to eq(Paths.new([
           'app/assets/javascripts/foobar/foo.js',
           'app/assets/javascripts/foobar.js',
-          'app/assets/stylesheets/foobar/foo.css.scss',
           'app/assets/stylesheets/foobar/foo.scss',
           'app/assets/stylesheets/foobar.scss'
         ]))
@@ -165,7 +161,6 @@ module Build
           )
         ).to eq(Paths.new([
           'app/assets/javascripts/foobar/dist/js/foo.js',
-          'app/assets/stylesheets/foobar/foo.css.scss',
           'app/assets/stylesheets/foobar/foo.scss',
           'app/assets/stylesheets/foobar.scss'
         ]))
@@ -175,7 +170,6 @@ module Build
         expect(
           targets(['foo.css'])
         ).to eq(Paths.new([
-          'app/assets/stylesheets/foobar/foo.css.scss',
           'app/assets/stylesheets/foobar/foo.scss'
         ]))
       end
@@ -492,15 +486,15 @@ module Build
           'jquery.cookie.css'
         )
 
-        expect(filename).to eq('jquery.cookie.css.scss')
+        expect(filename).to eq('jquery.cookie.scss')
       end
 
       it 'leaves all non-custom extension' do
         filename = Transformer.transform_filename(
-          'jquery.js.cookie.css.scss'
+          'jquery.js.cookie.scss'
         )
 
-        expect(filename).to eq('jquery.js.cookie.css.scss')
+        expect(filename).to eq('jquery.js.cookie.scss')
       end
 
       it 'also deals with paths' do

@@ -91,21 +91,12 @@ module Build
 
         transforms = (source_paths.zip(target_paths) + [manifest_transform]).compact
 
-        transforms = transforms.flat_map do |source, target|
+        transforms = transforms.map do |source, target|
           if target.member_of?(:stylesheets) && target.extname == '.css'
-            css_scss_path = Path.new(target.to_s.sub(/\.css$/, '.css.scss'))
             scss_path = Path.new(target.to_s.sub(/\.css$/, '.scss'))
-
-            new_transforms = [[source, css_scss_path]]
-
-            # We don't want to overwrite existing scss file
-            unless source_paths.include?(scss_path)
-              new_transforms << [source, scss_path]
-            end
-
-            new_transforms
+            [source, scss_path]
           else
-            [[source, target]]
+            [source, target]
           end
         end
 
@@ -223,7 +214,7 @@ module Build
     end
 
     def transform_filename(filename)
-      filename.to_s.gsub(/\.css$/, '.css.scss')
+      filename.to_s.gsub(/\.css$/, '.scss')
     end
 
     def manifest_path(gem_name, generator)
