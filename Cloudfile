@@ -14,10 +14,10 @@ rails-assets:
       whenever: true
     app1:
       size: large
-      puma: 4
+      puma: 3
     app2:
       size: large
-      puma: 4
-    worker2:
+      puma: 3
+    worker1:
       size: xlarge
       sidekiq: 2
