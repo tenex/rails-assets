@@ -117,7 +117,7 @@ module Build
       end
 
       it 'properly extract dependencies' do
-        expect(subject.dependencies).to eq({ "awesome/eventie" => ">=1.0.3 <2.0" })
+        expect(subject.dependencies).to eq({ "eventie" => "desandro/eventie" })
       end
 
       it 'properly extract main files' do

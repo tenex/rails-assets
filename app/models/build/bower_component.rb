@@ -55,13 +55,7 @@ module Build
     end
 
     def dependencies
-      if data['dependencies'].present?
-        Hash[data['dependencies'].map do |name, data|
-          [data['endpoint']['source'], data['endpoint']['target']]
-        end]
-      else
-        {}
-      end
+      data['pkgMeta']['dependencies'] || {}
     end
 
     def main
