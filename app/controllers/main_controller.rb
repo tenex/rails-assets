@@ -32,12 +32,12 @@ class MainController < ApplicationController
         message = """
           Due to security vulnerability non-block source syntax is now strongly discouraged!
 
-          Please require bundler >= 1.7.0 and specify sources in blocks as follows:
+          Please require bundler >= 1.8.4 and specify sources in blocks as follows:
 
           ```
           source 'https://rubygems.org'
 
-          gem 'bundler', '>= 1.7.0'
+          gem 'bundler', '>= 1.8.4'
 
           gem 'rails'
           # The rest of RubyGems gems...
