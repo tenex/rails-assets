@@ -153,6 +153,11 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string('0.4.0-hotfix.1')).
+          to eq("0.4.0.hotfix.1")
+      end
+
+      specify do
         expect(Utils.fix_version_string('1.0.v0')).
           to eq("1.0.v0")
       end

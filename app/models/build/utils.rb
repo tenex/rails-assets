@@ -93,7 +93,7 @@ module Build
         end
       else
 
-        if version.match('.x')
+        if version.match(/\.x/)
           version.gsub!('.x', '.0')
 
           unless version.include?('>')
