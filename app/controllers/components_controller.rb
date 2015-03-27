@@ -15,6 +15,14 @@ class ComponentsController < ApplicationController
   def new
   end
 
+  def rebuild
+    component = Component.find_by!(name: params[:name])
+    component.versions.update_all(rebuild: true)
+    UpdateComponent.perform_async(component.bower_name)
+
+    redirect_to status_path, notice: 'Component scheduled for rebuild. Check back in 10 minutes. Also remember to remove all versions of this gem from your machine first.'
+  end
+
   def create
     name, version = component_params[:name], component_params[:version]
     name = Build::Utils.fix_gem_name(name, version).gsub('/', '--')

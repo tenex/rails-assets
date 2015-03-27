@@ -5,6 +5,9 @@ RailsAssets::Application.routes.draw do
 
   resources :components, only: [:index, :new, :create] do
     collection do
+      get '/:name/rebuild' => 'components#rebuild',
+        constraints: { name: /[^\/]+/ }
+
       get '/:name/:version' => 'components#assets',
         constraints: { version: /[^\/]+/, name: /[^\/]+/ }
     end

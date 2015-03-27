@@ -25,6 +25,8 @@ article.grid.gem-list__item.gem ng-repeat="gem in filtered = (gems | filter:sear
       | {{ gem.description }}
     .gem__description.gem__description--empty ng-hide="gem.description"
       | No description available.
+    a ng-href="/components/{{gem.name}}/rebuild"
+      | Rebuild
 
     hr ng-show="javascripts || stylesheets" style="border-style: solid; border-color: #eee"
 
