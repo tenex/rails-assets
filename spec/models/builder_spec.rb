@@ -206,7 +206,7 @@ describe Build::Converter do
       gem_file "app/assets/javascripts/marionette/backbone.marionette.js"
     end
 
-    component "bignumber.js", "1.4.1" do
+    component "bignumber.js", "1.5.0" do
       gem_file "app/assets/javascripts/bignumber.js.js"
       gem_file "app/assets/javascripts/bignumber.js/bignumber.js"
       file_contains "app/assets/javascripts/bignumber.js.js",
