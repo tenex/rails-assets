@@ -96,7 +96,7 @@ module Build
         if version.match(/\.x/)
           version.gsub!(/\.x/, '.0')
 
-          unless version.include?('>')
+          unless version.include?('>') || version.include?('^')
             version = "~> #{version.gsub('~', '')}"
           end
         end
