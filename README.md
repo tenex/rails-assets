@@ -34,10 +34,6 @@ bin/rake 'component:destroy[jquery,2.0.3]'
 
 ## Credits
 
-Rails Assets *used to* be the fork of [Gem in a Box](https://github.com/geminabox/geminabox).
+Created by [@teamon](http://github.com/teamon), [@porada](http://github.com/porada) and [@sheerun](http://github.com/sheerun), with the help of [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors). :heart:
 
----
-
-Created by [@teamon](http://github.com/teamon) and [@porada](http://github.com/porada). Maintained by [@sheerun](http://github.com/sheerun).
-
-Thanks for help to [@jandudulski](http://github.com/jandudulski) and [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors).
+Please don’t tweet bugs to us—[report an issue](https://github.com/rails-assets/rails-assets/issues) instead. :v:
