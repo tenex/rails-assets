@@ -56,6 +56,10 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string('>=1.2.x <=1.4.x')).to eq(">= 1.2, <= 1.4")
+      end
+
+      specify do
         expect(Utils.fix_version_string(
           'https://github.com/voodootikigod/node-csv/tarball/master')
         ).to eq(">= 0")
