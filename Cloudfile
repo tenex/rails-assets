@@ -15,9 +15,13 @@ rails-assets:
     app1:
       size: xlarge
       puma: 3
+      processes:
+        - "/usr/sbin/nrsysmond -f -c config/new-relic-config.rb"
     app2:
       size: xlarge
       puma: 3
+      processes:
+        - "/usr/sbin/nrsysmond -f -c config/new-relic-config.rb"
     worker1:
       size: xlarge
       sidekiq: 2
