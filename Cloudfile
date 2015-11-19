@@ -13,10 +13,10 @@ rails-assets:
         - redis
       whenever: true
     app1:
-      size: large
+      size: xlarge
       puma: 3
     app2:
-      size: large
+      size: xlarge
       puma: 3
     worker1:
       size: xlarge
