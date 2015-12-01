@@ -218,19 +218,24 @@ module Build
     end
 
     def manifest_path(gem_name, generator)
-      revised_gem_name = check_gem_name(gem_name)
-      "#{revised_gem_name}.#{generator[:extension]}"
+      extension = generator[:extension]
+      revised_gem_name = check_gem_name(gem_name, extension)
+      "#{revised_gem_name}.#{extension}"
     end
 
     # Verify that the name does not include a dot so that
     # the resulting file doesn't get a wrong filename
     #
     # gem_name: A String containing the name of the gem we will create
+    # extension: A String containing the type of extension this file of the gem
+    #            has
     #
     # Returns String with the verified name
-    def check_gem_name(gem_name)
+    def check_gem_name(gem_name, extension)
       revised_gem_name = gem_name.split(/\./)
-      revised_gem_name.first
+      revised_gem_name.last.eql?(extension) ?
+        revised_gem_name.first :
+        gem_name
     end
   end
 end

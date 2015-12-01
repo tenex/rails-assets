@@ -91,7 +91,7 @@ module Build
           targets(['foo.css'], ['foo.css'])
         ).to eq(Paths.new([
           'app/assets/stylesheets/foobar.js/foo.scss',
-          'app/assets/stylesheets/foobar.scss'
+          'app/assets/stylesheets/foobar.js.scss'
         ]))
       end
 
@@ -99,14 +99,14 @@ module Build
         expect(
           mappings(
             ['foo.css'], ['foo.css']
-          )['app/assets/stylesheets/foobar.scss']
+          )['app/assets/stylesheets/foobar.js.scss']
         ).to include("@import 'foobar.js/foo.scss';")
       end
 
       it 'generates proper stylesheet manifest (font-awesome case)' do
         maps = mappings(
           ['css/foo.css', 'scss/foo.scss'], ['css/foo.css']
-        )['app/assets/stylesheets/foobar.scss']
+        )['app/assets/stylesheets/foobar.js.scss']
 
         expect(maps).to include("@import 'foobar.js/foo.scss';")
       end
@@ -115,7 +115,7 @@ module Build
         maps = mappings(
           ['css/foo.css', 'scss/foo.scss'],
           ['css/foo.css', 'scss/foo.scss'],
-        )['app/assets/stylesheets/foobar.scss']
+        )['app/assets/stylesheets/foobar.js.scss']
 
         expect(maps).to include("@import 'foobar.js/css/foo.scss';")
         expect(maps).to include("@import 'foobar.js/scss/foo.scss';")
@@ -135,7 +135,7 @@ module Build
           targets(['dist/css/foo.css'], ['dist/css/foo.css'])
         ).to eq(Paths.new([
           'app/assets/stylesheets/foobar.js/foo.scss',
-          'app/assets/stylesheets/foobar.scss'
+          'app/assets/stylesheets/foobar.js.scss'
         ]))
       end
 
@@ -149,7 +149,7 @@ module Build
           'app/assets/javascripts/foobar.js/foo.js',
           'app/assets/javascripts/foobar.js',
           'app/assets/stylesheets/foobar.js/foo.scss',
-          'app/assets/stylesheets/foobar.scss'
+          'app/assets/stylesheets/foobar.js.scss'
         ]))
       end
 
@@ -162,7 +162,7 @@ module Build
         ).to eq(Paths.new([
           'app/assets/javascripts/foobar.js/dist/js/foo.js',
           'app/assets/stylesheets/foobar.js/foo.scss',
-          'app/assets/stylesheets/foobar.scss'
+          'app/assets/stylesheets/foobar.js.scss'
         ]))
       end
 
