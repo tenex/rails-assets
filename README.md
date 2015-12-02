@@ -37,3 +37,18 @@ bin/rake 'component:destroy[jquery,2.0.3]'
 Created by [@teamon](http://github.com/teamon), [@porada](http://github.com/porada) and [@sheerun](http://github.com/sheerun), with the help of [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors). :heart:
 
 Please don’t tweet bugs to us—[report an issue](https://github.com/rails-assets/rails-assets/issues) instead. :v:
+
+
+## Gems with a .js in their name
+
+For packages from bower that have a .js in their name like [typeahead.js](https://github.com/twitter/typeahead.js) which can generate a gem with the name rails-assets-typehead.js if You want to use this gem with Rails 4.2 or higher in order for your gem to work in your application.js you have to require it as follow 
+
+```
+//= require typeahead.js.js
+```
+
+instead of
+
+```
+//= require typeahead.js
+```
