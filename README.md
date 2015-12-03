@@ -32,12 +32,6 @@ You can remove this component by:
 bin/rake 'component:destroy[jquery,2.0.3]'
 ```
 
-## Credits
-
-Created by [@teamon](http://github.com/teamon), [@porada](http://github.com/porada) and [@sheerun](http://github.com/sheerun), with the help of [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors). :heart:
-
-Please don’t tweet bugs to us—[report an issue](https://github.com/rails-assets/rails-assets/issues) instead. :v:
-
 
 ## Gems with a .js in their name
 
@@ -52,3 +46,9 @@ instead of
 ```
 //= require typeahead.js
 ```
+
+## Credits
+
+Created by [@teamon](http://github.com/teamon), [@porada](http://github.com/porada) and [@sheerun](http://github.com/sheerun), with the help of [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors). :heart:
+
+Please don’t tweet bugs to us—[report an issue](https://github.com/rails-assets/rails-assets/issues) instead. :v:
