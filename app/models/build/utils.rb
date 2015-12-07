@@ -94,6 +94,10 @@ module Build
       else
 
         if version.match(/\.x/)
+          # if it is the middle number
+          version.match(/\.x\./) ?
+            version.gsub!(/\.x/, '.0') : nil
+
           version.gsub!(/\.x/, '')
 
           unless version.include?('>') || version.include?('^')

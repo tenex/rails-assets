@@ -48,6 +48,10 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string('2.x.3')).to eq('~> 2.0.3')
+      end
+
+      specify do
         expect(Utils.fix_version_string('v2.3.x')).to eq('~> 2.3')
       end
 
