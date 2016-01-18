@@ -27,8 +27,3 @@ rails-assets:
       sidekiq: 2
       processes:
         - "/usr/sbin/nrsysmond -f -c config/new-relic-config.rb"
-    worker2:
-      size: xlarge
-      sidekiq: 2
-      processes:
-        - "/usr/sbin/nrsysmond -f -c config/new-relic-config.rb"
