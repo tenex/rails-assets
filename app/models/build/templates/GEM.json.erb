@@ -1,0 +1,45 @@
+{
+  "name": <%= gem.name.to_s.dump %>,
+  "downloads": null,
+  "version": <%= gem.version.to_s.dump %>,
+  "version_downloads": null,
+  "platform": "ruby",
+  "authors": "rails-assets.org",
+  "info": <%= gem.description.to_s.dump %>,
+  <% if gem.license? %>
+  "licenses": <%= gem.license.dump %>,
+  <% elsif gem.licenses? %>
+  "licenses":  <%= gem.licenses.to_s.dump %>,
+  <% end %>
+  "metadata": {
+
+  },
+  "sha": null,
+  "project_uri": <%= gem.homepage.to_s.dump %>,
+  "gem_uri": null,
+  "homepage_uri": <%= gem.homepage.to_s.dump %>,
+  "wiki_uri": null,
+  "documentation_uri": null,
+  "mailing_list_uri": null,
+  "source_code_uri": <%= gem.homepage.to_s.dump %>,
+  "bug_tracker_uri": null,
+  "dependencies": {
+    "development": [
+    <% gem.dependencies.each do |dep_name, dep_version| %>
+    <% if dep_version.present? %>
+    {
+      "name": <%= dep_name.dump %>,
+      "requirements": <%= dep_version.split(', ').map(&:dump).join(', ') %>
+    },
+    <% else %>
+    {
+      "name": spec.add_dependency <%= dep_name.dump %>
+    },
+    <% end %>
+    <% end %>
+    ],
+    "runtime": [
+
+    ]
+  }
+}

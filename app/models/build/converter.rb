@@ -201,7 +201,6 @@ module Build
       file.gsub!("GEM", bower_component.gem.name)
       use_erb = file.sub!(/\.erb$/, "")
       target_path = Path.new(file)
-
       if use_erb
         # Parameters for erb mean no safe mode + strip whitelines
         erb = ERB.new(File.read(source_path.to_s), nil, '<>')
@@ -219,7 +218,8 @@ module Build
         "Gemfile",
         "Rakefile",
         "README.md.erb",
-        "GEM.gemspec.erb"
+        "GEM.gemspec.erb",
+        "GEM.json.erb"
       ].map { |file| generate_gem_file(bower_component, file) }
     end
 
