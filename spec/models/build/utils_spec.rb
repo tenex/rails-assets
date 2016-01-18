@@ -44,11 +44,15 @@ module Build
       end
 
       specify do
-        expect(Utils.fix_version_string('2.3.x')).to eq('~> 2.3.0')
+        expect(Utils.fix_version_string('2.3.x')).to eq('~> 2.3')
       end
 
       specify do
-        expect(Utils.fix_version_string('v2.3.x')).to eq('~> 2.3.0')
+        expect(Utils.fix_version_string('2.x.3')).to eq('~> 2.0.3')
+      end
+
+      specify do
+        expect(Utils.fix_version_string('v2.3.x')).to eq('~> 2.3')
       end
 
       specify do
@@ -72,19 +76,19 @@ module Build
       end
 
       specify do
-        expect(Utils.fix_version_string('~1.x')).to eq('~> 1.0')
+        expect(Utils.fix_version_string('~1.x')).to eq('~> 1')
       end
 
       specify do
-        expect(Utils.fix_version_string('1.x')).to eq('~> 1.0')
+        expect(Utils.fix_version_string('1.x')).to eq('~> 1')
       end
 
       specify do
-        expect(Utils.fix_version_string('~1.*')).to eq('~> 1.0')
+        expect(Utils.fix_version_string('~1.*')).to eq('~> 1')
       end
 
       specify do
-        expect(Utils.fix_version_string('1.*')).to eq('~> 1.0')
+        expect(Utils.fix_version_string('1.*')).to eq('~> 1')
       end
 
       specify do
@@ -153,7 +157,7 @@ module Build
 
       specify do
         expect(Utils.fix_version_string('~v1.0.x')).
-          to eq("~> 1.0.0")
+          to eq("~> 1.0")
       end
 
       specify do
@@ -179,7 +183,7 @@ module Build
 
       specify do
         expect(Utils.fix_version_string('^1.2.x')).
-          to eq(">= 1.2.0, < 2")
+          to eq(">= 1.2, < 2")
       end
 
       specify do
