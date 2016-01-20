@@ -24,7 +24,6 @@ gem 'sidekiq-limit_fetch'
 gem 'sidekiq-middleware'
 gem 'sinatra', '>= 1.3.0', :require => nil
 
-
 gem 'builder'
 gem 'autoprefixer-rails', '>= 0.6.20130728'
 gem 'redcarpet'
@@ -62,6 +61,10 @@ gem 'dotenv'
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'capistrano', '~> 3.1'
+  gem 'capistrano-rails', '~> 1.1'
+  gem 'capistrano-passenger'
+  gem 'capistrano-npm'
 end
 
 group :development, :test do
