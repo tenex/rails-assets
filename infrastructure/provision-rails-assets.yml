@@ -63,3 +63,28 @@
 
     - name: install bower
       npm: name=bower global=yes
+
+- name: create users and configure authentication
+  hosts: all
+  user: root
+  tasks:
+    - name: setup app group
+      group: name={{ app_name }} state=present
+
+    - name: setup app user
+      user: name={{ app_name }} shell=/bin/bash
+            groups=rvm,{{ app_name }} append=yes
+
+    - name: set tmp permissions
+      file: path=/tmp mode=a+w
+
+    - name: enable agent forwarding
+      lineinfile: dest=/etc/ssh/sshd_config
+                  state=present
+                  regexp='^AllowAgentForwarding'
+                  line='AllowAgentForwarding yes'
+      notify: restart sshd
+
+  handlers:
+    - name: restart sshd
+      service: name=ssh state=restarted
