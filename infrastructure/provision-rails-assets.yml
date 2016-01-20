@@ -1,0 +1,65 @@
+---
+- name: basic provisioning
+  hosts: all
+  user: root
+  roles:
+    - role: holms.fqdn
+      fqdn: "{{ inventory_hostname }}"
+      hostname: "{{ inventory_hostname_short }}"
+
+    - role: rvm_io.rvm1-ruby
+      rvm1_rubies:
+        - 'ruby-2.2.3'
+
+    - role: kamaln7.swapfile
+      swapfile_use_dd: True
+      swapfile_size: 2048
+
+  tasks:
+    - name: update installed packages
+      apt: upgrade=dist update_cache=yes
+
+    - name: install server base packages
+      apt: name={{ item }} state=latest update_cache=yes
+      with_items:
+        - apt-file
+        - build-essential
+        - cowsay
+        - curl
+        - dnsutils
+        - emacs24
+        - fail2ban
+        - gettext
+        - git
+        - htop
+        - iotop
+        - jq
+        - libcurl4-openssl-dev
+        - libgmp-dev
+        - libpq-dev
+        - moreutils
+        - nodejs
+        - nodejs
+        - nodejs-legacy
+        - npm
+        - ntp
+        - pcregrep
+        - postgresql
+        - postgresql-contrib
+        - pv
+        - python-pip
+        - python-psycopg2
+        - python-virtualenv
+        - redis-server
+        - redis-tools
+        - rsync
+        - silversearcher-ag
+        - speedometer
+        - texinfo
+        - tig
+        - tmux
+        - wget
+        - zsh
+
+    - name: install bower
+      npm: name=bower global=yes
