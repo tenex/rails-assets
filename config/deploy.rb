@@ -25,6 +25,10 @@ set(:linked_files,
 
 set :keep_releases, 5
 
+set :npm_flags, '--production --silent --no-spin'
+set :npm_roles, :all
+set :npm_env_variables, {}
+
 namespace :deploy do
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
