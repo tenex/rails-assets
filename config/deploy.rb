@@ -16,6 +16,7 @@ set(:linked_files,
     fetch(:linked_files, []).push(
       'config/database.yml', 'config/application.yml'))
 # set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
+ set :linked_dirs, fetch(:linked_dirs, []).push('public/gems')
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
 set :keep_releases, 5
