@@ -1,4 +1,4 @@
-language: ruby
+language: ruby 
 sudo: false
 bundler_args: --without development
 before_script:
