@@ -4,7 +4,7 @@
   "version": <%= gem.version.to_s.dump %>,
   "version_downloads": null,
   "platform": "ruby",
-  "authors": "rails-assets.org",
+  "authors": "<%= Rails.configuration.x.hostname %>",
   "info": <%= gem.description.to_s.dump %>,
   <% if gem.license? %>
   "licenses": <%= gem.license.dump %>,

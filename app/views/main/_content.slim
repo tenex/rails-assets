@@ -12,9 +12,9 @@ article.section
 
           **First, make sure you use bundler >= 1.8.4**
 
-          Add `https://rails-assets.org` as a&nbsp;new gem source, then reference any Bower components that you need as gems in the&nbsp;following&nbsp;convention:
+          Add `https://#{Rails.configuration.x.hostname}` as a&nbsp;new gem source, then reference any Bower components that you need as gems in the&nbsp;following&nbsp;convention:
 
-              source 'https://rails-assets.org' do
+              source 'https://#{Rails.configuration.x.hostname}' do
                 gem 'rails-assets-BOWER_PACKAGE_NAME'
               end
 

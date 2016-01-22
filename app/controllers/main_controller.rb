@@ -42,7 +42,7 @@ class MainController < ApplicationController
           gem 'rails'
           # The rest of RubyGems gems...
 
-          source 'https://rails-assets.org' do
+          source 'https://#{Rails.configuration.x.hostname}' do
             gem 'rails-assets-angular'
             # The rest of RailsAssets gems...
           end

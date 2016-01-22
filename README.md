@@ -1,15 +1,15 @@
-# Rails Assets [![Build Status](https://travis-ci.org/rails-assets/rails-assets.png)](https://travis-ci.org/rails-assets/rails-assets)
+# Rails Assets
 
 > [Bundler](http://bundler.io) to [Bower](http://bower.io) proxy
 
-This README concerns the development aspect of the project. **[Visit the site](https://rails-assets.org) to learn how to use Rails Assets in your application.**
+This README concerns the development aspect of the project. **[Visit the site](https://rails-assets.tenex.tech) to learn how to use Rails Assets in your application.**
 
 ## Development
 
 ### Setup
 
 ```sh
-git clone git@github.com:rails-assets/rails-assets.git && cd rails-assets
+git clone git@github.com:tenex/rails-assets.git && cd rails-assets
 bundle install && npm install
 cp config/database{.sample,}.yml
 cp config/application{.sample,}.yml
@@ -35,7 +35,7 @@ bin/rake 'component:destroy[jquery,2.0.3]'
 
 ## Gems with a .js in their name
 
-For packages from bower that have a .js in their name like [typeahead.js](https://github.com/twitter/typeahead.js) which can generate a gem with the name rails-assets-typehead.js if You want to use this gem with Rails 4.2 or higher in order for your gem to work in your application.js you have to require it as follow 
+For packages from bower that have a .js in their name like [typeahead.js](https://github.com/twitter/typeahead.js) which can generate a gem with the name rails-assets-typehead.js if You want to use this gem with Rails 4.2 or higher in order for your gem to work in your application.js you have to require it as follow
 
 ```
 //= require typeahead.js.js
@@ -49,6 +49,8 @@ instead of
 
 ## Credits
 
-Created by [@teamon](http://github.com/teamon), [@porada](http://github.com/porada) and [@sheerun](http://github.com/sheerun), with the help of [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors). :heart:
+Maintained by Tenex Developers [@tenex](http://github.com/tenex).
 
-Please don’t tweet bugs to us—[report an issue](https://github.com/rails-assets/rails-assets/issues) instead. :v:
+Originally created by [@teamon](http://github.com/teamon), [@porada](http://github.com/porada) and [@sheerun](http://github.com/sheerun), with the help of [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors). :heart:
+
+Please don’t tweet bugs to us—[report an issue](https://github.com/tenex/rails-assets/issues) instead. :v:

@@ -14,5 +14,7 @@ module RailsAssets
     config.exceptions_app = self.routes
 
     config.cache_store = :redis_store, ENV['REDIS_URL']
+
+    Rails.configuration.x.hostname = 'rails-assets.tenex.tech'
   end
 end
