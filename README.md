@@ -1,4 +1,4 @@
-# Rails Assets
+# Rails Assets [![Build Status](https://travis-ci.org/tenex/rails-assets.svg?branch=master)](https://travis-ci.org/tenex/rails-assets)
 
 > [Bundler](http://bundler.io) to [Bower](http://bower.io) proxy
 
