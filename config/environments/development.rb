@@ -26,4 +26,6 @@ RailsAssets::Application.configure do
   config.assets.debug = true
 
   config.log_level = :debug
+
+  Rails.configuration.x.hostname = 'localhost:3009'
 end

@@ -215,7 +215,7 @@ module Build
       [
         "lib/GEM/version.rb.erb",
         "lib/GEM.rb.erb",
-        "Gemfile",
+        "Gemfile.erb",
         "Rakefile",
         "README.md.erb",
         "GEM.gemspec.erb",

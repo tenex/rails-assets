@@ -6,7 +6,7 @@ require '<%= gem.name %>/version'
 Gem::Specification.new do |spec|
   spec.name          = <%= gem.name.dump %>
   spec.version       = <%= gem.module %>::VERSION
-  spec.authors       = ["rails-assets.org"]
+  spec.authors       = ["<%= Rails.configuration.x.hostname %>"]
   spec.description   = <%= gem.description.to_s.dump %>
   spec.summary       = <%= gem.description.to_s.dump %>
   spec.homepage      = <%= gem.homepage.to_s.dump %>

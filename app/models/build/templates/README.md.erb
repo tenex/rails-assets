@@ -2,14 +2,14 @@
 
 > The Bower package inside a gem
 
-This gem was automatically generated. You can visit [rails-assets.org](https://rails-assets.org) for more information.
+This gem was automatically generated. You can visit [<%= Rails.configuration.x.hostname %>](https://<%= Rails.configuration.x.hostname %>) for more information.
 
 ## Usage
 
 Add rails-assets source block to your `Gemfile`:
 
 ```ruby
-source "https://rails-assets.org" do
+source "https://<%= Rails.configuration.x.hostname %>" do
   gem <%= gem.name.dump %>
 end
 
