@@ -87,15 +87,6 @@ class Version < ActiveRecord::Base
     )
   end
 
-  def gem_url
-    "#{ENV['DOMAIN']}/gems/#{GEM_PREFIX}#{component.name}-#{string}.gem"
-  end
-
-  def gemspec_url
-    "#{ENV['DOMAIN']}/quick/Marshal.4.8/" +
-    "#{GEM_PREFIX}#{component.name}-#{string}.gemspec.rz"
-  end
-
   def rebuild!
     update_attribute(:rebuild, true)
     BuildVersion.perform_async(component.bower_name, bower_version)
