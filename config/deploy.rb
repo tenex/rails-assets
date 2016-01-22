@@ -25,6 +25,18 @@ set :npm_flags, '--production --silent --no-spin'
 set :npm_roles, :all
 set :npm_env_variables, {}
 
+set :foreman_roles, :worker
+procfile_concurrency = { all: 1, web: 0 }
+foreman_env = Tempfile.new('.env').tap do |f|
+  f.write("RAILS_ENV=#{fetch(:stage)}"); f.close
+end
+set :foreman_options, {
+  concurrency: procfile_concurrency.map { |pair| pair.join('=') }.join(',')
+  env: foreman_env.path
+}
+set :foreman_export_path, '/etc/init'
+set :foreman_use_sudo, true
+
 namespace :deploy do
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
