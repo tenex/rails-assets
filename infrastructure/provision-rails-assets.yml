@@ -1,0 +1,183 @@
+---
+- name: basic provisioning
+  hosts: all
+  user: root
+  roles:
+    - role: holms.fqdn
+      fqdn: "{{ inventory_hostname }}"
+      hostname: "{{ inventory_hostname_short }}"
+
+    - role: rvm_io.rvm1-ruby
+      rvm1_rubies:
+        - 'ruby-2.2.3'
+
+    - role: kamaln7.swapfile
+      swapfile_use_dd: True
+      swapfile_size: 2048
+
+  tasks:
+    - name: update installed packages
+      apt: upgrade=dist update_cache=yes
+
+    - name: install server base packages
+      apt: name={{ item }} state=latest update_cache=yes
+      with_items:
+        - apt-file
+        - build-essential
+        - cowsay
+        - curl
+        - dnsutils
+        - emacs24
+        - fail2ban
+        - gettext
+        - git
+        - htop
+        - iotop
+        - jq
+        - libcurl4-openssl-dev
+        - libgmp-dev
+        - libpq-dev
+        - moreutils
+        - nodejs
+        - nodejs
+        - nodejs-legacy
+        - npm
+        - ntp
+        - pcregrep
+        - postgresql
+        - postgresql-contrib
+        - pv
+        - python-pip
+        - python-psycopg2
+        - python-virtualenv
+        - redis-server
+        - redis-tools
+        - rsync
+        - silversearcher-ag
+        - speedometer
+        - texinfo
+        - tig
+        - tmux
+        - wget
+        - zsh
+
+    - name: install bower
+      npm: name=bower global=yes
+
+- name: create users and configure authentication
+  hosts: all
+  user: root
+  tasks:
+    - name: setup app group
+      group: name={{ app_name }} state=present
+
+    - name: setup app user
+      user: name={{ app_name }} shell=/bin/bash
+            groups=rvm,{{ app_name }} append=yes
+
+    - name: set tmp permissions
+      file: path=/tmp mode=a+w
+
+    - name: enable agent forwarding
+      lineinfile: dest=/etc/ssh/sshd_config
+                  state=present
+                  regexp='^AllowAgentForwarding'
+                  line='AllowAgentForwarding yes'
+      notify: restart sshd
+
+  handlers:
+    - name: restart sshd
+      service: name=ssh state=restarted
+
+- name: install passenger-nginx
+  hosts: all
+  user: root
+  tasks:
+    - apt_key: keyserver=keyserver.ubuntu.com id=561F9B9CAC40B2F7
+    - apt: name={{ item }} state=latest
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+    - apt_repository: state=present
+        repo="deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main"
+    - apt: name={{ item }} state=latest  update_cache=yes
+      with_items:
+        - nginx-extras
+        - passenger
+
+- name: configure passenger-nginx
+  hosts: all
+  user: root
+  tasks:
+    - shell: passenger-config --root
+      register: passenger_root
+    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^user'
+        line="user {{ app_name }};"
+      notify: restart nginx
+    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*passenger_root'
+        insertafter='^http {'
+        line="        passenger_root {{ passenger_root.stdout }};"
+      notify: restart nginx
+    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*passenger_ruby'
+        insertafter='^http {'
+        line='        passenger_ruby /usr/local/bin/ruby;'
+      notify: restart nginx
+    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*worker_connections'
+        insertafter='^event {'
+        line='        worker_connections 1024;'
+      notify: restart nginx
+    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*client_max_body_size'
+        insertafter='^http {'
+        line='        client_max_body_size 50m;'
+      notify: restart nginx
+    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*passenger_max_pool_size'
+        insertafter='^http {'
+        line='        passenger_max_pool_size 12;'
+      notify: restart nginx
+    - template:
+        src=nginx-site.conf.j2
+        dest="/etc/nginx/sites-enabled/{{ app_name }}.conf"
+      notify: restart nginx
+    - file: path=/etc/nginx/sites-enabled/default state=absent
+      notify: restart nginx
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted
+
+- name: configure serving directories
+  hosts: all
+  user: root
+  tasks:
+    - file: path=/home/{{ app_name }}/rails-apps/{{ app_name }}
+            owner={{ app_name }}
+            group={{ app_name }}
+            mode=0770
+            state=directory
+
+- name: configure database
+  hosts: rails-assets
+  become: true
+  become_user: postgres
+  tags:
+    - db
+  tasks:
+    - postgresql_db: name="rails_assets_{{ rails_env }}"
+      register: db
+    - postgresql_user: db="rails_assets_{{ rails_env }}"
+                       name=rails_assets
+                       priv=ALL
+                       role_attr_flags=CREATEDB,CREATEROLE,SUPERUSER
+    - lineinfile: >-
+        dest=/etc/postgresql/9.3/main/pg_hba.conf state=present
+        regexp='^local\s+all\s+all'
+        line='local    all             all                              trust'
+      notify: restart postgres
+  handlers:
+    - name: restart postgres
+      service: name=postgresql state=restarted
