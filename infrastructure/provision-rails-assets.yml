@@ -177,10 +177,6 @@
         dest=/etc/postgresql/9.3/main/pg_hba.conf state=present
         regexp='^local\s+all\s+all'
         line='local    all             all                              trust'
-    - lineinfile: >-
-        dest=/etc/postgresql/9.3/main/pg_hba.conf state=present
-        regexp='^host\s+all\s+all\s+::1\/128'
-        line='host    all             all             ::1/128            trust'
       notify: restart postgres
   handlers:
     - name: restart postgres
