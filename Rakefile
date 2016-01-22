@@ -4,3 +4,7 @@
 require File.expand_path('../config/application', __FILE__)
 
 RailsAssets::Application.load_tasks
+
+namespace :test do
+  task :prepare => :environment
+end
