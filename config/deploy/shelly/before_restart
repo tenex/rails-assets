@@ -1,5 +1,0 @@
-set -e
-
-config/deploy/shelly/link_assets_from_disk
-
-npm install
