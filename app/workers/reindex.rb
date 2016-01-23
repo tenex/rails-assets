@@ -26,26 +26,6 @@ class Reindex
     true
   end
 
-  def generate_gemspecs
-    gemspecs_dir = File.join(
-      Figaro.env.data_dir, 'quick', 'Marshal.4.8'
-    )
-
-    FileUtils.mkdir_p(gemspecs_dir)
-
-    gems = Dir[File.join(
-      Figaro.env.data_dir, 'gems', '*.gem'
-    )].map { |s| s.split('/').last[0..-5] }
-
-    gemspecs = Dir[File.join(
-      gemspecs_dir, '*.gemspec.rz'
-    )].map { |s| s.split('/').last[0..-12] }
-
-    missing = gems - gemspecs
-
-    missing.map(&method(:reindex_spec))
-  end
-
   def generate_indexes
     write_index File.join(Figaro.env.data_dir, 'specs.4.8') do
       Version.
