@@ -1,4 +1,3 @@
-DOMAIN: http://localhost:3000
 DATA_DIR: <%= File.expand_path("../public", __FILE__) %>
 RAVEN_DSN: ""
 SIDEKIQ_PASSWORD: ""
