@@ -64,6 +64,9 @@ GEM
     capistrano-bundler (1.1.4)
       capistrano (~> 3.1)
       sshkit (~> 1.2)
+    capistrano-foreman (1.2.0)
+      capistrano (~> 3.1)
+      capistrano-bundler (~> 1.1)
     capistrano-npm (1.0.1)
       capistrano (>= 3.0.0)
     capistrano-passenger (0.2.0)
@@ -344,6 +347,7 @@ DEPENDENCIES
   binding_of_caller
   builder
   capistrano (~> 3.1)
+  capistrano-foreman
   capistrano-npm
   capistrano-passenger
   capistrano-rails (~> 1.1)
