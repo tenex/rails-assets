@@ -24,5 +24,6 @@ node_modules
 /public/specs.4.8.gz
 /public/data
 /public/locks/
+/public/components.json
 
 /rails-assets-*

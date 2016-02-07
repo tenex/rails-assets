@@ -1,13 +1,11 @@
 class ComponentsController < ApplicationController
+  caches_page :index
+
   def index
     respond_to do |format|
-      format.html {}
+      format.html { }
       format.json do
-        components = Rails.cache.fetch('components_json') do
-          ComponentHelper.generate_components_json
-        end
-
-        render(json: components)
+        render(json: ComponentHelper.generate_components_json)
       end
     end
   end
