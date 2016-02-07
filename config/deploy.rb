@@ -14,9 +14,24 @@ set :log_level, :debug
 set :pty, false
 set(:linked_files,
     fetch(:linked_files, []).push(
-      'config/database.yml', 'config/application.yml'))
+      'config/database.yml',
+      'config/application.yml',
+      'public/components.json',
+      'public/prelease_specs.4.8',
+      'public/prelease_specs.4.8.gz',
+      'public/specs.4.8',
+      'public/specs.4.8.gz',
+      'public/latest_specs.4.8',
+      'public/latest_specs.4.8.gz',
+      'public/packages.json'
+    ))
 # set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
- set :linked_dirs, fetch(:linked_dirs, []).push('public/gems')
+set(:linked_dirs,
+    fetch(:linked_dirs, []).push(
+      'public/gems',
+      'public/quick',
+      'tmp/cache'
+    ))
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
 set :keep_releases, 5

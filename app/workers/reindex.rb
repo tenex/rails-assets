@@ -17,7 +17,7 @@ class Reindex
     end
 
     # Clear cache for components.json api endpoint
-    Rails.cache.delete('components_json')
+    PageCacheManager.new.expire_page(controller: :components, action: :index, format: :json)
 
     true
   end

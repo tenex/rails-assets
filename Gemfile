@@ -57,6 +57,7 @@ gem 'postrank-uri'
 gem 'foreman'
 
 gem 'dotenv'
+gem 'actionpack-page_caching'
 
 group :development do
   gem 'better_errors'
