@@ -12,11 +12,12 @@
 .top__nav
   text-align: right
 
+$announcement-height: 40px
+
 @media (min-width: $breakpoint-narrow)
   .top
     position: fixed
     z-index: 1
-    top: 40px
     right: 0
     left: 0
     padding: 1rem 0
@@ -24,6 +25,9 @@
     background: rgba($top-background-color, 0.9)
     line-height: 1
     -webkit-font-smoothing: subpixel-antialiased
+
+    .announcement + &
+      top: $announcement-height
 
     & + .section
       margin-top: 3rem
@@ -41,6 +45,6 @@
   top: 0
   width: 100%
   background: $brand-light-yellow
-  height: 40px
+  height: $announcement-height
   line-height: 40px
   text-align: center
