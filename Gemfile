@@ -58,6 +58,7 @@ gem 'foreman'
 
 gem 'dotenv'
 gem 'actionpack-page_caching'
+gem 'stripe'
 
 group :development do
   gem 'better_errors'

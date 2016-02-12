@@ -1,4 +1,9 @@
+# Todo: Don't really need this file - delete it.
+# Replace with a local file with real values
+# and put production values in ansible vault
 DATA_DIR: <%= File.expand_path("../public", __FILE__) %>
 RAVEN_DSN: ""
 SIDEKIQ_PASSWORD: ""
 NEWRELIC_LICENSE_KEY: ""
+STRIPE_PUBLISHABLE_KEY: ""
+STRIPE_SECRET_KEY: ""
