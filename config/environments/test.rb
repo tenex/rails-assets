@@ -33,4 +33,7 @@ RailsAssets::Application.configure do
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
+
+  # For capybara, make threadsafe
+  config.allow_concurrency = false
 end

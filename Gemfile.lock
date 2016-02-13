@@ -76,6 +76,18 @@ GEM
     capistrano-rails (1.1.6)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
+    capybara (2.6.2)
+      addressable
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      xpath (~> 2.0)
+    capybara-angular (0.2.3)
+      capybara (>= 2.5.0)
+    capybara-webkit (1.8.0)
+      capybara (>= 2.3.0, < 2.7.0)
+      json
     celluloid (0.16.0)
       timers (~> 4.0.0)
     chronic (0.10.2)
@@ -351,6 +363,8 @@ GEM
     whenever (0.9.0)
       activesupport (>= 2.3.4)
       chronic (>= 0.6.3)
+    xpath (2.0.0)
+      nokogiri (~> 1.3)
 
 PLATFORMS
   ruby
@@ -369,6 +383,8 @@ DEPENDENCIES
   capistrano-npm
   capistrano-passenger
   capistrano-rails (~> 1.1)
+  capybara-angular
+  capybara-webkit
   coffee-rails
   database_cleaner
   dotenv

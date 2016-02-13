@@ -77,5 +77,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'capybara-angular'
+  gem 'capybara-webkit'
   gem 'database_cleaner'
 end
