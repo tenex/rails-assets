@@ -1,5 +1,4 @@
-
-app = angular.module('app', ['semverSort'])
+app = angular.module('rails-assets', ['semverSort'])
 
 app.directive "ngHtml", ->
   (scope, element, attrs) ->

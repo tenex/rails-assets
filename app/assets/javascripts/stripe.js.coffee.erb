@@ -1,28 +1,22 @@
-app = angular.module('app')
+DEFAUT_AMOUNT = 5
 
-app.controller 'DonationCtrl', ['$scope', '$window', ($scope, $window) ->
-  #closeOnBack = (event) ->
-#    handler.close()#
-#    event.stopPropagation()
-#    event.preventDefault()
-
-  handler = StripeCheckout.configure(
+DonationController = ($scope, $window) ->
+  handler = StripeCheckout.configure
     key: '<%= Rails.configuration.stripe[:publishable_key] %>'
-    image: '/img/documentation/checkout/marketplace.png'
     locale: 'auto'
     token: (token) ->
       debugger
-    #opened: ->
-  #    $window.addEventListener('popstate', closeOnBack)
-#      history.pushState({}, 'close-stripe')#
-    #closed: ->
-  #    $window.removeEventListener('popstate', closeOnBack)
-  )
+
+  $scope.amount = DEFAUT_AMOUNT
 
   $scope.invoke = ->
-    handler.open(
-      name: 'Tenex Developers'
-      description: 'Donation?'
-      amount: 2000
-    )
+    handler.open
+      name: 'Rails Assets'
+      description: 'Donation'
+      amount: $scope.amount * 100
+
+angular.module('rails-assets').controller 'DonationCtrl', [
+  '$scope',
+  '$window',
+  DonationController
 ]

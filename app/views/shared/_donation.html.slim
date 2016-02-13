@@ -1,4 +1,7 @@
 div ng-controller="DonationCtrl"
   script[src="https://checkout.stripe.com/checkout.js"]
+  span
+    | $
+  input type='number' min='0.01' step='any' ng-model='amount'
   button#customButton ng-click="invoke()"
     | Purchase
