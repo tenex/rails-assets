@@ -3,14 +3,16 @@ require 'spec_helper'
 feature 'Stripe integreation' do
   scenario 'accepts donations' do
     visit root_path
+    fill_in 'amount', with: '5.45'
     click_button 'Donate'
-    fill_in 'Amount', with: '5.00'
 
     fill_in 'email', with: 'rspec@example.com'
-    fill_in 'credit card', with: '4242 4242 4242 4242'
-    fill_in 'cvv', with: '322'
-    fill_in 'expiration', with: 'whatever'
+    fill_in 'card_number', with: '4242424242424242'
+    fill_in 'cc-exp', with: 1.year.from_now.strftime('%m/%y')
+    fill_in 'cc-csc', with: '322'
 
-    raise 'shit'
+    click_button 'Pay $5.45'
+    
+    raise 'WIP'
   end
 end
