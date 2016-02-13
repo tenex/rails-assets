@@ -1,6 +1,5 @@
 language: ruby
 sudo: false
-bundler_args: --without development
 cache: bundler
 before_script:
 before_script:
