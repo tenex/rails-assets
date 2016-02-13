@@ -12,7 +12,7 @@ feature 'Stripe integreation' do
     fill_in 'cc-csc', with: '322'
 
     click_button 'Pay $5.45'
-    
+
     raise 'WIP'
   end
 end

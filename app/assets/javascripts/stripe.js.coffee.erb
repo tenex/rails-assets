@@ -1,11 +1,11 @@
 DEFAUT_AMOUNT = 5
 
-DonationController = ($scope, $window) ->
+DonationController = ($scope, $http) ->
   handler = StripeCheckout.configure
     key: '<%= Rails.configuration.stripe[:publishable_key] %>'
     locale: 'auto'
     token: (token) ->
-      debugger
+      $http.post(Routes.donations_path(), { amount: $scope.amount, token: token })
 
   $scope.amount = DEFAUT_AMOUNT
 
@@ -17,6 +17,6 @@ DonationController = ($scope, $window) ->
 
 angular.module('rails-assets').controller 'DonationCtrl', [
   '$scope',
-  '$window',
+  '$http',
   DonationController
 ]

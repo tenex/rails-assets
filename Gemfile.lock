@@ -125,6 +125,9 @@ GEM
       domain_name (~> 0.5)
     i18n (0.7.0)
     its-it (1.2.0)
+    js-routes (1.2.4)
+      railties (>= 3.2)
+      sprockets-rails
     json (1.8.3)
     key_struct (0.4.2)
     loofah (2.0.3)
@@ -391,6 +394,7 @@ DEPENDENCIES
   figaro!
   foreman
   honey_badger
+  js-routes
   newrelic_rpm
   peach
   pg

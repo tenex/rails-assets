@@ -14,6 +14,7 @@ RailsAssets::Application.routes.draw do
   end
 
   get "/api/v1/dependencies", to: "main#dependencies"
+  resources :donations, only: :create
 
   require 'sidekiq/web'
   Sidekiq::Web.use(Rack::Auth::Basic) do |user, password|
