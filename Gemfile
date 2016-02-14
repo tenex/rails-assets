@@ -81,4 +81,7 @@ group :test do
   gem 'capybara-angular'
   gem 'capybara-webkit'
   gem 'database_cleaner'
+  gem 'test-unit' # required for rspec-rails version we're on
+  gem 'vcr'
+  gem 'webmock'
 end

@@ -1,0 +1,372 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/tokens
+    body:
+      encoding: US-ASCII
+      string: card[cvc]=123&card[exp_month]=12&card[exp_year]=2017&card[number]=4000000000000002
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Stripe/v1 RubyBindings/1.36.0
+      Authorization:
+      - Bearer ENV['STRIPE_SECRET_KEY']
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"1.36.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        novusbosmc234 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29 02:26:53 PDT
+        2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"novusbosmc234"}'
+      Content-Length:
+      - '82'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Sun, 14 Feb 2016 19:54:13 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '781'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_7uKbOqVNwf120R
+      Stripe-Version:
+      - '2016-02-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "tok_17eVwfB9TSdNZYdXtgsjxjzd",
+          "object": "token",
+          "card": {
+            "id": "card_17eVwfB9TSdNZYdXuCxV5z2l",
+            "object": "card",
+            "address_city": null,
+            "address_country": null,
+            "address_line1": null,
+            "address_line1_check": null,
+            "address_line2": null,
+            "address_state": null,
+            "address_zip": null,
+            "address_zip_check": null,
+            "brand": "Visa",
+            "country": "US",
+            "cvc_check": "unchecked",
+            "dynamic_last4": null,
+            "exp_month": 12,
+            "exp_year": 2017,
+            "fingerprint": "CZQ9LGvVqQEt1lfw",
+            "funding": "credit",
+            "last4": "0002",
+            "metadata": {},
+            "name": null,
+            "tokenization_method": null
+          },
+          "client_ip": "108.20.157.18",
+          "created": 1455479653,
+          "livemode": false,
+          "type": "card",
+          "used": false
+        }
+    http_version: 
+  recorded_at: Sun, 14 Feb 2016 19:54:15 GMT
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/charges
+    body:
+      encoding: US-ASCII
+      string: amount=123&currency=usd&description=Rails+Assets+donation&source=tok_17eVwfB9TSdNZYdXtgsjxjzd
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Stripe/v1 RubyBindings/1.36.0
+      Authorization:
+      - Bearer ENV['STRIPE_SECRET_KEY']
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"1.36.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        novusbosmc234 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29 02:26:53 PDT
+        2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"novusbosmc234"}'
+      Content-Length:
+      - '93'
+  response:
+    status:
+      code: 402
+      message: Payment Required
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Sun, 14 Feb 2016 19:54:14 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '162'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_7uKbQGnm4YQaVp
+      Stripe-Version:
+      - '2016-02-03'
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "error": {
+            "message": "Your card was declined.",
+            "type": "card_error",
+            "code": "card_declined",
+            "charge": "ch_17eVwgB9TSdNZYdXHXnVuuAr"
+          }
+        }
+    http_version: 
+  recorded_at: Sun, 14 Feb 2016 19:54:16 GMT
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/tokens
+    body:
+      encoding: US-ASCII
+      string: card[cvc]=123&card[exp_month]=12&card[exp_year]=2017&card[number]=4242424242424242
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Stripe/v1 RubyBindings/1.36.0
+      Authorization:
+      - Bearer ENV['STRIPE_SECRET_KEY']
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"1.36.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        novusbosmc234 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29 02:26:53 PDT
+        2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"novusbosmc234"}'
+      Content-Length:
+      - '82'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Sun, 14 Feb 2016 19:54:14 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '781'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_7uKba11BbpFz6R
+      Stripe-Version:
+      - '2016-02-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "tok_17eVwgB9TSdNZYdXJBMDDI48",
+          "object": "token",
+          "card": {
+            "id": "card_17eVwgB9TSdNZYdXdt44RwwN",
+            "object": "card",
+            "address_city": null,
+            "address_country": null,
+            "address_line1": null,
+            "address_line1_check": null,
+            "address_line2": null,
+            "address_state": null,
+            "address_zip": null,
+            "address_zip_check": null,
+            "brand": "Visa",
+            "country": "US",
+            "cvc_check": "unchecked",
+            "dynamic_last4": null,
+            "exp_month": 12,
+            "exp_year": 2017,
+            "fingerprint": "ZXpe5CQf9geIvoWX",
+            "funding": "credit",
+            "last4": "4242",
+            "metadata": {},
+            "name": null,
+            "tokenization_method": null
+          },
+          "client_ip": "108.20.157.18",
+          "created": 1455479654,
+          "livemode": false,
+          "type": "card",
+          "used": false
+        }
+    http_version: 
+  recorded_at: Sun, 14 Feb 2016 19:54:16 GMT
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/charges
+    body:
+      encoding: US-ASCII
+      string: amount=545&currency=usd&description=Rails+Assets+donation&source=tok_17eVwgB9TSdNZYdXJBMDDI48
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Stripe/v1 RubyBindings/1.36.0
+      Authorization:
+      - Bearer ENV['STRIPE_SECRET_KEY']
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"1.36.0","lang":"ruby","lang_version":"2.2.3 p173 (2015-08-18)","platform":"x86_64-darwin14","engine":"ruby","publisher":"stripe","uname":"Darwin
+        novusbosmc234 14.5.0 Darwin Kernel Version 14.5.0: Wed Jul 29 02:26:53 PDT
+        2015; root:xnu-2782.40.9~1/RELEASE_X86_64 x86_64","hostname":"novusbosmc234"}'
+      Content-Length:
+      - '93'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Sun, 14 Feb 2016 19:54:15 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '1460'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_7uKbCbX581rQO3
+      Stripe-Version:
+      - '2016-02-03'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "ch_17eVwhB9TSdNZYdXTm426ty8",
+          "object": "charge",
+          "amount": 545,
+          "amount_refunded": 0,
+          "application_fee": null,
+          "balance_transaction": "txn_17eVwhB9TSdNZYdXfuLefIZF",
+          "captured": true,
+          "created": 1455479655,
+          "currency": "usd",
+          "customer": null,
+          "description": "Rails Assets donation",
+          "destination": null,
+          "dispute": null,
+          "failure_code": null,
+          "failure_message": null,
+          "fraud_details": {},
+          "invoice": null,
+          "livemode": false,
+          "metadata": {},
+          "order": null,
+          "paid": true,
+          "receipt_email": null,
+          "receipt_number": null,
+          "refunded": false,
+          "refunds": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/charges/ch_17eVwhB9TSdNZYdXTm426ty8/refunds"
+          },
+          "shipping": null,
+          "source": {
+            "id": "card_17eVwgB9TSdNZYdXdt44RwwN",
+            "object": "card",
+            "address_city": null,
+            "address_country": null,
+            "address_line1": null,
+            "address_line1_check": null,
+            "address_line2": null,
+            "address_state": null,
+            "address_zip": null,
+            "address_zip_check": null,
+            "brand": "Visa",
+            "country": "US",
+            "customer": null,
+            "cvc_check": "pass",
+            "dynamic_last4": null,
+            "exp_month": 12,
+            "exp_year": 2017,
+            "fingerprint": "ZXpe5CQf9geIvoWX",
+            "funding": "credit",
+            "last4": "4242",
+            "metadata": {},
+            "name": null,
+            "tokenization_method": null
+          },
+          "statement_descriptor": null,
+          "status": "succeeded"
+        }
+    http_version: 
+  recorded_at: Sun, 14 Feb 2016 19:54:17 GMT
+recorded_with: VCR 3.0.1
