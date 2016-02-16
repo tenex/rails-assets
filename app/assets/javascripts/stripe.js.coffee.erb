@@ -17,6 +17,8 @@ DonationButtonController = ($scope, $http, notifications, Popeye) ->
     modal = Popeye.openModal
       scope: $scope
       templateUrl: 'ng-templates/donate.html'
+      containerClass: 'stripe-modal-container'
+      modalClass: 'stripe-modal'
     modal.closed.then ->
       if $scope.invokeStripe
         $scope.invokeStripe = false
