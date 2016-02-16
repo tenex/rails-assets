@@ -4,8 +4,10 @@ feature 'Stripe integreation' do
   scenario 'accepts donations' do
     visit root_path
 
+    click_link 'Donate'
+
     fill_in 'amount', with: '5.45'
-    click_button 'Donate'
+    click_button 'Next'
 
     Capybara.within_frame 'stripe_checkout_app' do
       fill_in 'email', with: 'rspec@example.com'
