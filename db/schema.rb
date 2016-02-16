@@ -11,55 +11,51 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150218105340) do
+ActiveRecord::Schema.define(version: 20160216213017) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
 
-  create_table "components", force: true do |t|
-    t.string   "name"
+  create_table "components", force: :cascade do |t|
+    t.string   "name",        limit: 255, index: {name: "index_components_on_name", unique: true}
     t.text     "description"
-    t.string   "homepage"
+    t.string   "homepage",    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "bower_name"
-    t.index ["name"], :name => "index_components_on_name", :unique => true, :order => {"name" => :asc}
+    t.string   "bower_name",  limit: 255
   end
 
-  create_table "failed_jobs", force: true do |t|
-    t.string   "name"
-    t.string   "worker"
+  create_table "donations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.money    "amount",     scale: 2, null: false
+    t.string   "email"
+    t.string   "client_ip"
+  end
+
+  create_table "failed_jobs", force: :cascade do |t|
+    t.string   "name",       limit: 255, index: {name: "index_failed_jobs_on_name"}
+    t.string   "worker",     limit: 255
     t.text     "args"
     t.text     "message"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["name"], :name => "index_failed_jobs_on_name", :order => {"name" => :asc}
   end
 
-  create_table "versions", force: true do |t|
-    t.integer  "component_id"
-    t.string   "string"
+  create_table "versions", force: :cascade do |t|
+    t.integer  "component_id",  index: {name: "index_versions_on_component_id"}, foreign_key: {references: "components", name: "fk_versions_component_id", on_update: :no_action, on_delete: :no_action}
+    t.string   "string",        limit: 255, index: {name: "index_versions_on_string"}
     t.hstore   "dependencies"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "build_status"
+    t.string   "build_status",  limit: 255, index: {name: "index_versions_on_build_status"}
     t.text     "build_message"
-    t.text     "asset_paths",                default: [],    array: true
-    t.text     "main_paths",                 default: [],    array: true
-    t.boolean  "rebuild",                    default: false
-    t.string   "bower_version"
-    t.string   "position",      limit: 1023
-    t.boolean  "prerelease",                 default: false
-    t.index ["component_id"], :name => "fk__versions_component_id", :order => {"component_id" => :asc}
-    t.index ["bower_version"], :name => "index_versions_on_bower_version", :order => {"bower_version" => :asc}
-    t.index ["build_status"], :name => "index_versions_on_build_status", :order => {"build_status" => :asc}
-    t.index ["component_id"], :name => "index_versions_on_component_id", :order => {"component_id" => :asc}
-    t.index ["position"], :name => "index_versions_on_position", :order => {"position" => :asc}
-    t.index ["prerelease"], :name => "index_versions_on_prerelease", :order => {"prerelease" => :asc}
-    t.index ["rebuild"], :name => "index_versions_on_rebuild", :order => {"rebuild" => :asc}
-    t.index ["string"], :name => "index_versions_on_string", :order => {"string" => :asc}
-    t.foreign_key ["component_id"], "components", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_versions_component_id"
+    t.text     "asset_paths",   default: [],    array: true
+    t.text     "main_paths",    default: [],    array: true
+    t.boolean  "rebuild",       default: false, index: {name: "index_versions_on_rebuild"}
+    t.string   "bower_version", limit: 255, index: {name: "index_versions_on_bower_version"}
+    t.string   "position",      limit: 1023, index: {name: "index_versions_on_position"}
+    t.boolean  "prerelease",    default: false, index: {name: "index_versions_on_prerelease"}
   end
 
 end

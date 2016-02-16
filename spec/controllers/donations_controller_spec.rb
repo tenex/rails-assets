@@ -8,12 +8,12 @@ describe DonationsController, type: :controller do
         exp_month: 12,
         exp_year: 2017,
         cvc: 123
-      })
+      }).to_h.merge(email: 'test@example.com') #simulate stripe checkout request
     end
 
     it 'creates a charge for the given amount' do
       VCR.use_cassette 'stripe' do
-        post :create, amount: '$5.45', token: token.to_h
+        post :create, amount: '$5.45', token: token
       end
 
       response.should be_success
@@ -23,7 +23,7 @@ describe DonationsController, type: :controller do
 
     it 'returns an error if the amount cannot be parsed' do
       VCR.use_cassette 'stripe' do
-        post :create, amount: 'balls', token: token.to_h
+        post :create, amount: 'balls', token: token
       end
 
       response.should be_client_error
@@ -46,6 +46,16 @@ describe DonationsController, type: :controller do
 
       response.should be_client_error
       JSON.parse(response.body)['error'].should include 'declined'
+    end
+
+    it 'logs donations' do
+      VCR.use_cassette 'stripe' do
+        post :create, amount: '$5.45', token: token
+      end
+
+      response.should be_success
+      Donation.count.should eq 1
+      Donation.first.client_ip.should eq '108.20.157.18'
     end
   end
 end
