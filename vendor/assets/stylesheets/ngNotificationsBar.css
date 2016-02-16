@@ -1,0 +1,104 @@
+/* From https://raw.githubusercontent.com/alexbeletsky/ng-notifications-bar/master/css/ngNotificationsBar.css */
+/* line 64, ../bower_components/hmps-animate-scss/animate.scss */
+body {
+  -webkit-backface-visibility: hidden;
+}
+
+/* line 4, ../sass/ngNotificationsBar.scss */
+.notifications .notifications-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-height: 60px;
+  line-height: 60px;
+  width: 100%;
+  z-index: 1000;
+}
+/* line 14, ../sass/ngNotificationsBar.scss */
+.notifications .notification, .notifications .error, .notifications .success, .notifications .warning, .notifications .info {
+  position: relative;
+  -webkit-animation: fadeInDown 1s ease 0.2s 1 both;
+  -moz-animation: fadeInDown 1s ease 0.2s 1 both;
+  animation: fadeInDown 1s ease 0.2s 1 both;
+  -webkit-animation-backface-visibility: hidden;
+  -moz-animation-backface-visibility: hidden;
+  -ms-animation-backface-visibility: hidden;
+  -o-animation-backface-visibility: hidden;
+  animation-backface-visibility: hidden;
+  text-align: center;
+  font-size: 18px;
+  color: #fff;
+}
+@-webkit-keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+  }
+}
+@-moz-keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    -moz-transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    -moz-transform: translateY(0);
+  }
+}
+@-o-keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    -o-transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    -o-transform: translateY(0);
+  }
+}
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(-20px);
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+/* line 22, ../sass/ngNotificationsBar.scss */
+.notifications .message {
+  padding: 0 12px;
+}
+/* line 26, ../sass/ngNotificationsBar.scss */
+.notifications .error {
+  background-color: #F64747;
+  border-bottom: 1px solid #f31515;
+}
+/* line 32, ../sass/ngNotificationsBar.scss */
+.notifications .success {
+  background-color: #03C9A9;
+  border-bottom: 1px solid #02aa8f;
+}
+/* line 38, ../sass/ngNotificationsBar.scss */
+.notifications .warning {
+  background-color: #F7CA18;
+  border-bottom: 1px solid #e7ba08;
+}
+/* line 44, ../sass/ngNotificationsBar.scss */
+.notifications .info {
+  background-color: #0c6997;
+  border-bottom: 1px solid #0c6997;
+}
+/* line 50, ../sass/ngNotificationsBar.scss */
+.notifications .close-click {
+  font-size: 12px;
+  cursor: pointer;
+  padding: 10px;
+  margin: 0 auto;
+}

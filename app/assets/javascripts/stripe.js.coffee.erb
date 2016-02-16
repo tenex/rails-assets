@@ -1,11 +1,14 @@
 DEFAUT_AMOUNT = 5
+SUCCESS_MESSAGE = 'Thank you for your donation! Your help keeps Rails Assets running.'
 
-DonationController = ($scope, $http) ->
+DonationController = ($scope, $http, notifications) ->
   handler = StripeCheckout.configure
     key: '<%= Rails.configuration.stripe[:publishable_key] %>'
     locale: 'auto'
     token: (token) ->
-      $http.post(Routes.donations_path(), { amount: $scope.amount, token: token })
+      onSuccess = (response) -> notifications.showSuccess(SUCCESS_MESSAGE)
+      onError = (response) -> notifications.showError(message: response.data.error)
+      $http.post(Routes.donations_path(), { amount: $scope.amount, token: token }).then onSuccess, onError
 
   $scope.amount = DEFAUT_AMOUNT
 
@@ -18,5 +21,6 @@ DonationController = ($scope, $http) ->
 angular.module('rails-assets').controller 'DonationCtrl', [
   '$scope',
   '$http',
+  'notifications',
   DonationController
 ]
