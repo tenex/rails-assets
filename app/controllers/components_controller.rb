@@ -5,7 +5,7 @@ class ComponentsController < ApplicationController
     respond_to do |format|
       format.html { }
       format.json do
-        render(json: ComponentHelper.generate_components_json)
+        render nothing: true#render(json: ComponentHelper.generate_components_json)
       end
     end
   end

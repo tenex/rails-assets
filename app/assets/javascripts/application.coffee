@@ -1,5 +1,7 @@
 #= require angular
 #= require ngNotificationsBar
+#= require angular-animate
+#= require popeye
 #= require angular-semver-sort
 #= require js-routes
 #= require rails-assets

@@ -1,0 +1,128 @@
+/**
+* angular-popeye
+* A simple modal library for AngularJS applications
+
+* @author Pathgather <tech@pathgather.com>
+* @copyright Pathgather 2015
+* @license MIT
+* @link https://github.com/Pathgather/popeye
+* @version 1.0.5
+*/
+
+body.popeye-modal-open {
+  overflow: hidden; }
+
+.popeye-modal-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 5;
+  overflow-y: auto;
+  background-color: rgba(76, 147, 234, 0.7);
+  text-align: center;
+  /* "ghost" element to use for vertical alignment
+    (see https://css-tricks.com/centering-in-the-unknown/) */ }
+  .popeye-modal-container.ng-enter {
+    -webkit-animation: popeye-fade-in 0.4s;
+            animation: popeye-fade-in 0.4s; }
+    .popeye-modal-container.ng-enter .popeye-modal {
+      -webkit-animation: popeye-slide-up 0.4s;
+              animation: popeye-slide-up 0.4s; }
+  .popeye-modal-container.ng-leave {
+    -webkit-animation: popeye-fade-out 0.4s;
+            animation: popeye-fade-out 0.4s; }
+    .popeye-modal-container.ng-leave .popeye-modal {
+      -webkit-animation: popeye-slide-down 0.4s forwards;
+              animation: popeye-slide-down 0.4s forwards; }
+  .popeye-modal-container::before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle; }
+  .popeye-modal-container .popeye-modal {
+    position: relative;
+    text-align: left;
+    vertical-align: middle;
+    display: inline-block;
+    width: 60%;
+    border-radius: 3px;
+    border: none;
+    z-index: 6;
+    padding: 2em 1.5em 1.5em 1.5em;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); }
+    .popeye-modal-container .popeye-modal a.popeye-close-modal {
+      position: absolute;
+      top: 1em;
+      right: 1em;
+      font-weight: 100;
+      text-decoration: none;
+      color: inherit; }
+      .popeye-modal-container .popeye-modal a.popeye-close-modal::after {
+        content: "\d7"; }
+
+@-webkit-keyframes popeye-slide-up {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(100%);
+            transform: translateY(100%); }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%); } }
+
+@keyframes popeye-slide-up {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(100%);
+            transform: translateY(100%); }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%); } }
+
+@-webkit-keyframes popeye-slide-down {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%); }
+  100% {
+    opacity: 0;
+    -webkit-transform: translateY(100%);
+            transform: translateY(100%); } }
+
+@keyframes popeye-slide-down {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%); }
+  100% {
+    opacity: 0;
+    -webkit-transform: translateY(100%);
+            transform: translateY(100%); } }
+
+@-webkit-keyframes popeye-fade-in {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@keyframes popeye-fade-in {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@-webkit-keyframes popeye-fade-out {
+  0% {
+    opacity: 1; }
+  100% {
+    opacity: 0; } }
+
+@keyframes popeye-fade-out {
+  0% {
+    opacity: 1; }
+  100% {
+    opacity: 0; } }

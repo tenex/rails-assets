@@ -1,4 +1,4 @@
-app = angular.module('rails-assets', ['semverSort', 'ngNotificationsBar'])
+app = angular.module('rails-assets', ['semverSort', 'ngNotificationsBar', 'ngAnimate', 'pathgather.popeye'])
 
 app.directive "ngHtml", ->
   (scope, element, attrs) ->

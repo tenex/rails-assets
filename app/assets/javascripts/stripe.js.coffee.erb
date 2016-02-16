@@ -1,7 +1,7 @@
-DEFAUT_AMOUNT = 5
+DEFAULT_AMOUNT = 5
 SUCCESS_MESSAGE = 'Thank you for your donation! Your help keeps Rails Assets running.'
 
-DonationController = ($scope, $http, notifications) ->
+DonationButtonController = ($scope, $http, notifications, Popeye) ->
   handler = StripeCheckout.configure
     key: '<%= Rails.configuration.stripe[:publishable_key] %>'
     locale: 'auto'
@@ -11,17 +11,28 @@ DonationController = ($scope, $http, notifications) ->
 
       $http.post(Routes.donations_path(), { amount: $scope.amount, token: token }).then onSuccess, onError
 
-  $scope.amount = DEFAUT_AMOUNT
+  $scope.amount = DEFAULT_AMOUNT
 
   $scope.invoke = ->
-    handler.open
-      name: 'Rails Assets'
-      description: 'Donation'
-      amount: $scope.amount * 100
+    modal = Popeye.openModal
+      scope: $scope
+      templateUrl: 'ng-templates/donate.html'
+    modal.closed.then ->
+      if $scope.invokeStripe
+        handler.open
+          name: 'Rails Assets'
+          description: 'Donation'
+          amount: $scope.amount * 100
 
-angular.module('rails-assets').controller 'DonationCtrl', [
+  $scope.next = ->
+    $scope.invokeStripe = true
+    $scope.$close()
+
+
+angular.module('rails-assets').controller 'DonationButtonController', [
   '$scope',
   '$http',
   'notifications',
-  DonationController
+  'Popeye',
+  DonationButtonController
 ]
