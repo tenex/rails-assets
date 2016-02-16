@@ -19,6 +19,7 @@ DonationButtonController = ($scope, $http, notifications, Popeye) ->
       templateUrl: 'ng-templates/donate.html'
     modal.closed.then ->
       if $scope.invokeStripe
+        $scope.invokeStripe = false
         handler.open
           name: 'Rails Assets'
           description: 'Donation'

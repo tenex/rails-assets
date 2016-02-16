@@ -12,3 +12,8 @@ header.top.u__inverted
           a href="https://twitter.com/railsassets" title="Rails Assets on Twitter" Twitter
         li.top__nav__item
           a href=new_component_path Add component
+        li.top__nav__item ng-controller="DonationButtonController"
+          script[src="https://checkout.stripe.com/checkout.js"]
+          a href="#" ng-click="invoke()"
+            | Donate
+            span.label.label-info New
