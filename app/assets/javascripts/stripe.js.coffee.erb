@@ -8,6 +8,7 @@ DonationController = ($scope, $http, notifications) ->
     token: (token) ->
       onSuccess = (response) -> notifications.showSuccess(SUCCESS_MESSAGE)
       onError = (response) -> notifications.showError(message: response.data.error)
+
       $http.post(Routes.donations_path(), { amount: $scope.amount, token: token }).then onSuccess, onError
 
   $scope.amount = DEFAUT_AMOUNT

@@ -7,15 +7,8 @@ require 'capybara/rspec'
 
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 ActiveRecord::Migration.maintain_test_schema!
-Capybara.default_driver = Capybara.javascript_driver = :webkit
+Capybara.default_driver = Capybara.javascript_driver = :selenium
 #need to include Capybara::Angular::DSL?
-
-Capybara::Webkit.configure do |config|
-  config.allow_url('stripecdn.com')
-  config.allow_url('stripe.com')
-  config.allow_url('api.mixpanel.com')
-  config.allow_url('fonts.googleapis.com')
-end
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
@@ -40,6 +33,7 @@ RSpec.configure do |config|
 end
 
 VCR.configure do |config|
+  config.allow_http_connections_when_no_cassette = true
   config.cassette_library_dir = 'spec/requests'
   config.default_cassette_options = { match_requests_on: [:method, :uri, :body] }
   config.filter_sensitive_data("ENV['STRIPE_SECRET_KEY']") { ENV['STRIPE_SECRET_KEY'] }

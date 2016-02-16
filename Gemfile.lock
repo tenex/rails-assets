@@ -85,11 +85,10 @@ GEM
       xpath (~> 2.0)
     capybara-angular (0.2.3)
       capybara (>= 2.5.0)
-    capybara-webkit (1.8.0)
-      capybara (>= 2.3.0, < 2.7.0)
-      json
     celluloid (0.16.0)
       timers (~> 4.0.0)
+    childprocess (0.5.9)
+      ffi (~> 1.0, >= 1.0.11)
     chronic (0.10.2)
     coderay (1.0.9)
     coffee-rails (4.0.0)
@@ -114,6 +113,7 @@ GEM
     execjs (2.0.1)
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
+    ffi (1.9.10)
     foreman (0.63.0)
       dotenv (>= 0.7)
       thor (>= 0.13.6)
@@ -245,6 +245,7 @@ GEM
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
       rspec-mocks (~> 2.14.0)
+    rubyzip (1.1.7)
     safe_yaml (1.0.4)
     sass (3.2.19)
     sass-rails (4.0.5)
@@ -304,6 +305,11 @@ GEM
     schema_plus_views (0.3.0)
       activerecord (~> 4.2)
       schema_plus_core (~> 0.1)
+    selenium-webdriver (2.52.0)
+      childprocess (~> 0.5)
+      multi_json (~> 1.0)
+      rubyzip (~> 1.0)
+      websocket (~> 1.0)
     sentry-raven (0.6.0)
       faraday (>= 0.7.6)
       hashie (>= 1.1.0)
@@ -375,6 +381,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
+    websocket (1.2.2)
     whenever (0.9.0)
       activesupport (>= 2.3.4)
       chronic (>= 0.6.3)
@@ -399,7 +406,6 @@ DEPENDENCIES
   capistrano-passenger
   capistrano-rails (~> 1.1)
   capybara-angular
-  capybara-webkit
   coffee-rails
   database_cleaner
   dotenv
@@ -425,6 +431,7 @@ DEPENDENCIES
   rspec-rails
   sass-rails
   schema_plus
+  selenium-webdriver
   sentry-raven
   sidekiq (~> 3.3.2)
   sidekiq-limit_fetch
