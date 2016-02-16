@@ -17,7 +17,7 @@ feature 'Stripe integreation' do
       click_button 'Pay $5.45'
     end
 
-    page.should_not have_css('iframe.stripe_checkout_app', wait: 6)
+    page.should_not have_css('iframe.stripe_checkout_app', wait: 30)
     page.should have_text('Thank you for your donation!')
   end
 end
