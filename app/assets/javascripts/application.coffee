@@ -10,6 +10,7 @@
 app = angular.module('rails-assets')
 
 app.config ['notificationsConfigProvider', (notificationsConfigProvider) ->
+    notificationsConfigProvider.setHideDelay(6000)
     notificationsConfigProvider.setAutoHide(true)
-    notificationsConfigProvider.setAutoHideAnimationDelay(6000)
+    notificationsConfigProvider.setAutoHideAnimation('fadeOutUp')
 ]

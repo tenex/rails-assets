@@ -1,0 +1,25 @@
+@-webkit-keyframes fadeOutUp
+  from
+    opacity: 1
+
+  to
+    opacity: 0
+    -webkit-transform: translate3d(0, -100%, 0)
+    transform: translate3d(0, -100%, 0)
+
+@keyframes fadeOutUp
+  from
+    opacity: 1
+
+  to
+    opacity: 0
+    -webkit-transform: translate3d(0, -100%, 0)
+    transform: translate3d(0, -100%, 0)
+
+.fadeOutUp
+  -webkit-animation-duration: 1s
+  animation-duration: 1s
+  -webkit-animation-fill-mode: both
+  animation-fill-mode: both
+  -webkit-animation-name: fadeOutUp !important
+  animation-name: fadeOutUp !important
