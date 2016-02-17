@@ -13,7 +13,6 @@ DonationButtonController = ($scope, $http, notifications, Popeye, $timeout) ->
       $http.post(Routes.donations_path(), { amount: $scope.amount, token: token }).then onSuccess, onError
 
   $scope.amount = DEFAULT_AMOUNT
-
   $scope.invoke = ->
     Popeye.openModal
       scope: $scope
