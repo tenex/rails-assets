@@ -17,6 +17,16 @@ RSpec.configure do |config|
   config.order = 'random'
 
   config.include Rails.application.routes.url_helpers, type: :feature
+  config.after(:each, type: :feature) do
+    if @example.exception && ENV['CI'].present? && Capybara.current_session.driver.browser_initialized?
+      puts "Exception detected. Posting screenshot..."
+      image_path = Capybara.save_screenshot
+      response = `curl https://uguu.se/api.php?d=upload -F file=@#{image_path}`
+      filename = image_path.split('/').last
+      remote_url = response[/(http[^"]*#{filename})/]
+      puts "Capybara screenshot available at #{remote_url}"
+    end
+  end
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
