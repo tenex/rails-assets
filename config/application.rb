@@ -9,7 +9,7 @@ Bundler.require(:default, Rails.env)
 
 require_relative '../app/workers/update_scheduler'
 
-class RailsAssets
+module RailsAssets
   class Application < Rails::Application
     config.exceptions_app = self.routes
 

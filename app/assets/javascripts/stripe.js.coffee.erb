@@ -1,7 +1,8 @@
 DEFAULT_AMOUNT = 5
 SUCCESS_MESSAGE = 'Thank you for your donation! Your help keeps Rails Assets running.'
+STRIPE_MODAL_TRANSITION_MS = 200
 
-DonationButtonController = ($scope, $http, notifications, Popeye) ->
+DonationButtonController = ($scope, $http, notifications, Popeye, $timeout) ->
   handler = StripeCheckout.configure
     key: '<%= Rails.configuration.stripe[:publishable_key] %>'
     locale: 'auto'
@@ -14,22 +15,18 @@ DonationButtonController = ($scope, $http, notifications, Popeye) ->
   $scope.amount = DEFAULT_AMOUNT
 
   $scope.invoke = ->
-    modal = Popeye.openModal
+    Popeye.openModal
       scope: $scope
       templateUrl: 'ng-templates/donate.html'
       containerClass: 'stripe-modal-container'
       modalClass: 'stripe-modal'
-    modal.closed.then ->
-      if $scope.invokeStripe
-        $scope.invokeStripe = false
-        handler.open
-          name: 'Rails Assets'
-          description: 'Donation'
-          amount: $scope.amount * 100
 
   $scope.next = ->
-    $scope.invokeStripe = true
-    $scope.$close()
+    handler.open
+      name: 'Rails Assets'
+      description: 'Donation'
+      amount: $scope.amount * 100
+    $timeout((-> $scope.$close()), STRIPE_MODAL_TRANSITION_MS)
 
 
 angular.module('rails-assets').controller 'DonationButtonController', [
@@ -37,5 +34,6 @@ angular.module('rails-assets').controller 'DonationButtonController', [
   '$http',
   'notifications',
   'Popeye',
+  '$timeout'
   DonationButtonController
 ]
