@@ -28,6 +28,10 @@ RSpec.configure do |config|
     end
   end
 
+  config.after(:each, type: :feature) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
