@@ -1,5 +1,5 @@
 language: ruby
-sudo: false
+sudo: false 
 cache: bundler
 before_script:
   - npm install --silent
