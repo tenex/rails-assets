@@ -47,15 +47,5 @@ describe DonationsController, type: :controller do
       response.should be_client_error
       JSON.parse(response.body)['error'].should include 'declined'
     end
-
-    it 'logs donations' do
-      VCR.use_cassette 'stripe' do
-        post :create, amount: '$5.45', token: token
-      end
-
-      response.should be_success
-      Donation.count.should eq 1
-      Donation.first.client_ip.should eq '108.20.157.18'
-    end
   end
 end
