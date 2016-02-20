@@ -75,7 +75,7 @@ app.controller "ConvertCtrl", ["$scope", "$http", ($scope, $http) ->
     $scope.error = null
     $scope.gem = null
 
-    $http.post("/components.json", component: $scope.component).success((data, xhr) ->
+    $http.post("/components", component: $scope.component).success((data, xhr) ->
       $scope.gem = data
       $scope.converting = false
     ).error (data, status) ->
