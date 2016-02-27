@@ -27,3 +27,7 @@ node_modules
 /public/components.json
 
 /rails-assets-*
+
+dump.rdb
+
+Procfile.*
