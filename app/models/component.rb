@@ -28,8 +28,8 @@ class Component < ActiveRecord::Base
   end
 
   def self.needs_build?(name, version = nil)
-    component = Component.includes(:versions).references(:versions).
-      where(name: name).first
+    component = Component.includes(:versions).references(:versions)
+                         .where(name: name).first
 
     if version.nil?
       component.blank? || component.versions.builded.count == 0

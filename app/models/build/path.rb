@@ -1,14 +1,12 @@
 module Build
-
   class Path < Pathname
-
     # Extensions are sorted by priority
     def self.extension_classes
       {
-        javascripts: ['coffee', 'js'],
-        stylesheets: ['sass', 'scss', 'less', 'css', 'styl'],
-        images: ['png', 'jpg', 'jpeg', 'gif', 'cur', 'ico'],
-        fonts: ['woff', 'woff2', 'ttf', 'otf', 'eot', 'svg'],
+        javascripts: %w(coffee js),
+        stylesheets: %w(sass scss less css styl),
+        images: %w(png jpg jpeg gif cur ico),
+        fonts: %w(woff woff2 ttf otf eot svg),
         flash: ['swf'],
         templates: ['html'],
         documents: ['json']
@@ -17,10 +15,10 @@ module Build
 
     def self.allowed_main_extensions
       {
-        javascripts: ['coffee', 'js'],
-        stylesheets: ['sass', 'scss', 'css'],
-        images: ['png', 'jpg', 'jpeg', 'gif', 'cur', 'ico'],
-        fonts: ['woff', 'woff2', 'ttf', 'otf', 'eot', 'svg'],
+        javascripts: %w(coffee js),
+        stylesheets: %w(sass scss css),
+        images: %w(png jpg jpeg gif cur ico),
+        fonts: %w(woff woff2 ttf otf eot svg),
         flash: ['swf'],
         templates: ['html'],
         documents: ['json']
@@ -62,14 +60,13 @@ module Build
     end
 
     def append_relative_path(exp)
-      Path.new(File.expand_path("../#{exp}", "/#{self.to_s}")[1..-1])
+      Path.new(File.expand_path("../#{exp}", "/#{self}")[1..-1])
     end
 
     def in_directory?(dirnames)
       [*dirnames].any? do |dirname|
-        self.each_filename.to_a.include?(dirname)
+        each_filename.to_a.include?(dirname)
       end
     end
   end
-
 end

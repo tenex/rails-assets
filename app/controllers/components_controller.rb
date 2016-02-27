@@ -3,7 +3,7 @@ class ComponentsController < ApplicationController
 
   def index
     respond_to do |format|
-      format.html { }
+      format.html {}
       format.json do
         render(json: ComponentHelper.generate_components_json)
       end
@@ -22,7 +22,8 @@ class ComponentsController < ApplicationController
   end
 
   def create
-    name, version = component_params[:name], component_params[:version]
+    name = component_params[:name]
+    version = component_params[:version]
     name = Build::Utils.fix_gem_name(name, version).gsub('/', '--')
 
     Build::Converter.run!(name, version)
@@ -31,13 +32,13 @@ class ComponentsController < ApplicationController
 
     if ver.blank?
       render json: { message: 'Build failed for unknown reason' },
-        status: :unprocessable_entity
+             status: :unprocessable_entity
     else
       render json: ComponentHelper.component_data(component)
     end
   rescue Build::BuildError => e
-      render json: { message: e.message },
-        status: :unprocessable_entity
+    render json: { message: e.message },
+           status: :unprocessable_entity
   end
 
   def assets
@@ -61,18 +62,16 @@ class ComponentsController < ApplicationController
     render json: paths
   end
 
-
   def get_version(name, version)
-
     component = Component.find_by(name: name)
 
     return unless component.present?
 
     ver = if version.present?
-      component.versions.
-        where(string: Build::Utils.fix_version_string(version)).first
-    else
-      component.versions.last
+            component.versions
+                     .where(string: Build::Utils.fix_version_string(version)).first
+          else
+            component.versions.last
     end
 
     return unless ver.present?

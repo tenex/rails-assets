@@ -9,11 +9,11 @@ class UpdateMetadata
     Dir.mktmpdir do |dir|
       result = Build::Utils.bower(
         dir, 'info',
-        "#{version.component.bower_name}##{version.string || "latest"}"
+        "#{version.component.bower_name}##{version.string || 'latest'}"
       )
 
       version.update_attributes(
-        :dependencies => Build::Utils.fix_dependencies(
+        dependencies: Build::Utils.fix_dependencies(
           result['dependencies'] || {}
         )
       )
