@@ -10,7 +10,7 @@ require 'rubygems/indexer'
 
 module Build
   module Converter
-    module_function
+    extend self
 
     # Public: Performs full processing of given component
     #

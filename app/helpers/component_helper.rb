@@ -1,6 +1,6 @@
 # Component Helper
 module ComponentHelper
-  module_function
+  extend self
 
   def generate_components_json
     ids = Version

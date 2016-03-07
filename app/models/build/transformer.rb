@@ -8,7 +8,7 @@
 #  `-".-.-| | o:..-.`---'-. .-.`---'-. .-.`---'-. .-.`---'-. .-.`---'-.
 module Build
   module Transformer
-    module_function
+    extend self
 
     def component_transformations(bower_component)
       compute_transformations(
