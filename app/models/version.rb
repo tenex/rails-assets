@@ -9,16 +9,16 @@ class Version < ActiveRecord::Base
 
   validates :string, uniqueness: { scope: :component_id }
 
-  scope :indexed, lambda { where(:build_status => "indexed") }
-  scope :builded, lambda { where(:build_status => ["builded", "indexed"]) }
-  scope :pending_index, lambda { where(:build_status => "builded") }
+  scope :indexed, -> { where(build_status: 'indexed') }
+  scope :builded, -> { where(build_status: %w(builded indexed)) }
+  scope :pending_index, -> { where(build_status: 'builded') }
 
   scope :processed, lambda {
-    where(build_status: ["builded", "indexed"], rebuild: false)
+    where(build_status: %w(builded indexed), rebuild: false)
   }
 
   scope :string, lambda { |string|
-    where(:string => self.fix_version_string(string))
+    where(string: fix_version_string(string))
   }
 
   def gem_version
@@ -28,9 +28,7 @@ class Version < ActiveRecord::Base
   after_destroy :remove_component
 
   def remove_component
-    if component.versions.count == 0
-      component.destroy
-    end
+    component.destroy if component.versions.count == 0
   end
 
   before_save :update_caches
@@ -91,5 +89,4 @@ class Version < ActiveRecord::Base
     update_attribute(:rebuild, true)
     BuildVersion.perform_async(component.bower_name, bower_version)
   end
-
 end

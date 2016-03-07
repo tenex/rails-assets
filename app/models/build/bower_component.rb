@@ -34,14 +34,14 @@ module Build
         data['pkgMeta']['version']
       else
         raise BuildError.new(
-          "#{full_name} has no versions defined. " +
+          "#{full_name} has no versions defined. " \
           "Please create an issue in component's repository."
         )
       end
     end
 
     def description
-      data['pkgMeta']['description'] || ""
+      data['pkgMeta']['description'] || ''
     end
 
     def repository
@@ -60,11 +60,11 @@ module Build
 
     def main
       if mains = data['pkgMeta']['main']
-        if mains.kind_of?(Hash)
+        if mains.is_a?(Hash)
           mains.values.flatten.compact
-        elsif mains.kind_of?(Array)
+        elsif mains.is_a?(Array)
           mains.flatten.compact
-        elsif mains.kind_of?(String)
+        elsif mains.is_a?(String)
           [mains]
         end
       end
@@ -79,10 +79,10 @@ module Build
       source = source.sub(/#.*$/, '')
       source = source.sub(/\.git$/, '')
 
-      if source.match(/^[^\/]+(\/[^\/]+)?$/)
+      if source =~ /^[^\/]+(\/[^\/]+)?$/
         source
       elsif source =~ /github\.com\/([^\/]+\/[^\/]+)/
-        $1
+        Regexp.last_match(1)
       else
         raise BuildError.new("#{source} is not valid source for rails-assets")
       end
@@ -97,9 +97,9 @@ module Build
     end
 
     def main_paths
-      Paths.new(main).
-        map(:expand_path, component_dir).select(:exist?).
-        map(:relative_path_from, component_dir)
+      Paths.new(main)
+           .map(:expand_path, component_dir).select(:exist?)
+           .map(:relative_path_from, component_dir)
     end
 
     def gem

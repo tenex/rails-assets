@@ -2,10 +2,8 @@
 
 require 'rubygems/specification'
 
-
 module Build
   module GemPackage
-
     class Error < StandardError; end
     class NonSeekableIO < Error; end
     class ClosedIO < Error; end
@@ -14,14 +12,13 @@ module Build
     class FormatError < Error
       attr_reader :path
 
-      def initialize message, path = nil
+      def initialize(message, path = nil)
         @path = path
 
         message << " in #{path}" if path
 
         super message
       end
-
     end
 
     ##
@@ -31,11 +28,11 @@ module Build
 
     # FIX: zenspider said: does it really take an IO?
     # passed to a method called open?!? that seems stupid.
-    def self.open(io, mode = "r", signer = nil, &block)
+    def self.open(io, mode = 'r', signer = nil, &block)
       tar_type = case mode
-                when 'r' then TarInput
-                else
-                  raise "Unknown Package open mode"
+                 when 'r' then TarInput
+                 else
+                   raise 'Unknown Package open mode'
                 end
 
       tar_type.open(io, signer, &block)
@@ -44,21 +41,25 @@ module Build
     def self.pack(src, destname, signer = nil)
       TarOutput.open(destname, signer) do |outp|
         dir_class.chdir(src) do
-          outp.metadata = (file_class.read("RPA/metadata") rescue nil)
+          outp.metadata = (begin
+                             file_class.read('RPA/metadata')
+                           rescue
+                             nil
+                           end)
           find_class.find('.') do |entry|
             case
             when file_class.file?(entry)
-              entry.sub!(%r{\./}, "")
+              entry.sub!(%r{\./}, '')
               next if entry =~ /\ARPA\//
               stat = File.stat(entry)
               outp.add_file_simple(entry, stat.mode, stat.size) do |os|
-                file_class.open(entry, "rb") do |f|
+                file_class.open(entry, 'rb') do |f|
                   os.write(f.read(4096)) until f.eof?
                 end
               end
             when file_class.dir?(entry)
-              entry.sub!(%r{\./}, "")
-              next if entry == "RPA"
+              entry.sub!(%r{\./}, '')
+              next if entry == 'RPA'
               outp.mkdir(entry, file_class.stat(entry).mode)
             else
               raise "Don't know how to pack this yet!"
@@ -67,6 +68,5 @@ module Build
         end
       end
     end
-
   end
 end

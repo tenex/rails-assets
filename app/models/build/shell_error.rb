@@ -3,7 +3,8 @@ module Build
     attr_reader :path, :command
 
     def initialize(message, path = nil, command = nil)
-      @path, @command = path, command
+      @path = path
+      @command = command
 
       super(message)
     end

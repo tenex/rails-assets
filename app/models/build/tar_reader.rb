@@ -11,7 +11,6 @@
 
 module Build
   class TarReader
-
     ##
     # Raised if the tar IO is not seekable
 
@@ -72,7 +71,7 @@ module Build
           @io.seek pending, IO::SEEK_CUR
           pending = 0
         rescue Errno::EINVAL, NameError
-          while pending > 0 do
+          while pending > 0
             bytes_read = @io.read([pending, 4096].min).size
             raise UnexpectedEOF if @io.eof?
             pending -= bytes_read
@@ -92,15 +91,14 @@ module Build
     # NOTE: Do not call #rewind during #each
 
     def rewind
-      if @init_pos == 0 then
-        raise "unseekable io" unless @io.respond_to? :rewind
+      if @init_pos == 0
+        raise 'unseekable io' unless @io.respond_to? :rewind
         @io.rewind
       else
-        raise "unseekable io" unless @io.respond_to? :pos=
+        raise 'unseekable io' unless @io.respond_to? :pos=
         @io.pos = @init_pos
       end
     end
-
   end
 
   # -*- coding: utf-8 -*-
@@ -133,7 +131,6 @@ module Build
   # A header for a tar file
 
   class TarHeader
-
     ##
     # Fields in the tar header
 
@@ -153,8 +150,8 @@ module Build
       :typeflag,
       :uid,
       :uname,
-      :version,
-    ]
+      :version
+    ].freeze
 
     ##
     # Pack format for a tar header
@@ -224,27 +221,27 @@ module Build
       devminor = fields.shift.oct
       prefix   = fields.shift
 
-      new :name     => name,
-          :mode     => mode,
-          :uid      => uid,
-          :gid      => gid,
-          :size     => size,
-          :mtime    => mtime,
-          :checksum => checksum,
-          :typeflag => typeflag,
-          :linkname => linkname,
-          :magic    => magic,
-          :version  => version,
-          :uname    => uname,
-          :gname    => gname,
-          :devmajor => devmajor,
-          :devminor => devminor,
-          :prefix   => prefix,
+      new name: name,
+          mode: mode,
+          uid: uid,
+          gid: gid,
+          size: size,
+          mtime: mtime,
+          checksum: checksum,
+          typeflag: typeflag,
+          linkname: linkname,
+          magic: magic,
+          version: version,
+          uname: uname,
+          gname: gname,
+          devmajor: devmajor,
+          devminor: devminor,
+          prefix: prefix,
 
-          :empty    => empty
+          empty: empty
 
-      # HACK unfactor for Rubinius
-      #new :name     => fields.shift,
+      # HACK: unfactor for Rubinius
+      # new :name     => fields.shift,
       #    :mode     => fields.shift.oct,
       #    :uid      => fields.shift.oct,
       #    :gid      => fields.shift.oct,
@@ -268,19 +265,19 @@ module Build
     # Creates a new TarHeader using +vals+
 
     def initialize(vals)
-      unless vals[:name] && vals[:size] && vals[:prefix] && vals[:mode] then
-        raise ArgumentError, ":name, :size, :prefix and :mode required"
+      unless vals[:name] && vals[:size] && vals[:prefix] && vals[:mode]
+        raise ArgumentError, ':name, :size, :prefix and :mode required'
       end
 
       vals[:uid] ||= 0
       vals[:gid] ||= 0
       vals[:mtime] ||= 0
-      vals[:checksum] ||= ""
-      vals[:typeflag] ||= "0"
-      vals[:magic] ||= "ustar"
-      vals[:version] ||= "00"
-      vals[:uname] ||= "wheel"
-      vals[:gname] ||= "wheel"
+      vals[:checksum] ||= ''
+      vals[:typeflag] ||= '0'
+      vals[:magic] ||= 'ustar'
+      vals[:version] ||= '00'
+      vals[:uname] ||= 'wheel'
+      vals[:gname] ||= 'wheel'
       vals[:devmajor] ||= 0
       vals[:devminor] ||= 0
 
@@ -299,23 +296,23 @@ module Build
     end
 
     def ==(other) # :nodoc:
-      self.class === other and
-      @checksum == other.checksum and
-      @devmajor == other.devmajor and
-      @devminor == other.devminor and
-      @gid      == other.gid      and
-      @gname    == other.gname    and
-      @linkname == other.linkname and
-      @magic    == other.magic    and
-      @mode     == other.mode     and
-      @mtime    == other.mtime    and
-      @name     == other.name     and
-      @prefix   == other.prefix   and
-      @size     == other.size     and
-      @typeflag == other.typeflag and
-      @uid      == other.uid      and
-      @uname    == other.uname    and
-      @version  == other.version
+      self.class === other &&
+        @checksum == other.checksum &&
+        @devmajor == other.devmajor &&
+        @devminor == other.devminor &&
+        @gid      == other.gid      &&
+        @gname    == other.gname    &&
+        @linkname == other.linkname &&
+        @magic    == other.magic    &&
+        @mode     == other.mode     &&
+        @mtime    == other.mtime    &&
+        @name     == other.name     &&
+        @prefix   == other.prefix   &&
+        @size     == other.size     &&
+        @typeflag == other.typeflag &&
+        @uid      == other.uid      &&
+        @uname    == other.uname    &&
+        @version  == other.version
     end
 
     def to_s # :nodoc:
@@ -327,14 +324,14 @@ module Build
     # Updates the TarHeader's checksum
 
     def update_checksum
-      header = header " " * 8
+      header = header ' ' * 8
       @checksum = oct calculate_checksum(header), 6
     end
 
     private
 
     def calculate_checksum(header)
-      header.unpack("C*").inject { |a, b| a + b }
+      header.unpack('C*').inject { |a, b| a + b }
     end
 
     def header(checksum = @checksum)
@@ -346,7 +343,7 @@ module Build
         oct(size, 11),
         oct(mtime, 11),
         checksum,
-        " ",
+        ' ',
         typeflag,
         linkname,
         magic,
@@ -366,7 +363,6 @@ module Build
     def oct(num, len)
       "%0#{len}o" % num
     end
-
   end
 
   # -*- coding: utf-8 -*-
@@ -379,7 +375,6 @@ module Build
   # Class for reading entries out of a tar file
 
   class TarReader::Entry
-
     ##
     # Header for this tar entry
 
@@ -434,7 +429,7 @@ module Build
     # Full name of the tar entry
 
     def full_name
-      if @header.prefix != "" then
+      if @header.prefix != ''
         File.join @header.prefix, @header.name
       else
         @header.name
@@ -463,14 +458,14 @@ module Build
     # Is this tar entry a directory?
 
     def directory?
-      @header.typeflag == "5"
+      @header.typeflag == '5'
     end
 
     ##
     # Is this tar entry a file?
 
     def file?
-      @header.typeflag == "0"
+      @header.typeflag == '0'
     end
 
     ##
@@ -511,6 +506,5 @@ module Build
       @io.pos = @orig_pos
       @read = 0
     end
-
   end
 end

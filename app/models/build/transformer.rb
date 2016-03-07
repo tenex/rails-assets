@@ -7,7 +7,8 @@
 #  | |    | | o .o ||===|     ||===|     ||===|     ||===|     ||===|
 #  `-".-.-| | o:..-.`---'-. .-.`---'-. .-.`---'-. .-.`---'-. .-.`---'-.
 module Build
-  module Transformer extend self
+  module Transformer
+    extend self
 
     def component_transformations(bower_component)
       compute_transformations(
@@ -27,34 +28,33 @@ module Build
     #   each transform is in form [source_path, target_path] or [source, target_path]
     def compute_transformations(gem_name, all_source_paths, all_main_paths = Paths.new)
       all_source_paths = Paths.new(all_source_paths.reject do |file|
+                                     has_unminified = all_source_paths
+                                                      .include?(Path.new(file.to_s.sub('.min.', '.')))
 
-        has_unminified = all_source_paths.
-          include?(Path.new(file.to_s.sub('.min.', '.')))
+                                     in_special_dir = file.in_directory?(%w(
+                                                               spec test perf minified docs examples min
+                                                               node_modules bower_components tests samples
+                                                             ))
 
-        in_special_dir = file.in_directory?( %w(
-          spec test perf minified docs examples min
-          node_modules bower_components tests samples
-        ))
+                                     is_unsupported = file.to_s
+                                                      .match(/(gzip|map|nuspec|gz|jar|php|orig|pre|post|sh|cfg|md|txt|~|zip|bak|5|git-id|in|ls|map|min|new|old|rej|sample|example)$/)
 
-        is_unsupported = file.to_s.
-          match(/(gzip|map|nuspec|gz|jar|php|orig|pre|post|sh|cfg|md|txt|~|zip|bak|5|git-id|in|ls|map|min|new|old|rej|sample|example)$/)
+                                     is_unsupported ||= %w(
+                           bower.json
+                           .bower.json
+                           component.json
+                           package.json
+                           composer.json
+                         ).include?(file.to_s.split('/').last)
 
-        is_unsupported ||= %w(
-          bower.json
-          .bower.json
-          component.json
-          package.json
-          composer.json
-        ).include?(file.to_s.split('/').last)
+                                     main_in_same_dir = all_main_paths.map(:dirname).any? do |dir|
+                                       file.descendant?(dir)
+                                     end
 
-        main_in_same_dir = all_main_paths.map(:dirname).any? do |dir|
-          file.descendant?(dir)
-        end
-
-        (file.minified? && has_unminified) ||
-        (in_special_dir && !main_in_same_dir) ||
-        is_unsupported
-      end.sort_by(&:to_s))
+                                     (file.minified? && has_unminified) ||
+                                       (in_special_dir && !main_in_same_dir) ||
+                                       is_unsupported
+                                   end.sort_by(&:to_s))
 
       transformations = Path.extension_classes.keys.flat_map do |type|
         main_paths = all_main_paths.select(:main_of?, type)
@@ -70,16 +70,16 @@ module Build
 
         source_dir = main_paths.common_prefix || Path.new
 
-        source_paths = (source_paths + main_paths).
-          select(:descendant?, source_dir)
+        source_paths = (source_paths + main_paths)
+                       .select(:descendant?, source_dir)
 
         relative_paths = source_paths.map(:relative_path_from, source_dir)
         target_paths = relative_paths.map(:prefix, target_dir.join(gem_name))
 
         manifest_transform =
           if generator = manifest_generators[type]
-            manifest_paths = main_paths.map(:relative_path_from, source_dir).
-              map(:prefix, gem_name)
+            manifest_paths = main_paths.map(:relative_path_from, source_dir)
+                             .map(:prefix, gem_name)
             unless manifest_paths.empty?
               [
                 generator[:processor].call(manifest_paths),
@@ -138,7 +138,7 @@ module Build
           file_name = nil
         end
 
-        File.open(target, "w") do |file|
+        File.open(target, 'w') do |file|
           file.write(process_asset(file_name, source, transformations))
         end
       end
@@ -152,27 +152,25 @@ module Build
 
     def transform_relative_path(ext_class, relative_path, source_path, transformations)
       new_img = transformations.find { |s, _| s == source_path.append_relative_path(relative_path) }.last
-      Path.new(new_img.to_s.sub(/.*?app\/assets\/#{ext_class}\//, ""))
+      Path.new(new_img.to_s.sub(/.*?app\/assets\/#{ext_class}\//, ''))
     end
 
     def process_asset(file_name, source, transformations)
       return source if file_name.nil?
 
       if file_name.member_of?(:stylesheets)
-        new_source = source.dup.
-          encode("UTF-16be", invalid: :replace, replace: '', undef: :replace).
-          encode('UTF-8')
+        new_source = source.dup
+                     .encode('UTF-16be', invalid: :replace, replace: '', undef: :replace)
+                     .encode('UTF-8')
 
-        {images: :image, fonts: :font}.each do |ext_class, asset_type|
+        { images: :image, fonts: :font }.each do |ext_class, asset_type|
           extensions = Path.extension_classes.fetch(ext_class)
           new_source.gsub! /(?<!-)url\(\s*(["']*)([^\)]+\.(?:#{extensions.join('|')}))(\??#?[^\s"'\)]*)\1\s*\)/i do |match|
-
-            if exist_relative_path?($2, file_name, transformations)
-              "#{asset_type}-url(\"#{transform_relative_path(ext_class, $2, file_name, transformations)}#{$3}\")"
+            if exist_relative_path?(Regexp.last_match(2), file_name, transformations)
+              "#{asset_type}-url(\"#{transform_relative_path(ext_class, Regexp.last_match(2), file_name, transformations)}#{Regexp.last_match(3)}\")"
             else
               match.to_s
             end
-
           end
         end
 
@@ -180,9 +178,9 @@ module Build
 
         new_source
       elsif file_name.member_of?(:javascripts)
-        new_source = source.dup.
-          encode("UTF-16be", invalid: :replace, replace: '', undef: :replace).
-          encode('UTF-8')
+        new_source = source.dup
+                     .encode('UTF-16be', invalid: :replace, replace: '', undef: :replace)
+                     .encode('UTF-8')
 
         new_source.gsub!(/^[ \t]*?\/\/[#@]\s+sourceMappingURL=[^\r\n]+[\r\n|\n]?/i, '')
 
@@ -196,19 +194,19 @@ module Build
       @manifest_generators ||= {
         javascripts: {
           extension: 'js',
-          processor: lambda { |files|
+          processor: lambda do |files|
             files.map do |filename|
               "//= require #{transform_filename(filename)}\n"
-            end.join("")
-          }
+            end.join('')
+          end
         },
         stylesheets: {
           extension: 'scss',
-          processor: lambda { |files|
-            files.map { |filename|
+          processor: lambda do |files|
+            files.map do |filename|
               "@import '#{transform_filename(filename)}';\n"
-            }.join("")
-          }
+            end.join('')
+          end
         }
       }
     end

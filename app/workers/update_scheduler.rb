@@ -1,7 +1,7 @@
 class UpdateScheduler
   include Sidekiq::Worker
 
-  sidekiq_options :queue => 'update_scheduler', unique: :all, retry: false
+  sidekiq_options queue: 'update_scheduler', unique: :all, retry: false
 
   def perform
     Component.select(:id, :bower_name).find_each do |component|
@@ -9,4 +9,3 @@ class UpdateScheduler
     end
   end
 end
-

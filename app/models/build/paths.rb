@@ -1,7 +1,5 @@
 module Build
-
   class Paths < Array
-
     def initialize(paths = nil)
       super((paths || []).flat_map do |path|
         path ? [Path.new(path)] : []
@@ -42,16 +40,16 @@ module Build
     end
 
     def common_prefix
-      return nil if self.size == 0
+      return nil if size == 0
 
-      splitted_files = self.map { |f| f.to_s.split('/') }
-      min_size = splitted_files.map { |e| e.size }.min
+      splitted_files = map { |f| f.to_s.split('/') }
+      min_size = splitted_files.map(&:size).min
 
-      path = splitted_files.
-        map { |dirs| dirs.take(min_size) }.
-        transpose.
-        take_while { |dirs| dirs.uniq.size == 1 }.
-        map(&:first).join('/')
+      path = splitted_files
+             .map { |dirs| dirs.take(min_size) }
+             .transpose
+             .take_while { |dirs| dirs.uniq.size == 1 }
+             .map(&:first).join('/')
 
       Path.new(path).extname.present? ?
         Path.new(File.dirname(path)) : Path.new(path)
@@ -59,7 +57,7 @@ module Build
 
     def find_main_asset(type, gem_name)
       paths_by_extension = Path.allowed_main_extensions.fetch(type, []).map do |ext|
-        self.select do |path|
+        select do |path|
           path.extension?([ext]) && (
             path.basename.to_s.split('.').first == gem_name ||
             path.basename.to_s == gem_name
@@ -67,11 +65,11 @@ module Build
         end
       end
 
-      (paths_by_extension.
-        find { |files| !files.empty? } || []).
-        sort_by { |file| file.to_s }.
-        sort_by { |file| file.to_s.count("/") }.
-        first
+      (paths_by_extension
+        .find { |files| !files.empty? } || [])
+        .sort_by(&:to_s)
+        .sort_by { |file| file.to_s.count('/') }
+        .first
     end
   end
 end

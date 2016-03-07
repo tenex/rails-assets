@@ -10,6 +10,7 @@ module Build
     end
 
     private
+
     def build_mutex(lock_name, options = {})
       duration = options.fetch(:duration, 240)
       expire = options.fetch(:expire, 260)

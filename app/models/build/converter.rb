@@ -1,4 +1,4 @@
-require "rubygems/indexer"
+require 'rubygems/indexer'
 
 # +------+       +------+       +------+       +------+       +------+
 # |`.    |`.     |\     |\      |      |      /|     /|     .'|    .'|
@@ -9,7 +9,9 @@ require "rubygems/indexer"
 #    `+------+     +------+     +------+     +------+     +------+'
 
 module Build
-  module Converter extend self
+  module Converter
+    extend self
+
     # Public: Performs full processing of given component
     #
     # name - component name to process
@@ -98,7 +100,7 @@ module Build
 
             gem_paths.each do |gem_path|
               destination = data_dir.join('gems', File.basename(gem_path))
-              FileUtils.mv(gem_path.to_s, destination.to_s, :force => true)
+              FileUtils.mv(gem_path.to_s, destination.to_s, force: true)
               Reindex.new.reindex_spec(File.basename(gem_path).gsub(/\.gem\z/, ''))
             end
           end
@@ -124,13 +126,13 @@ module Build
         result = Utils.bower(
           cache_dir,
           'install -p -F',
-          "#{component_name}##{component_version || "latest"}"
+          "#{component_name}##{component_version || 'latest'}"
         )
 
         bower_components =
           result.values.map do |data|
-            BowerComponent.new(Path.new(cache_dir), data)
-          end
+          BowerComponent.new(Path.new(cache_dir), data)
+        end
 
         yield bower_components
       end
@@ -152,7 +154,7 @@ module Build
         asset_paths = transformations[:all].map(&:last)
         main_paths = transformations[:main].map(&:last)
 
-        raise BuildError.new("No files to convert") if asset_paths.empty?
+        raise BuildError.new('No files to convert') if asset_paths.empty?
 
         Transformer.process_transformations!(
           transformations[:all].concat(generate_gem_structure(bower_component)),
@@ -170,7 +172,7 @@ module Build
     #
     # Returns Path to builded .gem file
     def build!(bower_component, output_dir, gems_dir)
-      Utils.sh(output_dir, RAKE_BIN, "build")
+      Utils.sh(output_dir, RAKE_BIN, 'build')
       pkg_path = output_dir.join('pkg', bower_component.gem.filename)
       gem_path = Path.new(gems_dir).join('gems', bower_component.gem.filename)
 
@@ -198,8 +200,8 @@ module Build
 
     def generate_gem_file(bower_component, file)
       source_path = Path.new(File.join(templates_dir, file))
-      file.gsub!("GEM", bower_component.gem.name)
-      use_erb = file.sub!(/\.erb$/, "")
+      file.gsub!('GEM', bower_component.gem.name)
+      use_erb = file.sub!(/\.erb$/, '')
       target_path = Path.new(file)
       if use_erb
         # Parameters for erb mean no safe mode + strip whitelines
@@ -213,18 +215,18 @@ module Build
 
     def generate_gem_structure(bower_component)
       [
-        "lib/GEM/version.rb.erb",
-        "lib/GEM.rb.erb",
-        "Gemfile.erb",
-        "Rakefile",
-        "README.md.erb",
-        "GEM.gemspec.erb",
-        "GEM.json.erb"
+        'lib/GEM/version.rb.erb',
+        'lib/GEM.rb.erb',
+        'Gemfile.erb',
+        'Rakefile',
+        'README.md.erb',
+        'GEM.gemspec.erb',
+        'GEM.json.erb'
       ].map { |file| generate_gem_file(bower_component, file) }
     end
 
     def templates_dir
-      File.expand_path("../templates", __FILE__).to_s
+      File.expand_path('../templates', __FILE__).to_s
     end
   end
 end

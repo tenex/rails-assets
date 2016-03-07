@@ -4,14 +4,13 @@ require 'zlib'
 
 module Build
   class TarInput
-
     include Enumerable
 
     attr_reader :metadata
 
     private_class_method :new
 
-    def self.open(io, security_policy = nil,  &block)
+    def self.open(io, security_policy = nil, &_block)
       is = new io, security_policy
 
       yield is
@@ -24,15 +23,18 @@ module Build
       @tarreader = TarReader.new @io
       has_meta = false
 
-      data_sig, meta_sig, data_dgst, meta_dgst = nil, nil, nil, nil
+      data_sig = nil
+      meta_sig = nil
+      data_dgst = nil
+      meta_dgst = nil
       dgst_algo = security_policy ? Gem::Security::OPT[:dgst_algo] : nil
 
       @tarreader.each do |entry|
         case entry.full_name
-        when "metadata"
+        when 'metadata'
           @metadata = load_gemspec entry.read
           has_meta = true
-        when "metadata.gz"
+        when 'metadata.gz'
           begin
             # if we have a security_policy, then pre-read the metadata file
             # and calculate it's digest
@@ -46,7 +48,7 @@ module Build
 
             # Ruby 1.8 doesn't have encoding and YAML is UTF-8
             args = [sio || entry]
-            args << { :external_encoding => Encoding::UTF_8 } if
+            args << { external_encoding: Encoding::UTF_8 } if
               Object.const_defined?(:Encoding)
 
             gzis = Zlib::GzipReader.new(*args)
@@ -69,16 +71,16 @@ module Build
         end
       end
 
-      if security_policy then
+      if security_policy
         Gem.ensure_ssl_available
 
         # map trust policy from string to actual class (or a serialized YAML
         # file, if that exists)
-        if String === security_policy then
-          if Gem::Security::Policies.key? security_policy then
+        if String === security_policy
+          if Gem::Security::Policies.key? security_policy
             # load one of the pre-defined security policies
             security_policy = Gem::Security::Policies[security_policy]
-          elsif File.exist? security_policy then
+          elsif File.exist? security_policy
             # FIXME: this doesn't work yet
             security_policy = YAML.load File.read(security_policy)
           else
@@ -86,7 +88,7 @@ module Build
           end
         end
 
-        if data_sig && data_dgst && meta_sig && meta_dgst then
+        if data_sig && data_dgst && meta_sig && meta_dgst
           # the user has a trust policy, and we have a signed gem
           # file, so use the trust policy to verify the gem signature
 
@@ -102,8 +104,7 @@ module Build
             raise "Couldn't verify metadata signature: #{e}"
           end
         elsif security_policy.only_signed
-          raise Gem::Exception, "Unsigned gem"
-        else
+          raise Gem::Exception, 'Unsigned gem'
           # FIXME: should display warning here (trust policy, but
           # either unsigned or badly signed gem file)
         end
@@ -111,7 +112,7 @@ module Build
 
       @tarreader.rewind
 
-      unless has_meta then
+      unless has_meta
         path = io.path if io.respond_to? :path
         error = Gem::Package::FormatError.new 'no metadata found', path
         raise error
@@ -125,7 +126,7 @@ module Build
 
     def each(&block)
       @tarreader.each do |entry|
-        next unless entry.full_name == "data.tar.gz"
+        next unless entry.full_name == 'data.tar.gz'
         is = zipped_stream entry
 
         begin
@@ -181,6 +182,5 @@ module Build
     def zipped_stream(entry)
       Zlib::GzipReader.new entry
     end
-
   end
 end

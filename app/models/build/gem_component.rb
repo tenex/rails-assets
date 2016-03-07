@@ -1,8 +1,6 @@
 module Build
-
   class GemComponent < SimpleDelegator
-
-    alias_method :bower_component, :__getobj__
+    alias bower_component __getobj__
 
     def filename
       "#{name}-#{version}.gem"
@@ -52,7 +50,7 @@ module Build
     end
 
     def self.name_to_module(name)
-      name.gsub('.', '-').gsub('_', '-').split("-").map { |e| e.capitalize }.join('')
+      name.tr('.', '-').tr('_', '-').split('-').map(&:capitalize).join('')
     end
   end
 end
