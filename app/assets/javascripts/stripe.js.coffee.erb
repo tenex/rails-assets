@@ -24,6 +24,7 @@ DonationButtonController = ($scope, $http, notifications, Popeye, $timeout) ->
       templateUrl: 'ng-templates/donate.html'
       containerClass: 'stripe-modal-container'
       modalClass: 'stripe-modal'
+    analytics.track('Donation modal opened')
 
   $scope.next = ->
     handler.open
@@ -31,6 +32,7 @@ DonationButtonController = ($scope, $http, notifications, Popeye, $timeout) ->
       description: 'Donation'
       amount: $scope.amount * 100
     $timeout((-> $scope.$close()), STRIPE_MODAL_TRANSITION_MS)
+    analytics.track('Stripe modal opened')
 
 
 angular.module('rails-assets').controller 'DonationButtonController', [
