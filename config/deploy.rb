@@ -48,8 +48,8 @@ set :foreman_options, {
   concurrency: procfile_concurrency.map { |pair| pair.join('=') }.join(','),
   env: foreman_env_path
 }
-set :foreman_export_path, '/etc/init'
-set :foreman_use_sudo, true
+set :foreman_export_path, -> { File.join(Dir.home, '.init') }
+set :foreman_use_sudo, false
 
 namespace :foreman do
   before :export, :upload_env do
