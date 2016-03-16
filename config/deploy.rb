@@ -25,12 +25,13 @@ set(:linked_files,
       'public/latest_specs.4.8.gz',
       'public/packages.json'
     ))
-# set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
+
 set(:linked_dirs,
     fetch(:linked_dirs, []).push(
       'public/gems',
       'public/quick',
-      'tmp/cache'
+      'tmp/cache',
+      'log'
     ))
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
