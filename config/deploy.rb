@@ -60,7 +60,7 @@ namespace :foreman do
   end
 
   after :'deploy:restart', :restart_safe do
-    invoke :export
+    invoke :'foreman:export'
     begin
       invoke :'foreman:restart'
     rescue => ex
