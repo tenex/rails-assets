@@ -5,9 +5,10 @@ set :application, 'rails-assets'
 set :repo_url, 'git@github.com:tenex/rails-assets.git'
 ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 set :deploy_user, -> { fetch(:application) }
-set :deploy_to, lambda {
-  "/home/#{fetch :deploy_user}/rails-apps/#{fetch :application}"
-}
+set :deploy_user_home, -> { File.join '/home', fetch(:deploy_user) }
+set :rails_apps_path, -> { File.join fetch(:deploy_user_home), 'rails-apps' }
+set :deploy_to, -> { File.join fetch(:rails_apps_path), fetch(:application) }
+
 set :scm, :git
 set :format, :pretty
 set :log_level, :debug
@@ -43,7 +44,7 @@ set :npm_env_variables, {}
 
 # Foreman (for managing sidekiq)
 set :foreman_roles, :worker
-set :foreman_export_path, -> { File.join(Dir.home, '.init') }
+set :foreman_export_path, -> { File.join fetch(:deploy_user_home), '.init' }
 set :foreman_use_sudo, false
 procfile_concurrency = { all: 1, web: 0 } # Passenger handles web; not foreman
 foreman_env_path = 'foreman.env'
