@@ -4,7 +4,7 @@
 # You can define all roles on a single server, or split them:
 server(
   'rails-assets.tenex.tech',
-  user: 'rails-assets',
+  user: fetch(:deploy_user),
   roles: %w(app db web worker)
 )
 
