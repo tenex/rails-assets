@@ -2,11 +2,11 @@
 # ======================
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
-server 'rails-assets.tenex.tech', user: 'rails-assets', roles: %w(app db web worker)
-# server 'example.com', user: 'deploy', roles: %w{app web}, other_property: :other_value
-# server 'db.example.com', user: 'deploy', roles: %w{db}
-
-
+server(
+  'rails-assets.tenex.tech',
+  user: fetch(:deploy_user),
+  roles: %w(app db web worker)
+)
 
 # role-based syntax
 # ==================

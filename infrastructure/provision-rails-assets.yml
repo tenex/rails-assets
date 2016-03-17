@@ -64,6 +64,15 @@
     - name: install bower
       npm: name=bower global=yes
 
+    - name: enable user jobs in upstart
+      template: src=Upstart.conf
+                dest=/etc/dbus-1/system.d/Upstart.conf
+      notify: reload upstart
+
+  handlers:
+    - name: reload upstart
+      command: initctl reload-configuration
+
 - name: create users and configure authentication
   hosts: all
   user: root
