@@ -173,7 +173,7 @@
             state=directory
 
 - name: configure database
-  hosts: rails-assets
+  hosts: all
   become: true
   become_user: postgres
   tags:
