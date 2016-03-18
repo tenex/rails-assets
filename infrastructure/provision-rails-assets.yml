@@ -16,6 +16,9 @@
       swapfile_size: 2048
 
   tasks:
+    - set_fact:
+        app_name: rails-assets
+
     - name: update installed packages
       apt: upgrade=dist update_cache=yes
 
