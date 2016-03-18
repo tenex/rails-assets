@@ -1,5 +1,11 @@
 [production]
 rails-assets.tenex.tech
 
+[production:vars]
+rails_env=production
+
 [staging]
 staging.rails-assets.tenex.tech
+
+[staging:vars]
+rails_env=staging
