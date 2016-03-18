@@ -1,0 +1,5 @@
+[production]
+rails-assets.tenex.tech
+
+[staging]
+staging.rails-assets.tenex.tech
