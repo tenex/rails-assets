@@ -42,31 +42,4 @@ set :npm_flags, '--production --silent --no-spin'
 set :npm_roles, :all
 set :npm_env_variables, {}
 
-# Foreman (for managing sidekiq)
-set :foreman_roles, :worker
-set :foreman_export_path, -> { File.join fetch(:deploy_user_home), '.init' }
-set :foreman_use_sudo, false
-procfile_concurrency = { all: 1, web: 0 } # Passenger handles web; not foreman
-foreman_env_path = 'foreman.env'
-set :foreman_options,
-    concurrency: procfile_concurrency.map { |pair| pair.join('=') }.join(','),
-    env: foreman_env_path
-
-namespace :foreman do
-  before :export, :upload_env do
-    on roles fetch(:foreman_roles) do
-      upload! StringIO.new("RAILS_ENV=#{fetch(:stage)}"),
-              "#{current_path}/#{foreman_env_path}"
-    end
-  end
-
-  after :'deploy:restart', :restart_safe do
-    invoke :'foreman:export'
-    begin
-      invoke :'foreman:restart'
-    rescue => ex
-      SSHKit.config.output.warn "Failed to restart #{fetch(:foreman_app)} (exception: #{ex}), attempting cold start"
-      invoke :'foreman:start'
-    end
-  end
-end
+# TODO: Manage Sidekiq
