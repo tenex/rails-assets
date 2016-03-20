@@ -44,7 +44,8 @@ set :npm_env_variables, {}
 
 task :restart_workers do
   on roles(:worker) do
-    sudo 'restart sidekiq'
+    sudo 'stop workers || true'
+    sudo 'start workers'
   end
 end
-after "deploy:published", 'restart_workers'
+after 'deploy:published', 'restart_workers'
