@@ -42,4 +42,9 @@ set :npm_flags, '--production --silent --no-spin'
 set :npm_roles, :all
 set :npm_env_variables, {}
 
-# TODO: Manage Sidekiq
+task :restart_workers do
+  on roles(:worker) do
+    sudo 'restart sidekiq'
+  end
+end
+after "deploy:published", 'restart_workers'
