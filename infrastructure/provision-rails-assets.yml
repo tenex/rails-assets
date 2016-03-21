@@ -78,6 +78,12 @@
       user: name={{ app_name }} shell=/bin/bash
             groups=rvm,{{ app_name }} append=yes
 
+    # TODO: authorized_key can pull from our site, but it doesn't like our
+    # letsencrypt SSL certs. look into why.
+    #- authorized_key: user=root key=https://www.tenex.tech/keys.txt
+    - authorized_key: user=root key="{{ lookup('file', 'keys.txt') }}"
+    - authorized_key: user={{ app_name }} key="{{ lookup('file', 'keys.txt') }}"
+
     - name: set tmp permissions
       file: path=/tmp mode=a+w
 
