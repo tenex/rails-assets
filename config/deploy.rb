@@ -15,7 +15,6 @@ set :log_level, :debug
 set :pty, false
 set(:linked_files,
     fetch(:linked_files, []).push(
-      'config/database.yml',
       'config/application.yml',
       'public/components.json',
       'public/prerelease_specs.4.8',
