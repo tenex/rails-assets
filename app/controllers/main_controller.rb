@@ -111,10 +111,10 @@ class MainController < ApplicationController
   private
 
   def redirect_to_https
-    redirect_to protocol: 'https://' unless request.ssl? || can_skip_https
+    redirect_to protocol: 'https://' unless request.ssl? || can_skip_https?
   end
 
-  def can_skip_https
+  def can_skip_https?
     [request.local?, Rails.env.staging?, Rails.env.development?].any?
   end
 end
