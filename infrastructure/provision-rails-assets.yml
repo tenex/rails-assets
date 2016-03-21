@@ -183,6 +183,7 @@
 
 - name: configure database
   hosts: all
+  user: root
   become: true
   become_user: postgres
   tags:
