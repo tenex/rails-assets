@@ -159,7 +159,7 @@
     - name: restart nginx
       service: name=nginx state=restarted
 
-- name: configure serving directories
+- name: configure serving directories and app config
   hosts: all
   user: root
   tasks:
@@ -168,6 +168,19 @@
             group={{ app_name }}
             mode=0770
             state=directory
+
+    - file: path=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config
+            owner={{ app_name }}
+            group={{ app_name }}
+            mode=0770
+            state=directory
+
+    - template: >-
+        src=application.yml
+        dest=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config
+        owner={{ app_name }}
+        group={{ app_name }}
+        mode=0660
 
 - name: sidekiq worker configuration
   hosts: all
