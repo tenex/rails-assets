@@ -148,7 +148,7 @@
     - lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*passenger_max_pool_size'
         insertafter='^http {'
-        line='        passenger_max_pool_size 12;'
+        line='        passenger_max_pool_size 6;'
       notify: restart nginx
     - template:
         src=nginx-site.conf.j2
