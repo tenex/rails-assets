@@ -19,8 +19,16 @@ server {
 
 server {
     listen 80;
-    server_name {{ inventory_hostname }};
-    return 301 https://$host$request_uri;
+    server_name rails-assets.tenex.tech rails-assets.org;
+    return 301 https://rails-assets.org$request_uri;
 }
 
-
+{% if rails_env == 'production' %}
+server {
+    listen 443 ssl;
+    server_name rails-assets.tenex.tech;
+    ssl_certificate /etc/letsencrypt/live/rails-assets.tenex.tech/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/rails-assets.tenex.tech/privkey.pem;
+    return 301 https://rails-assets.org$request_uri;
+}
+{% endif %}
