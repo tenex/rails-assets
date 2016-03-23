@@ -3,7 +3,7 @@
   hosts: all
   user: root
   vars_files:
-    - secret_vars_file.yml
+    - secret_vars.yml
   roles:
     - role: holms.fqdn
       fqdn: "{{ inventory_hostname }}"
