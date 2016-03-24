@@ -1,0 +1,8 @@
+[web]
+staging.rails-assets.org rails_env=staging
+
+[worker]
+staging.rails-assets.org rails_env=staging
+
+[database]
+staging.rails-assets.org
