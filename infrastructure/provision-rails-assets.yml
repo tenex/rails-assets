@@ -62,6 +62,16 @@
     - name: install bower
       npm: name=bower global=yes
 
+- name: install database packages
+  hosts: database
+  tasks:
+    apt: name={{ item }} state=latest update_cache=yes
+    with_items:
+      - redis-server
+      - postgresql
+      - postgresql-contrib
+
+
 - name: create users and configure authentication
   hosts: all
   user: root
