@@ -207,7 +207,7 @@
       command: initctl reload-configuration
 
 - name: configure database
-  hosts: all
+  hosts: database
   user: root
   become: true
   become_user: postgres
