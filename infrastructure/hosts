@@ -1,11 +1,8 @@
-[production]
+[web]
+rails-assets.tenex.tech rails_env=production
+
+[worker]
+worker-1.rails-assets.org rails_env=production
+
+[database]
 rails-assets.tenex.tech
-
-[production:vars]
-rails_env=production
-
-[staging]
-staging.rails-assets.tenex.tech
-
-[staging:vars]
-rails_env=staging
