@@ -16,10 +16,8 @@ staging:
   <<: *default
   database: rails_assets_staging
   username: rails_assets
-  password:
 
 production:
   <<: *default
   database: rails_assets_production
   username: rails_assets
-  passwod:
