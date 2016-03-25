@@ -65,11 +65,11 @@
 - name: install database packages
   hosts: database
   tasks:
-    apt: name={{ item }} state=latest update_cache=yes
-    with_items:
-      - redis-server
-      - postgresql
-      - postgresql-contrib
+    - apt: name={{ item }} state=latest update_cache=yes
+      with_items:
+        - redis-server
+        - postgresql
+        - postgresql-contrib
 
 
 - name: create users and configure authentication
