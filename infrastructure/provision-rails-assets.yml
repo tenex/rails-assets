@@ -254,6 +254,12 @@
                   line="host all rails_assets 10.128.0.0/16 trust"
       notify: restart postgres
 
+    - name: configure postgresql to trust local users
+      lineinfile: dest=/etc/postgresql/9.3/main/pg_hba.conf
+                  regexp="^local\s+all\s+all\s+"
+                  line="local all all trust"
+      notify: restart postgres
+
     - name: configure redis to listen on private network
       lineinfile: dest=/etc/redis/redis.conf
                   state=present
