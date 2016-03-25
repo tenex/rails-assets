@@ -231,6 +231,7 @@
       notify: restart postgres
     - name: configure redis to listen on private network
       lineinfile: dest=/etc/redis/redis.conf
+                  state=present
                   regexp="^bind"
                   line="bind 127.0.0.1 {{ ansible_eth1.ipv4.address }}"
   handlers:
