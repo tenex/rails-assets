@@ -21,11 +21,3 @@ server {
     return 301 https://{{ inventory_hostname }}$request_uri;
 }
 
-# server {
-#     listen 443 ssl;
-#     server_name rails-assets.tenex.tech;
-#     ssl_certificate /etc/letsencrypt/live/rails-assets.tenex.tech/fullchain.pem;
-#     ssl_certificate_key /etc/letsencrypt/live/rails-assets.tenex.tech/privkey.pem;
-#     return 301 https://rails-assets.org$request_uri;
-# }
-
