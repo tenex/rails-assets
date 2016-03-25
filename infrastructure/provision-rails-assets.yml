@@ -256,15 +256,18 @@
   tags:
     - db
   tasks:
-    - name: configure postgresql to listen on private network, trust local user
-      template: src={{ item }}
-                dest=/etc/postgresql/9.3/main/
-                owner=postgres
-                group=postgres
-      with_items:
-        - postgresql.conf
-        - pg_hba.conf
+    - name: configure postgresql to listen on private network
+      lineinfile: dest=/etc/postgresql/9.3/main/postgresql.conf
+                  regexp="^listen_addresses"
+                  line="listen_addresses = 'localhost,{{ ansible_eth1.ipv4.address }}'"
       notify: restart postgres
+
+    - name: configure postgresql to blindly trust private network
+      lineinfile: dest=/etc/postgresql/9.3/main/pg_hba.conf
+                  regexp="^host\s+all\s+rails_assets\s+"
+                  line="host all rails_assets 10.128.0.0/16 trust"
+      notify: restart postgres
+
     - name: configure redis to listen on private network
       lineinfile: dest=/etc/redis/redis.conf
                   state=present
