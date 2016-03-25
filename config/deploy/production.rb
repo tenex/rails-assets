@@ -5,7 +5,7 @@
 server(
   'rails-assets.tenex.tech',
   user: fetch(:deploy_user),
-  roles: %w(app db web worker)
+  roles: %w(app db web)
 )
 
 server(
