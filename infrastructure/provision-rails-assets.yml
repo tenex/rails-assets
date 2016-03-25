@@ -220,10 +220,14 @@
                        name=rails_assets
                        priv=ALL
                        role_attr_flags=CREATEDB,CREATEROLE,SUPERUSER
-    - lineinfile: >-
-        dest=/etc/postgresql/9.3/main/pg_hba.conf state=present
-        regexp='^local\s+all\s+all'
-        line='local    all             all                              trust'
+    - name: configure postgresql to listen on private network
+      template: src={{ item }}
+                dest=/etc/postgresql/9.3/main/
+                owner=postgres
+                group=postgres
+      with_items:
+        - postgresql.conf
+        - pg_hba.conf
       notify: restart postgres
   handlers:
     - name: restart postgres
