@@ -4,5 +4,8 @@ rails-assets.tenex.tech rails_env=production
 [worker]
 worker-1.rails-assets.org rails_env=production
 
+[worker:vars]
+redis_url=redis://10.128.16.148/0
+
 [database]
 rails-assets.tenex.tech
