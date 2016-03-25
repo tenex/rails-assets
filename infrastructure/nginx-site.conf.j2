@@ -1,13 +1,13 @@
 server {
     listen 443 ssl;
 
-    ssl_certificate /etc/letsencrypt/live/rails-assets.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/rails-assets.org/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem;
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
     ssl_prefer_server_ciphers on;
     ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
     
-    server_name rails-assets.org;
+    server_name {{ inventory_hostname }};
     root /home/{{ app_name }}/rails-apps/{{ app_name }}/current/public;
     rails_env {{ rails_env }};
     
@@ -17,15 +17,7 @@ server {
 
 server {
     listen 80;
-    server_name rails-assets.tenex.tech rails-assets.org;
-    return 301 https://rails-assets.org$request_uri;
-}
-
-server {
-    listen 443 ssl;
-    server_name rails-assets.tenex.tech;
-    ssl_certificate /etc/letsencrypt/live/rails-assets.tenex.tech/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/rails-assets.tenex.tech/privkey.pem;
-    return 301 https://rails-assets.org$request_uri;
+    server_name _;
+    return 301 https://{{ inventory_hostname }}$request_uri;
 }
 

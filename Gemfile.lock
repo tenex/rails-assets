@@ -76,6 +76,8 @@ GEM
     capistrano-rails (1.1.6)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
+    capistrano-touch-linked-files (0.3.0)
+      capistrano (>= 3.0)
     capybara (2.6.2)
       addressable
       mime-types (>= 1.16)
@@ -405,6 +407,7 @@ DEPENDENCIES
   capistrano-npm
   capistrano-passenger
   capistrano-rails (~> 1.1)
+  capistrano-touch-linked-files
   capybara-angular
   coffee-rails
   database_cleaner

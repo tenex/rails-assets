@@ -1,7 +1,5 @@
 default: &default
   adapter: postgresql
-  username: rails_assets
-  password:
   pool: 30
   timeout: 5000
   encoding: unicode
@@ -17,7 +15,9 @@ test:
 staging:
   <<: *default
   database: rails_assets_staging
+  username: rails_assets
 
 production:
   <<: *default
   database: rails_assets_production
+  username: rails_assets
