@@ -64,6 +64,7 @@
 
 - name: install database packages
   hosts: database
+  user: root
   tasks:
     - apt: name={{ item }} state=latest update_cache=yes
       with_items:
@@ -209,8 +210,6 @@
 - name: configure database
   hosts: database
   user: root
-  become: true
-  become_user: postgres
   tags:
     - db
   tasks:
