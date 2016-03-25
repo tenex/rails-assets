@@ -171,23 +171,44 @@
   vars_files:
     - secret_vars.yml
   tasks:
+    - set_fact:
+        gem_bucket: "rails-assets-gems"
+      when: rails_env == 'production'
     - file: path=/home/{{ app_name }}/rails-apps/{{ app_name }}
-            owner={{ app_name }}
-            group=users
+            owner={{ app_name }} group=users
             mode=0770
             state=directory
 
     - file: path=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config
-            owner={{ app_name }}
-            group=users
+            owner={{ app_name }} group=users
             mode=0770
             state=directory
 
     - copy: content="{{ application_yaml_contents }}"
             dest=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/application.yml
-            owner={{ app_name }}
-            group=users
+            owner={{ app_name }} group=users
             mode=0660
+
+    - copy: src=s3fs dest=/usr/local/bin/s3fs
+            owner=root group=root
+            mode=0755
+
+    - template: src=s3fs.conf dest=/etc/init/s3fs.conf
+      notify: restart s3fs
+
+    - template: src=s3fs-passwd dest=/etc/s3fs-passwd
+                owner={{ app_name }} group={{ app_name }}
+                mode=0400
+      notify: restart s3fs
+
+    - file: src=/mnt/gems
+            dest=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/public/gems
+            state=link force=yes
+            owner={{ app_name }} group=users
+
+  handlers:
+    - name: restart s3fs
+      shell: initctl reload-configuration && (initctl restart s3fs || initctl start s3fs)
 
 - name: sidekiq worker configuration
   hosts: worker
