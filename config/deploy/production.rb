@@ -7,3 +7,9 @@ server(
   user: fetch(:deploy_user),
   roles: %w(app db web worker)
 )
+
+server(
+  'worker-1.rails-assets.org',
+  user: fetch(:deploy_user),
+  roles: %w(worker)
+)
