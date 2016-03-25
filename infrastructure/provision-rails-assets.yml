@@ -229,6 +229,10 @@
         - postgresql.conf
         - pg_hba.conf
       notify: restart postgres
+    - name: configure redis to listen on private network
+      lineinfile: dest=/etc/redis/redis.conf
+                  regexp="^bind"
+                  line="bind 127.0.0.1 {{ ansible_eth1.ipv4.address }}"
   handlers:
     - name: restart postgres
       service: name=postgresql state=restarted
