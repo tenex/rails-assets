@@ -278,9 +278,12 @@
                   state=present
                   regexp="^bind"
                   line="bind 127.0.0.1 {{ ansible_eth1.ipv4.address }}"
+      notify: restart redis
   handlers:
     - name: restart postgres
       service: name=postgresql state=restarted
+    - name: restart redis
+      service: name=redis-server state=restarted
 
 - name: configure application postgres database
   hosts: database
