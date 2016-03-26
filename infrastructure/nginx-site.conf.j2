@@ -13,6 +13,11 @@ server {
     
     passenger_enabled on;
     passenger_min_instances 2;
+
+    # For letsencrypt
+    location ~ /.well-known {
+        allow all;
+    }
 }
 
 server {
