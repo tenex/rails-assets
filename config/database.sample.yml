@@ -1,0 +1,23 @@
+default: &default
+  adapter: postgresql
+  pool: 30
+  timeout: 5000
+  encoding: unicode
+
+development:
+  <<: *default
+  database: rails_assets_development
+
+test:
+  <<: *default
+  database: rails_assets_test
+
+staging:
+  <<: *default
+  database: rails_assets_staging
+  username: rails_assets
+
+production:
+  <<: *default
+  database: rails_assets_production
+  username: rails_assets

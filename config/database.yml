@@ -21,3 +21,4 @@ production:
   <<: *default
   database: rails_assets_production
   username: rails_assets
+  host: 10.99.0.10
