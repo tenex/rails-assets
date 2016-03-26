@@ -13,7 +13,7 @@
 
     - role: kamaln7.swapfile
       swapfile_use_dd: True
-      swapfile_size: 2048
+      swapfile_size: 4096
 
   tasks:
     - set_fact:
