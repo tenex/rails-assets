@@ -1,0 +1,5 @@
+iface eth1 inet static
+      address {{ eth1_ip }}
+      netmask 255.255.0.0
+      mtu 1450
+                        
