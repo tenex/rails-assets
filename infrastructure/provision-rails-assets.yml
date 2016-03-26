@@ -200,15 +200,47 @@
             owner={{ app_name }} group=users
             mode=0660
 
-    - file: path=/home/{{ app_name }}/data
+- name: configure data directories for data server (web)
+  hosts: web
+  user: root
+  tasks:
+    - file: path=/srv/data
             state=directory
             owner={{ app_name }} group=users
 
-    - file: src=/home/{{ app_name }}/data
+    - file: src=/srv/data
             dest=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/public
             owner={{ app_name }} group=users
             state=link
             force=yes
+    - apt: name=nfs-kernel-server
+      notify: reload nfs server
+
+    - lineinfile: dest=/etc/exports
+                  state=present
+                  regexp="^/srv/data "
+                  line="/srv/data 10.99.0.0/24(rw,insecure,sync,all_squash,anonuid=1000,anongid=1001,no_subtree_check)"
+      notify: reload exports
+
+  handlers:
+    - name: reload exports
+      command: exportfs -a
+    - name: reload nfs server
+      service: name=nfs-kernel-server state=restarted
+
+- name: configure data directory for worker (remote mount)
+  hosts: worker
+  user: root
+  tasks:
+    - apt: name=nfs-common state=present update_cache=no
+    - file: dest=/srv/data
+            state=directory
+            owner={{ app_name }} group=users
+    - lineinfile: dest=/etc/fstab
+                  state=present
+                  regexp="^10.99.0.10:/srv/data /srv/data"
+
+
 
 - name: sidekiq worker configuration
   hosts: worker
