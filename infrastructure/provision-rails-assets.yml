@@ -74,6 +74,7 @@
 
 - name: configure private networking
   hosts: all
+  user: root
   tasks:
     - lineinfile: dest=/etc/network/interfaces
                   line="source /etc/network/interfaces.d/*"
@@ -238,7 +239,12 @@
             owner={{ app_name }} group=users
     - lineinfile: dest=/etc/fstab
                   state=present
-                  regexp="^10.99.0.10:/srv/data /srv/data"
+                  regexp=":/srv/data"
+                  line="10.99.0.10:/srv/data /srv/data"
+      notify: remount
+  handlers:
+    - name: remount
+      command: mount -a
 
 
 
