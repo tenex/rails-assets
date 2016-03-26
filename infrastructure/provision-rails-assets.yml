@@ -72,6 +72,20 @@
         - postgresql
         - postgresql-contrib
 
+- name: configure private networking
+  hosts: all
+  tasks:
+    - lineinfile: dest=/etc/network/interfaces
+                  line="source /etc/network/interfaces.d/*"
+                  state=present
+    - template: src=interfaces/eth1
+                dest=/etc/network/interfaces.d/eth1
+      when: eth1_ip is defined
+      notify: eth1 updated
+
+  handlers:
+    - name: eth1 updated
+      command: bash -c "ifdown eth1 && ifup eth1"
 
 - name: create users and configure authentication
   hosts: all
