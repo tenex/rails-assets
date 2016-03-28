@@ -1,6 +1,6 @@
 #!/bin/bash
 MAX_MEMORY=524288 # in KB
-SLACK_HOOK='https://hooks.slack.com/services/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'
+SLACK_HOOK='{{ watchdog_slack_hook }}'
 
 function build_payload {
     echo -n 'payload={"channel": "#notifications", "username": "passenger-killer", "text": "killing passenger pid: ' $1 '", "icon_emoji": ":gun:"}'
