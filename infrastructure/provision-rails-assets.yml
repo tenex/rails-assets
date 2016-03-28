@@ -51,6 +51,7 @@
         - python-virtualenv
         - redis-tools
         - rsync
+        - libxml2-utils
         - silversearcher-ag
         - speedometer
         - texinfo
