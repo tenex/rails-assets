@@ -13,7 +13,6 @@ server {
     
     passenger_enabled on;
     passenger_min_instances 2;
-    passenger_pre_start https://{{ inventory_hostname }}/;
 
     # For letsencrypt
     location ~ /.well-known {
