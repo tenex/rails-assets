@@ -1,0 +1,22 @@
+#!/bin/bash
+MAX_MEMORY=524288 # in KB
+SLACK_HOOK='https://hooks.slack.com/services/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'
+
+function build_payload {
+    echo -n 'payload={"channel": "#notifications", "username": "passenger-killer", "text": "killing passenger pid: ' $1 '", "icon_emoji": ":gun:"}'
+}
+
+passenger-status --show=xml | \
+    xmlstarlet sel -T \
+               -t -m '//process' -i "rss > $MAX_MEMORY" -v 'pid' -n | \
+    (
+        while read workerpid
+        do
+            if [ $workerpid -eq $workerpid ]; then
+                curl --silent -X POST --data-urlencode \
+                     "$(build_payload $workerpid)" \
+                     "$SLACK_HOOK" > /dev/null
+                passenger-config detach-process $workerpid
+            fi
+        done
+    )
