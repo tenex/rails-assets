@@ -1,5 +1,5 @@
 [web]
-test.rails-assets.org rails_env=production eth1_ip=10.99.0.10
+rails-assets.org rails_env=production eth1_ip=10.99.0.10
 
 [worker]
 worker-1.rails-assets.org rails_env=production eth1_ip=10.99.0.11
