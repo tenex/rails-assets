@@ -1,0 +1,11 @@
+[web]
+srv.rails-assets.org rails_env=production
+
+[worker]
+build-1.rails-assets.org rails_env=production
+
+[worker:vars]
+redis_url=redis://srv.rails-assets.org/0
+
+[database]
+srv.rails-assets.org
