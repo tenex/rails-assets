@@ -99,6 +99,23 @@
     - name: restart sshd
       service: name=ssh state=restarted
 
+- name: configure firewall
+  hosts: web
+  user: root
+  tasks:
+    - ufw: rule=allow port={{ item }} proto=tcp
+      with_items:
+        - 22
+        - 80
+        - 443
+    - ufw: rule=allow
+           proto=any
+           src={{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}
+      with_inventory_hostnames: all
+    - ufw: policy=allow direction=outgoing
+    - ufw: policy=reject direction=incoming
+    - ufw: state=enabled # also reloads!
+
 - name: install passenger-nginx
   hosts: web
   user: root
