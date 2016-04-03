@@ -217,7 +217,7 @@
     - lineinfile: dest=/etc/exports
                   state=present
                   regexp="^/srv/data "
-                  line="/srv/data 10.99.0.0/24(rw,insecure,sync,all_squash,anonuid=1000,anongid=1001,no_subtree_check)"
+                  line="/srv/data 10.132.0.0/24(rw,insecure,sync,all_squash,anonuid=1000,anongid=1001,no_subtree_check)"
       notify: reload exports
 
   handlers:
