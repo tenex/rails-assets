@@ -53,6 +53,7 @@
         - tmux
         - ufw
         - wget
+        - xmlstarlet
         - zsh
 
     - name: install bower
