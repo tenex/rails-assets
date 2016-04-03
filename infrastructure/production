@@ -1,8 +1,8 @@
 [web]
-srv.rails-assets.org rails_env=production private_ip=10.132.45.214
+rails-assets.org rails_env=production ansible_host=srv.rails-assets.org
 
 [worker]
-build-1.rails-assets.org rails_env=production private_ip=10.132.39.91
+build-1.rails-assets.org rails_env=production
 
 [database]
-srv.rails-assets.org
+rails-assets.org ansible_host=srv.rails-assets.org
