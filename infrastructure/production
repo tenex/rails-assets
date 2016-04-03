@@ -1,0 +1,8 @@
+[web]
+srv.rails-assets.org rails_env=production private_ip=10.132.45.214
+
+[worker]
+build-1.rails-assets.org rails_env=production private_ip=10.132.39.91
+
+[database]
+srv.rails-assets.org
