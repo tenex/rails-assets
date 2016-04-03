@@ -197,36 +197,41 @@
   vars_files:
     - secret_vars.yml
   tasks:
-    - file: path=/home/{{ app_name }}/rails-apps/{{ app_name }}
-            owner={{ app_name }} group=users
-            mode=0770
-            state=directory
-
-    - file: path=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config
-            owner={{ app_name }} group=users
-            mode=0770
-            state=directory
-
-    - copy: content="{{ application_yaml_contents }}"
-            dest=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/application.yml
-            owner={{ app_name }} group=users
-            mode=0660
-
-- name: configure data directories for data server (web)
-  hosts: web
-  user: root
-  tasks:
     - file: path=/srv/data
             state=directory
             owner={{ app_name }}
             group=users
             mode="u=rwx,g=rwx,o=rx"
 
+    - file: path=/home/{{ app_name }}/rails-apps/{{ app_name }}
+            owner={{ app_name }}
+            group=users
+            mode=0770
+            state=directory
+
+    - file: path=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config
+            owner={{ app_name }}
+            group=users
+            mode=0770
+            state=directory
+
     - file: src=/srv/data
             dest=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/public
-            owner={{ app_name }} group=users
+            owner={{ app_name }}
+            group=users
             state=link
             force=yes
+
+    - copy: content="{{ application_yaml_contents }}"
+            dest=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/application.yml
+            owner={{ app_name }}
+            group=users
+            mode=0660
+
+- name: configure data directories for data server (web)
+  hosts: web
+  user: root
+  tasks:
     - apt: name=nfs-kernel-server
       notify: reload nfs server
 
@@ -247,9 +252,7 @@
   user: root
   tasks:
     - apt: name=nfs-common state=present update_cache=no
-    - file: dest=/srv/data
-            state=directory
-            owner={{ app_name }} group=users
+
     - lineinfile: dest=/etc/fstab
                   state=present
                   regexp=":/srv/data"
