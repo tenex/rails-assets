@@ -218,7 +218,9 @@
   tasks:
     - file: path=/srv/data
             state=directory
-            owner={{ app_name }} group=users
+            owner={{ app_name }}
+            group=users
+            mode="u=rwx,g=rwx,o=rx"
 
     - file: src=/srv/data
             dest=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/public
