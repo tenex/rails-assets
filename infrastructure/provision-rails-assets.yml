@@ -261,6 +261,7 @@
              dump=0
              passno=0
              state=mounted
+      when: rails_env == "production"
 
 - name: sidekiq worker configuration
   hosts: worker
