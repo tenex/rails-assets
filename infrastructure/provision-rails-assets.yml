@@ -16,7 +16,7 @@
         app_name: rails-assets
 
     - name: update installed packages
-      apt: upgrade=dist update_cache=yes
+      apt: upgrade=safe update_cache=yes cache_valid_time=3600
 
     - name: install server base packages
       apt: name={{ item }} state=latest update_cache=yes
