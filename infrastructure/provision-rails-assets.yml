@@ -35,6 +35,7 @@
         - libcurl4-openssl-dev
         - libgmp-dev
         - libpq-dev
+        - libxml2-utils
         - moreutils
         - nodejs
         - nodejs-legacy
