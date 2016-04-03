@@ -4,13 +4,13 @@
 # You can define all roles on a single server, or split them:
 
 server(
-  'test.rails-assets.org',
+  'srv.rails-assets.org',
   user: fetch(:deploy_user),
   roles: %w(app db web)
 )
 
 server(
-  'worker-1.rails-assets.org',
+  'build-1.rails-assets.org',
   user: fetch(:deploy_user),
   roles: %w(worker)
 )
