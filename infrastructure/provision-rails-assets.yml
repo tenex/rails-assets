@@ -30,6 +30,7 @@
         - gettext
         - git
         - htop
+        - iftop
         - iotop
         - jq
         - libcurl4-openssl-dev
@@ -50,8 +51,8 @@
         - silversearcher-ag
         - speedometer
         - texinfo
-        - tig
         - tmux
+        - ufw
         - wget
         - zsh
 
