@@ -3,10 +3,7 @@ module ComponentHelper
   extend self
 
   def generate_components_json
-    ids = Version
-          .indexed
-          .select(:component_id)
-          .to_a.map(&:component_id)
+    ids = Version.indexed.pluck(:component_id)
     Component
       .includes(:versions)
       .references(:versions)
