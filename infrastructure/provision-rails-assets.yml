@@ -237,7 +237,7 @@
     - lineinfile: dest=/etc/fstab
                   state=present
                   regexp=":/srv/data"
-                  line="10.99.0.10:/srv/data /srv/data"
+                  line="{{ hostvars['rails-assets.org']['ansible_eth1']['ipv4']['address'] }}:/srv/data /srv/data"
       notify: remount
   handlers:
     - name: remount
