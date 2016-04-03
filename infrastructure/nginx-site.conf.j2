@@ -19,7 +19,6 @@ server {
     location ~ /.well-known {
         allow all;
     }
-
 }
 
 server {
@@ -39,3 +38,12 @@ server {
     }
 }
 
+server {
+    listen 443 ssl;
+    
+    ssl_certificate /etc/letsencrypt/live/rails-assets.tenex.tech/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/rails-assets.tenex.tech/privkey.pem;
+    
+    server_name rails-assets.tenex.tech;
+    return 301 https://rails-assets.org$request_uri;
+}
