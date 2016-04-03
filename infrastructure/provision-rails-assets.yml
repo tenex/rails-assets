@@ -26,7 +26,6 @@
         - build-essential
         - curl
         - dnsutils
-        - fail2ban
         - gettext
         - git
         - htop
@@ -68,7 +67,6 @@
         - redis-server
         - postgresql
         - postgresql-contrib
-
 
 - name: create users and configure authentication
   hosts: all
