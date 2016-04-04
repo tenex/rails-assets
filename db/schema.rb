@@ -11,19 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160218022010) do
+ActiveRecord::Schema.define(version: 20160404213501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
 
   create_table "components", force: :cascade do |t|
-    t.string   "name",        index: {name: "index_components_on_name", unique: true}
+    t.string   "name",          index: {name: "index_components_on_name", unique: true}
     t.text     "description"
     t.string   "homepage"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "bower_name"
+    t.json     "summary_cache"
   end
 
   create_table "failed_jobs", force: :cascade do |t|
