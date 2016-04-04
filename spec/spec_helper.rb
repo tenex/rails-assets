@@ -14,6 +14,7 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
   config.order = 'random'
+  config.include FactoryGirl::Syntax::Methods
 
   config.include Rails.application.routes.url_helpers, type: :feature
   config.after(:each, type: :feature) do
