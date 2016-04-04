@@ -39,7 +39,7 @@ gem 'rails_12factor'
 gem 'quiet_assets'
 
 gem 'peach'
-
+gem 'annotate'
 gem 'rb-readline', '~> 0.5.0', require: false
 gem 'awesome_print'
 
