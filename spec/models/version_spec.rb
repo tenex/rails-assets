@@ -17,6 +17,20 @@
 #  position      :string(1023)
 #  prerelease    :boolean          default(FALSE)
 #
+# Indexes
+#
+#  index_versions_on_bower_version  (bower_version)
+#  index_versions_on_build_status   (build_status)
+#  index_versions_on_component_id   (component_id)
+#  index_versions_on_position       (position)
+#  index_versions_on_prerelease     (prerelease)
+#  index_versions_on_rebuild        (rebuild)
+#  index_versions_on_string         (string)
+#
+# Foreign Keys
+#
+#  fk_versions_component_id  (component_id => components.id)
+#
 
 require 'spec_helper'
 
