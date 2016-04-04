@@ -18,7 +18,7 @@ module ComponentHelper
       name:         component.name,
       description:  component.description,
       homepage:     component.homepage,
-      versions:     component.versions.map(&:string)
+      versions:     component.versions.pluck(:string)
     }
   end
 end
