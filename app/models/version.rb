@@ -37,7 +37,7 @@ require 'rubygems/version'
 class Version < ActiveRecord::Base
   extend Build::Utils
 
-  belongs_to :component
+  belongs_to :component, touch: true
 
   validates :string, presence: true
 
