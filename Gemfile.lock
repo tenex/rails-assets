@@ -49,6 +49,9 @@ GEM
     addressable (2.3.7)
     angular-semver-sort-rails (0.1.0)
     angularjs-rails (1.5.0)
+    annotate (2.7.0)
+      activerecord (>= 3.2, < 6.0)
+      rake (~> 10.4)
     arel (6.0.3)
     autoprefixer-rails (0.8.20130911)
       execjs
@@ -397,6 +400,7 @@ DEPENDENCIES
   actionpack-page_caching
   angular-semver-sort-rails
   angularjs-rails
+  annotate
   autoprefixer-rails (>= 0.6.20130728)
   awesome_print
   better_errors
