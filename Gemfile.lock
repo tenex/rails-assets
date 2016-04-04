@@ -116,6 +116,13 @@ GEM
     erubis (2.7.0)
     eventmachine (1.0.8)
     execjs (2.0.1)
+    factory_girl (4.5.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.6.0)
+      factory_girl (~> 4.5.0)
+      railties (>= 3.0.0)
+    faker (1.6.3)
+      i18n (~> 0.5)
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
     ffi (1.9.10)
@@ -416,6 +423,8 @@ DEPENDENCIES
   coffee-rails
   database_cleaner
   dotenv
+  factory_girl_rails
+  faker
   figaro!
   foreman
   honey_badger

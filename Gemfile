@@ -35,6 +35,8 @@ gem 'puma', '>= 2.1.1'
 gem 'newrelic_rpm'
 
 gem 'rails_12factor'
+gem 'factory_girl_rails'
+gem 'faker'
 
 gem 'quiet_assets'
 
