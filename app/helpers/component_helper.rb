@@ -3,10 +3,16 @@ module ComponentHelper
   extend self
 
   def generate_components_json
-    Component
-      .joins(:versions)
-      .where(versions: { build_status: 'indexed' })
-      .pluck(:summary_cache)
+    JSON.parse(
+      ActiveRecord::Base.connection.select_value(%{
+      SELECT json_agg(c.summary_cache) AS component_summary
+        FROM components c
+       WHERE c.id IN (
+         SELECT v.component_id
+           FROM versions v
+          WHERE v.build_status='indexed'
+       )
+    }))
   end
 
   def component_data(component)
