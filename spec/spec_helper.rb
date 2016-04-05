@@ -5,7 +5,6 @@ require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/rspec'
 
-ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 ActiveRecord::Migration.maintain_test_schema!
 Capybara.default_driver = Capybara.javascript_driver = :selenium
 #need to include Capybara::Angular::DSL?
@@ -15,6 +14,7 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
   config.order = 'random'
+  config.include FactoryGirl::Syntax::Methods
 
   config.include Rails.application.routes.url_helpers, type: :feature
   config.after(:each, type: :feature) do
