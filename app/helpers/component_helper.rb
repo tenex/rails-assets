@@ -3,8 +3,7 @@ module ComponentHelper
   extend self
 
   def generate_components_json
-    JSON.parse(
-      ActiveRecord::Base.connection.select_value(%{
+    json_str = ActiveRecord::Base.connection.select_value(%{
       SELECT json_agg(c.summary_cache) AS component_summary
         FROM components c
        WHERE c.id IN (
@@ -12,7 +11,8 @@ module ComponentHelper
            FROM versions v
           WHERE v.build_status='indexed'
        )
-    }))
+    })
+    JSON.parse(json_str || '[]')
   end
 
   def component_data(component)
