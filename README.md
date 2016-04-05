@@ -9,7 +9,7 @@ This README concerns the development aspect of the project. **[Visit the site](h
 ### Setup
 
 ```sh
-git clone git@github.com:tenex/rails-assets.git && cd rails-assets
+git clone git@github.com:rails-assets/rails-assets.git && cd rails-assets
 bundle install && npm install
 cp config/database{.sample,}.yml
 cp config/application{.sample,}.yml
@@ -53,4 +53,4 @@ Maintained by Tenex Developers [@tenex](http://github.com/tenex).
 
 Originally created by [@teamon](http://github.com/teamon), [@porada](http://github.com/porada) and [@sheerun](http://github.com/sheerun), with the help of [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors). :heart:
 
-Please don’t tweet bugs to us—[report an issue](https://github.com/tenex/rails-assets/issues) instead. :v:
+Please don’t tweet bugs to us—[report an issue](https://github.com/rails-assets/rails-assets/issues) instead. :v:
