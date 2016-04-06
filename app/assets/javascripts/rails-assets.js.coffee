@@ -1,33 +1,5 @@
 app = angular.module('rails-assets', ['semverSort', 'ngNotificationsBar', 'ngAnimate', 'pathgather.popeye'])
 
-app.controller "IndexCtrl", ["$scope", "$http", "$filter", ($scope, $http, $filter) ->
-  $scope.limit = 5
-
-  $scope.fetch = ->
-    $http.get("/components.json").then (res) ->
-      $scope.gems = $filter('orderBy')(res.data, 'name')
-
-      if $scope.gems.length == 1
-        $scope.$broadcast 'showAssets'
-
-  $scope.fetch()
-
-  $scope.search =
-    name: ""
-
-  $scope.$watch 'search.name', (name) ->
-
-    if name
-      $scope.limit = 5
-      $scope.$broadcast('component.name', name)
-
-      if document.body.scrollTop < 450
-        document.body.scrollTop = 450
-
-  $scope.expand = ->
-    $scope.limit = $scope.gems.length
-]
-
 app.controller 'GemCtrl', ['$scope', '$http', ($scope, $http) ->
   $scope.javascripts = []
   $scope.stylesheets = []

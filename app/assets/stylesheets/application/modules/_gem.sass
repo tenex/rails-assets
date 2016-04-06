@@ -14,11 +14,10 @@
     background: $content-border-color
     margin-bottom: 1em
 
-.gem__name
-  display: block
+.gem-name
   font: inherit
-  font-weight: 500
-  line-height: 1.2
+  font-size: 2em
+  color: $default-link-color
 
 .gem__versions
   color: $dimmed-text-color
@@ -28,13 +27,3 @@
   display: block
   padding-top: 0.25em
   line-height: 1.1
-
-.gem__description--empty
-  color: $content-border-color
-
-@media (max-width: $breakpoint-wide - 1px)
-  .gem__description
-    margin-top: 1rem
-
-  .gem__description--empty
-    display: none

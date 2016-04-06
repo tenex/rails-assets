@@ -1,11 +1,12 @@
-section.section.search
-  .wrap
-    .gem-list__form
-      input#gem-search type="search" ng-model="search.name" placeholder="{{gems ? 'Search' : 'Loading components…'}}"
+div ng-controller="SearchController"
+  section.section.search
+    .wrap
+      .gem-list__form
+        input#gem-search type="search" ng-model="search.name" placeholder="{{gems ? 'Search' : 'Loading components…'}}"
 
-section.section.gem-list ng-if="search.name"
-  .wrap
-    = render partial: 'components/list'
+  section.section.gem-list ng-if="search.name"
+    .wrap
+      = render partial: 'components/list'
 
 article.section.getting-started
   .wrap
