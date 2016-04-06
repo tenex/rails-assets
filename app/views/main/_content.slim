@@ -1,10 +1,15 @@
+section.section.search
+  .wrap
+    .gem-list__form
+      input#gem-search type="search" ng-model="search.name" placeholder="{{gems ? 'Search' : 'Loading components…'}}"
+
 section.section.gem-list ng-if="search.name"
   .wrap
     = render partial: 'components/list'
 
-article.section
+article.section.getting-started
   .wrap
-    h1.section__header.header.header--beta Getting started
+    h1.section-header.header.header-beta Getting started
     .grid.grid--line
       .grid__cell.unit-1-2.content
         markdown:

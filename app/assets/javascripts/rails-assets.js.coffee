@@ -1,22 +1,5 @@
 app = angular.module('rails-assets', ['semverSort', 'ngNotificationsBar', 'ngAnimate', 'pathgather.popeye'])
 
-app.directive "ngHtml", ->
-  (scope, element, attrs) ->
-    scope.$watch attrs.ngHtml, (value) ->
-      element[0].innerHTML = value
-
-app.directive "dependencies", ->
-  (scope, element, attrs) ->
-    scope.$watch attrs.dependencies, (deps) ->
-      html = []
-
-      for dep in deps
-        h = "<span class=\"name\">" + dep[0] + "</span>"
-        h += "<span class=\"req\"> (" + dep[1] + ")</span>"
-        html.push h
-
-      element[0].innerHTML = html.join(", ")
-
 app.controller "IndexCtrl", ["$scope", "$http", "$filter", ($scope, $http, $filter) ->
   $scope.limit = 5
 
