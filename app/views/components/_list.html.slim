@@ -1,11 +1,11 @@
-article.grid.gem-list__item.gem ng-repeat="gem in filtered = (gems | filter:search) | orderBy:'name.length' | limitTo:limit track by $index"
+article.grid.gem-list__item.gem ng-repeat="gem in filtered = (gems | filter:search) | orderBy:'name.length' | limitTo:limit track by gem.name"
   header.grid__cell.unit-1-2 ng-controller="SearchResultController"
     h1.gem-name
       | {{ gem.name}}
     div ng-show="gem.description"
       | {{ gem.description }}
     div.latest-version
-      strong Latest version: 
+      strong Latest version:
       | {{ gem.latestVersion || 'did not calculate latest - why?' }}
 
 article.u__text-center ng-if="filtered.length > 5 && limit != gems.length"
