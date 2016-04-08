@@ -179,7 +179,6 @@ GEM
     pry-rails (0.3.2)
       pry (>= 0.9.10)
     public_suffix (1.1.3)
-    puma (2.15.3)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rack (1.6.4)
@@ -435,7 +434,6 @@ DEPENDENCIES
   postrank-uri
   pry (= 0.9.12.2)
   pry-rails
-  puma (>= 2.1.1)
   quiet_assets
   rails (~> 4.2.0)
   rails_12factor
