@@ -60,7 +60,7 @@
         - zsh
 
     - name: install bower
-      npm: name=bower global=yes
+      npm: name=bower global=yes version=1.7.9
 
 - name: install database packages
   hosts: database
