@@ -12,7 +12,7 @@ server {
     rails_env {{ rails_env }};
     
     passenger_enabled on;
-    passenger_min_instances 2;
+    passenger_min_instances 4;
 
     # For letsencrypt
     location ~ /.well-known {
