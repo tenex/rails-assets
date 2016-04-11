@@ -185,6 +185,11 @@
         insertafter='^http {'
         line='        passenger_max_pool_size 12;'
       notify: restart nginx
+    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*passenger_max_request_queue_size'
+        insertafter='^http {'
+        line='        passenger_max_request_queue_size 0;'
+      notify: restart nginx
     - template:
         src=nginx-site.conf.j2
         dest="/etc/nginx/sites-enabled/{{ app_name }}.conf"
