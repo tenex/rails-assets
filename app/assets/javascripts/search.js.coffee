@@ -38,7 +38,7 @@ SearchResultController = ($scope) ->
     versionPartsA = versionA.split('.')
     versionPartsB = versionB.split('.')
     if VERSION_PARTS_COMPARE(versionPartsA, versionPartsB) then 1 else -1
-  )[0]
+  ).slice(-1)[0]
 
 angular.module('rails-assets').controller 'SearchController',  [
   '$scope',

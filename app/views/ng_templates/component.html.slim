@@ -1,4 +1,4 @@
-article.gem-list-item.gem ng-repeat="gem in filtered = (gems | filter:search) | orderBy:'name.length' | limitTo:limit track by gem.name" ng-controller="SearchResultController"
+article.gem-list-item.gem ng-controller="ComponentController"
   header.grid__cell.unit-2-3
     h1.gem-name
       | {{ gem.name}}
@@ -11,8 +11,3 @@ article.gem-list-item.gem ng-repeat="gem in filtered = (gems | filter:search) | 
     a.btn.btn-primary.btn-lg ng-href="#/components/{{ gem.name }}"
       | Install
       span.glyphicon.glyphicon-menu-right
-      
-
-article.u__text-center ng-if="filtered.length > 5 && limit != gems.length"
-  button ng-click="expand()"
-    | Load all {{ filtered.length }} gems

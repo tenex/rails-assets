@@ -13,6 +13,7 @@ app = angular.module('rails-assets')
 app.config ['$routeProvider', ($routeProvider) ->
   $routeProvider.
     when('/', templateUrl: 'ng_templates/home').
+    when('/components/:componentName', templateUrl: 'ng_templates/component').
     otherwise(redirectTo: '/')
 ]
 app.config ['notificationsConfigProvider', (notificationsConfigProvider) ->
@@ -20,7 +21,7 @@ app.config ['notificationsConfigProvider', (notificationsConfigProvider) ->
   notificationsConfigProvider.setAutoHide(true)
   notificationsConfigProvider.setAutoHideAnimation('fadeOutUp')
 ]
-
+<% unless Rails.env.development? %>
 <% @renderer = ActionView::Base.new(ActionController::Base.view_paths) %>
 <% templates = Dir.glob('app/views/ng_templates/*').find_all { |path| path.match(/\/[^_][^\/]*$/) } %>
 <% templates.map! { |path| path.split('.').first.remove('app/views/') } %>
@@ -30,3 +31,4 @@ app.run ['$templateCache', ($templateCache) ->
   $templateCache.put('ng_templates/home', """<%= @renderer.render(template: template) %>""")
 <% end %>
 ]
+<% end %>
