@@ -1,4 +1,4 @@
-app = angular.module('rails-assets', ['semverSort', 'ngNotificationsBar', 'ngAnimate', 'pathgather.popeye'])
+app = angular.module('rails-assets', ['semverSort', 'ngNotificationsBar', 'ngAnimate', 'pathgather.popeye', 'ngRoute'])
 
 app.controller 'GemCtrl', ['$scope', '$http', ($scope, $http) ->
   $scope.javascripts = []

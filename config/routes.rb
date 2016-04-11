@@ -28,5 +28,7 @@ RailsAssets::Application.routes.draw do
 
   root to: "main#home"
 
+  resources :ng_templates, only: :show if Rails.env.development?
+
   get '/home', to: redirect('/')
 end
