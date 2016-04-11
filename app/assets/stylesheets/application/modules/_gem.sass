@@ -2,18 +2,11 @@
   padding: 1em 0 2em
 
 .gem-list-item
-  padding-bottom: 2em
+  padding: 1em 0
   display: flex
 
-  &:before
-    margin-bottom: 1em
-
-  & + &:before
-    content: ""
-    display: block
-    height: 1px
-    background: $content-border-color
-    margin-bottom: 1em
+  & + &
+    border-top: 1px solid $content-border-color
 
 .gem-name
   font: inherit
