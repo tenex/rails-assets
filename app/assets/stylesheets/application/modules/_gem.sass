@@ -1,8 +1,9 @@
 .gem-list__form
   padding: 1em 0 2em
 
-.gem-list__item
+.gem-list-item
   padding-bottom: 2em
+  display: flex
 
   &:before
     margin-bottom: 1em
@@ -19,11 +20,17 @@
   font-size: 2em
   color: $default-link-color
 
-.gem__versions
-  color: $dimmed-text-color
-  font-size: 0.8em
-
-.gem__code
+.gem-code
   display: block
   padding-top: 0.25em
   line-height: 1.1
+
+.latest-version
+  padding-top: 1rem
+
+.install-gem
+  align-self: center
+  font-size: 16px
+
+  .glyphicon
+    font-size: 12px

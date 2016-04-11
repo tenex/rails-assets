@@ -1,12 +1,17 @@
-article.grid.gem-list__item.gem ng-repeat="gem in filtered = (gems | filter:search) | orderBy:'name.length' | limitTo:limit track by gem.name"
-  header.grid__cell.unit-1-2 ng-controller="SearchResultController"
+article.gem-list-item.gem ng-repeat="gem in filtered = (gems | filter:search) | orderBy:'name.length' | limitTo:limit track by gem.name" ng-controller="SearchResultController"
+  header.grid__cell.unit-2-3
     h1.gem-name
       | {{ gem.name}}
     div ng-show="gem.description"
       | {{ gem.description }}
     div.latest-version
       strong Latest version:
-      | {{ gem.latestVersion || 'did not calculate latest - why?' }}
+      | &nbsp; {{ gem.latestVersion }}
+  div.install-gem.grid__cell.unit-1-3
+    button.btn.btn-primary.btn-lg
+      | Install
+      span.glyphicon.glyphicon-menu-right
+      
 
 article.u__text-center ng-if="filtered.length > 5 && limit != gems.length"
   button ng-click="expand()"

@@ -34,7 +34,6 @@ VERSION_PARTS_COMPARE = (a, b) ->
     VERSION_PARTS_COMPARE(a.slice(1), b.slice(1))
 
 SearchResultController = ($scope) ->
-  console.log($scope.gem.name)
   $scope.gem.latestVersion = $scope.gem.versions.sort((versionA, versionB) ->
     versionPartsA = versionA.split('.')
     versionPartsB = versionB.split('.')
