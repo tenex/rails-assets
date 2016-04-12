@@ -1,4 +1,8 @@
-article.gem-list-item.gem ng-controller="ComponentController"
+article.gem-list-item.gem.section.wrap ng-controller="ComponentController"
+  div
+    a ng-href="#/"
+      span.glyphicon.glyphicon-chevron-left
+      | Back to search results
   header.grid__cell.unit-2-3
     h1.gem-name
       | {{ gem.name}}
@@ -7,7 +11,27 @@ article.gem-list-item.gem ng-controller="ComponentController"
     div.latest-version
       strong Latest version:
       | &nbsp; {{ gem.latestVersion }}
-  div.install-gem.grid__cell.unit-1-3
-    a.button ng-href="#/components/{{ gem.name }}"
-      | Install
-      span.glyphicon.glyphicon-menu-right
+  hr
+  div
+    | Selected version:
+    span ng-show="selectedVersion == gem.latestVersion"
+      | Latest ({{ selectedVersion }})
+    span ng-show="selectedVersion != gem.latestVersion"
+      | {{ selectedVersion }}
+  div
+    select ng-model="selectedVersion" ng-options="version for version in gem.versions | orderBy:'$index':true"
+    div
+      | {{ javascripts.length }} javascript files
+      a ng-click="showJavascripts = true" ng-show="!showJavascripts" Show
+      a ng-click="showJavascripts = false" ng-show="showJavascripts" Hide
+      ul ng-show="showJavascripts"
+        li ng-repeat="asset in javascripts | orderBy:'main':true"
+          code ng-bind="asset.path" ng-class="{ bold: asset.main }"
+    div
+      | {{ stylesheets.length }} javascript files
+      a ng-click="showStylesheets = true" ng-show="!showStylesheets" Show
+      a ng-click="showStylesheets = false" ng-show="showStylesheets" Hide
+      ul ng-show="showStylesheets"
+        li ng-repeat="asset in stylesheets | orderBy:'main':true"
+          code ng-bind="asset.path" ng-class="{ bold: asset.main }"
+      

@@ -1,19 +1,5 @@
 app = angular.module('rails-assets', ['semverSort', 'ngNotificationsBar', 'ngAnimate', 'pathgather.popeye', 'ngRoute'])
 
-app.controller 'GemCtrl', ['$scope', '$http', ($scope, $http) ->
-  $scope.javascripts = []
-  $scope.stylesheets = []
-  $scope.jsManifest = false
-  $scope.cssManifest = false
-
-  $scope.fetchAssets = (version) ->
-    $http.get("/components/#{$scope.gem.name}/#{version}").then (response) ->
-      $scope.javascripts = (path for path in response.data when path.type is 'javascript')
-      $scope.stylesheets = (path for path in response.data when path.type is 'stylesheet')
-      $scope.jsManifest = (path for path in $scope.javascripts when path.main is true).length > 0
-      $scope.cssManifest = (path for path in $scope.stylesheets when path.main is true).length > 0
-]
-
 app.controller "ConvertCtrl", ["$scope", "$http", ($scope, $http) ->
   $scope.converting = false
   $scope.component =
