@@ -2,6 +2,8 @@ module Build
   class BowerError < BuildError
     attr_reader :path, :command, :details, :code
 
+    ENOTFOUND = 'ENOTFOUND'.freeze
+
     def initialize(message, details, path = nil, command = nil, code = nil)
       @details = details
       @path = path
@@ -11,7 +13,7 @@ module Build
     end
 
     def not_found?
-      @code == 'ENOTFOUND'
+      @code == ENOTFOUND
     end
 
     def self.from_shell_error(e)
