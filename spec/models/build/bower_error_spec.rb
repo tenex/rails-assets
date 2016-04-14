@@ -24,15 +24,17 @@ module Build
 
       let(:shell_error) { ShellError.new(stderr) }
 
+      subject { BowerError.from_shell_error(shell_error) }
+
       it 'extracts error message from stderr' do
-        expect(BowerError.from_shell_error(shell_error).message).
-          to eq('Package asdfa not found') 
+        expect(subject.message).to eq('Package asdfa not found')
       end
 
       it 'extracts error details from stderr' do
-        expect(BowerError.from_shell_error(shell_error).details).
-          to eq('Error: Package asdfa not found') 
+        expect(subject.details).to eq('Error: Package asdfa not found')
       end
+
+      it { should be_not_found }
     end
   end
 end

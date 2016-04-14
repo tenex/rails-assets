@@ -56,17 +56,24 @@ class MainController < ApplicationController
       gem_names = gem_names.select { |e| e.start_with?(GEM_PREFIX) }
       gem_names = gem_names.map { |e| e.gsub(GEM_PREFIX, '') }
 
+      # Ensure that dependencies we're about to send
+      # can actually be retrieved from here
       gem_names.each do |name|
         next unless Component.needs_build?(name)
         begin
           ::BuildVersion.new.perform(name, 'latest')
-        rescue Exception => e
+          ::UpdateComponent.perform_async(name)
+        rescue Build::BowerError => e
+          raise e unless e.not_found?
+          Rails.logger.info(
+            "received dependency query for non-existent component [#{name}]"
+          )
+        rescue StandardError => e
           Rails.logger.error(e)
         end
-
-        ::UpdateComponent.perform_async(name)
       end
 
+      # FIXME: Perhaps this can be either made async or removed?
       Reindex.new.perform if Version.pending_index.count > 0
 
       gems = Component.where(name: gem_names).to_a.flat_map do |component|
