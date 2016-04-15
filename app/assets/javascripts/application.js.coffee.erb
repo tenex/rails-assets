@@ -21,14 +21,15 @@ app.config ['notificationsConfigProvider', (notificationsConfigProvider) ->
   notificationsConfigProvider.setAutoHide(true)
   notificationsConfigProvider.setAutoHideAnimation('fadeOutUp')
 ]
-<% unless Rails.env.development? %>
+
+<% if Rails.configuration.x.inline_ng_templates  %>
 <% @renderer = ActionView::Base.new(ActionController::Base.view_paths) %>
-<% templates = Dir.glob('app/views/ng_templates/*').find_all { |path| path.match(/\/[^_][^\/]*$/) } %>
+<% templates = Dir.glob('app/views/ng_templates/*') %>
 <% templates.map! { |path| path.split('.').first.remove('app/views/') } %>
 
 app.run ['$templateCache', ($templateCache) ->
 <% templates.each do |template| %>
-  $templateCache.put('ng_templates/home', """<%= @renderer.render(template: template) %>""")
+  $templateCache.put('<%= template %>', """<%= @renderer.render(template: template) %>""")
 <% end %>
 ]
 <% end %>

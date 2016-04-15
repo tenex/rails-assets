@@ -1,4 +1,4 @@
-article.gem-list-item.gem.section.wrap ng-controller="ComponentController"
+article.gem.section.wrap ng-controller="ComponentController"
   div
     a ng-href="#/"
       span.glyphicon.glyphicon-chevron-left
@@ -34,4 +34,10 @@ article.gem-list-item.gem.section.wrap ng-controller="ComponentController"
       ul ng-show="showStylesheets"
         li ng-repeat="asset in stylesheets | orderBy:'main':true"
           code ng-bind="asset.path" ng-class="{ bold: asset.main }"
-      
+    div
+      //- needs styling for inline code
+      h2 1. Add {{ gem.name }} to your Gemfile
+      p
+        | Open the Gemfile in your project's directory and add the following line:
+        ng-include src="'ng_templates/gemfile-diff'"
+        
