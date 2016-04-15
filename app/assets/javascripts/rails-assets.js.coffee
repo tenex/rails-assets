@@ -1,4 +1,4 @@
-app = angular.module('rails-assets', ['semverSort', 'ngNotificationsBar', 'ngAnimate', 'pathgather.popeye', 'ngRoute'])
+app = angular.module('rails-assets', ['semverSort', 'ngNotificationsBar', 'ngAnimate', 'pathgather.popeye', 'ngRoute', 'ngclipboard'])
 
 app.controller "ConvertCtrl", ["$scope", "$http", ($scope, $http) ->
   $scope.converting = false
