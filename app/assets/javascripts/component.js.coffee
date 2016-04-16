@@ -16,6 +16,11 @@ ComponentController = ($scope, $filter, $http, $routeParams, $controller) ->
     $controller('SearchResultController', { $scope: $scope })
     $scope.selectedVersion ||= $scope.gem.latestVersion
 
+  $scope.onClipboardCopy = (event) ->
+    event.clearSelection()
+    angular.element(event.trigger).addClass('tooltipped')
+    true
+
 angular.module('rails-assets').controller 'ComponentController',  [
   '$scope',
   '$filter',

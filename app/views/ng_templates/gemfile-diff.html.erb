@@ -49,7 +49,12 @@
 	}
 	</style>
 <div class="code-wrapper">
-  <h2>Gemfile</h2><button ngclipboard data-clipboard-target=".gem-insert">Copy</button>
+  <h2 class="tooltip-gutter">
+		<button ngclipboard data-clipboard-target=".gem-insert" class="tooltipped-s tooltipped-no-delay github-btn" ngclipboard-success="onClipboardCopy(e)" aria-label="Copied!">
+			Copy
+		</button>
+		Gemfile
+	</h2>
   <div class='file-diff'>
     <div>
       <pre class='file'>diff --git a/Gemfile b/Gemfile</pre>
