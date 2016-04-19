@@ -1,4 +1,4 @@
-SearchController = ($scope, $http, $filter) ->
+SearchController = ($scope, $http, $filter, $rootScope, $routeParams, $location) ->
   $scope.limit = 5
 
   $scope.fetch = ->
@@ -11,13 +11,16 @@ SearchController = ($scope, $http, $filter) ->
   $scope.fetch()
 
   $scope.search =
-    name: ""
+    name: $routeParams.query
 
   $scope.$watch 'search.name', (name) ->
 
     if name
       $scope.limit = 5
       $scope.$broadcast('component.name', name)
+
+      $rootScope.lastSearch = name
+      $location.search('query', name).replace()
 
       if document.body.scrollTop < 450
         document.body.scrollTop = 450
@@ -44,6 +47,9 @@ angular.module('rails-assets').controller 'SearchController',  [
   '$scope',
   '$http',
   '$filter',
+  '$rootScope',
+  '$routeParams',
+  '$location',
   SearchController
 ]
 

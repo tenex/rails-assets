@@ -14,7 +14,7 @@ app = angular.module('rails-assets')
 
 app.config ['$routeProvider', ($routeProvider) ->
   $routeProvider.
-    when('/', templateUrl: 'ng_templates/home').
+    when('/', templateUrl: 'ng_templates/home', reloadOnSearch: false).
     when('/components/:componentName/:version?', templateUrl: 'ng_templates/component').
     otherwise(redirectTo: '/')
 ]
