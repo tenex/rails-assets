@@ -40,4 +40,23 @@ article.gem.section.wrap ng-controller="ComponentController"
       p
         | Open the Gemfile in your project's directory and add the following line:
         ng-include src="'ng_templates/gemfile-diff'"
-        
+      //- needs styling for inline code
+      h2 2. Run bundler
+      p 
+        | Excute bundle install. Be sure to restart your rails server whenever your update your dependencies!
+        pre.command-line.language-bash
+          code.language-bash
+            span.command-line-prompt
+              span data-user="user" data-host="localhost"
+              span
+              span
+              span
+              span
+              span
+            span.bundle-command bundle install
+            | &nbsp;
+              Fetching gem metadata from https://rails-assets.org/...
+              Fetching gem metadata from https://rubygems.org/...
+              Resolving dependencies...
+              Installing rails-assets-{{ gem.name }} {{ selectedVersion }}
+              Bundle complete!
