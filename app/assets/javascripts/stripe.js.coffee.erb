@@ -21,7 +21,7 @@ DonationButtonController = ($scope, $http, notifications, Popeye, $timeout) ->
   $scope.invoke = ->
     Popeye.openModal
       scope: $scope
-      templateUrl: 'ng-templates/donate.html'
+      templateUrl: 'ng_templates/donate'
       containerClass: 'stripe-modal-container'
       modalClass: 'stripe-modal'
     analytics.track('Donation modal opened')

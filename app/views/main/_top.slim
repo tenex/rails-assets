@@ -2,7 +2,7 @@ notifications-bar.notifications
 header.top.u__inverted
   .wrap
     h1.top__header
-      a href="#/" Rails Assets
+      a href="/#/" Rails Assets
     nav
       ul.top__nav
         li.top__nav__item
@@ -15,6 +15,6 @@ header.top.u__inverted
           a href=new_component_path Add component
         li.top__nav__item ng-controller="DonationButtonController"
           script[src="https://checkout.stripe.com/checkout.js"]
-          a href="#" ng-click="invoke()"
+          div ng-click="invoke()"
             | Donate
             span.label.label-info New
