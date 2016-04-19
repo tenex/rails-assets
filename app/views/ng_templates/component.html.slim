@@ -3,47 +3,42 @@ article.gem.section.wrap ng-controller="ComponentController"
     a ng-href="#/"
       span.glyphicon.glyphicon-chevron-left
       | Back to search results
-  header.grid__cell.unit-2-3
+  header.grid__cell
+    = image_tag 'bower-logo.svg', class: 'component-source-logo', title: 'Bower Component'
     h1.gem-name
       | {{ gem.name}}
     div ng-show="gem.description"
       | {{ gem.description }}
     div.latest-version
-      strong Latest version:
+      span.glyphicon.glyphicon-tags 
+      strong  Latest version:
       | &nbsp; {{ gem.latestVersion }}
-  hr
-  div
-    | Selected version:
-    span ng-show="selectedVersion == gem.latestVersion"
-      | Latest ({{ selectedVersion }})
-    span ng-show="selectedVersion != gem.latestVersion"
-      | {{ selectedVersion }}
-  div
-    select ng-model="selectedVersion" ng-options="version for version in gem.versions | orderBy:'$index':true"
-    div
-      | {{ javascripts.length }} javascript files
-      a ng-click="showJavascripts = true" ng-show="!showJavascripts" Show
-      a ng-click="showJavascripts = false" ng-show="showJavascripts" Hide
-      ul ng-show="showJavascripts"
-        li ng-repeat="asset in javascripts | orderBy:'main':true"
-          code ng-bind="asset.path" ng-class="{ bold: asset.main }"
-    div
-      | {{ stylesheets.length }} javascript files
-      a ng-click="showStylesheets = true" ng-show="!showStylesheets" Show
-      a ng-click="showStylesheets = false" ng-show="showStylesheets" Hide
-      ul ng-show="showStylesheets"
-        li ng-repeat="asset in stylesheets | orderBy:'main':true"
-          code ng-bind="asset.path" ng-class="{ bold: asset.main }"
-    div
-      //- needs styling for inline code
-      h2 1. Add {{ gem.name }} to your Gemfile
-      p
-        | Open the Gemfile in your project's directory and add the following line:
+    div.homepage ng-show="gem.homepage"
+      span.glyphicon.glyphicon-home
+      a ng-href="{{ gem.homepage }}" target="_blank"
+        |  {{ gem.homepage }} 
+        span.glyphicon.glyphicon-new-window
+  div.grid__cell.instructions
+    div#version-chooser
+      strong Version: 
+      select ng-model="selectedVersion" ng-options="version for version in gem.versions | orderBy:'$index':true"
+    h2
+      span.step 1
+      span Add {{ gem.name }} to your Gemfile
+    p
+      | Open the 
+      code.inline-code Gemfile
+      |  in your project's directory and add the following line:
+      div.grid__cell
         ng-include src="'ng_templates/gemfile-diff'"
-      //- needs styling for inline code
-      h2 2. Run bundler
-      p 
-        | Excute bundle install. Be sure to restart your rails server whenever your update your dependencies!
+    h2
+      span.step 2
+      span Run bundler
+    p 
+      | Excute 
+      code.inline-code bundle install
+      | . Be sure to restart your rails server whenever your update your dependencies!
+      div.grid__cell
         pre.command-line.language-bash
           code.language-bash
             span.command-line-prompt
@@ -60,21 +55,23 @@ article.gem.section.wrap ng-controller="ComponentController"
               Resolving dependencies...
               Installing rails-assets-{{ gem.name }} {{ selectedVersion }}
               Bundle complete!
-      //- needs styling for inline code
-      h2
-        | 3. Include 
-        span ng-show="jsManifest" javascript 
-        span ng-show="jsManifest && cssManifest" and 
-        span ng-show="cssManifest" stylesheet
-      p
-        | Add the following line
-        span ng-show="jsManifest && cssManifest" s
-        |  to your asset pipeline-enabled 
-        span ng-show="jsManifest" javascript 
-        span ng-show="jsManifest && cssManifest" and 
-        span ng-show="cssManifest" stylesheet
-        |  file
-        span ng-show="jsManifest && cssManifest" s
-        | . Next time you load a page in your application, {{ gem.name }} should be ready to go!
+    h2
+      span.step 3
+      span Include 
+      span ng-show="jsManifest" javascript 
+      span ng-show="jsManifest && cssManifest" and 
+      span ng-show="cssManifest" stylesheet
+    p
+      | Add the following line
+      span ng-show="jsManifest && cssManifest" s
+      |  to your asset pipeline-enabled 
+      span ng-show="jsManifest" javascript 
+      span ng-show="jsManifest && cssManifest" and 
+      span ng-show="cssManifest" stylesheet
+      |  file
+      span ng-show="jsManifest && cssManifest" s
+      | . Next time you load a page in your application, {{ gem.name }} should be ready to go!
+      div.grid__cell
         ng-include ng-show="jsManifest" src="'ng_templates/application-js-diff'"
+      div.grid__cell
         ng-include ng-show="cssManifest" src="'ng_templates/application-css-diff'"

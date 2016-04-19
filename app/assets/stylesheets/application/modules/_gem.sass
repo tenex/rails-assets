@@ -1,3 +1,54 @@
+.inline-code
+  background-color: rgba(0,0,0,0.04)
+  border-radius: 5px
+  font-family: Courier,monospace
+  padding: 3px
+  color: initial
+
+img.component-source-logo
+  float: right
+  width: 50px
+
+.gem
+  .latest-version, .homepage
+    font-size: smaller
+
+    .glyphicon
+      margin-right: 0.5em
+      font-size: 0.8em
+
+  .grid__cell
+    padding: 0 25px
+
+  .instructions
+    border-top: 1px solid $content-border-color
+    margin-top: 15px
+    padding-top: 15px
+
+    p + h2
+      margin-top: 25px
+
+    h2
+      margin-bottom: 5px
+      span
+        vertical-align: middle
+        &.step
+          $step-circle-size: 35px
+          width: $step-circle-size
+          height: $step-circle-size
+          display: inline-block
+          border-radius: 50%
+          color: white
+          text-align: center
+          background-color: $brand-orange
+          margin-right: 15px
+
+    .code-wrapper h2
+      margin-bottom: 0
+
+  #version-chooser
+    float: right
+
 .gem-list__form
   padding: 1em 0 2em
 
