@@ -60,3 +60,11 @@ article.gem.section.wrap ng-controller="ComponentController"
               Resolving dependencies...
               Installing rails-assets-{{ gem.name }} {{ selectedVersion }}
               Bundle complete!
+      //- needs styling for inline code
+      h2 3. Add {{ gem.name }} to your Gemfile
+      p
+        | Open the Gemfile in your project's directory and add the following line:
+        ng-include src="'ng_templates/application-js-diff'"
+      p
+        | Open the Gemfile in your project's directory and add the following line:
+        ng-include src="'ng_templates/application-css-diff'"

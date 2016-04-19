@@ -1,0 +1,24 @@
+<%# Adapted from output of npm's pretty-diff %>
+<div class="code-wrapper">
+  <h2>
+		<button ngclipboard data-clipboard-target="#app-css-insert" class="tooltipped-s tooltipped-no-delay github-btn" ngclipboard-success="onClipboardCopy(e)" aria-label="Copied!">
+			Copy
+		</button>
+		app/assets/stylesheets/application.css
+	</h2>
+  <div class='file-diff'>
+    <div>
+      <pre class='file'>diff --git a/app/assets/stylesheets/application.css b/app/assets/stylesheets/application.css</pre>
+      <pre class='delete file-name'>--- a/app/assets/stylesheets/application.css</pre>
+      <pre class='insert file-name'>+++ b/app/assets/stylesheets/application.css</pre>
+      <pre class='info'>@@ -10,6 +10,7 @@</pre>
+      <pre class='context'>  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new</pre>
+      <pre class='context'>  * file per style scope.</pre>
+      <pre class='context'>  *</pre>
+      <pre class='insert new-code' id="app-css-insert"> *= require {{ gem.name }}</pre>
+      <pre class='context'>  *= require_tree .</pre>
+      <pre class='context'>  *= require_self</pre>
+      <pre class='context'>  */</pre></div></div>
+    </div>
+  </div>
+</div>

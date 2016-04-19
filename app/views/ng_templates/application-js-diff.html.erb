@@ -1,0 +1,24 @@
+<%# Adapted from output of npm's pretty-diff %>
+<div class="code-wrapper">
+  <h2>
+		<button ngclipboard data-clipboard-target="#app-js-insert" class="tooltipped-s tooltipped-no-delay github-btn" ngclipboard-success="onClipboardCopy(e)" aria-label="Copied!">
+			Copy
+		</button>
+		app/assets/javascripts/application.js
+	</h2>
+  <div class='file-diff'>
+    <div>
+      <pre class='file'>diff --git a/app/assets/javascripts/application.js b/app/assets/javascripts/application.js</pre>
+      <pre class='delete file-name'>--- a/app/assets/javascripts/application.js</pre>
+      <pre class='insert file-name'>+++ b/app/assets/javascripts/application.js</pre>
+      <pre class='info'>@@ -10,6 +10,7 @@</pre>
+      <pre class='context'> // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details</pre>
+      <pre class='context'> // about supported directives.</pre>
+      <pre class='context'> //</pre>
+      <pre class='insert new-code' id="app-js-insert">//= require {{ gem.name }}</pre>
+      <pre class='context'> //= require jquery</pre>
+      <pre class='context'> //= require jquery_ujs</pre>
+      <pre class='context'> //= require turbolinks</pre></div></div>
+    </div>
+  </div>
+</div>

@@ -1,56 +1,7 @@
 <%# Adapted from output of npm's pretty-diff %>
-<style>
-	.code-wrapper {
-		margin-top: 1em;
-		min-width: 800px;
-		text-align: left;
-	}
-	.code-wrapper h2 {
-		background: #fafafa;
-		background: -moz-linear-gradient(#fafafa, #eaeaea);
-		background: -webkit-linear-gradient(#fafafa, #eaeaea);
-		-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa',endColorstr='#eaeaea')";
-		border: 1px solid #d8d8d8;
-		border-bottom: 0;
-		color: #555;
-		font: 14px sans-serif;
-		overflow: hidden;
-		padding: 10px 6px;
-		text-shadow: 0 1px 0 white;
-		margin: 0;
-	}
-	.file-diff {
-		border: 1px solid #d8d8d8;
-		margin-bottom: 1em;
-		overflow: auto;
-		padding: 0.5em 0;
-	}
-	.file-diff > div {
-		width: 100%:
-	}
-	.code-wrapper pre {
-		margin: 0;
-		font-family: "Bitstream Vera Sans Mono", Courier, monospace;
-		font-size: 12px;
-		line-height: 1.4em;
-		text-indent: 0.5em;
-	}
-	.code-wrapper .file {
-		color: #aaa;
-	}
-	.code-wrapper .delete {
-		background-color: #fdd;
-	}
-	.code-wrapper .insert {
-		background-color: #dfd;
-	}
-	.code-wrapper .info {
-		color: #a0b;
-	}
-	</style>
 <div class="code-wrapper">
   <h2 class="tooltip-gutter">
-		<button ngclipboard data-clipboard-target=".gem-insert" class="tooltipped-s tooltipped-no-delay github-btn" ngclipboard-success="onClipboardCopy(e)" aria-label="Copied!">
+		<button ngclipboard data-clipboard-target="#gemfile-insert" class="tooltipped-s tooltipped-no-delay github-btn" ngclipboard-success="onClipboardCopy(e)" aria-label="Copied!">
 			Copy
 		</button>
 		Gemfile
@@ -65,7 +16,7 @@
       <pre class='context'> gem 'uglifier', '&gt;= 1.3.0'</pre>
       <pre class='context'> gem 'coffee-rails', '~&gt; 4.1.0'</pre>
       <pre class='context'></pre>
-      <pre class='insert gem-insert'>gem 'rails-assets-{{ gem.name }}', <span ng-show="selectedVersion != gem.latestVersion">'{{ selectedVersion}}', </span>source: 'https://<%= Rails.configuration.x.hostname %>' </pre>
+      <pre class='insert new-code' id="gemfile-insert">gem 'rails-assets-{{ gem.name }}', <span ng-show="selectedVersion != gem.latestVersion">'{{ selectedVersion}}', </span>source: 'https://<%= Rails.configuration.x.hostname %>'</pre>
     </div>
   </div>
 </div>
