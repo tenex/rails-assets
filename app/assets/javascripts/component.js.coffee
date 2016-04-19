@@ -8,6 +8,7 @@ ComponentController = ($scope, $filter, $http, $routeParams, $controller) ->
         $scope.jsManifest = (path for path in $scope.javascripts when path.main is true).length > 0
         $scope.cssManifest = (path for path in $scope.stylesheets when path.main is true).length > 0
 
+
   $scope.componentName = $routeParams.componentName
   $scope.selectedVersion = $routeParams.version
 

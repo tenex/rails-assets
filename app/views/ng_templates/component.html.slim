@@ -61,10 +61,20 @@ article.gem.section.wrap ng-controller="ComponentController"
               Installing rails-assets-{{ gem.name }} {{ selectedVersion }}
               Bundle complete!
       //- needs styling for inline code
-      h2 3. Add {{ gem.name }} to your Gemfile
+      h2
+        | 3. Include 
+        span ng-show="jsManifest" javascript 
+        span ng-show="jsManifest && cssManifest" and 
+        span ng-show="cssManifest" stylesheet
       p
-        | Open the Gemfile in your project's directory and add the following line:
-        ng-include src="'ng_templates/application-js-diff'"
-      p
-        | Open the Gemfile in your project's directory and add the following line:
-        ng-include src="'ng_templates/application-css-diff'"
+        | Add the following line
+        span ng-show="jsManifest && cssManifest" s
+        |  to your asset pipeline-enabled 
+        span ng-show="jsManifest" javascript 
+        span ng-show="jsManifest && cssManifest" and 
+        span ng-show="cssManifest" stylesheet
+        |  file
+        span ng-show="jsManifest && cssManifest" s
+        | . Next time you load a page in your application, {{ gem.name }} should be ready to go!
+        ng-include ng-show="jsManifest" src="'ng_templates/application-js-diff'"
+        ng-include ng-show="cssManifest" src="'ng_templates/application-css-diff'"
