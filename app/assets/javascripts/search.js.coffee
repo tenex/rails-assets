@@ -1,4 +1,4 @@
-SearchController = ($scope, $http, $filter, $rootScope, $routeParams, $location) ->
+SearchController = ($scope, $http, $filter, $rootScope, $routeParams, $location, $document) ->
   $scope.limit = 5
 
   $scope.fetch = ->
@@ -22,12 +22,13 @@ SearchController = ($scope, $http, $filter, $rootScope, $routeParams, $location)
       $rootScope.lastSearch = name
       $location.search('query', name).replace()
 
-      if document.body.scrollTop < 450
-        document.body.scrollTop = 450
+      if $document.scrollTop() < 480
+        $document.scrollTop(480)
 
   $scope.expand = ->
     $scope.limit = $scope.gems.length
 
+#need to use semver sort
 VERSION_PARTS_COMPARE = (a, b) ->
   if a.length == 0 || b.length == 0
     a.length > 0
@@ -50,6 +51,7 @@ angular.module('rails-assets').controller 'SearchController',  [
   '$rootScope',
   '$routeParams',
   '$location',
+  '$document',
   SearchController
 ]
 
