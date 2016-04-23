@@ -13,7 +13,7 @@ feature 'Component search' do
   end
 
   scenario 'supports direct navigation to component versions' do
-    visit '/#/components/foobar-ui/1.2.3'
+    visit '/#/components/foobar-ui?version=1.2.3'
 
     page.find('select[ng-model="selectedVersion"] option[selected]').text.should eq '1.2.3'
     page.should have_text("gem 'rails-assets-foobar-ui', '1.2.3', source: 'https://rails-assets.org'")
@@ -24,13 +24,27 @@ feature 'Component search' do
 
     page.find('select[ng-model="selectedVersion"] option:last-child').select_option
 
-    page.current_url.should match '/#/components/foobar-ui/1.2.3'
+    page.current_url.should end_with '/#/components/foobar-ui?version=1.2.3'
     page.should have_text("gem 'rails-assets-foobar-ui', '1.2.3', source: 'https://rails-assets.org'")
   end
-end
 
-#back to search with gem name
-#back to search with previous search
-#javascript for js only
-#javascript and stylesheet for both
-#error message for neither present
+  scenario 'navigating back to search preserves the previous search query' do
+    raise 'unimplemented'
+  end
+
+  scenario 'navigating back to search uses current gem name as query when no previous is present' do
+    raise 'unimplemented'
+  end
+
+  scenario 'instructions describe a javascript include when the component only contains javascript main assets' do
+    raise 'unimplemented'
+  end
+
+  scenario 'instructions describe javascript and css includes' do
+    raise 'unimplemented'
+  end
+
+  scenario 'an appropriate error message is shown when no main assets are found' do
+    raise 'unimplemented'
+  end
+end
