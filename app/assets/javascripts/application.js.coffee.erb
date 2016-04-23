@@ -16,7 +16,7 @@ app = angular.module('rails-assets')
 app.config ['$routeProvider', ($routeProvider) ->
   $routeProvider.
     when('/', templateUrl: 'ng_templates/home', reloadOnSearch: false).
-    when('/components/:componentName/:version?', templateUrl: 'ng_templates/component').
+    when('/components/:componentName', templateUrl: 'ng_templates/component', reloadOnSearch: false).
     otherwise(redirectTo: '/')
 ]
 app.config ['notificationsConfigProvider', (notificationsConfigProvider) ->
