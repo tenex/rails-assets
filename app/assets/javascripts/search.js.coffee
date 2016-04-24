@@ -2,11 +2,8 @@ SearchController = ($scope, $http, $filter, $rootScope, $routeParams, $location,
   $scope.limit = 5
 
   $scope.fetch = ->
-    $http.get("/components.json").then (res) ->
-      $scope.gems = $filter('orderBy')(res.data, 'name')
-
-      if $scope.gems.length == 1
-        $scope.$broadcast 'showAssets'
+    $http.get("/components.json", cache: true).then (response) ->
+      $scope.gems = $filter('orderBy')(response.data, 'name')
 
   $scope.fetch()
 

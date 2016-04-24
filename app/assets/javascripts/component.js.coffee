@@ -15,7 +15,7 @@ ComponentController = ($rootScope, $scope, $filter, $http, $routeParams, $locati
   $rootScope.$on '$routeUpdate', setVersion
   setVersion()
 
-  $http.get("/components.json").then (response) ->
+  $http.get("/components.json", cache: true).then (response) ->
     $scope.gem = $filter('filter')(response.data, { name: $scope.componentName }, true)[0]
     $controller('SearchResultController', { $scope: $scope })
     setVersion()
