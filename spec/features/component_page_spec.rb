@@ -80,6 +80,13 @@ feature 'Component search' do
   end
 
   scenario 'an appropriate error message is shown when no main assets are found' do
-    raise 'unimplemented' #1.2.3
+    visit '/#/components/foobar-ui?version=1.2.3'
+
+    page.all('div.instructions > h2').last.text.should end_with 'Include files'
+    page.find('div.notice').text.should include 'foobar-ui 1.2.3 does not define any main assets'
+    page.should_not have_text('app/assets/javascripts/application.js')
+    page.should_not have_text('app/assets/stylesheets/application.css')
+    page.should have_text('foobar/foobar-ui.js')
+    page.should have_text('foobar/foobar.css')
   end
 end

@@ -61,7 +61,8 @@ article.gem.section.wrap ng-controller="ComponentController"
       span ng-show="jsManifest" javascript 
       span ng-show="jsManifest && cssManifest" and 
       span ng-show="cssManifest" stylesheet
-    p
+      span ng-show="!jsManifest && !cssManifest" files
+    p ng-show="jsManifest || cssManifest"
       | Add the following line
       span ng-show="jsManifest && cssManifest" s
       |  to your asset pipeline-enabled 
@@ -71,7 +72,27 @@ article.gem.section.wrap ng-controller="ComponentController"
       |  file
       span ng-show="jsManifest && cssManifest" s
       | . Next time you load a page in your application, {{ gem.name }} should be ready to go!
-      div.grid__cell
-        ng-include ng-show="jsManifest" src="'ng_templates/application-js-diff'"
-      div.grid__cell
-        ng-include ng-show="cssManifest" src="'ng_templates/application-css-diff'"
+      div.grid__cell ng-show="jsManifest"
+        ng-include src="'ng_templates/application-js-diff'"
+      div.grid__cell ng-show="cssManifest"
+        ng-include src="'ng_templates/application-css-diff'"
+    div ng-show="!jsManifest && !cssManifest"
+      div.notice.notice-important
+        span.glyphicon.glyphicon-alert
+        | &nbsp; {{ gem.name }} {{ selectedVersion }} does not define any main assets. It may be invalid. Please 
+        a ng-href="{{ gem.homepage }}" target="_blank"
+          | contact the maintainer
+        | .
+      | This component's 
+      code.inline-code bower.json
+      |  does not specify which assets to include. 
+      span ng-show="javascripts.length > 0 || stylesheets.length > 0"
+        | Choose which files to 
+        code.inline-code require
+        |  in your asset pipeline-enabled javascript or stylesheet files:
+        p
+        div.grid__cell: div.grid__cell
+          ul: li.bulleted ng-repeat="asset in javascripts"
+            code.bold ng-bind="asset.path"
+          ul: li.bulleted ng-repeat="asset in stylesheets"
+            code.bold ng-bind="asset.path"
