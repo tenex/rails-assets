@@ -122,6 +122,6 @@ class MainController < ApplicationController
   end
 
   def can_skip_https?
-    [request.local?, Rails.env.staging?, Rails.env.development?].any?
+    request.local? || Rails.env.test? || Rails.env.development?
   end
 end
