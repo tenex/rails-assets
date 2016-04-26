@@ -37,6 +37,7 @@ server {
     }
 }
 
+{% if rails_env == 'production' %}
 server {
     listen 443 ssl;
     
@@ -46,3 +47,4 @@ server {
     server_name rails-assets.tenex.tech;
     return 301 https://rails-assets.org$request_uri;
 }
+{% endif %}
