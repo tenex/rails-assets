@@ -165,6 +165,8 @@ GEM
     newrelic_rpm (3.14.0.305)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
+    non-stupid-digest-assets (1.0.8)
+      sprockets (>= 2.0)
     peach (0.5.1)
     pg (0.18.4)
     postrank-uri (1.0.18)
@@ -424,6 +426,7 @@ DEPENDENCIES
   honey_badger
   js-routes
   newrelic_rpm
+  non-stupid-digest-assets
   peach
   pg
   postrank-uri

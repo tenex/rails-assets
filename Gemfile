@@ -28,6 +28,7 @@ gem 'faker'
 gem 'quiet_assets'
 gem 'peach'
 gem 'annotate'
+gem 'non-stupid-digest-assets'
 gem 'rb-readline', '~> 0.5.0', require: false
 gem 'awesome_print'
 gem 'honey_badger'
