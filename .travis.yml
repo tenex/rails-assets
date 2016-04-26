@@ -4,6 +4,8 @@ cache: false
 addons:
   postgresql: "9.3"
 before_script:
+  - node --version
+  - npm --version
   - npm install --silent
   - cp config/application.sample.yml config/application.yml
   - psql -c 'create database rails_assets_test;' -U postgres
