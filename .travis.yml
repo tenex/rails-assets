@@ -1,6 +1,6 @@
 language: ruby
 sudo: false
-cache: bundler
+cache: false
 addons:
   postgresql: "9.3"
 before_script:
@@ -9,6 +9,7 @@ before_script:
   - psql -c 'create database rails_assets_test;' -U postgres
   - bundle exec rake db:schema:load
   - export DISPLAY=:99.0
+  - which bower
   - bower --version
   - sh -e /etc/init.d/xvfb start
 script: bundle exec rspec
@@ -16,4 +17,3 @@ services:
   - redis-server
 rvm:
   - 2.2.3
-  - 2.3.0
