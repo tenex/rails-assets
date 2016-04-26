@@ -309,7 +309,6 @@
     - command: /opt/letsencrypt/letsencrypt-auto certonly --agree-tos --standalone --config /etc/lets-encrypt-config.ini
                creates=/etc/letsencrypt/live
 
-
 - name: configure postgres and redis
   hosts: database
   user: root

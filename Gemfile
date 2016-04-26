@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.2.3'
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.2.0'
 
 gem 'pg'
@@ -23,7 +21,6 @@ gem 'autoprefixer-rails', '>= 0.6.20130728'
 gem 'redcarpet'
 gem 'figaro', github: 'laserlemon/figaro'
 gem 'sentry-raven'
-gem 'thin'
 gem 'newrelic_rpm'
 gem 'rails_stdout_logging'
 gem 'factory_girl_rails'
@@ -39,7 +36,6 @@ gem 'thread', require: 'thread/pool'
 gem 'whenever'
 gem 'postrank-uri'
 gem 'foreman'
-gem 'dotenv'
 gem 'actionpack-page_caching'
 gem 'stripe'
 gem 'js-routes'
@@ -56,7 +52,8 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rspec-rails'
+  gem 'thin'
+  gem 'rspec-rails', '~> 2.0'
   gem 'pry', '0.9.12.2'
   gem 'pry-rails'
 end

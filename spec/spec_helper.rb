@@ -4,22 +4,25 @@ require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/rspec'
+require 'support'
+require 'support/capybara'
+require 'support/continuous_integration'
 
 ActiveRecord::Migration.maintain_test_schema!
 Capybara.default_driver = Capybara.javascript_driver = :selenium
-#need to include Capybara::Angular::DSL?
+# need to include Capybara::Angular::DSL?
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
-  config.order = 'random'
+  config.order = :defined
   config.include FactoryGirl::Syntax::Methods
 
   config.include Rails.application.routes.url_helpers, type: :feature
   config.after(:each, type: :feature) do
     if @example.exception && Support::ContinuousIntegration.upload_screenshot_on_failure?
-      puts "Failure detected. Uploading screenshot..."
+      puts 'Failure detected. Uploading screenshot...'
       Support::Capybara.upload_screenshot
     end
   end
@@ -45,6 +48,6 @@ VCR.configure do |config|
   config.filter_sensitive_data("ENV['STRIPE_SECRET_KEY']") { ENV['STRIPE_SECRET_KEY'] }
   config.hook_into :webmock
   config.ignore_localhost = true
-  #Uncomment when new requests should be recorded into existing cassettes
-  #config.default_cassette_options.merge!(record: :new_episodes)
+  # Uncomment when new requests should be recorded into existing cassettes
+  # config.default_cassette_options.merge!(record: :new_episodes)
 end

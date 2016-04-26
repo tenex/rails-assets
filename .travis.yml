@@ -1,14 +1,21 @@
 language: ruby
-sudo: false
-cache: bundler
+cache:
+  - bundler
 addons:
   postgresql: "9.3"
+before_install:
+  - nvm install 4
 before_script:
+  - env
+  - locale
+  - node --version
+  - npm --version
   - npm install --silent
   - cp config/application.sample.yml config/application.yml
   - psql -c 'create database rails_assets_test;' -U postgres
   - bundle exec rake db:schema:load
   - export DISPLAY=:99.0
+  - which bower
   - bower --version
   - sh -e /etc/init.d/xvfb start
 script: bundle exec rspec
