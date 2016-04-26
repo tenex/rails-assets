@@ -1,8 +1,11 @@
 module Build
+  # Encapsulate Bower errors
+  # parsed from Bower JSON output
   class BowerError < BuildError
     attr_reader :path, :command, :details, :code
 
     ENOTFOUND = 'ENOTFOUND'.freeze
+    EINVALID = 'EINVALID'.freeze
 
     def initialize(message, details, path = nil, command = nil, code = nil)
       @details = details
@@ -14,6 +17,10 @@ module Build
 
     def not_found?
       @code == ENOTFOUND
+    end
+
+    def invalid?
+      @code == EINVALID
     end
 
     def self.from_shell_error(e)
