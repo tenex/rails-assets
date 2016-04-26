@@ -3,11 +3,10 @@ sudo: false
 cache: false
 addons:
   postgresql: "9.3"
-node_js:
-  - "4"
 before_install:
   - nvm install 4
 before_script:
+  - env
   - node --version
   - npm --version
   - npm install --silent
