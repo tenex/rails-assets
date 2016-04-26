@@ -25,6 +25,7 @@ app.config ['notificationsConfigProvider', (notificationsConfigProvider) ->
   notificationsConfigProvider.setAutoHideAnimation('fadeOutUp')
 ]
 
+
 <% if Rails.configuration.x.inline_ng_templates  %>
 <% @renderer = ActionView::Base.new(ActionController::Base.view_paths) %>
 <% templates = Dir.glob('app/views/ng_templates/*') %>
