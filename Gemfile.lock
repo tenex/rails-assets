@@ -417,7 +417,6 @@ DEPENDENCIES
   capybara-angular
   coffee-rails
   database_cleaner
-  dotenv
   factory_girl_rails
   faker
   figaro!
