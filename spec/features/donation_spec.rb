@@ -4,7 +4,7 @@ feature 'Stripe integreation' do
   scenario 'accepts donations' do
     visit root_path
 
-    click_link 'Donate'
+    page.find(:css, 'nav div', text: 'Donate').click
 
     fill_in 'amount', with: '5.45'
     click_button 'Next'

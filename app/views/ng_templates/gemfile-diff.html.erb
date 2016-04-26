@@ -1,0 +1,22 @@
+<%# Adapted from output of npm's pretty-diff %>
+<div class="code-wrapper">
+  <h2>
+		<button ngclipboard data-clipboard-target="#gemfile-insert" class="tooltipped-s tooltipped-no-delay github-btn" ngclipboard-success="onClipboardCopy(e)" aria-label="Copied!">
+			Copy
+		</button>
+		Gemfile
+	</h2>
+  <div class='file-diff'>
+    <div>
+      <pre class='file'>diff --git a/Gemfile b/Gemfile</pre>
+      <pre class='delete file-name'>--- a/Gemfile</pre>
+      <pre class='insert file-name'>+++ b/Gemfile</pre>
+      <pre class='info'>@@ -5,3 +5,5 @@ gem 'sqlite3'</pre>
+      <pre class='context'> gem 'sass-rails', '~&gt; 5.0'</pre>
+      <pre class='context'> gem 'uglifier', '&gt;= 1.3.0'</pre>
+      <pre class='context'> gem 'coffee-rails', '~&gt; 4.1.0'</pre>
+      <pre class='context'></pre>
+      <pre class='insert new-code' id="gemfile-insert">gem 'rails-assets-{{ gem.name }}', <span ng-show="selectedVersion != gem.latestVersion">'{{ selectedVersion}}', </span>source: 'https://<%= Rails.configuration.x.hostname %>'</pre>
+    </div>
+  </div>
+</div>

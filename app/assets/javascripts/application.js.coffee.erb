@@ -1,0 +1,38 @@
+#= require angular
+#= require angular-route
+#= require ngNotificationsBar
+#= require angular-animate
+#= require popeye
+#= require angular-scroll
+#= require angular-semver-sort
+#= require clipboard
+#= require ngclipboard
+#= require js-routes
+#= require rails-assets
+#= require_directory .
+
+app = angular.module('rails-assets')
+
+app.config ['$routeProvider', ($routeProvider) ->
+  $routeProvider.
+    when('/', templateUrl: 'ng_templates/home', reloadOnSearch: false).
+    when('/components/:componentName', templateUrl: 'ng_templates/component', reloadOnSearch: false).
+    otherwise(redirectTo: '/')
+]
+app.config ['notificationsConfigProvider', (notificationsConfigProvider) ->
+  notificationsConfigProvider.setHideDelay(6000)
+  notificationsConfigProvider.setAutoHide(true)
+  notificationsConfigProvider.setAutoHideAnimation('fadeOutUp')
+]
+
+<% if Rails.configuration.x.inline_ng_templates  %>
+<% @renderer = ActionView::Base.new(ActionController::Base.view_paths) %>
+<% templates = Dir.glob('app/views/ng_templates/*') %>
+<% templates.map! { |path| path.split('.').first.remove('app/views/') } %>
+
+app.run ['$templateCache', ($templateCache) ->
+<% templates.each do |template| %>
+  $templateCache.put('<%= template %>', """<%= @renderer.render(template: template) %>""")
+<% end %>
+]
+<% end %>

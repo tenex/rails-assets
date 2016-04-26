@@ -1,0 +1,98 @@
+article.gem.section.wrap ng-controller="ComponentController"
+  div
+    a.back ng-href="#/?query={{ lastSearch || gem.name }}"
+      span.glyphicon.glyphicon-chevron-left
+      | Back to search results
+  header.grid__cell
+    = image_tag 'bower-logo.svg', class: 'component-source-logo', title: 'Bower Component'
+    h1.gem-name
+      | {{ gem.name}}
+    div ng-show="gem.description"
+      | {{ gem.description }}
+    div.latest-version
+      span.glyphicon.glyphicon-tags 
+      strong  Latest version:
+      | &nbsp; {{ gem.latestVersion }}
+    div.homepage ng-show="gem.homepage"
+      span.glyphicon.glyphicon-home
+      a ng-href="{{ gem.homepage }}" target="_blank"
+        |  {{ gem.homepage }} 
+        span.glyphicon.glyphicon-new-window
+  div.grid__cell.instructions
+    div#version-chooser
+      strong Version: 
+      select ng-model="selectedVersion" ng-options="version for version in gem.versions | orderBy:'$index':true"
+    h2
+      span.step 1
+      span Add {{ gem.name }} to your Gemfile
+    p
+      | Open the 
+      code.inline-code Gemfile
+      |  in your project's directory and add the following line:
+      div.grid__cell
+        ng-include src="'ng_templates/gemfile-diff'"
+    h2
+      span.step 2
+      span Run bundler
+    p 
+      | Execute 
+      code.inline-code bundle install
+      | . Be sure to restart your rails server whenever your update your dependencies!
+      div.grid__cell
+        pre.command-line.language-bash
+          code.language-bash
+            span.command-line-prompt
+              span data-user="user" data-host="localhost"
+              span
+              span
+              span
+              span
+              span
+            span.bundle-command bundle install
+            | &nbsp;
+              Fetching gem metadata from https://rails-assets.org/...
+              Fetching gem metadata from https://rubygems.org/...
+              Resolving dependencies...
+              Installing rails-assets-{{ gem.name }} {{ selectedVersion }}
+              Bundle complete!
+    h2
+      span.step 3
+      span Include 
+      span ng-show="jsManifest" javascript 
+      span ng-show="jsManifest && cssManifest" and 
+      span ng-show="cssManifest" stylesheet
+      span ng-show="!jsManifest && !cssManifest" files
+    p ng-show="jsManifest || cssManifest"
+      | Add the following line
+      span ng-show="jsManifest && cssManifest" s
+      |  to your asset pipeline-enabled 
+      span ng-show="jsManifest" javascript 
+      span ng-show="jsManifest && cssManifest" and 
+      span ng-show="cssManifest" stylesheet
+      |  file
+      span ng-show="jsManifest && cssManifest" s
+      | . Next time you load a page in your application, {{ gem.name }} should be ready to go!
+      div.grid__cell ng-show="jsManifest"
+        ng-include src="'ng_templates/application-js-diff'"
+      div.grid__cell ng-show="cssManifest"
+        ng-include src="'ng_templates/application-css-diff'"
+    div ng-show="!jsManifest && !cssManifest"
+      div.notice.notice-important
+        span.glyphicon.glyphicon-alert
+        | &nbsp; {{ gem.name }} {{ selectedVersion }} does not define any main assets. It may be invalid. Please 
+        a ng-href="{{ gem.homepage }}" target="_blank"
+          | contact the maintainer
+        | .
+      | This component's 
+      code.inline-code bower.json
+      |  does not specify which assets to include. 
+      span ng-show="javascripts.length > 0 || stylesheets.length > 0"
+        | Choose which files to 
+        code.inline-code require
+        |  in your asset pipeline-enabled javascript or stylesheet files:
+        p
+        div.grid__cell: div.grid__cell
+          ul: li.bulleted ng-repeat="asset in javascripts"
+            code.bold ng-bind="asset.path"
+          ul: li.bulleted ng-repeat="asset in stylesheets"
+            code.bold ng-bind="asset.path"

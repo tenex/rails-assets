@@ -1,0 +1,47 @@
+/* Adapted from output of npm's pretty-diff */
+.code-wrapper {
+	margin-top: 1em;
+	min-width: 800px;
+	text-align: left;
+}
+.code-wrapper h2 {
+	background: #fafafa;
+	background: -moz-linear-gradient(#fafafa, #eaeaea);
+	background: -webkit-linear-gradient(#fafafa, #eaeaea);
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa',endColorstr='#eaeaea')";
+	border: 1px solid #d8d8d8;
+	border-bottom: 0;
+	color: #555;
+	font: 14px sans-serif;
+	padding: 10px 6px;
+	text-shadow: 0 1px 0 white;
+	margin: 0;
+}
+.file-diff {
+	border: 1px solid #d8d8d8;
+	margin-bottom: 1em;
+	overflow: auto;
+	padding: 0.5em 0;
+}
+.file-diff > div {
+	width: 100%;
+}
+.code-wrapper pre {
+	margin: 0;
+	font-family: "Bitstream Vera Sans Mono", Courier, monospace;
+	font-size: 12px;
+	line-height: 1.4em;
+	text-indent: 0.5em;
+}
+.code-wrapper .file {
+	color: #aaa;
+}
+.code-wrapper .delete {
+	background-color: #fdd;
+}
+.code-wrapper .insert {
+	background-color: #dfd;
+}
+.code-wrapper .info {
+	color: #a0b;
+}

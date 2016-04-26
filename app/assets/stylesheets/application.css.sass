@@ -1,3 +1,5 @@
+//= require pretty-diff
+//= require prism
 //= require bootstrap-custom
 //= require ngNotificationsBar
 //= require popeye
@@ -13,3 +15,12 @@
 @import "application/modules/*"
 @import "application/placeholders"
 @import "application/shame"
+
+@import "primer/variables"
+@import "primer/buttons"
+.github-btn
+  &:active, &:hover, &:focus
+    color: initial
+  &:focus
+    background-color: initial
+@import "primer/tooltips"

@@ -7,11 +7,16 @@
   code
     color: inherit
 
-.notice--important
+.notice-important
   @extend .util__inverted
   background: $brand-orange
   color: #fff
 
-.notice--success
-  @extend .notice--important
+  a
+    color: #ffe17b
+    &:hover
+      color: white
+
+.notice-success
+  @extend .notice-important
   background: $diff-green

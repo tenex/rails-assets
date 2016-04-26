@@ -28,4 +28,5 @@ RailsAssets::Application.configure do
   config.log_level = :debug
 
   Rails.configuration.x.hostname = 'localhost:3009'
+  Rails.configuration.x.inline_ng_templates = false
 end
