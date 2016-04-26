@@ -1,5 +1,5 @@
 language: ruby
-sudo: false
+# sudo: false
 cache: false
 addons:
   postgresql: "9.3"
