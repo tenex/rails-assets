@@ -20,9 +20,9 @@ gem 'coffee-rails', '~> 4.0.0'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
-# source 'https://rails-assets.tenex.tech'
-# source 'http://localhost:9292'
-source 'http://localhost:3009' do
+source 'https://rails-assets.org' do
+# source 'http://localhost:9292' do
+#source 'http://localhost:3009' do
   gem "rails-assets-sugar"
   gem "rails-assets-angular"
   # gem "rails-assets-angular-mousewheel"

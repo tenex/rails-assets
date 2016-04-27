@@ -25,34 +25,6 @@ class MainController < ApplicationController
 
       invalid_gemfile = !gem_names.include?('bundler')
 
-      if false
-
-        message = ''"
-          Due to security vulnerability non-block source syntax is now strongly discouraged!
-
-          Please require bundler >= 1.8.4 and specify sources in blocks as follows:
-
-          ```
-          source 'https://rubygems.org'
-
-          gem 'bundler', '>= 1.8.4'
-
-          gem 'rails'
-          # The rest of RubyGems gems...
-
-          source 'https://#{Rails.configuration.x.hostname}' do
-            gem 'rails-assets-angular'
-            # The rest of RailsAssets gems...
-          end
-          ```
-        "''.strip_heredoc
-
-        render text: message,
-               status: :unprocessable_entity
-
-        return
-      end
-
       gem_names = gem_names.select { |e| e.start_with?(GEM_PREFIX) }
       gem_names = gem_names.map { |e| e.gsub(GEM_PREFIX, '') }
 
