@@ -73,8 +73,7 @@ class MainController < ApplicationController
         end
       end
 
-      # FIXME: Perhaps this can be either made async or removed?
-      Reindex.new.perform if Version.pending_index.count > 0
+      Reindex.perform_async
 
       gems = Component.where(name: gem_names).to_a.flat_map do |component|
         component.versions.builded.map do |v|
