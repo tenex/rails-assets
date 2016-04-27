@@ -1,24 +1,25 @@
 require 'rubygems/indexer'
 
+# Generates specs.4.8 and latest_specs.4.8
 class Reindex
   include Sidekiq::Worker
 
+  # A reindex operation has no parameters; it simply reindexes everything
+  # therefore only one should exist at a time and they need not be retried
   sidekiq_options queue: 'reindex', unique: :all, retry: 0
 
   def perform(_force = false)
+    return unless Version.pending_index.present?
     Build::Locking.with_lock(:index) do
       Version.transaction do
-        pending_index_ids = Version.pending_index.pluck(:id)
-
         Version.pending_index.update_all(build_status: 'indexed')
-
         generate_indexes
       end
     end
-
     # Clear cache for components.json api endpoint
-    PageCacheManager.new.expire_page(controller: :components, action: :index, format: :json)
-
+    PageCacheManager.new.expire_page(controller: :components,
+                                     action: :index,
+                                     format: :json)
     true
   end
 
