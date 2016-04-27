@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-RailsAssets::Application.config.secret_key_base = '275aa3841b4ff5d24238dbb7a63f219cb117851d86cec51831713224db1be49133cf1aa3d6027201ce07045e38378a54b2949042519d1186905215e47b178a1b'
+RailsAssetsApp::Application.config.secret_key_base = '275aa3841b4ff5d24238dbb7a63f219cb117851d86cec51831713224db1be49133cf1aa3d6027201ce07045e38378a54b2949042519d1186905215e47b178a1b'

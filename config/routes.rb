@@ -1,4 +1,4 @@
-RailsAssets::Application.routes.draw do
+RailsAssetsApp::Application.routes.draw do
   get '/packages' => 'main#packages'
   get '/packages/:name' => 'main#package',
     constraints: { name: /[^\/]+/ }

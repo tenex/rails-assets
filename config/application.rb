@@ -9,7 +9,7 @@ Bundler.require(:default, Rails.env)
 
 require_relative '../app/workers/update_scheduler'
 
-module RailsAssets
+module RailsAssetsApp
   class Application < Rails::Application
     config.cache_store = :redis_store, ENV['REDIS_URL']
     Rails.configuration.x.hostname = 'rails-assets.org'
