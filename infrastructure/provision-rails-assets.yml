@@ -196,6 +196,14 @@
       notify: restart nginx
     - file: path=/etc/nginx/sites-enabled/default state=absent
       notify: restart nginx
+    - name: fix permissions for nginx+passenger+logrotate
+      file: path=/var/log/nginx
+            state=directory
+            mode="u=rwx,g=rx,o=rx"
+    - name: logrotate script
+      copy: src=logrotate-nginx
+            dest=/etc/logrotate.d/nginx
+            mode=0644
   handlers:
     - name: restart nginx
       service: name=nginx state=restarted
