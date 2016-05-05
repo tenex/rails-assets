@@ -4,7 +4,7 @@
         dateext
 	rotate 5
 	compress
-	delaycompress
+	nodelaycompress
 	notifempty
 	create 0644 rails-assets adm
 	sharedscripts
