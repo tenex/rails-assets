@@ -23,8 +23,6 @@ class MainController < ApplicationController
       # instead only ones defined in source block.
       # invalid_gemfile = gem_names.find { |e| !e.start_with?(GEM_PREFIX) }.present?
 
-      invalid_gemfile = !gem_names.include?('bundler')
-
       gem_names = gem_names.select { |e| e.start_with?(GEM_PREFIX) }
       gem_names = gem_names.map { |e| e.gsub(GEM_PREFIX, '') }
 
