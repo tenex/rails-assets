@@ -12,7 +12,7 @@ class MainController < ApplicationController
                       .map(&:as_json)
                       .map { |i| i['item']['args'] }
     @failed_jobs = FailedJob
-                   .where('created_at > ?', 1.month.ago)
+                   .where('created_at > ?', 1.week.ago)
                    .order(:created_at)
   end
 
