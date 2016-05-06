@@ -6,16 +6,20 @@ article.section
         p = flash[:notice]
     .grid
       .grid__cell.unit-4-4.content
-        - unless @pending_index.empty?
-          article.pending-reindex
-            h1 Pending reindex
+        article.pending-reindex
+          h1 Pending reindex
+          - if @pending_index.empty?
+            | None
+          - else
             ul
               - @pending_index.each do |version|
                 li = "#{version.component.name}##{version.string}"
 
-        - unless @pending_builds.empty?
-          article.pending-builds style="margin-top: 2em"
-            h1 Pending build
+        article.pending-builds style="margin-top: 2em"
+          h1 Pending build
+          - if @pending_builds.empty?
+            | None
+          - else
             ul
               - @pending_builds.each do |args|
                 li = args.join('#')
