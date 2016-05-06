@@ -11,7 +11,9 @@ class MainController < ApplicationController
                       .new('default')
                       .map(&:as_json)
                       .map { |i| i['item']['args'] }
-    @failed_jobs = FailedJob.where('created_at > ?', 1.week.ago)
+    @failed_jobs = FailedJob
+                   .where('created_at > ?', 1.month.ago)
+                   .order(:created_at)
   end
 
   def dependencies
