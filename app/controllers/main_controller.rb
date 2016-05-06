@@ -7,10 +7,13 @@ class MainController < ApplicationController
 
   def status
     @pending_index = Version.includes(:component).pending_index.load
-
-    @pending_builds = Sidekiq::Queue.new('default').map(&:as_json).map { |i| i['item']['args'] }
-
-    @failed_jobs = FailedJob.all.to_a
+    @pending_builds = Sidekiq::Queue
+                      .new('default')
+                      .map(&:as_json)
+                      .map { |i| i['item']['args'] }
+    @failed_jobs = FailedJob
+                   .where('created_at > ?', 1.week.ago)
+                   .order(:created_at)
   end
 
   def dependencies
@@ -22,8 +25,6 @@ class MainController < ApplicationController
       # TODO: Enable this in future. For now bundler sends all gems
       # instead only ones defined in source block.
       # invalid_gemfile = gem_names.find { |e| !e.start_with?(GEM_PREFIX) }.present?
-
-      invalid_gemfile = !gem_names.include?('bundler')
 
       gem_names = gem_names.select { |e| e.start_with?(GEM_PREFIX) }
       gem_names = gem_names.map { |e| e.gsub(GEM_PREFIX, '') }
