@@ -7,10 +7,11 @@ class MainController < ApplicationController
 
   def status
     @pending_index = Version.includes(:component).pending_index.load
-
-    @pending_builds = Sidekiq::Queue.new('default').map(&:as_json).map { |i| i['item']['args'] }
-
-    @failed_jobs = FailedJob.all.to_a
+    @pending_builds = Sidekiq::Queue
+                      .new('default')
+                      .map(&:as_json)
+                      .map { |i| i['item']['args'] }
+    @failed_jobs = FailedJob.where('created_at > ?', 1.week.ago)
   end
 
   def dependencies
