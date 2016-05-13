@@ -15,12 +15,21 @@ set :log_level, :debug
 set :pty, false
 set(:linked_files,
     fetch(:linked_files, []).push(
-      'config/application.yml'
+      'config/application.yml',
+      'public/components.json',
+      'public/prerelease_specs.4.8',
+      'public/prerelease_specs.4.8.gz',
+      'public/specs.4.8',
+      'public/specs.4.8.gz',
+      'public/latest_specs.4.8',
+      'public/latest_specs.4.8.gz',
+      'public/packages.json'
     ))
 
 set(:linked_dirs,
     fetch(:linked_dirs, []).push(
-      'public',
+      'public/gems',
+      'public/quick',
       'tmp/cache',
       'log'
     ))
