@@ -10,9 +10,13 @@ RailsAssetsApp::Application.configure do
   # Rake tasks automatically ignore this option for performance.
   config.eager_load = true
 
-  # Full error reports are disabled and caching is turned on.
-  config.consider_all_requests_local       = false
+  # Full error reports are disabled
+  config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
+
+  # Cache files in the /srv/data directory, which is accessible via NFS by
+  # both the build server (which must expire it) and the web server
+  config.action_controller.page_cache_directory = '/srv/data'
 
   # Enable Rack::Cache to put a simple HTTP cache in front of your application
   # Add `rack-cache` to your Gemfile before enabling this.
@@ -21,7 +25,7 @@ RailsAssetsApp::Application.configure do
 
   config.serve_static_files = true
 
-  config.static_cache_control = "public, max-age=31536000"
+  config.static_cache_control = 'public, max-age=31536000'
 
   # Compress JavaScripts and CSS.
   config.assets.js_compressor = :uglifier
