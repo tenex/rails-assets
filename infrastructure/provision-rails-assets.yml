@@ -306,6 +306,7 @@
     - template: src=lets-encrypt-renew-certificate
                 dest=/opt/lets-encrypt-renew-certificate
                 owner=root group=users
+                mode=0740
     - name: install lets-encrypt from source
       git: repo=https://github.com/letsencrypt/letsencrypt
            dest=/opt/letsencrypt
