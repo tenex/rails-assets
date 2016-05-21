@@ -48,3 +48,19 @@ task :restart_workers do
   end
 end
 after 'deploy:published', 'restart_workers'
+
+# Tag each deployment
+namespace :git do
+  task :push_deploy_tag do
+    on roles(:app) do
+      user  = `git config --get user.name`.chomp
+      email = `git config --get user.email`.chomp
+      stage = fetch(:stage)
+      current_revision = fetch(:current_revision)
+
+      info `git tag #{stage}-deploy-#{release_timestamp} #{current_revision} -m "Deployed by #{user} <#{email}>"`
+      info `git push --tags origin`
+    end
+  end
+end
+after 'deploy:restart', 'git:push_deploy_tag'
