@@ -2,14 +2,14 @@
 
 > [Bundler](http://bundler.io) to [Bower](http://bower.io) proxy
 
-This README concerns the development aspect of the project. **[Visit the site](https://rails-assets.tenex.tech) to learn how to use Rails Assets in your application.**
+This README concerns the development aspect of the project. **[Visit the site](https://rails-assets.org) to learn how to use Rails Assets in your application.**
 
 ## Development
 
 ### Setup
 
 ```sh
-git clone git@github.com:rails-assets/rails-assets.git && cd rails-assets
+git clone git@github.com:tenex/rails-assets && cd rails-assets
 bundle install && npm install
 cp config/database{.sample,}.yml
 cp config/application{.sample,}.yml
@@ -51,6 +51,6 @@ instead of
 
 Maintained by Tenex Developers [@tenex](http://github.com/tenex).
 
-Originally created by [@teamon](http://github.com/teamon), [@porada](http://github.com/porada) and [@sheerun](http://github.com/sheerun), with the help of [contributors](https://github.com/rails-assets/rails-assets/graphs/contributors). :heart:
+Originally created by [@teamon](http://github.com/teamon), [@porada](http://github.com/porada) and [@sheerun](http://github.com/sheerun), with the help of [contributors](https://github.com/tenex/rails-assets/graphs/contributors). :heart:
 
-Please don’t tweet bugs to us—[report an issue](https://github.com/rails-assets/rails-assets/issues) instead. :v:
+Please don’t tweet bugs to us—[report an issue](https://github.com/tenex/rails-assets/issues) instead. :v:
