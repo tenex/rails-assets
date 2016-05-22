@@ -50,6 +50,7 @@ group :development do
   gem 'capistrano-passenger'
   gem 'capistrano-npm'
   gem 'capistrano-foreman'
+  gem 'slackistrano'
 end
 
 group :development, :test do
