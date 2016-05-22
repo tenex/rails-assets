@@ -9,7 +9,7 @@ This README concerns the development aspect of the project. **[Visit the site](h
 ### Setup
 
 ```sh
-git clone git@github.com:tenex/rails-assets && cd rails-assets
+git clone git@github.com:tenex/rails-assets.git && cd rails-assets
 bundle install && npm install
 cp config/database{.sample,}.yml
 cp config/application{.sample,}.yml
