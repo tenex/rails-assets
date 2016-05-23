@@ -1,8 +1,8 @@
 [web]
-staging.rails-assets.org rails_env=staging
+wopr.rails-assets.org rails_env=production
 
 [worker]
-staging.rails-assets.org rails_env=staging
+wopr.rails-assets.org rails_env=production
 
 [database]
-staging.rails-assets.org
+wopr.rails-assets.org
