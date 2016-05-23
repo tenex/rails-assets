@@ -1,0 +1,39 @@
+#!/bin/bash
+set -eu
+
+server='rails-assets.org'
+db_dump_path='/home/rails-assets/dumps'
+db_dump_name="rails-assets-$(date '+%s').psql.dump"
+
+# Clear out old backup files
+function prune_files {
+    local clean_path=${1?'prune_files: path to clean not passed'}
+    local keep_files=${2:-10}
+
+    find $clean_path -type f -printf '%T@\t%p\n' | \
+        sort --numeric-sort --reverse | \
+        tail --lines "+${keep_files}" | \
+        cut --fields 2 | \
+        while read old_file
+        do
+            echo "pruning old file $old_file"
+            rm $old_file
+        done
+}
+
+
+mkdir -p $db_dump_path
+db_dump_path="$db_dump_path/$db_dump_name"
+
+echo "dumping database to $db_dump_path"
+ssh ${server} \
+    pg_dump \
+    --format=custom \
+    --username rails_assets \
+    rails_assets_production > ${db_dump_path}
+
+echo "syncing server:/srv/data files to local:/srv/data"
+rsync -aAX ${server}:/srv/data /srv
+
+echo "syncing server:/etc/letsencrypt to local:/etc/letsencrypt"
+rsync -aAX root@${server}:/etc/letsencrypt /etc
