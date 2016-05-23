@@ -82,6 +82,8 @@
     - name: setup app user
       user: name={{ app_name }} shell=/bin/bash
             groups=rvm,{{ app_name }} append=yes
+            generate_ssh_key=yes
+      register: app_user
 
     # TODO: authorized_key can pull from our site, but it doesn't like our
     # letsencrypt SSL certs. look into why.
@@ -102,6 +104,13 @@
       authorized_key: user={{ item.username }}
                       key="https://github.com/{{ item.github }}.keys"
       with_items: "{{ engineers }}"
+
+    - name: trust own key for rsync
+      authorized_key: user={{ item }}
+                      key={{ app_user.ssh_public_key }}
+      with_items:
+        - root
+        - "{{ app_name }}"
 
     - name: set tmp permissions
       file: path=/tmp mode=a+w
