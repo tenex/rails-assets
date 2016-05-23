@@ -375,3 +375,20 @@
                        name=rails_assets
                        priv=ALL
                        role_attr_flags=CREATEDB,CREATEROLE,SUPERUSER
+
+- name: install secondary failover scripts
+  hosts: secondary
+  user: rails-assets
+  tags:
+    - secondary
+  tasks:
+    - name: copy primary-copydown script
+      copy: src=primary-copydown
+            dest=/home/rails-assets/primary-copydown
+            mode=0750
+    - name: have cron email us
+      cron: env=yes name="MAILTO" value="engineers@tenex.tech"
+    - name: install primary-copydown into cron
+      cron: name="primary-copydown"
+            hour="*/4" minute="0"
+            job="/home/rails-assets/primary-copydown"
