@@ -307,6 +307,8 @@
                 dest=/opt/lets-encrypt-renew-certificate
                 owner=root group=users
                 mode=0740
+    - name: create /opt
+      file: path=/opt state=directory
     - name: install lets-encrypt from source
       git: repo=https://github.com/letsencrypt/letsencrypt
            dest=/opt/letsencrypt
