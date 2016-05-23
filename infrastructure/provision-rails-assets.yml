@@ -251,7 +251,7 @@
             mode=0660
 
 - name: configure data directories for data server (web)
-  hosts: web
+  hosts: web:!secondary
   user: root
   tasks:
     - apt: name=nfs-kernel-server
@@ -270,7 +270,7 @@
       service: name=nfs-kernel-server state=restarted
 
 - name: configure data directory for worker (remote mount)
-  hosts: worker
+  hosts: worker:!secondary
   user: root
   tasks:
     - apt: name=nfs-common state=present update_cache=no
