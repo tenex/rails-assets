@@ -296,10 +296,13 @@
     - name: restart workers
       shell: initctl reload-configuration && (initctl restart workers || initctl start workers)
 
+
 - name: install lets-encrypt and certificate cron job
   user: root
   hosts: web
   tasks:
+    - name: create /opt
+      file: path=/opt state=directory
     - template: src=lets-encrypt-config.ini
                 dest=/etc/lets-encrypt-config.ini
                 owner=root group=users
@@ -307,8 +310,6 @@
                 dest=/opt/lets-encrypt-renew-certificate
                 owner=root group=users
                 mode=0740
-    - name: create /opt
-      file: path=/opt state=directory
     - name: install lets-encrypt from source
       git: repo=https://github.com/letsencrypt/letsencrypt
            dest=/opt/letsencrypt
