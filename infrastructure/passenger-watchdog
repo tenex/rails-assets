@@ -6,7 +6,7 @@ function build_payload {
     echo -n 'payload={"channel": "#notifications", "username": "passenger-killer", "text": "killing passenger pid: ' $1 '", "icon_emoji": ":gun:"}'
 }
 
-passenger-status --show=xml | \
+/usr/sbin/passenger-status --show=xml | \
     xmlstarlet sel -T \
                -t -m '//process' -i "rss > $MAX_MEMORY" -v 'pid' -n | \
     (
