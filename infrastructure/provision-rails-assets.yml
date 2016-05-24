@@ -284,6 +284,14 @@
             group=users
             mode=0660
 
+    - name: "install database.yml"
+      template:
+        src: "database.yml"
+        dest: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/database.yml"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: 0660
+
     - name: "Copy passenger-watchdog script"
       copy:
         src: "passenger-watchdog"

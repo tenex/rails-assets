@@ -15,6 +15,7 @@ node_modules
 
 /test-app/Gemfile.lock
 /config/application.yml
+/config/database.yml
 /public/gems
 /public/quick
 
