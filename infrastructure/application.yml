@@ -1,0 +1,7 @@
+DATA_DIR: <%= File.expand_path("../public", __FILE__) %>
+RAVEN_DSN: "{{ raven_dsn }}"
+SIDEKIQ_PASSWORD: "{{ sidekiq_password }}"
+NEWRELIC_LICENSE_KEY: "{{ newrelic_license_key }}"
+STRIPE_PUBLISHABLE_KEY: "{{ stripe_publishable_key }}"
+STRIPE_SECRET_KEY: "{{ stripe_secret_key }}"
+REDIS_URL: "{{ redis_url }}"
