@@ -73,7 +73,7 @@ server {
 
 # Redirect everything HTTP that isn't insecure.rails-assets.org
 server {
-    listen 80;
+    listen 80 default_server;
     server_name _;
 
     location / {
