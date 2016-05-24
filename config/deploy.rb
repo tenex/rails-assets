@@ -19,6 +19,7 @@ set :pty, false
 set(:linked_files,
     fetch(:linked_files, []).push(
       'config/application.yml',
+      'config/database.yml',
       'public/components.json',
       'public/prerelease_specs.4.8',
       'public/prerelease_specs.4.8.gz',
