@@ -279,6 +279,18 @@
             group=users
             mode=0660
 
+    - name: "Copy passenger-watchdog script"
+      copy:
+        src: "passenger-watchdog"
+        dest: "/home/{{ app_name}}/passenger-watchdog"
+        mode: 0770
+        group: "{{ app_name }}"
+
+    - name: "Install passenger-watchdog into cron"
+      cron:
+        name: "passenger-watchdog"
+        job: "/home/{{ app_name}}/passenger-watchdog"
+
 - name: configure data directories for data server (web)
   hosts: web:!secondary
   user: root
