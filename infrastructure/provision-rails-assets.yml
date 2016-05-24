@@ -284,7 +284,8 @@
         src: "passenger-watchdog"
         dest: "/home/{{ app_name}}/passenger-watchdog"
         mode: 0770
-        group: "{{ app_name }}"
+        owner: "{{ app_name }}"
+        group: "users"
 
     - name: "Install passenger-watchdog into cron"
       cron:
