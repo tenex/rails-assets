@@ -21,7 +21,6 @@ function prune_files {
         done
 }
 
-
 mkdir -p $db_dump_path
 db_dump_path="$db_dump_path/$db_dump_name"
 
@@ -47,4 +46,4 @@ echo "syncing server:/srv/data files to local:/srv/data"
 rsync -aAX ${server}:/srv/data/ /srv/data/
 
 echo "syncing server:/etc/letsencrypt to local:/etc/letsencrypt"
-rsync -aAX root@${server}:/etc/letsencrypt/ /etc/letsencrypt/
+sudo rsync -aAX root@${server}:/etc/letsencrypt/ /etc/letsencrypt/
