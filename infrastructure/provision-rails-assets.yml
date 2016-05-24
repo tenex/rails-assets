@@ -365,6 +365,10 @@
                 dest=/opt/lets-encrypt-renew-certificate
                 owner=root group=users
                 mode=0740
+    - name: generate diffie-hellman params
+      command: >-
+        openssl dhparam -out /etc/ssl/dhparam.pem 2048
+        creates=/etc/ssl/dhparam.pem
     - name: install lets-encrypt from source
       git: repo=https://github.com/letsencrypt/letsencrypt
            dest=/opt/letsencrypt
