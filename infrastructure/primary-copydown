@@ -31,7 +31,22 @@ ssh ${server} \
     --username rails_assets \
     rails_assets_production > "$db_dump_path"
 
-echo "loading dump"
+# stop things that connect to database
+echo "stopping workers"
+/sbin/stop workers || true
+echo "stopping nginx"
+/usr/sbin/service nginx stop
+
+# kill any straggling connections
+echo "restarting postgres"
+sudo -u postgres \
+     /usr/lib/postgresql/9.3/bin/pg_ctl \
+     -D /var/lib/postgresql/9.3/main \
+     -w \
+     -m fast \
+     restart
+
+echo "restoring database"
 pg_restore \
     --dbname=postgres \
     --username=rails_assets \
