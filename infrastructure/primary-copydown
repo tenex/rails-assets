@@ -31,9 +31,6 @@ ssh ${server} \
     --username rails_assets \
     rails_assets_production > "$db_dump_path"
 
-# stop things that connect to database
-echo "stopping workers"
-/sbin/stop workers || true
 echo "stopping nginx"
 /usr/sbin/service nginx stop
 
@@ -56,9 +53,6 @@ pg_restore \
     --format=custom \
     --jobs=8 \
     "$db_dump_path" || true
-
-echo "starting workers"
-/sbin/start workers
 
 echo "syncing server:/srv/data files to local:/srv/data"
 sudo -u rails-assets \
