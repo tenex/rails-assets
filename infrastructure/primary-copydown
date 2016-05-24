@@ -33,7 +33,7 @@ ssh ${server} \
     rails_assets_production > ${db_dump_path}
 
 echo "syncing server:/srv/data files to local:/srv/data"
-rsync -aAX ${server}:/srv/data /srv
+rsync -aAX ${server}:/srv/data/ /srv/data/
 
 echo "syncing server:/etc/letsencrypt to local:/etc/letsencrypt"
-rsync -aAX root@${server}:/etc/letsencrypt /etc
+rsync -aAX root@${server}:/etc/letsencrypt/ /etc/letsencrypt/
