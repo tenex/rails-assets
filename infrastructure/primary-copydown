@@ -55,10 +55,17 @@ pg_restore \
     --create \
     --format=custom \
     --jobs=8 \
-    "$db_dump_path"
+    "$db_dump_path" || true
+
+echo "starting workers"
+/sbin/start workers
 
 echo "syncing server:/srv/data files to local:/srv/data"
-rsync -aAX ${server}:/srv/data/ /srv/data/
+sudo -u rails-assets \
+     rsync -a ${server}:/srv/data/ /srv/data/
 
 echo "syncing server:/etc/letsencrypt to local:/etc/letsencrypt"
-sudo rsync -aAX root@${server}:/etc/letsencrypt/ /etc/letsencrypt/
+rsync -a ${server}:/etc/letsencrypt/ /etc/letsencrypt/
+
+echo "starting nginx"
+/usr/sbin/service nginx start
