@@ -30,7 +30,18 @@ ssh ${server} \
     pg_dump \
     --format=custom \
     --username rails_assets \
-    rails_assets_production > ${db_dump_path}
+    rails_assets_production > "$db_dump_path"
+
+echo "loading dump"
+pg_restore \
+    --dbname=postgres \
+    --username=rails_assets \
+    --verbose \
+    --clean \
+    --create \
+    --format=custom \
+    --jobs=8 \
+    "$db_dump_path"
 
 echo "syncing server:/srv/data files to local:/srv/data"
 rsync -aAX ${server}:/srv/data/ /srv/data/
