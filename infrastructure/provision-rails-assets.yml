@@ -245,8 +245,6 @@
 - name: configure serving directories and app config
   hosts: web:worker
   user: root
-  vars_files:
-    - secret_vars.yml
   tasks:
     - file: path=/srv/data
             state=directory
@@ -273,11 +271,12 @@
             state=link
             force=yes
 
-    - copy: content="{{ application_yaml_contents }}"
-            dest=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/application.yml
-            owner={{ app_name }}
-            group=users
-            mode=0660
+    - template:
+        src: "application.yml"
+        dest: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/application.yml"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: 0660
 
     - name: "install database.yml"
       template:
