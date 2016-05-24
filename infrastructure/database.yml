@@ -1,0 +1,11 @@
+default: &default
+  adapter: postgresql
+  pool: 30
+  timeout: 5000
+  encoding: unicode
+
+production:
+  <<: *default
+  database: rails_assets_production
+  username: rails_assets
+  host: {{ database_host }}
