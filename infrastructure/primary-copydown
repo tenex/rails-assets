@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eu
+set -eu -o pipefail
 
 server='rails-assets.org'
 db_dump_path='/home/rails-assets/dumps'
