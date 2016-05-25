@@ -69,24 +69,6 @@ class MainController < ApplicationController
     end
   end
 
-  def packages
-    render file: Rails.root.join('public', 'packages.json'),
-           layout: false
-  end
-
-  def package
-    render json: {
-      type: 'alias',
-      url: indexed_packages[params[:name]]['url']
-    }
-  end
-
-  def indexed_packages
-    @indexed_packages ||= JSON.parse(
-      File.read(Rails.root.join('public', 'packages.json'))
-    ).index_by { |p| p['name'] }
-  end
-
   private
 
   def redirect_to_https
