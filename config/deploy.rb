@@ -26,7 +26,6 @@ set(:linked_files,
       'public/specs.4.8.gz',
       'public/latest_specs.4.8',
       'public/latest_specs.4.8.gz',
-      'public/packages.json'
     ))
 
 set(:linked_dirs,
