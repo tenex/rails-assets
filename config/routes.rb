@@ -1,8 +1,4 @@
 RailsAssetsApp::Application.routes.draw do
-  # get '/packages' => 'main#packages'
-  # get '/packages/:name' => 'main#package',
-  #   constraints: { name: /[^\/]+/ }
-
   resources :components, only: [:index, :new, :create] do
     collection do
       get '/:name/rebuild' => 'components#rebuild',
