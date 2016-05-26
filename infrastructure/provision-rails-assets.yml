@@ -447,6 +447,8 @@
             mode=0750
     - name: have cron email us
       cron: env=yes name="MAILTO" value="engineers@tenex.tech"
+    - name: use bash for cron (/bin/sh lacks safety features in copydown)
+      cron: env=yes name="SHELL" value="/bin/bash"
     - name: install primary-copydown into cron
       cron: name="primary-copydown"
             hour="*/4" minute="0"
