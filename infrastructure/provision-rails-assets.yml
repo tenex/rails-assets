@@ -59,7 +59,11 @@
         - zsh
 
     - name: install bower
-      npm: name=bower global=yes version=1.7.9
+      npm: name=bower global=yes version=1.3.12
+
+    - name: install ssmtp.conf
+      template: src=ssmtp.conf
+                dest=/etc/ssmtp/ssmtp.conf
 
 - name: install database packages
   hosts: database
