@@ -157,6 +157,11 @@
     - shell: passenger-config --root
       register: passenger_root
     - lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*charset '
+        insertafter='^http {'
+        line='        charset utf-8;'
+      notify: restart nginx
+    - lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^user'
         line="user {{ app_name }};"
       notify: restart nginx
