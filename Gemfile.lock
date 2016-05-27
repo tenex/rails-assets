@@ -433,7 +433,6 @@ DEPENDENCIES
   peach
   pg
   postrank-uri
-  pry (= 0.9.12.2)
   pry-rails
   quiet_assets
   rails (~> 4.2.0)
