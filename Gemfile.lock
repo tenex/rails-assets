@@ -103,6 +103,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.3)
+    compact_index (0.10.0)
     connection_pool (2.1.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -421,6 +422,7 @@ DEPENDENCIES
   capistrano-touch-linked-files
   capybara-angular
   coffee-rails
+  compact_index
   database_cleaner
   factory_girl_rails
   faker
@@ -463,4 +465,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   1.11.2
+   1.12.5
