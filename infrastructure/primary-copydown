@@ -5,6 +5,8 @@ server='rails-assets.org'
 db_dump_path='/home/rails-assets/dumps'
 db_dump_name="rails-assets-$(date '+%s').psql.dump"
 
+pushd /tmp # stop pg_ctl from trying to access /root
+
 # Clear out old backup files
 function prune_files {
     local clean_path=${1?'prune_files: path to clean not passed'}
@@ -78,3 +80,5 @@ rsync -a ${server}:/etc/letsencrypt/ /etc/letsencrypt/
 
 echo "starting nginx"
 /usr/sbin/service nginx start
+
+popd
