@@ -21,15 +21,24 @@ function prune_files {
         done
 }
 
+function now {
+    echo $(date '+%s')
+}
+
 mkdir -p $db_dump_path
+prune_files $db_dump_path 10
+
 db_dump_path="$db_dump_path/$db_dump_name"
 
 echo "dumping database to $db_dump_path"
+start_time=$(now)
 ssh ${server} \
     pg_dump \
     --format=custom \
     --username rails_assets \
     rails_assets_production > "$db_dump_path"
+duration=$(( $(now) - $start_time ))
+printf '\tdone (took %d seconds)\n' $duration
 
 echo "stopping nginx"
 /usr/sbin/service nginx stop
@@ -44,6 +53,7 @@ sudo --preserve-env -u postgres \
      restart
 
 echo "restoring database"
+start_time=$(now)
 pg_restore \
     --dbname=postgres \
     --username=rails_assets \
@@ -53,10 +63,15 @@ pg_restore \
     --format=custom \
     --jobs=8 \
     "$db_dump_path" || true
+duration=$(( $(now) - $start_time ))
+printf '\tdone (took %d seconds)\n' $duration
 
 echo "syncing server:/srv/data files to local:/srv/data"
+start_time=$(now)
 sudo -u rails-assets \
      rsync -a ${server}:/srv/data/ /srv/data/
+duration=$(( $(now) - $start_time ))
+printf '\tdone (took %d seconds)\n' $duration
 
 echo "syncing server:/etc/letsencrypt to local:/etc/letsencrypt"
 rsync -a ${server}:/etc/letsencrypt/ /etc/letsencrypt/
