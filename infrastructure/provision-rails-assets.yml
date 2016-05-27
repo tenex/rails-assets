@@ -305,7 +305,7 @@
     - name: "Install passenger-watchdog into cron"
       cron:
         name: "passenger-watchdog"
-        job: "/home/{{ app_name}}/passenger-watchdog"
+        job: "/home/{{ app_name}}/passenger-watchdog 2> /dev/null"
 
 - name: configure data directories for data server (web)
   hosts: web:!secondary
