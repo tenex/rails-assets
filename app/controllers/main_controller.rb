@@ -1,6 +1,4 @@
 class MainController < ApplicationController
-  before_action :redirect_to_https, only: ['home']
-
   def home
     respond_to :html
   end
@@ -67,15 +65,5 @@ class MainController < ApplicationController
       format.all { render text: Marshal.dump(gems) }
       format.json { render json: gems }
     end
-  end
-
-  private
-
-  def redirect_to_https
-    redirect_to protocol: 'https://' unless request.ssl? || can_skip_https?
-  end
-
-  def can_skip_https?
-    request.local? || Rails.env.test? || Rails.env.development?
   end
 end

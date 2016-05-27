@@ -48,10 +48,9 @@
         - python-virtualenv
         - redis-tools
         - rsync
-        - libxml2-utils
-        - xmlstarlet
         - silversearcher-ag
         - speedometer
+        - ssmtp
         - texinfo
         - tmux
         - ufw
@@ -60,7 +59,11 @@
         - zsh
 
     - name: install bower
-      npm: name=bower global=yes version=1.7.9
+      npm: name=bower global=yes version=1.3.12
+
+    - name: install ssmtp.conf
+      template: src=ssmtp.conf
+                dest=/etc/ssmtp/ssmtp.conf
 
 - name: install database packages
   hosts: database
@@ -82,6 +85,8 @@
     - name: setup app user
       user: name={{ app_name }} shell=/bin/bash
             groups=rvm,{{ app_name }} append=yes
+            generate_ssh_key=yes
+      register: app_user
 
     # TODO: authorized_key can pull from our site, but it doesn't like our
     # letsencrypt SSL certs. look into why.
@@ -102,6 +107,13 @@
       authorized_key: user={{ item.username }}
                       key="https://github.com/{{ item.github }}.keys"
       with_items: "{{ engineers }}"
+
+    - name: trust own key for rsync
+      authorized_key: user={{ item }}
+                      key={{ app_user.ssh_public_key }}
+      with_items:
+        - root
+        - "{{ app_name }}"
 
     - name: set tmp permissions
       file: path=/tmp mode=a+w
@@ -128,11 +140,36 @@
         - 443
     - ufw: rule=allow
            proto=any
-           src={{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}
+           src="{{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}"
       with_inventory_hostnames: all
     - ufw: policy=allow direction=outgoing
     - ufw: policy=reject direction=incoming
     - ufw: state=enabled # also reloads!
+
+
+- name: "grab main certs from primary server"
+  hosts: secondary
+  remote_user: root
+  tags:
+    - secondary-certs
+  tasks:
+    - name: "find out if rails-assets.org cert exists"
+      stat: path=/etc/letsencrypt/live/rails-assets.org
+      register: rails_assets_cert
+    - name: "synchronize rails-assets.org letsencrypt certs"
+      command: >-
+        rsync -avz rails-assets.org:/etc/letsencrypt/live/rails-assets.org/ \
+                   /etc/letsencrypt/live/rails-assets.org/
+      when: not rails_assets_cert.stat.exists
+
+    - name: "stat rails-assets.tenex.tech cert"
+      stat: path=/etc/letsencrypt/live/rails-assets.tenex.tech
+      register: rails_assets_tenex_cert
+    - name: "synchronize rails-assets.tenex.tech letsencrypt certs"
+      command: >-
+        rsync -avz rails-assets.org:/etc/letsencrypt/live/rails-assets.tenex.tech/ \
+                   /etc/letsencrypt/live/rails-assets.tenex.tech/
+      when: not rails_assets_tenex_cert.stat.exists
 
 - name: install passenger-nginx
   hosts: web
@@ -216,8 +253,6 @@
 - name: configure serving directories and app config
   hosts: web:worker
   user: root
-  vars_files:
-    - secret_vars.yml
   tasks:
     - file: path=/srv/data
             state=directory
@@ -244,14 +279,36 @@
             state=link
             force=yes
 
-    - copy: content="{{ application_yaml_contents }}"
-            dest=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/application.yml
-            owner={{ app_name }}
-            group=users
-            mode=0660
+    - template:
+        src: "application.yml"
+        dest: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/application.yml"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: 0660
+
+    - name: "install database.yml"
+      template:
+        src: "database.yml"
+        dest: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/database.yml"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: 0660
+
+    - name: "Copy passenger-watchdog script"
+      copy:
+        src: "passenger-watchdog"
+        dest: "/home/{{ app_name}}/passenger-watchdog"
+        mode: 0770
+        owner: "{{ app_name }}"
+        group: "users"
+
+    - name: "Install passenger-watchdog into cron"
+      cron:
+        name: "passenger-watchdog"
+        job: "/home/{{ app_name}}/passenger-watchdog 2> /dev/null"
 
 - name: configure data directories for data server (web)
-  hosts: web
+  hosts: web:!secondary
   user: root
   tasks:
     - apt: name=nfs-kernel-server
@@ -270,7 +327,7 @@
       service: name=nfs-kernel-server state=restarted
 
 - name: configure data directory for worker (remote mount)
-  hosts: worker
+  hosts: worker:!secondary
   user: root
   tasks:
     - apt: name=nfs-common state=present update_cache=no
@@ -301,10 +358,13 @@
     - name: restart workers
       shell: initctl reload-configuration && (initctl restart workers || initctl start workers)
 
+
 - name: install lets-encrypt and certificate cron job
   user: root
   hosts: web
   tasks:
+    - name: create /opt
+      file: path=/opt state=directory
     - template: src=lets-encrypt-config.ini
                 dest=/etc/lets-encrypt-config.ini
                 owner=root group=users
@@ -312,6 +372,10 @@
                 dest=/opt/lets-encrypt-renew-certificate
                 owner=root group=users
                 mode=0740
+    - name: generate diffie-hellman params
+      command: >-
+        openssl dhparam -out /etc/ssl/dhparam.pem 2048
+        creates=/etc/ssl/dhparam.pem
     - name: install lets-encrypt from source
       git: repo=https://github.com/letsencrypt/letsencrypt
            dest=/opt/letsencrypt
@@ -373,3 +437,22 @@
                        name=rails_assets
                        priv=ALL
                        role_attr_flags=CREATEDB,CREATEROLE,SUPERUSER
+
+- name: install secondary failover scripts
+  hosts: secondary
+  user: root
+  tags:
+    - secondary
+  tasks:
+    - name: copy primary-copydown script
+      copy: src=primary-copydown
+            dest=/usr/local/bin/primary-copydown
+            mode=0750
+    - name: have cron email us
+      cron: env=yes name="MAILTO" value="engineers@tenex.tech"
+    - name: use bash for cron (/bin/sh lacks safety features in copydown)
+      cron: env=yes name="SHELL" value="/bin/bash"
+    - name: install primary-copydown into cron
+      cron: name="primary-copydown"
+            hour="*/4" minute="0"
+            job="/usr/local/bin/primary-copydown"

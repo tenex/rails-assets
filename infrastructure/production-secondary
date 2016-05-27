@@ -1,7 +1,8 @@
-[web]
-wopr.rails-assets.org rails_env=production
+[secondary:children]
+web
+database
 
-[worker]
+[web]
 wopr.rails-assets.org rails_env=production
 
 [database]

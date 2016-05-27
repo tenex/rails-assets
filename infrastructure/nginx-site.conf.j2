@@ -1,14 +1,23 @@
+# rails-assets.org
+# all hosts should listen here in case of failover
 server {
     listen 443 ssl;
 
-    ssl_certificate /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/rails-assets.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/rails-assets.org/privkey.pem;
+    ssl_dhparam /etc/ssl/dhparam.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_session_tickets off;
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
     ssl_prefer_server_ciphers on;
     ssl_ciphers 'ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS';
+    ssl_trusted_certificate /etc/letsencrypt/live/rails-assets.org/fullchain.pem;
+    ssl_stapling on;
+    ssl_stapling_verify on;
     
-    server_name {{ inventory_hostname }};
-    root /home/{{ app_name }}/rails-apps/{{ app_name }}/current/public;
+    server_name rails-assets.org;
+    root /home/rails-assets/rails-apps/rails-assets/current/public;
     rails_env {{ rails_env }};
     
     passenger_enabled on;
@@ -20,31 +29,75 @@ server {
     }
 }
 
+# secondary server
+{% if inventory_hostname != 'rails-assets.org' %}
+server {
+    listen 443 ssl;
+
+    ssl_certificate /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_dhparam /etc/ssl/dhparam.pem;
+    ssl_session_tickets off;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS';
+    ssl_trusted_certificate /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    
+    server_name {{ inventory_hostname }};
+    root /home/rails-assets/rails-apps/rails-assets/current/public;
+    rails_env {{ rails_env }};
+    passenger_enabled on;
+    passenger_min_instances 4;
+
+    # For letsencrypt
+    location ~ /.well-known {
+        allow all;
+    }
+}
+{% endif %}
+
+# insecure.rails-assets.org
 server {
     listen 80;
+    server_name insecure.rails-assets.org;
+    root /home/rails-assets/rails-apps/rails-assets/current/public;
+    rails_env {{ rails_env }};
+
+    passenger_enabled on;
+    passenger_min_instances 4;
+}
+
+# Redirect everything HTTP that isn't insecure.rails-assets.org
+server {
+    listen 80 default_server;
     server_name _;
 
     location / {
         return 301 https://{{ inventory_hostname }}$request_uri;
     }
-
-    # for nginx monitoring in new relic
-    location /nginx_status {
-        stub_status on;
-        access_log off;
-        allow 127.0.0.1;
-        deny all;
-    }
 }
 
-{% if rails_env == 'production' %}
+# Redirect from old rails-assets.tenex.tech
 server {
     listen 443 ssl;
     
     ssl_certificate /etc/letsencrypt/live/rails-assets.tenex.tech/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/rails-assets.tenex.tech/privkey.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_dhparam /etc/ssl/dhparam.pem;
+    ssl_session_tickets off;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS';
+    ssl_trusted_certificate /etc/letsencrypt/live/rails-assets.tenex.tech/fullchain.pem;
+    ssl_stapling on;
+    ssl_stapling_verify on;
     
     server_name rails-assets.tenex.tech;
     return 301 https://rails-assets.org$request_uri;
 }
-{% endif %}

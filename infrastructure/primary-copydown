@@ -1,0 +1,84 @@
+#!/bin/bash
+set -eu -o pipefail
+
+server='rails-assets.org'
+db_dump_path='/home/rails-assets/dumps'
+db_dump_name="rails-assets-$(date '+%s').psql.dump"
+
+pushd /tmp # stop pg_ctl from trying to access /root
+
+# Clear out old backup files
+function prune_files {
+    local clean_path=${1?'prune_files: path to clean not passed'}
+    local keep_files=${2:-10}
+
+    find $clean_path -type f -printf '%T@\t%p\n' | \
+        sort --numeric-sort --reverse | \
+        tail --lines "+${keep_files}" | \
+        cut --fields 2 | \
+        while read old_file
+        do
+            echo "pruning old file $old_file"
+            rm $old_file
+        done
+}
+
+function now {
+    echo $(date '+%s')
+}
+
+mkdir -p $db_dump_path
+prune_files $db_dump_path 10
+
+db_dump_path="$db_dump_path/$db_dump_name"
+
+echo "dumping database to $db_dump_path"
+start_time=$(now)
+ssh ${server} \
+    pg_dump \
+    --format=custom \
+    --username rails_assets \
+    rails_assets_production > "$db_dump_path"
+duration=$(( $(now) - $start_time ))
+printf '\tdone (took %d seconds)\n' $duration
+
+echo "stopping nginx"
+/usr/sbin/service nginx stop
+
+# kill any straggling connections
+echo "restarting postgres"
+sudo --preserve-env -u postgres \
+     /usr/lib/postgresql/9.3/bin/pg_ctl \
+     -D /var/lib/postgresql/9.3/main \
+     -w \
+     -m fast \
+     restart
+
+echo "restoring database"
+start_time=$(now)
+pg_restore \
+    --dbname=postgres \
+    --username=rails_assets \
+    --verbose \
+    --clean \
+    --create \
+    --format=custom \
+    --jobs=8 \
+    "$db_dump_path" || true
+duration=$(( $(now) - $start_time ))
+printf '\tdone (took %d seconds)\n' $duration
+
+echo "syncing server:/srv/data files to local:/srv/data"
+start_time=$(now)
+sudo -u rails-assets \
+     rsync -a ${server}:/srv/data/ /srv/data/
+duration=$(( $(now) - $start_time ))
+printf '\tdone (took %d seconds)\n' $duration
+
+echo "syncing server:/etc/letsencrypt to local:/etc/letsencrypt"
+rsync -a ${server}:/etc/letsencrypt/ /etc/letsencrypt/
+
+echo "starting nginx"
+/usr/sbin/service nginx start
+
+popd
