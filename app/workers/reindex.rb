@@ -18,8 +18,7 @@ class Reindex
     end
     # Clear cache for components.json api endpoint
     PageCacheManager.new.expire_page(controller: :components,
-                                     action: :index,
-                                     format: :json)
+                                     action: :index, format: :json)
     true
   end
 
@@ -51,7 +50,30 @@ class Reindex
         .where(prerelease: true)
         .pluck('components.name', 'string')
     end
+
+    generate_compact_indexes
   end
+
+  # Compact Indexes
+  # References:
+  # * https://github.com/bundler/compact_index
+  # * http://andre.arko.net/2014/03/28/the-new-rubygems-index-format/
+  # File.join(Figaro.env.data_dir, 'names')
+  def generate_compact_indexes
+    generate_compact_names
+    generate_compact_info
+    generate_compact_versions
+  end
+
+  def generate_compact_names
+  end
+
+  def generate_compact_info
+  end
+
+  def generate_compact_versions
+  end
+
 
   def reindex_spec(name)
     puts "Generating gemspec.rz for #{name}..."
