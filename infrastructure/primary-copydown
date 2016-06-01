@@ -26,6 +26,7 @@ function prune_files {
 function now {
     echo $(date '+%s')
 }
+script_start_time=$(now)
 
 mkdir -p $db_dump_path
 prune_files $db_dump_path 10
@@ -82,3 +83,6 @@ echo "starting nginx"
 /usr/sbin/service nginx start
 
 popd
+
+duration=$(( $(now) - $script_start_time ))
+printf '\tcopydown complete (took %d seconds)\n' $duration

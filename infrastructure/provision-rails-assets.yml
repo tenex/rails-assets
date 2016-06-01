@@ -455,4 +455,4 @@
     - name: install primary-copydown into cron
       cron: name="primary-copydown"
             hour="*/4" minute="0"
-            job="/usr/local/bin/primary-copydown"
+            job="chronic /usr/local/bin/primary-copydown"
