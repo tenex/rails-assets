@@ -26,7 +26,7 @@ app.config ['notificationsConfigProvider', (notificationsConfigProvider) ->
   notificationsConfigProvider.setAutoHideAnimation('fadeOutUp')
 ]
 
-<%# We should probably ditch this. Its a huge pain with sprockets because sprockets won't detect a change in application.js and thus won't write a new one during deployment %>
+<%# We should definitely ditch this. Its a huge pain with sprockets because sprockets won't detect a change in application.js and thus won't write a new one during deployment %>
 <% if Rails.configuration.x.inline_ng_templates  %>
 <% @renderer = ActionView::Base.new(ActionController::Base.view_paths) %>
 <% templates = Dir.glob('app/views/ng_templates/*') %>
