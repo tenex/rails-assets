@@ -62,7 +62,7 @@ class Version < ActiveRecord::Base
   after_destroy :remove_component
 
   def remove_component
-    component.destroy if component.versions.count == 0
+    component.delete if component.versions.count == 0
   end
 
   before_save :update_caches
