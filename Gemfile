@@ -56,7 +56,7 @@ end
 
 group :development, :test do
   gem 'thin'
-  gem 'rspec-rails', '~> 2.0'
+  gem 'rspec-rails', '~> 3.1'
 end
 
 group :test do
