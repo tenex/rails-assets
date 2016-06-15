@@ -30,4 +30,10 @@ describe Component do
     create :version, component: subject
     expect(subject.versions.length).to be > initial_versions.length
   end
+
+  it 'should be able to be deleted without exploding' do
+    create_list :version, 5, component: subject # for callbacks
+    subject.destroy!
+    expect(subject).to be_destroyed
+  end
 end
