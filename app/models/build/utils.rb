@@ -40,7 +40,8 @@ module Build
 
     def fix_version_string(version)
       version = version.to_s.dup
-
+      
+      version = version.downcase if version.match(/\p{Upper}/)
       version = semversion_fix(version)
 
       basic_specifiers = ['>', '<', '>=', '<=']

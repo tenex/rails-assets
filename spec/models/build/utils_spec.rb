@@ -48,7 +48,15 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string('2.3.X')).to eq('~> 2.3.0')
+      end
+
+      specify do
         expect(Utils.fix_version_string('v2.3.x')).to eq('~> 2.3.0')
+      end
+
+      specify do
+        expect(Utils.fix_version_string('v2.3.X')).to eq('~> 2.3.0')
       end
 
       specify do
@@ -57,6 +65,10 @@ module Build
 
       specify do
         expect(Utils.fix_version_string('>=1.2.x <=1.4.x')).to eq(">= 1.2, <= 1.4")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('>=1.2.X <=1.4.X')).to eq(">= 1.2, <= 1.4")
       end
 
       specify do
@@ -76,7 +88,15 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string('~1.X')).to eq('~> 1.0')
+      end
+
+      specify do
         expect(Utils.fix_version_string('1.x')).to eq('~> 1.0')
+      end
+
+      specify do
+        expect(Utils.fix_version_string('1.X')).to eq('~> 1.0')
       end
 
       specify do
@@ -127,6 +147,11 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string(' 1.0.X  ||>=1.0.5 ')).
+          to eq(">= 0")
+      end
+
+      specify do
         expect(Utils.fix_version_string('desandro/doc-ready#>=1.0.1 <2.0')).
           to eq(">= 1.0.1, < 2.0")
       end
@@ -147,6 +172,11 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string('>=1.0.X')).
+          to eq(">= 1.0")
+      end
+
+      specify do
         expect(Utils.fix_version_string('~v1.0.0')).
           to eq("~> 1.0.0")
       end
@@ -157,7 +187,17 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string('~v1.0.X')).
+          to eq("~> 1.0.0")
+      end
+
+      specify do
         expect(Utils.fix_version_string('0.4.0-hotfix.1')).
+          to eq("0.4.0.hotfix.1")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('0.4.0-HOTFIX.1')).
           to eq("0.4.0.hotfix.1")
       end
 
@@ -183,6 +223,11 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string('^1.2.X')).
+          to eq(">= 1.2.0, < 2")
+      end
+
+      specify do
         expect(Utils.fix_version_string('^1.2.3 <1.9')).
           to eq(">= 1.2.3, < 2, < 1.9")
       end
@@ -200,9 +245,19 @@ module Build
       end
 
       specify do
+        expect(Utils.fix_version_string('>1.0.X')).
+          to eq("> 1.0")
+      end
+
+      specify do
         # semver.satisfies('1.0.1', '>1.0.x') => true
         # semver.satisfies('1.1.0', '>1.0.x') => true
         expect(Utils.fix_version_string('<=1.0.x')).
+          to eq("<= 1.0")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('<=1.0.X')).
           to eq("<= 1.0")
       end
 
@@ -223,6 +278,16 @@ module Build
 
       specify do
         expect(Utils.fix_version_string('1.1.x - 1.2.x')).
+          to eq(">= 1.1, < 1.3")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('1.1.X - 1.2.X')).
+          to eq(">= 1.1, < 1.3")
+      end
+
+      specify do
+        expect(Utils.fix_version_string('1.1.x - 1.2.X')).
           to eq(">= 1.1, < 1.3")
       end
 
