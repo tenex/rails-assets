@@ -372,15 +372,17 @@
         name: "nfs-common"
         state: "present"
         update_cache: "no"
-    - mount:
-        src: "{{ hostvars['rails-assets.org']['ansible_eth1']['ipv4']['address'] }}:/srv/data"
-        name: "/srv/data"
-        fstype: "nfs"
-        opts: "auto"
-        dump: "0"
-        passno: "0"
-        state: "mounted"
-      when: rails_env == "production"
+# Skip mounting until we verify that
+# the build is fine without the separate server
+#     - mount:
+#         src: "{{ hostvars['rails-assets.org']['ansible_eth1']['ipv4']['address'] }}:/srv/data"
+#         name: "/srv/data"
+#         fstype: "nfs"
+#         opts: "auto"
+#         dump: "0"
+#         passno: "0"
+#         state: "mounted"
+#       when: ansible_hostname != 'rails-assets.org'
 
 - name: sidekiq systemd worker configuration
   hosts: worker
@@ -428,6 +430,7 @@
         name: "renew-certificate"
         job: "letsencrypt renew --dry-run"
         special_time: "daily"
+        # TODO Remove --dry-run
 
 - name: configure postgres and redis
   hosts: database
