@@ -12,9 +12,6 @@
       swapfile_size: 4096
 
   tasks:
-    - set_fact:
-        app_name: rails-assets
-
     - name: update installed packages
       apt: upgrade=safe update_cache=yes cache_valid_time=3600
 
