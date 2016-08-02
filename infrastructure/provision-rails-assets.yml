@@ -119,7 +119,7 @@
         user: "{{ item.username }}"
         key: "https://github.com/{{ item.github }}.keys"
       with_items: "{{ engineers }}"
-      changed: False # workaround for bug where authorized_key always chagned
+      changed_when: False # workaround for bug where authorized_key always chagned
 
     - name: trust own key for rsync
       authorized_key:
