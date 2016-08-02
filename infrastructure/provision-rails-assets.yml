@@ -339,24 +339,21 @@
              state=mounted
       when: rails_env == "production"
 
-- name: sidekiq worker configuration
+- name: sidekiq systemd worker configuration
   hosts: worker
   user: root
   tasks:
-    - copy: src=sudoers dest=/etc/sudoers.d/rails-assets
-    - template: src=upstart/sidekiq.conf
-                dest=/etc/init/sidekiq.conf
-                owner={{ app_name }} group={{ app_name }}
-      notify: restart workers
-    - template: src=upstart/workers.conf
-                dest=/etc/init/workers.conf
-                owner={{ app_name }} group={{ app_name }}
-      notify: restart workers
-
+    - template:
+        src: "files/systemd/sidekiq.service"
+        dest: "/lib/systemd/system/rails-assets-build.service"
+        notify: bounce worker
   handlers:
-    - name: restart workers
-      shell: initctl reload-configuration && (initctl restart workers || initctl start workers)
-
+    - name: bounce worker
+      systemd:
+        daemon_reload: true
+        name: "rails-assets-build"
+        enabled: true
+        state: restarted
 
 - name: install lets-encrypt and certificate cron job
   user: root
