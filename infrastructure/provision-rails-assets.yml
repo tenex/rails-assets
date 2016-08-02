@@ -399,6 +399,7 @@
       copy:
         src: "files/sudoers"
         dest: "/etc/sudoers.d/rails-assets"
+        mode: "0440"
     - name: "copy worker systemd template"
       template:
         src: "files/systemd/rails-assets-build.service"
