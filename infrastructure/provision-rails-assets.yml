@@ -416,19 +416,19 @@
     - db
   tasks:
     - name: configure postgresql to listen on private network
-      lineinfile: dest=/etc/postgresql/9.3/main/postgresql.conf
+      lineinfile: dest=/etc/postgresql/9.5/main/postgresql.conf
                   regexp="^listen_addresses"
                   line="listen_addresses = 'localhost,{{ ansible_eth1.ipv4.address }}'"
       notify: restart postgres
 
     - name: configure postgresql to blindly trust private network
-      lineinfile: dest=/etc/postgresql/9.3/main/pg_hba.conf
+      lineinfile: dest=/etc/postgresql/9.5/main/pg_hba.conf
                   regexp="^host\s+all\s+rails_assets\s+"
                   line="host all rails_assets {{ ansible_eth1.ipv4.address }}/16 trust"
       notify: restart postgres
 
     - name: configure postgresql to trust local users
-      lineinfile: dest=/etc/postgresql/9.3/main/pg_hba.conf
+      lineinfile: dest=/etc/postgresql/9.5/main/pg_hba.conf
                   regexp="^local\s+all\s+all\s+"
                   line="local all all trust"
       notify: restart postgres
