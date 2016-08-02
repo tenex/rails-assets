@@ -146,7 +146,6 @@
     - ufw: policy=reject direction=incoming
     - ufw: state=enabled # also reloads!
 
-
 - name: "grab main certs from primary server"
   hosts: secondary
   remote_user: root
@@ -181,7 +180,7 @@
         - apt-transport-https
         - ca-certificates
     - apt_repository: state=present
-        repo="deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main"
+        repo="deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main"
     - apt: name={{ item }} state=latest  update_cache=yes
       with_items:
         - nginx-extras
