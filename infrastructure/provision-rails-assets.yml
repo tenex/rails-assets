@@ -426,11 +426,8 @@
     - name: lets-encrypt certificate renewal cron job
       cron:
         name: "renew-certificate"
-        job: "/opt/lets-encrypt-renew-certificate"
+        job: "letsencrypt renew --dry-run"
         special_time: "daily"
-    - command: >-
-        /opt/letsencrypt/letsencrypt-auto certonly --agree-tos --standalone --config /etc/lets-encrypt-config.ini
-        creates=/etc/letsencrypt/live
 
 - name: configure postgres and redis
   hosts: database
