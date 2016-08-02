@@ -323,26 +323,33 @@
   hosts: web:!secondary
   user: root
   tasks:
-    - apt: name=nfs-kernel-server
+    - apt:
+        name: "nfs-kernel-server"
+        state: "latest"
       notify: reload nfs server
-
-    - lineinfile: dest=/etc/exports
-                  state=present
-                  regexp="^/srv/data "
-                  line="/srv/data 10.132.0.0/16(rw,insecure,sync,all_squash,anonuid=1000,anongid=1001,no_subtree_check)"
+    - lineinfile:
+        dest: "/etc/exports"
+        state: "present"
+        regexp: "^/srv/data "
+        line: "/srv/data 10.132.0.0/16(rw,insecure,sync,all_squash,anonuid: 1000,anongid: 1001,no_subtree_check)"
       notify: reload exports
 
   handlers:
-    - name: reload exports
-      command: exportfs -a
-    - name: reload nfs server
-      service: name=nfs-kernel-server state=restarted
+    - name: "reload exports"
+      command: "exportfs -a"
+    - name: "reload nfs server"
+      service:
+        name: "nfs-kernel-server"
+        state: "restarted"
 
 - name: configure data directory for worker (remote mount)
   hosts: worker:!secondary
   user: root
   tasks:
-    - apt: name=nfs-common state=present update_cache=no
+    - apt:
+        name: "nfs-common"
+        state: "present"
+        update_cache: "no"
     - mount: src="{{ hostvars['rails-assets.org']['ansible_eth1']['ipv4']['address'] }}:/srv/data"
              name=/srv/data
              fstype=nfs
