@@ -13,10 +13,15 @@
 
   tasks:
     - name: update installed packages
-      apt: upgrade=safe update_cache=yes cache_valid_time=3600
-
+      apt:
+        upgrade: "safe"
+        update_cache: yes
+        cache_valid_time: "3600"
     - name: install server base packages
-      apt: name={{ item }} state=latest update_cache=yes
+      apt:
+        name: "{{ item }}"
+        state: "latest"
+        update_cache: "yes"
       with_items:
         - apt-file
         - bc
@@ -54,19 +59,24 @@
         - wget
         - xmlstarlet
         - zsh
-
     - name: install bower
-      npm: name=bower global=yes version=1.3.12
-
+      npm:
+        name: "bower"
+        global: yes
+        version: "1.3.12"
     - name: install ssmtp.conf
-      template: src=ssmtp.conf
-                dest=/etc/ssmtp/ssmtp.conf
+      template:
+        src: "ssmtp.conf"
+        dest: "/etc/ssmtp/ssmtp.conf"
 
 - name: install database packages
   hosts: database
   user: root
   tasks:
-    - apt: name={{ item }} state=latest update_cache=yes
+    - apt:
+        name: "{{ item }}"
+        state: "latest"
+        update_cache: yes
       with_items:
         - redis-server
         - postgresql
@@ -77,16 +87,19 @@
   user: root
   tasks:
     - name: setup app group
-      group: name={{ app_name }} state=present
+      group:
+        name: "{{ app_name }}"
+        state: "present"
 
     - name: setup app user
-      user: name={{ app_name }} shell=/bin/bash
-            groups=rvm,{{ app_name }} append=yes
-            generate_ssh_key=yes
+      user:
+        name: "{{ app_name }}"
+        shell: "/bin/bash"
+        groups: "rvm,{{ app_name }}"
+        append: yes
+        generate_ssh_key: yes
       register: app_user
 
-    # TODO: authorized_key can pull from our site, but it doesn't like our
-    # letsencrypt SSL certs. look into why.
     - authorized_key: user={{ item }}
                       key="{{ lookup('file', 'keys.txt') }}"
       with_items:
@@ -94,53 +107,65 @@
         - "{{ app_name }}"
 
     - name: setup engineers accounts
-      user: name={{ item.username }}
-            shell={{ item.shell }}
-            groups=rvm,{{ app_name }},staff,users
-            append=yes
+      user:
+        name: "{{ item.username }}"
+        shell: "{{ item.shell }}"
+        groups: "rvm,{{ app_name }},staff,users"
+        append: "yes"
       with_items: "{{ engineers }}"
 
     - name: setup authorized keys for engineers
-      authorized_key: user={{ item.username }}
-                      key="https://github.com/{{ item.github }}.keys"
+      authorized_key:
+        user: "{{ item.username }}"
+        key: "https://github.com/{{ item.github }}.keys"
       with_items: "{{ engineers }}"
+      changed: False # workaround for bug where authorized_key always chagned
 
     - name: trust own key for rsync
-      authorized_key: user={{ item }}
-                      key={{ app_user.ssh_public_key }}
+      authorized_key:
+        user: "{{ item }}"
+        key: "{{ app_user.ssh_public_key }}"
       with_items:
         - root
         - "{{ app_name }}"
 
-    - name: set tmp permissions
-      file: path=/tmp mode=a+w
-
     - name: enable agent forwarding
-      lineinfile: dest=/etc/ssh/sshd_config
-                  state=present
-                  regexp='^AllowAgentForwarding'
-                  line='AllowAgentForwarding yes'
+      lineinfile:
+        dest: "/etc/ssh/sshd_config"
+        state: "present"
+        regexp: "^AllowAgentForwarding"
+        line: "AllowAgentForwarding yes"
       notify: restart sshd
 
   handlers:
     - name: restart sshd
-      service: name=ssh state=restarted
+      service:
+        name: "ssh"
+        state: "restarted"
 
 - name: configure firewall
   hosts: web
   user: root
   tasks:
-    - ufw: rule=allow port={{ item }} proto=tcp
+    - ufw:
+        rule: "allow"
+        port: "{{ item }}"
+        proto: "tcp"
       with_items:
         - 22
         - 80
         - 443
-    - ufw: rule=allow
-           proto=any
-           src="{{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}"
+    - ufw:
+        rule: "allow"
+        proto: "any"
+        src: "{{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}"
       with_inventory_hostnames: all
-    - ufw: policy=allow direction=outgoing
-    - ufw: policy=reject direction=incoming
+    - ufw:
+        policy: "allow"
+        direction: "outgoing"
+    - ufw:
+        policy: "reject"
+        direction: "incoming"
     - ufw: state=enabled # also reloads!
 
 - name: "grab main certs from primary server"
