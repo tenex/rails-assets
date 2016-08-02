@@ -161,16 +161,7 @@
                    /etc/letsencrypt/live/rails-assets.org/
       when: not rails_assets_cert.stat.exists
 
-    - name: "stat rails-assets.tenex.tech cert"
-      stat: path=/etc/letsencrypt/live/rails-assets.tenex.tech
-      register: rails_assets_tenex_cert
-    - name: "synchronize rails-assets.tenex.tech letsencrypt certs"
-      command: >-
-        rsync -avz rails-assets.org:/etc/letsencrypt/live/rails-assets.tenex.tech/ \
-                   /etc/letsencrypt/live/rails-assets.tenex.tech/
-      when: not rails_assets_tenex_cert.stat.exists
-
-- name: install passenger-nginx
+- name: install and configure web packages
   hosts: web
   user: root
   tasks:
