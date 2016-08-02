@@ -46,7 +46,7 @@ set :npm_env_variables, {}
 
 task :restart_workers do
   on roles(:worker) do
-    sudo 'systemctl restart rails-assets-build.service'
+    sudo '/bin/systemctl restart rails-assets-build.service'
   end
 end
 after 'deploy:published', 'restart_workers'
