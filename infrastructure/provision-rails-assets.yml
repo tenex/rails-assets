@@ -165,59 +165,77 @@
   hosts: web
   user: root
   tasks:
-    - apt_key: keyserver=keyserver.ubuntu.com id=561F9B9CAC40B2F7
-    - apt: name={{ item }} state=latest
+    - name: "add phusion apt key"
+      apt_key:
+        keyserver: "keyserver.ubuntu.com"
+        id: "561F9B9CAC40B2F7"
+    - name: "install passenger apt repository"
+      apt_repository:
+        state: "present"
+        repo: "deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main"
+    - name: "install web packages"
+      apt:
+        name: "{{ item }}"
+        state: "latest"
+        update_cache: yes
       with_items:
         - apt-transport-https
         - ca-certificates
-    - apt_repository: state=present
-        repo="deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main"
-    - apt: name={{ item }} state=latest  update_cache=yes
-      with_items:
+        - letsencrypt
         - nginx-extras
         - passenger
-    - shell: passenger-config --root
+    - name: "determine passenger root"
+      shell: passenger-config --root
       register: passenger_root
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set charset"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*charset '
         insertafter='^http {'
         line='        charset utf-8;'
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set nginx user"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^user'
         line="user {{ app_name }};"
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set passenger root"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*passenger_root'
         insertafter='^http {'
         line="        passenger_root {{ passenger_root.stdout }};"
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set passenger_ruby"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*passenger_ruby'
         insertafter='^http {'
         line='        passenger_ruby /usr/local/bin/ruby;'
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set worker connections"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*worker_connections'
         insertafter='^event {'
         line='        worker_connections 1024;'
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set client_max_body_size"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*client_max_body_size'
         insertafter='^http {'
         line='        client_max_body_size 50m;'
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set passenger_max_pool_size"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*passenger_max_pool_size'
         insertafter='^http {'
         line='        passenger_max_pool_size 12;'
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set infinite passenger_max_request_queue_size"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*passenger_max_request_queue_size'
         insertafter='^http {'
         line='        passenger_max_request_queue_size 0;'
       notify: restart nginx
-    - template:
+    - name: "copy nginx template"
+      template:
         src=nginx-site.conf.j2
         dest="/etc/nginx/sites-enabled/{{ app_name }}.conf"
       notify: restart nginx
