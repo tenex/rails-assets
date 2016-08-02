@@ -1,0 +1,4 @@
+rails-assets ALL=NOPASSWD:/usr/bin/systemctl restart rails-assets-build.service
+rails-assets ALL=NOPASSWD:/usr/bin/systemctl start rails-assets-build.service
+rails-assets ALL=NOPASSWD:/usr/bin/systemctl stop rails-assets-build.service
+rails-assets ALL=NOPASSWD:/usr/bin/rsync
