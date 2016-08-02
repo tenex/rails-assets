@@ -185,11 +185,6 @@
       with_items:
         - nginx-extras
         - passenger
-
-- name: configure passenger-nginx
-  hosts: web
-  user: root
-  tasks:
     - shell: passenger-config --root
       register: passenger_root
     - lineinfile: dest=/etc/nginx/nginx.conf state=present
