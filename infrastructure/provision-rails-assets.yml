@@ -209,6 +209,7 @@
     - name: "determine passenger root"
       shell: passenger-config --root
       register: passenger_root
+      changed_when: false
     - name: "set charset"
       lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*charset '
