@@ -257,37 +257,46 @@
   hosts: web:worker
   user: root
   tasks:
-    - file: path=/srv/data
-            state=directory
-            owner={{ app_name }}
-            group=users
-            mode="u=rwx,g=rwx,o=rx"
+    - name: "make /srv/data directory"
+      file:
+        path: "/srv/data"
+        state: "directory"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: "u=rwx,g=rwx,o=rx"
 
-    - file: path=/home/{{ app_name }}/rails-apps/{{ app_name }}
-            owner={{ app_name }}
-            group=users
-            mode=0770
-            state=directory
+    - name: "make app directory"
+      file:
+        path: "/home/{{ app_name }}/rails-apps/{{ app_name }}"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: "0770"
+        state: "directory"
 
-    - file: path=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config
-            owner={{ app_name }}
-            group=users
-            mode=0770
-            state=directory
+    - name: "make config directory"
+      file:
+        path: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: "0770"
+        state: "directory"
 
-    - file: src=/srv/data
-            dest=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/public
-            owner={{ app_name }}
-            group=users
-            state=link
-            force=yes
+    - name: "make public symlink"
+      file:
+        src: "/srv/data"
+        dest: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/public"
+        owner: "{{ app_name }}"
+        group: "users"
+        state: "link"
+        force: "yes"
 
-    - template:
+    - name: "copy application.yml template"
+      template:
         src: "application.yml"
         dest: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/application.yml"
         owner: "{{ app_name }}"
         group: "users"
-        mode: 0660
+        mode: "0660"
 
     - name: "install database.yml"
       template:
