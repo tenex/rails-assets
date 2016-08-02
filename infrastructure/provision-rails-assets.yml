@@ -344,7 +344,7 @@
   user: root
   tasks:
     - template:
-        src: "files/systemd/sidekiq.service"
+        src: "files/systemd/rails-assets-build.service"
         dest: "/lib/systemd/system/rails-assets-build.service"
         notify: bounce worker
   handlers:
