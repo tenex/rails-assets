@@ -395,7 +395,12 @@
   hosts: worker
   user: root
   tasks:
-    - template:
+    - name: "copy sudoers file for worker permissions"
+      copy:
+        src: "files/sudoers"
+        dest: "/etc/sudoers.d/rails-assets"
+    - name: "copy worker systemd template"
+      template:
         src: "files/systemd/rails-assets-build.service"
         dest: "/lib/systemd/system/rails-assets-build.service"
       notify: bounce worker
