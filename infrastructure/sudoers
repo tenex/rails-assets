@@ -1,1 +1,0 @@
-rails-assets ALL=NOPASSWD:/sbin/restart workers, /sbin/start workers, /sbin/stop workers, /usr/bin/rsync

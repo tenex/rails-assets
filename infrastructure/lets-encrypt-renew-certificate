@@ -1,36 +1,50 @@
-#!/bin/bash
-
-web_service='nginx'
+#!/usr/bin/zsh
+# Renews certificates from letsencrypt.org for both rails-assets.org
+# and the full hostname of the machine that this is running on
 config_file='/etc/lets-encrypt-config.ini'
-le_path='/opt/letsencrypt'
-exp_limit=30;
+exp_limit=15;
 
 if [ ! -f $config_file ]; then
     echo "[ERROR] config file does not exist: $config_file"
     exit 1;
 fi
 
-domain={{ inventory_hostname }}
-cert_file="/etc/letsencrypt/live/$domain/fullchain.pem"
+domains=('rails-assets.org' '{{ inventory_hostname }}')
 
-if [ ! -f $cert_file ]; then
-    echo "[ERROR] certificate file not found for domain $domain."
-fi
+function get-certificate {
+    local domain="${1}"
+    echo "getting certificate for $domain"
+    letsencrypt \
+        certonly \
+        -a webroot \
+        --agree-tos \
+        --renew-by-default \
+        --config $config_file \
+        -d "$domain"
+    echo "reloading nginx"
+    nginx -s reload
+    echo "renewal process finished for domain $domain"
+}
 
-exp=$(date -d "`openssl x509 -in $cert_file -text -noout|grep "Not After"|cut -c 25-`" +%s)
-datenow=$(date -d "now" +%s)
-days_exp=$(echo \( $exp - $datenow \) / 86400 |bc)
+for domain in $domains; do
+    cert_file="/etc/letsencrypt/live/$domain/fullchain.pem"
 
-echo "Checking expiration date for $domain..."
+    if [ ! -f $cert_file ]; then
+        echo "[warn] certificate file not found for domain $domain."
 
-if [ "$days_exp" -gt "$exp_limit" ] ; then
-    echo "The certificate is up to date, no need for renewal ($days_exp days left)."
-    exit 0;
-else
-    echo "The certificate for $domain is about to expire soon. Starting webroot renewal script..."
-    $le_path/letsencrypt-auto certonly -a webroot --agree-tos --renew-by-default --config $config_file
-    echo "Reloading $web_service"
-    /usr/sbin/service $web_service reload
-    echo "Renewal process finished for domain $domain"
-    exit 0;
-fi
+        continue
+    fi
+
+    exp=$(date -d "`openssl x509 -in $cert_file -text -noout|grep "Not After"|cut -c 25-`" +%s)
+    datenow=$(date -d "now" +%s)
+    days_exp=$(echo \( $exp - $datenow \) / 86400 |bc)
+
+    echo "Checking expiration date for $domain..."
+
+    if [ "$days_exp" -gt "$exp_limit" ] ; then
+        echo "the certificate is up to date ($days_exp days left)."
+    else
+        echo "the certificate for $domain is about to expire ($days_exp days left)"
+        exit 0;
+    fi
+done

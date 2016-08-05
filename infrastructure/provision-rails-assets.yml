@@ -12,14 +12,16 @@
       swapfile_size: 4096
 
   tasks:
-    - set_fact:
-        app_name: rails-assets
-
     - name: update installed packages
-      apt: upgrade=safe update_cache=yes cache_valid_time=3600
-
+      apt:
+        upgrade: "safe"
+        update_cache: yes
+        cache_valid_time: "3600"
     - name: install server base packages
-      apt: name={{ item }} state=latest update_cache=yes
+      apt:
+        name: "{{ item }}"
+        state: "latest"
+        update_cache: "yes"
       with_items:
         - apt-file
         - bc
@@ -57,19 +59,24 @@
         - wget
         - xmlstarlet
         - zsh
-
     - name: install bower
-      npm: name=bower global=yes version=1.3.12
-
+      npm:
+        name: "bower"
+        global: yes
+        version: "1.3.12"
     - name: install ssmtp.conf
-      template: src=ssmtp.conf
-                dest=/etc/ssmtp/ssmtp.conf
+      template:
+        src: "ssmtp.conf"
+        dest: "/etc/ssmtp/ssmtp.conf"
 
 - name: install database packages
   hosts: database
   user: root
   tasks:
-    - apt: name={{ item }} state=latest update_cache=yes
+    - apt:
+        name: "{{ item }}"
+        state: "latest"
+        update_cache: yes
       with_items:
         - redis-server
         - postgresql
@@ -80,16 +87,19 @@
   user: root
   tasks:
     - name: setup app group
-      group: name={{ app_name }} state=present
+      group:
+        name: "{{ app_name }}"
+        state: "present"
 
     - name: setup app user
-      user: name={{ app_name }} shell=/bin/bash
-            groups=rvm,{{ app_name }} append=yes
-            generate_ssh_key=yes
+      user:
+        name: "{{ app_name }}"
+        shell: "/bin/bash"
+        groups: "rvm,{{ app_name }}"
+        append: yes
+        generate_ssh_key: yes
       register: app_user
 
-    # TODO: authorized_key can pull from our site, but it doesn't like our
-    # letsencrypt SSL certs. look into why.
     - authorized_key: user={{ item }}
                       key="{{ lookup('file', 'keys.txt') }}"
       with_items:
@@ -97,55 +107,66 @@
         - "{{ app_name }}"
 
     - name: setup engineers accounts
-      user: name={{ item.username }}
-            shell={{ item.shell }}
-            groups=rvm,{{ app_name }},staff,users
-            append=yes
+      user:
+        name: "{{ item.username }}"
+        shell: "{{ item.shell }}"
+        groups: "rvm,{{ app_name }},staff,users"
+        append: "yes"
       with_items: "{{ engineers }}"
 
     - name: setup authorized keys for engineers
-      authorized_key: user={{ item.username }}
-                      key="https://github.com/{{ item.github }}.keys"
+      authorized_key:
+        user: "{{ item.username }}"
+        key: "https://github.com/{{ item.github }}.keys"
       with_items: "{{ engineers }}"
+      changed_when: False # workaround for bug where authorized_key always chagned
 
     - name: trust own key for rsync
-      authorized_key: user={{ item }}
-                      key={{ app_user.ssh_public_key }}
+      authorized_key:
+        user: "{{ item }}"
+        key: "{{ app_user.ssh_public_key }}"
       with_items:
         - root
         - "{{ app_name }}"
 
-    - name: set tmp permissions
-      file: path=/tmp mode=a+w
-
     - name: enable agent forwarding
-      lineinfile: dest=/etc/ssh/sshd_config
-                  state=present
-                  regexp='^AllowAgentForwarding'
-                  line='AllowAgentForwarding yes'
+      lineinfile:
+        dest: "/etc/ssh/sshd_config"
+        state: "present"
+        regexp: "^AllowAgentForwarding"
+        line: "AllowAgentForwarding yes"
       notify: restart sshd
 
   handlers:
     - name: restart sshd
-      service: name=ssh state=restarted
+      service:
+        name: "ssh"
+        state: "restarted"
 
 - name: configure firewall
   hosts: web
   user: root
   tasks:
-    - ufw: rule=allow port={{ item }} proto=tcp
+    - ufw:
+        rule: "allow"
+        port: "{{ item }}"
+        proto: "tcp"
       with_items:
         - 22
         - 80
         - 443
-    - ufw: rule=allow
-           proto=any
-           src="{{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}"
+    - ufw:
+        rule: "allow"
+        proto: "any"
+        src: "{{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}"
       with_inventory_hostnames: all
-    - ufw: policy=allow direction=outgoing
-    - ufw: policy=reject direction=incoming
+    - ufw:
+        policy: "allow"
+        direction: "outgoing"
+    - ufw:
+        policy: "reject"
+        direction: "incoming"
     - ufw: state=enabled # also reloads!
-
 
 - name: "grab main certs from primary server"
   hosts: secondary
@@ -162,129 +183,150 @@
                    /etc/letsencrypt/live/rails-assets.org/
       when: not rails_assets_cert.stat.exists
 
-    - name: "stat rails-assets.tenex.tech cert"
-      stat: path=/etc/letsencrypt/live/rails-assets.tenex.tech
-      register: rails_assets_tenex_cert
-    - name: "synchronize rails-assets.tenex.tech letsencrypt certs"
-      command: >-
-        rsync -avz rails-assets.org:/etc/letsencrypt/live/rails-assets.tenex.tech/ \
-                   /etc/letsencrypt/live/rails-assets.tenex.tech/
-      when: not rails_assets_tenex_cert.stat.exists
-
-- name: install passenger-nginx
+- name: install and configure web packages
   hosts: web
   user: root
   tasks:
-    - apt_key: keyserver=keyserver.ubuntu.com id=561F9B9CAC40B2F7
-    - apt: name={{ item }} state=latest
+    - name: "add phusion apt key"
+      apt_key:
+        keyserver: "keyserver.ubuntu.com"
+        id: "561F9B9CAC40B2F7"
+    - name: "install passenger apt repository"
+      apt_repository:
+        state: "present"
+        repo: "deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main"
+    - name: "install web packages"
+      apt:
+        name: "{{ item }}"
+        state: "latest"
+        update_cache: yes
       with_items:
         - apt-transport-https
         - ca-certificates
-    - apt_repository: state=present
-        repo="deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main"
-    - apt: name={{ item }} state=latest  update_cache=yes
-      with_items:
+        - letsencrypt
         - nginx-extras
         - passenger
-
-- name: configure passenger-nginx
-  hosts: web
-  user: root
-  tasks:
-    - shell: passenger-config --root
+    - name: "determine passenger root"
+      shell: passenger-config --root
       register: passenger_root
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+      changed_when: false
+    - name: "set charset"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*charset '
         insertafter='^http {'
         line='        charset utf-8;'
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set nginx user"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^user'
         line="user {{ app_name }};"
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set passenger root"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*passenger_root'
         insertafter='^http {'
         line="        passenger_root {{ passenger_root.stdout }};"
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set passenger_ruby"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*passenger_ruby'
         insertafter='^http {'
         line='        passenger_ruby /usr/local/bin/ruby;'
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set worker connections"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*worker_connections'
         insertafter='^event {'
         line='        worker_connections 1024;'
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set client_max_body_size"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*client_max_body_size'
         insertafter='^http {'
         line='        client_max_body_size 50m;'
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set passenger_max_pool_size"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*passenger_max_pool_size'
         insertafter='^http {'
         line='        passenger_max_pool_size 12;'
       notify: restart nginx
-    - lineinfile: dest=/etc/nginx/nginx.conf state=present
+    - name: "set infinite passenger_max_request_queue_size"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^\s*passenger_max_request_queue_size'
         insertafter='^http {'
         line='        passenger_max_request_queue_size 0;'
       notify: restart nginx
-    - template:
-        src=nginx-site.conf.j2
-        dest="/etc/nginx/sites-enabled/{{ app_name }}.conf"
+    - name: "copy nginx template"
+      template:
+        src: "nginx-site.conf.j2"
+        dest: "/etc/nginx/sites-enabled/{{ app_name }}.conf"
       notify: restart nginx
-    - file: path=/etc/nginx/sites-enabled/default state=absent
+    - name: "remove default enabled site from nginx"
+      file:
+        path: "/etc/nginx/sites-enabled/default"
+        state: "absent"
       notify: restart nginx
     - name: fix permissions for nginx+passenger+logrotate
-      file: path=/var/log/nginx
-            state=directory
-            mode="u=rwx,g=rx,o=rx"
+      file:
+        path: "/var/log/nginx"
+        state: "directory"
+        mode: "u=rwx,g=rx,o=rx"
     - name: logrotate script
-      copy: src=logrotate-nginx
-            dest=/etc/logrotate.d/nginx
-            mode=0644
+      copy:
+        src: "logrotate-nginx"
+        dest: "/etc/logrotate.d/nginx"
+        mode: "0644"
   handlers:
     - name: restart nginx
-      service: name=nginx state=restarted
+      service:
+        name: "nginx"
+        state: "restarted"
 
 - name: configure serving directories and app config
   hosts: web:worker
   user: root
   tasks:
-    - file: path=/srv/data
-            state=directory
-            owner={{ app_name }}
-            group=users
-            mode="u=rwx,g=rwx,o=rx"
+    - name: "make /srv/data directory"
+      file:
+        path: "/srv/data"
+        state: "directory"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: "u=rwx,g=rwx,o=rx"
 
-    - file: path=/home/{{ app_name }}/rails-apps/{{ app_name }}
-            owner={{ app_name }}
-            group=users
-            mode=0770
-            state=directory
+    - name: "make app directory"
+      file:
+        path: "/home/{{ app_name }}/rails-apps/{{ app_name }}"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: "0770"
+        state: "directory"
 
-    - file: path=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config
-            owner={{ app_name }}
-            group=users
-            mode=0770
-            state=directory
+    - name: "make config directory"
+      file:
+        path: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: "0770"
+        state: "directory"
 
-    - file: src=/srv/data
-            dest=/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/public
-            owner={{ app_name }}
-            group=users
-            state=link
-            force=yes
+    - name: "make public symlink"
+      file:
+        src: "/srv/data"
+        dest: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/public"
+        owner: "{{ app_name }}"
+        group: "users"
+        state: "link"
+        force: "yes"
 
-    - template:
+    - name: "copy application.yml template"
+      template:
         src: "application.yml"
         dest: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/application.yml"
         owner: "{{ app_name }}"
         group: "users"
-        mode: 0660
+        mode: "0660"
 
     - name: "install database.yml"
       template:
@@ -311,81 +353,98 @@
   hosts: web:!secondary
   user: root
   tasks:
-    - apt: name=nfs-kernel-server
+    - apt:
+        name: "nfs-kernel-server"
+        state: "latest"
       notify: reload nfs server
-
-    - lineinfile: dest=/etc/exports
-                  state=present
-                  regexp="^/srv/data "
-                  line="/srv/data 10.132.0.0/16(rw,insecure,sync,all_squash,anonuid=1000,anongid=1001,no_subtree_check)"
+    - lineinfile:
+        dest: "/etc/exports"
+        state: "present"
+        regexp: "^/srv/data "
+        line: "/srv/data 10.132.0.0/16(rw,insecure,sync,all_squash,anonuid=1000,anongid=1001,no_subtree_check)"
       notify: reload exports
 
   handlers:
-    - name: reload exports
-      command: exportfs -a
-    - name: reload nfs server
-      service: name=nfs-kernel-server state=restarted
+    - name: "reload exports"
+      command: "exportfs -a"
+    - name: "reload nfs server"
+      service:
+        name: "nfs-kernel-server"
+        state: "restarted"
 
 - name: configure data directory for worker (remote mount)
   hosts: worker:!secondary
   user: root
   tasks:
-    - apt: name=nfs-common state=present update_cache=no
-    - mount: src="{{ hostvars['rails-assets.org']['ansible_eth1']['ipv4']['address'] }}:/srv/data"
-             name=/srv/data
-             fstype=nfs
-             opts=auto
-             dump=0
-             passno=0
-             state=mounted
-      when: rails_env == "production"
+    - apt:
+        name: "nfs-common"
+        state: "present"
+        update_cache: "no"
+# Skip mounting until we verify that
+# the build is fine without the separate server
+#     - mount:
+#         src: "{{ hostvars['rails-assets.org']['ansible_eth1']['ipv4']['address'] }}:/srv/data"
+#         name: "/srv/data"
+#         fstype: "nfs"
+#         opts: "auto"
+#         dump: "0"
+#         passno: "0"
+#         state: "mounted"
+#       when: ansible_hostname != 'rails-assets.org'
 
-- name: sidekiq worker configuration
+- name: sidekiq systemd worker configuration
   hosts: worker
   user: root
   tasks:
-    - copy: src=sudoers dest=/etc/sudoers.d/rails-assets
-    - template: src=upstart/sidekiq.conf
-                dest=/etc/init/sidekiq.conf
-                owner={{ app_name }} group={{ app_name }}
-      notify: restart workers
-    - template: src=upstart/workers.conf
-                dest=/etc/init/workers.conf
-                owner={{ app_name }} group={{ app_name }}
-      notify: restart workers
-
+    - name: "copy sudoers file for worker permissions"
+      copy:
+        src: "files/sudoers"
+        dest: "/etc/sudoers.d/rails-assets"
+        mode: "0440"
+    - name: "copy worker systemd template"
+      template:
+        src: "files/systemd/rails-assets-build.service"
+        dest: "/lib/systemd/system/rails-assets-build.service"
+      notify: bounce worker
   handlers:
-    - name: restart workers
-      shell: initctl reload-configuration && (initctl restart workers || initctl start workers)
-
+    - name: bounce worker
+      systemd:
+        daemon_reload: true
+        name: "rails-assets-build"
+        enabled: true
+        state: restarted
 
 - name: install lets-encrypt and certificate cron job
   user: root
   hosts: web
   tasks:
     - name: create /opt
-      file: path=/opt state=directory
-    - template: src=lets-encrypt-config.ini
-                dest=/etc/lets-encrypt-config.ini
-                owner=root group=users
-    - template: src=lets-encrypt-renew-certificate
-                dest=/opt/lets-encrypt-renew-certificate
-                owner=root group=users
-                mode=0740
-    - name: generate diffie-hellman params
+      file:
+        path: "/opt"
+        state: "directory"
+    - name: "install lets-encrypt-config.ini"
+      template:
+        src: "lets-encrypt-config.ini"
+        dest: "/etc/lets-encrypt-config.ini"
+        owner: "root"
+        group: "users"
+    - name: "install lets-encrypt-renew-certificate script"
+      template:
+        src: "lets-encrypt-renew-certificate"
+        dest: "/opt/lets-encrypt-renew-certificate"
+        owner: "root"
+        group: "users"
+        mode: "0740"
+    - name: "generate diffie-hellman params"
       command: >-
         openssl dhparam -out /etc/ssl/dhparam.pem 2048
         creates=/etc/ssl/dhparam.pem
-    - name: install lets-encrypt from source
-      git: repo=https://github.com/letsencrypt/letsencrypt
-           dest=/opt/letsencrypt
-           update=no # It updates itself without Git apparently?
     - name: lets-encrypt certificate renewal cron job
-      cron: job=/opt/lets-encrypt-renew-certificate
-            special_time=weekly
-            name=renew-certificate
-    - command: /opt/letsencrypt/letsencrypt-auto certonly --agree-tos --standalone --config /etc/lets-encrypt-config.ini
-               creates=/etc/letsencrypt/live
+      cron:
+        name: "renew-certificate"
+        job: "letsencrypt renew --dry-run"
+        special_time: "daily"
+        # TODO Remove --dry-run
 
 - name: configure postgres and redis
   hosts: database
@@ -394,19 +453,19 @@
     - db
   tasks:
     - name: configure postgresql to listen on private network
-      lineinfile: dest=/etc/postgresql/9.3/main/postgresql.conf
+      lineinfile: dest=/etc/postgresql/9.5/main/postgresql.conf
                   regexp="^listen_addresses"
                   line="listen_addresses = 'localhost,{{ ansible_eth1.ipv4.address }}'"
       notify: restart postgres
 
     - name: configure postgresql to blindly trust private network
-      lineinfile: dest=/etc/postgresql/9.3/main/pg_hba.conf
+      lineinfile: dest=/etc/postgresql/9.5/main/pg_hba.conf
                   regexp="^host\s+all\s+rails_assets\s+"
                   line="host all rails_assets {{ ansible_eth1.ipv4.address }}/16 trust"
       notify: restart postgres
 
     - name: configure postgresql to trust local users
-      lineinfile: dest=/etc/postgresql/9.3/main/pg_hba.conf
+      lineinfile: dest=/etc/postgresql/9.5/main/pg_hba.conf
                   regexp="^local\s+all\s+all\s+"
                   line="local all all trust"
       notify: restart postgres

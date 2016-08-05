@@ -1,4 +1,5 @@
 ---
+app_name: rails-assets
 engineers:
   - { username: josh, github: joshjordan, shell: /usr/bin/zsh }
   - { username: liam, github: hut8, shell: /usr/bin/zsh }
