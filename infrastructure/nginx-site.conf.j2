@@ -29,12 +29,11 @@ server {
         allow all;
     }
 }
-{% endif %}
 
 # insecure.rails-assets.org
 server {
     listen 80;
-    server_name insecure.rails-assets.org;
+    server_name insecure.{{ inventory_hostname }};
     root /home/rails-assets/rails-apps/rails-assets/current/public;
     rails_env {{ rails_env }};
 
