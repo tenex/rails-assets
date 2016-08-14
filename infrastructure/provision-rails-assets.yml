@@ -337,7 +337,7 @@
         mode: 0660
 
     - name: "Copy passenger-watchdog script"
-      copy:
+      template:
         src: "passenger-watchdog"
         dest: "/home/{{ app_name}}/passenger-watchdog"
         mode: 0770
