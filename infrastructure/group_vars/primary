@@ -1,3 +1,3 @@
 ---
-redis_url: "redis://{{ hostvars['therac25.rails-assets.org']['ansible_eth1']['ipv4']['address'] }}:6379/0"
-database_host: "{{ hostvars['therac25.rails-assets.org']['ansible_eth1']['ipv4']['address'] }}"
+redis_url: "redis://{{ hostvars['rails-assets.org']['ansible_eth1']['ipv4']['address'] }}:6379/0"
+database_host: "{{ hostvars['rails-assets.org']['ansible_eth1']['ipv4']['address'] }}"
