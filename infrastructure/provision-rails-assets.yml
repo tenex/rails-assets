@@ -337,7 +337,7 @@
         mode: 0660
 
     - name: "Copy passenger-watchdog script"
-      copy:
+      template:
         src: "passenger-watchdog"
         dest: "/home/{{ app_name}}/passenger-watchdog"
         mode: 0770
@@ -418,33 +418,15 @@
   user: root
   hosts: web
   tasks:
-    - name: create /opt
-      file:
-        path: "/opt"
-        state: "directory"
-    - name: "install lets-encrypt-config.ini"
-      template:
-        src: "lets-encrypt-config.ini"
-        dest: "/etc/lets-encrypt-config.ini"
-        owner: "root"
-        group: "users"
-    - name: "install lets-encrypt-renew-certificate script"
-      template:
-        src: "lets-encrypt-renew-certificate"
-        dest: "/opt/lets-encrypt-renew-certificate"
-        owner: "root"
-        group: "users"
-        mode: "0740"
     - name: "generate diffie-hellman params"
       command: >-
         openssl dhparam -out /etc/ssl/dhparam.pem 2048
         creates=/etc/ssl/dhparam.pem
-    - name: lets-encrypt certificate renewal cron job
-      cron:
-        name: "renew-certificate"
-        job: "letsencrypt renew --dry-run"
-        special_time: "daily"
-        # TODO Remove --dry-run
+    # - name: lets-encrypt certificate renewal cron job
+    #   cron:
+    #     name: "renew-certificate"
+    #     job: "letsencrypt renew"
+    #     special_time: "daily"
 
 - name: configure postgres and redis
   hosts: database
