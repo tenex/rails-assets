@@ -422,11 +422,11 @@
       command: >-
         openssl dhparam -out /etc/ssl/dhparam.pem 2048
         creates=/etc/ssl/dhparam.pem
-    # - name: lets-encrypt certificate renewal cron job
-    #   cron:
-    #     name: "renew-certificate"
-    #     job: "letsencrypt renew"
-    #     special_time: "daily"
+    - name: lets-encrypt certificate renewal cron job
+      cron:
+        name: "renew-certificate"
+        job: "letsencrypt renew"
+        special_time: "daily"
 
 - name: configure postgres and redis
   hosts: database
