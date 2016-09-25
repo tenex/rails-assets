@@ -1,19 +1,10 @@
 /var/log/nginx/*.log {
 	daily
 	missingok
-        dateext
-	rotate 5
+    dateext
+	rotate 10
 	compress
 	nodelaycompress
-	notifempty
 	create 0664 rails-assets adm
-	sharedscripts
-	prerotate
-		if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
-			run-parts /etc/logrotate.d/httpd-prerotate; \
-		fi \
-	endscript
-	postrotate
-		invoke-rc.d nginx rotate >/dev/null 2>&1
-	endscript
+    copytruncate
 }
