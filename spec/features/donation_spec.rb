@@ -10,10 +10,10 @@ feature 'Stripe integreation' do
     click_button 'Next'
 
     Capybara.within_frame 'stripe_checkout_app' do
-      fill_in 'email', with: 'rspec@example.com'
-      page.execute_script(%Q{ $('input#card_number').val('4242 4242 4242 4242'); })
-      page.execute_script(%Q{ $('input#cc-exp').val('#{1.year.from_now.strftime('%m/%y')}'); })
-      fill_in 'cc-csc', with: '322'
+      fill_in 'Email', with: 'rspec@example.com'
+      fill_in 'Card number', with: '4242 4242 4242 4242'
+      fill_in 'Expiry', with: 1.year.from_now.strftime('%m/%y')
+      fill_in 'CVC', with: '322'
       click_button 'Pay $5.45'
     end
 

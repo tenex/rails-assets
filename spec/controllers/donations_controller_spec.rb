@@ -3,12 +3,14 @@ require 'spec_helper'
 describe DonationsController, type: :controller do
   describe '#create' do
     let(:token) do
-      Stripe::Token.create(card: {
-        number: 4242424242424242,
-        exp_month: 12,
-        exp_year: 2017,
-        cvc: 123
-      }).to_h.merge(email: 'test@example.com') #simulate stripe checkout request
+      Stripe::Token.create(
+        card: {
+          number: 4_242_424_242_424_242,
+          exp_month: 12,
+          exp_year: 2017,
+          cvc: 123
+        }
+      ).to_h.merge(email: 'test@example.com') # simulate stripe checkout request
     end
 
     it 'creates a charge for the given amount' do
@@ -31,12 +33,14 @@ describe DonationsController, type: :controller do
     end
 
     let(:token_decline_always) do
-      Stripe::Token.create(card: {
-        number: 4000000000000002,
-        exp_month: 12,
-        exp_year: 2017,
-        cvc: 123
-      })
+      Stripe::Token.create(
+        card: {
+          number: 4_000_000_000_000_002,
+          exp_month: 12,
+          exp_year: 2017,
+          cvc: 123
+        }
+      )
     end
 
     it 'returns an error if stripe returns one' do
