@@ -4,8 +4,8 @@ server(
   roles: %w(app db web worker)
 )
 
-# server(
-#   'wopr.rails-assets.org',
-#   user: fetch(:deploy_user),
-#   roles: %w(app db web)
-# )
+server(
+  'mcp.rails-assets.org',
+  user: fetch(:deploy_user),
+  roles: %w(app db web)
+)
