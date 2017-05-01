@@ -148,7 +148,7 @@
         state: "restarted"
 
 - name: configure firewall
-  hosts: web
+  hosts: web:!secondary
   user: root
   tasks:
     - ufw:
@@ -183,8 +183,7 @@
       register: rails_assets_cert
     - name: "synchronize rails-assets.org letsencrypt certs"
       command: >-
-        rsync -avz rails-assets.org:/etc/letsencrypt/live/rails-assets.org/ \
-                   /etc/letsencrypt/live/rails-assets.org/
+        rsync -av rails-assets.org:/etc/letsencrypt/ /etc/letsencrypt/
       when: not rails_assets_cert.stat.exists
 
 - name: install and configure web packages

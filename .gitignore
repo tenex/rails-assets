@@ -30,3 +30,4 @@ node_modules
 dump.rdb
 
 Procfile.*
+/infrastructure/provision-rails-assets.retry
