@@ -3,9 +3,13 @@
   hosts: all
   user: root
   roles:
-    - role: rvm_io.rvm1-ruby
+    - role: rvm_io.ruby
       rvm1_rubies:
         - 'ruby-2.2.3'
+      rvm1_install_path: '/usr/local/rvm'
+      rvm1_install_flags: '--auto-dotfiles'
+      rvm1_user: 'root'
+      rvm1_gpg_keys: ''
 
     - role: kamaln7.swapfile
       swapfile_use_dd: True
