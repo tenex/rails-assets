@@ -431,8 +431,43 @@
         job: "letsencrypt renew"
         special_time: "daily"
 
+- name: configure postgres secondary
+  hosts: secondary
+  user: root
+  tasks:
+    - name: configure postgresql to listen on private network
+      lineinfile: dest=/etc/postgresql/9.5/main/postgresql.conf
+                  regexp="^listen_addresses"
+                  line="listen_addresses = 'localhost'"
+      notify: restart postgres
+
+    - name: configure postgresql to blindly trust private network
+      lineinfile: dest=/etc/postgresql/9.5/main/pg_hba.conf
+                  regexp="^host\s+all\s+rails_assets\s+"
+                  line="host all rails_assets 127.0.0.1/32 trust"
+      notify: restart postgres
+
+    - name: configure postgresql to trust local users
+      lineinfile: dest=/etc/postgresql/9.5/main/pg_hba.conf
+                  regexp="^local\s+all\s+all\s+"
+                  line="local all all trust"
+      notify: restart postgres
+
+    - name: configure redis to listen on private network
+      lineinfile: dest=/etc/redis/redis.conf
+                  state=present
+                  regexp="^bind"
+                  line="bind 127.0.0.1"
+      notify: restart redis
+  handlers:
+    - name: restart postgres
+      service: name=postgresql state=restarted
+    - name: restart redis
+      service: name=redis-server state=restarted
+
+
 - name: configure postgres and redis
-  hosts: database
+  hosts: database:!secondary
   user: root
   tags:
     - db
