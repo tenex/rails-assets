@@ -260,6 +260,10 @@
         insertafter='^http {'
         line='        passenger_max_request_queue_size 0;'
       notify: restart nginx
+    - name: "generate diffie-hellman params"
+      command: >-
+        openssl dhparam -out /etc/ssl/dhparam.pem 2048
+        creates=/etc/ssl/dhparam.pem
     - name: "copy nginx template"
       template:
         src: "nginx-site.conf.j2"
@@ -419,12 +423,8 @@
 
 - name: install lets-encrypt and certificate cron job
   user: root
-  hosts: web
+  hosts: web:!secondary
   tasks:
-    - name: "generate diffie-hellman params"
-      command: >-
-        openssl dhparam -out /etc/ssl/dhparam.pem 2048
-        creates=/etc/ssl/dhparam.pem
     - name: lets-encrypt certificate renewal cron job
       cron:
         name: "renew-certificate"
