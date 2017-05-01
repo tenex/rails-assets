@@ -524,14 +524,18 @@
     - secondary
   tasks:
     - name: copy primary-copydown script
-      copy: src=primary-copydown
-            dest=/usr/local/bin/primary-copydown
-            mode=0750
-    - name: have cron email us
-      cron: env=yes name="MAILTO" value="engineers@tenex.tech"
+      copy:
+        src: primary-copydown
+        dest: /usr/local/bin/primary-copydown
+        mode: 0750
     - name: use bash for cron (/bin/sh lacks safety features in copydown)
-      cron: env=yes name="SHELL" value="/bin/bash"
+      cron:
+        env: yes
+        name: "SHELL"
+        value: "/bin/bash"
     - name: install primary-copydown into cron
-      cron: name="primary-copydown"
-            hour="*/4" minute="0"
-            job="chronic /usr/local/bin/primary-copydown"
+      cron:
+        name: "primary-copydown"
+        hour: "*/4"
+        minute: "0"
+        job: "/usr/local/bin/primary-copydown && curl -fsS --retry 3 https://hchk.io/878521e4-7bee-43ab-b8b2-228ae4edc46b &> /dev/null"
