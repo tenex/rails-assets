@@ -49,8 +49,8 @@ echo "stopping nginx"
 # kill any straggling connections
 echo "restarting postgres"
 sudo --preserve-env -u postgres \
-     /usr/lib/postgresql/9.3/bin/pg_ctl \
-     -D /var/lib/postgresql/9.3/main \
+     /usr/lib/postgresql/9.5/bin/pg_ctl \
+     -D /var/lib/postgresql/9.5/main \
      -w \
      -m fast \
      restart
