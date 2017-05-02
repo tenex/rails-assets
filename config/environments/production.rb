@@ -54,4 +54,10 @@ RailsAssetsApp::Application.configure do
   config.active_support.deprecation = :notify
   # config.autoflush_log = false
   config.log_formatter = ::Logger::Formatter.new
+  config.lograge.enabled = true
+  config.lograge.custom_options = lambda do |event|
+    {
+      params: event.payload[:params]
+    }
+  end
 end
