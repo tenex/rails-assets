@@ -14,7 +14,6 @@ RailsAssetsApp::Application.configure do
   # config.action_dispatch.rack_cache = true
 
   config.serve_static_files = true
-
   config.static_cache_control = 'public, max-age=31536000'
 
   # Compress JavaScripts and CSS.
@@ -53,7 +52,7 @@ RailsAssetsApp::Application.configure do
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
   # config.autoflush_log = false
-  config.log_formatter = ::Logger::Formatter.new
+  config.lograge.formatter = Lograge::Formatters::Logstash.new
   config.lograge.enabled = true
   config.lograge.custom_options = lambda do |event|
     {

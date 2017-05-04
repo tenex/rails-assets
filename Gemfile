@@ -25,7 +25,6 @@ gem 'pg'
 gem 'postrank-uri'
 gem 'pry-rails'
 gem 'quiet_assets'
-gem 'rails_stdout_logging'
 gem 'rb-readline', '~> 0.5.0', require: false
 gem 'redcarpet'
 gem 'redis', '~> 3.0.0'
