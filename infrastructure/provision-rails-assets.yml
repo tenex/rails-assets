@@ -219,6 +219,29 @@
         insertafter='^http {'
         line='        charset utf-8;'
       notify: restart nginx
+    - name: "add json logging format to nginx"
+      blockinfile:
+      dest: /etc/nginx/nginx.conf
+      insertafter: '^http {'
+      content: |
+        log_format logstash_json '{ "@timestamp": "$time_iso8601", '
+                       '"@fields": { '
+                       '"remote_addr": "$remote_addr", '
+                       '"remote_user": "$remote_user", '
+                       '"body_bytes_sent": "$body_bytes_sent", '
+                       '"request_time": "$request_time", '
+                       '"status": "$status", '
+                       '"request": "$request", '
+                       '"request_method": "$request_method", '
+                       '"http_referrer": "$http_referer", '
+                       '"http_user_agent": "$http_user_agent" } }';
+      notify: restart nginx
+    - name: "configure nginx access log to use json format"
+      lineinfile:
+        dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*access_log'
+        insertafter='^http {'
+        line='        access_log /var/log/nginx/access.log logstash_json;'
     - name: "set nginx user"
       lineinfile: dest=/etc/nginx/nginx.conf state=present
         regexp='^user'
@@ -289,6 +312,32 @@
       service:
         name: "nginx"
         state: "restarted"
+
+- name: centralize logging
+  hosts: web
+  user: root
+  tasks:
+    - name: create downloads directory
+      file:
+        path: "/home/{{ app_name }}/downloads"
+        state: directory
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: "u=rwx,g=rwx,o=rx"
+    - name: download filebeat
+      get_url:
+        url: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-5.3.2-amd64.deb"
+        dest: "/home/{{ app_name }}/downloads/filebeat-5.3.2-amd64.deb"
+    - name: install filebeat
+      apt:
+        deb: "/home/{{ app_name }}/downloads/filebeat-5.3.2-amd64.deb"
+    - name: configure filebeat
+      copy:
+        src: "files/filebeat.yml"
+        dest: "/etc/filebeat/filebeat.yml"
+        mode: "0644"
+    - name: start filebeat
+      command: "/etc/init.d/filebeat start"
 
 - name: configure serving directories and app config
   hosts: web:worker
