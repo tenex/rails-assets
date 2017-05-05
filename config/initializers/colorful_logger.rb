@@ -21,6 +21,19 @@ class ActiveSupport::Logger::SimpleFormatter
     formatted_severity = sprintf('%-3s', SEVERITY_TO_TAG_MAP[severity])
     color = SEVERITY_TO_COLOR_MAP[severity]
 
-    "[\033[#{color}m#{formatted_severity}\033[0m] #{msg.strip}\n"
+    msgObj = {}
+    begin
+      msgObj = JSON.parse(msg)
+    rescue JSON::ParserError => e
+      msgObj[:data] = msg
+    end
+    msgObj[:severity] = "#{formatted_severity}"
+
+    # This can use JSON.pretty_generate(msgObj) to make it human friendly
+    if Rails.env.development?
+      "[\033[#{color}m#{formatted_severity}\033[0m] #{msg.strip}\n"
+    else
+      "\033[#{color}m#{msgObj.to_json}\033[0m\n"
+    end
   end
 end
