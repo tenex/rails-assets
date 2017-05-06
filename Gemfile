@@ -16,6 +16,8 @@ gem 'figaro', github: 'laserlemon/figaro'
 gem 'foreman'
 gem 'honey_badger'
 gem 'js-routes'
+gem 'lograge'
+gem 'logstash-event'
 gem 'newrelic_rpm'
 gem 'non-stupid-digest-assets'
 gem 'peach'
@@ -23,7 +25,6 @@ gem 'pg'
 gem 'postrank-uri'
 gem 'pry-rails'
 gem 'quiet_assets'
-gem 'rails_stdout_logging'
 gem 'rb-readline', '~> 0.5.0', require: false
 gem 'redcarpet'
 gem 'redis', '~> 3.0.0'
@@ -46,24 +47,24 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'capistrano', '~> 3.1'
-  gem 'capistrano-touch-linked-files'
-  gem 'capistrano-rails', '~> 1.1'
-  gem 'capistrano-passenger'
-  gem 'capistrano-npm'
   gem 'capistrano-foreman'
+  gem 'capistrano-npm'
+  gem 'capistrano-passenger'
+  gem 'capistrano-rails', '~> 1.1'
+  gem 'capistrano-touch-linked-files'
   gem 'slackistrano'
 end
 
 group :development, :test do
-  gem 'thin'
   gem 'rspec-rails', '~> 2.0'
+  gem 'thin'
 end
 
 group :test do
   gem 'capybara-angular'
   gem 'database_cleaner'
+  gem 'selenium-webdriver'
   gem 'test-unit' # required for rspec-rails version we're on
   gem 'vcr'
   gem 'webmock'
-  gem 'selenium-webdriver'
 end
