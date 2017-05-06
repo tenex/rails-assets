@@ -14,8 +14,6 @@ filebeat.prospectors:
   paths:
     - /home/rails-assets/rails-apps/rails-assets/shared/log/production.log
 
-
-#----------------------------- Logstash output --------------------------------
-output.logstash:
-  # The Logstash hosts
-  hosts: ["elk.tenex.tech:5045"]
+output.elasticsearch:
+  enabled: true
+  hosts: ["elk.tenex.tech:9200"]
