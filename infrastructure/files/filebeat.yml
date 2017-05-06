@@ -11,6 +11,7 @@ filebeat.prospectors:
   # Paths that should be crawled and fetched. Glob based paths.
   paths:
     - /var/log/nginx/access.log
+    - /home/rails-assets/rails-apps/rails-assets/shared/log/production.log
 
 
 #----------------------------- Logstash output --------------------------------
