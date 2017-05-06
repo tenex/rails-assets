@@ -395,28 +395,28 @@
         name: "passenger-watchdog"
         job: "/home/{{ app_name}}/passenger-watchdog 2> /dev/null"
 
-- name: configure data directories for data server (web)
-  hosts: web:!secondary
-  user: root
-  tasks:
-    - apt:
-        name: "nfs-kernel-server"
-        state: "latest"
-      notify: reload nfs server
-    - lineinfile:
-        dest: "/etc/exports"
-        state: "present"
-        regexp: "^/srv/data "
-        line: "/srv/data 10.132.0.0/16(rw,insecure,sync,all_squash,anonuid=1000,anongid=1001,no_subtree_check)"
-      notify: reload exports
+# - name: configure data directories for data server (web)
+#   hosts: web:!secondary
+#   user: root
+#   tasks:
+#     - apt:
+#         name: "nfs-kernel-server"
+#         state: "latest"
+#       notify: reload nfs server
+#     - lineinfile:
+#         dest: "/etc/exports"
+#         state: "present"
+#         regexp: "^/srv/data "
+#         line: "/srv/data 10.132.0.0/16(rw,insecure,sync,all_squash,anonuid=1000,anongid=1001,no_subtree_check)"
+#       notify: reload exports
 
-  handlers:
-    - name: "reload exports"
-      command: "exportfs -a"
-    - name: "reload nfs server"
-      service:
-        name: "nfs-kernel-server"
-        state: "restarted"
+#   handlers:
+#     - name: "reload exports"
+#       command: "exportfs -a"
+#     - name: "reload nfs server"
+#       service:
+#         name: "nfs-kernel-server"
+#         state: "restarted"
 
 - name: configure data directory for worker (remote mount)
   hosts: worker:!secondary
