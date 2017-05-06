@@ -577,4 +577,4 @@
         name: "primary-copydown"
         hour: "*/4"
         minute: "0"
-        job: "/usr/local/bin/primary-copydown && curl -fsS --retry 3 https://hchk.io/878521e4-7bee-43ab-b8b2-228ae4edc46b &> /dev/null"
+        job: "/usr/local/bin/primary-copydown &> /dev/null && curl -fsS --retry 3 https://hchk.io/878521e4-7bee-43ab-b8b2-228ae4edc46b &> /dev/null"
