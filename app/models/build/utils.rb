@@ -13,7 +13,7 @@ module Build
         command += " --config.storage.packages=#{tmp}/cache"
         command += ' --config.interactive=false'
 
-        Rails.logger.info(command)
+        Rails.logger.info(message: 'running bower', command: command)
 
         JSON.parse(Utils.sh(path, command))
       end
@@ -26,21 +26,34 @@ module Build
     def sh(cwd, *cmd)
       cmd = cmd.join(' ')
 
-      Rails.logger.debug "cd #{cwd} && #{cmd}"
+      Rails.logger.debug(message: 'running shell command',
+                         command: "cd #{cwd} && #{cmd}")
 
       output, error, status = Open3.capture3(cmd, chdir: cwd)
 
-      Rails.logger.debug("#{cmd}\n#{output}") if output.present?
-      Rails.logger.warn("#{cmd}\n#{error}") if error.present? && !status.success?
+      if output.present?
+        Rails.logger.debug(
+          message: 'shell command finished',
+          command: cmd,
+          output: output
+        )
+      end
+
+      if error.present? && !status.success?
+        Rails.logger.warn(
+          message: 'shell command failed',
+          command: cmd,
+          error_message: error
+        )
+      end
 
       raise ShellError.new(error, cwd, cmd) unless status.success?
-
       output
     end
 
     def fix_version_string(version)
       version = version.to_s.dup
-      
+
       version = version.downcase if version.match(/\p{Upper}/)
       version = semversion_fix(version)
 
