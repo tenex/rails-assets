@@ -50,6 +50,7 @@
         - libgmp-dev
         - libpq-dev
         - libxml2-utils
+        - metricbeat
         - moreutils
         - nodejs
         - nodejs-legacy
@@ -314,10 +315,19 @@
         src: "files/filebeat.yml"
         dest: "/etc/filebeat/filebeat.yml"
         mode: "0644"
+    - name: configure metricbeat
+      copy:
+        src: "files/metricbeat.yml"
+        dest: "/etc/metricbeat/metricbeat.yml"
+        mode: "0644"
     - name: start filebeat
       service:
         name: filebeat
-        state: started
+        state: restarted
+    - name: start metricbeat
+      service:
+        name: metricbeaet
+        state: restarted
 
 - name: configure serving directories and app config
   hosts: web:worker
