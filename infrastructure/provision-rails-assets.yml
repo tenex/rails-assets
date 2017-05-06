@@ -326,7 +326,7 @@
         state: restarted
     - name: start metricbeat
       service:
-        name: metricbeaet
+        name: metricbeat
         state: restarted
 
 - name: configure serving directories and app config
