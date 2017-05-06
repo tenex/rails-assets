@@ -3,5 +3,5 @@ app_name: rails-assets
 engineers:
   - { username: josh, github: joshjordan, shell: /usr/bin/zsh }
   - { username: liam, github: hut8, shell: /usr/bin/zsh }
-  - { username: will, github: hut8, shell: /usr/bin/zsh }
+  - { username: will, github: mynameiswillporter, shell: /usr/bin/zsh }
 mailhub: "smtp.mailgun.org:587"
