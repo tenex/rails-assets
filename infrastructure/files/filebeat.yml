@@ -1,5 +1,7 @@
-#=========================== Filebeat prospectors =============================
+filebeat.modules:
+  - module: nginx
 
+#=========================== Filebeat prospectors =============================
 filebeat.prospectors:
 
 # Each - is a prospector. Most options can be set at the prospector level, so
@@ -10,7 +12,6 @@ filebeat.prospectors:
 
   # Paths that should be crawled and fetched. Glob based paths.
   paths:
-    - /var/log/nginx/access.log
     - /home/rails-assets/rails-apps/rails-assets/shared/log/production.log
 
 
