@@ -57,8 +57,10 @@ class MainController < ApplicationController
         end
       end
 
-      Rails.logger.info(params)
-      Rails.logger.info(gems)
+      Rails.logger.info(
+        message: 'dependency query',
+        gems: gems
+      )
     end
 
     respond_to do |format|
