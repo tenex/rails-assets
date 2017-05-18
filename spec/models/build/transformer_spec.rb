@@ -5,7 +5,7 @@ module Build
     context '#compute_transformations' do
       def targets(asset_paths, main_paths = [])
         Paths.new(Transformer.compute_transformations(
-          'foobar',
+          'foobar.js',
           Paths.new(asset_paths),
           Paths.new(main_paths)
         )[:all].map(&:last))
@@ -13,7 +13,7 @@ module Build
 
       def mappings(asset_paths, main_paths = [])
         Hash[Transformer.compute_transformations(
-          'foobar',
+          'foobar.js',
           Paths.new(asset_paths),
           Paths.new(main_paths)
         )[:all].map { |s, t| [t.to_s, s.to_s] }]
@@ -22,58 +22,58 @@ module Build
       it 'puts javascript files to javascripts directory' do
         expect(
           targets(['foo.js'])
-        ).to eq(Paths.new(['app/assets/javascripts/foobar/foo.js']))
+        ).to eq(Paths.new(['app/assets/javascripts/foobar.js/foo.js']))
       end
 
       it 'puts stylesheet files to stylesheets directory' do
         expect(
           targets(['foo.css'])
         ).to eq(Paths.new([
-          'app/assets/stylesheets/foobar/foo.scss'
+          'app/assets/stylesheets/foobar.js/foo.scss'
         ]))
       end
 
       it 'puts image files to images directory' do
         expect(
           targets(['foo.png'])
-        ).to eq(Paths.new(['app/assets/images/foobar/foo.png']))
+        ).to eq(Paths.new(['app/assets/images/foobar.js/foo.png']))
       end
 
       it 'ignores minified files' do
         expect(
           targets(['foo.min.js', 'foo.js'])
-        ).to eq(Paths.new(['app/assets/javascripts/foobar/foo.js']))
+        ).to eq(Paths.new(['app/assets/javascripts/foobar.js/foo.js']))
       end
 
       it 'ignores gzip, map and nuspec files' do
         expect(
           targets(['foo.min.js.gzip', 'foo.js.nuspec', 'foo.js.map', 'foo.nuspec.js'])
-        ).to eq(Paths.new(['app/assets/javascripts/foobar/foo.nuspec.js']))
+        ).to eq(Paths.new(['app/assets/javascripts/foobar.js/foo.nuspec.js']))
       end
 
       it 'ignores bower.json' do
         expect(
           targets(['bower.json', 'foo.json'])
-        ).to eq(Paths.new(['app/assets/documents/foobar/foo.json']))
+        ).to eq(Paths.new(['app/assets/documents/foobar.js/foo.json']))
       end
 
       it 'ignores node_modules' do
         expect(
           targets(['dist/node_modules/foo.js', 'foo.json'])
-        ).to eq(Paths.new(['app/assets/documents/foobar/foo.json']))
+        ).to eq(Paths.new(['app/assets/documents/foobar.js/foo.json']))
       end
 
       it 'leaves minified files that dont have unminified versions' do
         expect(
           targets(['foo.min.js'])
-        ).to eq(Paths.new(['app/assets/javascripts/foobar/foo.min.js']))
+        ).to eq(Paths.new(['app/assets/javascripts/foobar.js/foo.min.js']))
       end
 
       it 'generates manifest for javascript files' do
         expect(
           targets(['foo.js'], ['foo.js'])
         ).to eq(Paths.new([
-          'app/assets/javascripts/foobar/foo.js',
+          'app/assets/javascripts/foobar.js/foo.js',
           'app/assets/javascripts/foobar.js'
         ]))
       end
@@ -83,15 +83,15 @@ module Build
           mappings(
             ['foo.js'], ['foo.js']
           )['app/assets/javascripts/foobar.js']
-        ).to include('require foobar/foo.js')
+        ).to include('require foobar.js/foo.js')
       end
 
       it 'generates manifest for stylesheet files' do
         expect(
           targets(['foo.css'], ['foo.css'])
         ).to eq(Paths.new([
-          'app/assets/stylesheets/foobar/foo.scss',
-          'app/assets/stylesheets/foobar.scss'
+          'app/assets/stylesheets/foobar.js/foo.scss',
+          'app/assets/stylesheets/foobar.js.scss'
         ]))
       end
 
@@ -99,33 +99,33 @@ module Build
         expect(
           mappings(
             ['foo.css'], ['foo.css']
-          )['app/assets/stylesheets/foobar.scss']
-        ).to include("@import 'foobar/foo.scss';")
+          )['app/assets/stylesheets/foobar.js.scss']
+        ).to include("@import 'foobar.js/foo.scss';")
       end
 
       it 'generates proper stylesheet manifest (font-awesome case)' do
         maps = mappings(
           ['css/foo.css', 'scss/foo.scss'], ['css/foo.css']
-        )['app/assets/stylesheets/foobar.scss']
+        )['app/assets/stylesheets/foobar.js.scss']
 
-        expect(maps).to include("@import 'foobar/foo.scss';")
+        expect(maps).to include("@import 'foobar.js/foo.scss';")
       end
 
       it 'generates proper stylesheet manifest (multple requires)' do
         maps = mappings(
           ['css/foo.css', 'scss/foo.scss'],
           ['css/foo.css', 'scss/foo.scss'],
-        )['app/assets/stylesheets/foobar.scss']
+        )['app/assets/stylesheets/foobar.js.scss']
 
-        expect(maps).to include("@import 'foobar/css/foo.scss';")
-        expect(maps).to include("@import 'foobar/scss/foo.scss';")
+        expect(maps).to include("@import 'foobar.js/css/foo.scss';")
+        expect(maps).to include("@import 'foobar.js/scss/foo.scss';")
       end
 
       it 'flattens paths for if main javascript is set' do
         expect(
           targets(['dist/foo.js'], ['dist/foo.js'])
         ).to eq(Paths.new([
-          'app/assets/javascripts/foobar/foo.js',
+          'app/assets/javascripts/foobar.js/foo.js',
           'app/assets/javascripts/foobar.js'
         ]))
       end
@@ -134,8 +134,8 @@ module Build
         expect(
           targets(['dist/css/foo.css'], ['dist/css/foo.css'])
         ).to eq(Paths.new([
-          'app/assets/stylesheets/foobar/foo.scss',
-          'app/assets/stylesheets/foobar.scss'
+          'app/assets/stylesheets/foobar.js/foo.scss',
+          'app/assets/stylesheets/foobar.js.scss'
         ]))
       end
 
@@ -146,10 +146,10 @@ module Build
             ['dist/css/foo.css', 'dist/js/foo.js']
           )
         ).to eq(Paths.new([
-          'app/assets/javascripts/foobar/foo.js',
+          'app/assets/javascripts/foobar.js/foo.js',
           'app/assets/javascripts/foobar.js',
-          'app/assets/stylesheets/foobar/foo.scss',
-          'app/assets/stylesheets/foobar.scss'
+          'app/assets/stylesheets/foobar.js/foo.scss',
+          'app/assets/stylesheets/foobar.js.scss'
         ]))
       end
 
@@ -160,9 +160,9 @@ module Build
             ['dist/css/foo.css']
           )
         ).to eq(Paths.new([
-          'app/assets/javascripts/foobar/dist/js/foo.js',
-          'app/assets/stylesheets/foobar/foo.scss',
-          'app/assets/stylesheets/foobar.scss'
+          'app/assets/javascripts/foobar.js/dist/js/foo.js',
+          'app/assets/stylesheets/foobar.js/foo.scss',
+          'app/assets/stylesheets/foobar.js.scss'
         ]))
       end
 
@@ -170,7 +170,7 @@ module Build
         expect(
           targets(['foo.css'])
         ).to eq(Paths.new([
-          'app/assets/stylesheets/foobar/foo.scss'
+          'app/assets/stylesheets/foobar.js/foo.scss'
         ]))
       end
 
@@ -201,8 +201,8 @@ module Build
             'min/bar/foo-require.js'
           ], ['min/bar/foo.js'])
         ).to eq(Paths.new([
-          'app/assets/javascripts/foobar/foo-require.js',
-          'app/assets/javascripts/foobar/foo.js',
+          'app/assets/javascripts/foobar.js/foo-require.js',
+          'app/assets/javascripts/foobar.js/foo.js',
           'app/assets/javascripts/foobar.js'
         ]))
       end
