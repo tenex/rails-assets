@@ -1,5 +1,7 @@
 # Rails Assets [![Build Status](https://travis-ci.org/tenex/rails-assets.svg?branch=master)](https://travis-ci.org/tenex/rails-assets)
 
+[![Join the chat at https://gitter.im/rails-assets/rails-assets](https://badges.gitter.im/rails-assets/rails-assets.svg)](https://gitter.im/rails-assets/rails-assets?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 > [Bundler](http://bundler.io) to [Bower](http://bower.io) proxy
 
 This README concerns the development aspect of the project. **[Visit the site](https://rails-assets.org) to learn how to use Rails Assets in your application.**
