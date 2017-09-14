@@ -66,3 +66,15 @@ namespace :git do
   end
 end
 after 'deploy:restart', 'git:push_deploy_tag'
+
+namespace :maintenance do
+  task :clear_log do
+    on roles(:app, :worker) do
+      within deploy_to do
+        execute(:rm, '-rf', 'shared/log/production.log')
+      end
+    end
+  end
+end
+after 'maintenance:clear_log', 'passenger:restart'
+after 'maintenance:clear_log', 'restart_workers'
