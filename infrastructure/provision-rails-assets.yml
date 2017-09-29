@@ -300,6 +300,11 @@
         src: "logrotate-nginx"
         dest: "/etc/logrotate.d/nginx"
         mode: "0644"
+    - name: rails-assets production logrotate
+      copy:
+        src: "logrotate-rails-assets"
+        dest: "/etc/logrotate.d/rails-assets"
+        mode: "0644"
   handlers:
     - name: restart nginx
       service:

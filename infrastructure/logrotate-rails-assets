@@ -1,0 +1,8 @@
+/home/rails-assets/rails-apps/rails-assets/current/log/production.log {
+  daily
+  copytruncate
+  rotate 6
+  compress
+  nodelaycompress
+  dateext
+}
