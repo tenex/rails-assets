@@ -45,6 +45,7 @@ for domain in $domains; do
         echo "the certificate is up to date ($days_exp days left)."
     else
         echo "the certificate for $domain is about to expire ($days_exp days left)"
+        get-certificate $domain
         exit 0;
     fi
 done
