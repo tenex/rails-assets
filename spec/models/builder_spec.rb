@@ -188,7 +188,7 @@ describe Build::Converter do
     end
 
     # main is hash
-    component "orbicular", "1.0.3" do
+    component "orbicular", "1.0.4" do
       gem_file "app/assets/stylesheets/orbicular.scss"
       gem_file "app/assets/stylesheets/orbicular/orbicular.scss"
       gem_file "app/assets/javascripts/orbicular.js"
