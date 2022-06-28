@@ -1,10 +1,9 @@
 GIT
-  remote: git://github.com/laserlemon/figaro.git
-  revision: e16f2d47f6516e8420ce21c9de76785d9f244bae
+  remote: https://github.com/laserlemon/figaro.git
+  revision: 6ae998e8209a08f91a165822abecffc0a0626814
   specs:
-    figaro (0.7.0)
-      rails (>= 3, < 5)
-      thor (~> 0.14)
+    figaro (1.2.0)
+      thor (>= 0.14.0, < 2)
 
 GEM
   remote: https://rubygems.org/
@@ -155,7 +154,7 @@ GEM
       mime-types (>= 1.16, < 3)
     method_source (0.8.2)
     mime-types (2.99)
-    mini_portile2 (2.0.0)
+    mini_portile2 (2.1.0)
     minitest (5.8.4)
     modware (0.1.2)
       its-it
@@ -167,8 +166,8 @@ GEM
     net-ssh (3.0.2)
     netrc (0.11.0)
     newrelic_rpm (3.14.0.305)
-    nokogiri (1.6.7.2)
-      mini_portile2 (~> 2.0.0.rc2)
+    nokogiri (1.6.8.1)
+      mini_portile2 (~> 2.1.0)
     non-stupid-digest-assets (1.0.8)
       sprockets (>= 2.0)
     peach (0.5.1)
