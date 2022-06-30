@@ -9,7 +9,8 @@ require 'support/capybara'
 require 'support/continuous_integration'
 
 ActiveRecord::Migration.maintain_test_schema!
-Capybara.default_driver = Capybara.javascript_driver = :selenium
+Capybara.default_driver = :selenium_chrome_headless
+
 # need to include Capybara::Angular::DSL?
 
 RSpec.configure do |config|
