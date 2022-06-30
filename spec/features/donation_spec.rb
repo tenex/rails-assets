@@ -12,7 +12,7 @@ feature 'Stripe integreation' do
     Capybara.within_frame 'stripe_checkout_app' do
       fill_in 'Email', with: 'rspec@example.com'
       fill_in 'Card number', with: '4242 4242 4242 4242'
-      fill_in 'Expiry', with: 1.year.from_now.strftime('%m/%y')
+      fill_in 'MM / YY', with: 1.year.from_now.strftime('%m/%y')
       fill_in 'CVC', with: '322'
       click_button 'Pay $5.45'
     end
