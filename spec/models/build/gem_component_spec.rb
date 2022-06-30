@@ -27,7 +27,7 @@ module Build
             "tag": "2.0.3",
             "commit": "452a56b52b8f4a032256cdb8b6838f25f0bdb3d2"
           },
-          "_source": "git://github.com/srigi/jquery.git",
+          "_source": "https://github.com/srigi/jquery.git",
           "_target": "~2.0.3",
           "_originalSource": "srigi/jquery",
           "_direct": true
