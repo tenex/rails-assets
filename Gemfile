@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 4.2.0'
+gem 'rails', '~> 4.2.11'
 
 gem 'actionpack-page_caching'
 gem 'angular-semver-sort-rails'
@@ -12,7 +12,7 @@ gem 'builder'
 gem 'coffee-rails'
 gem 'factory_girl_rails'
 gem 'faker'
-gem 'figaro', github: 'laserlemon/figaro'
+gem 'figaro', '~>1.2'
 gem 'foreman'
 gem 'honey_badger'
 gem 'js-routes'
@@ -27,7 +27,7 @@ gem 'pry-rails'
 gem 'quiet_assets'
 gem 'rb-readline', '~> 0.5.0', require: false
 gem 'redcarpet'
-gem 'redis', '~> 3.0.0'
+gem 'redis', '~> 3.3'
 gem 'redis-mutex'
 gem 'redis-rails', '~> 4.0.0'
 gem 'sass-rails'
@@ -36,7 +36,7 @@ gem 'sentry-raven'
 gem 'sidekiq', '~> 3.3.2'
 gem 'sidekiq-limit_fetch'
 gem 'sidekiq-middleware'
-gem 'sinatra', '>= 1.3.0', require: nil
+gem 'sinatra', '>= 1.4.8', require: nil
 gem 'slim-rails'
 gem 'stripe'
 gem 'thread', require: 'thread/pool'
@@ -63,7 +63,7 @@ end
 group :test do
   gem 'capybara-angular'
   gem 'database_cleaner'
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '3.141.0'
   gem 'test-unit' # required for rspec-rails version we're on
   gem 'vcr'
   gem 'webmock'

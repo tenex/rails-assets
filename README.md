@@ -18,6 +18,26 @@ bin/rake db:setup
 foreman start
 ```
 
+### Headless chrome
+
+`rspec` tests will use `capybara` for tests. Capybara's driver is set
+up to use `selenium` with headless Chrome. Therefore, you will need
+Chrome and the Chrome Selenium web driver.
+
+``` sh
+# get chrome
+cat << EOF > /etc/apt/sources.list.d/google-chrome.list
+deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+EOF
+wget -O- https://dl.google.com/linux/linux_signing_key.pub |gpg
+--dearmor > /etc/apt/trusted.gpg.d/google.gpg
+apt update && apt install -y google-chrome-stable
+# get appropriate driver
+chrome_version="$(google-chrome --version | cut -d ' ' -f3)" # Google Chrome 103.0.5060.53 -> 103.0.5060.53
+(wget "https://chromedriver.storage.googleapis.com/${chrome_version}/chromedriver_linux64.zip" &&
+ unzip chromedriver_linux64.zip -d /usr/local/bin)
+```
+
 ### Convert Bower package into Ruby gem using CLI
 
 ```sh
