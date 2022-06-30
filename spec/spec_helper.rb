@@ -21,10 +21,14 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
   config.include Rails.application.routes.url_helpers, type: :feature
-  config.after(:each, type: :feature) do
-    if @example.exception && Support::ContinuousIntegration.upload_screenshot_on_failure?
-      puts 'Failure detected. Uploading screenshot...'
-      Support::Capybara.upload_screenshot
+  config.after(:each, type: :feature) do |example|
+    if example.exception
+      if Support::ContinuousIntegration.upload_screenshot_on_failure?
+        puts 'Failure detected. Uploading screenshot...'
+        Support::Capybara.upload_screenshot
+      else
+        Support::Capybara.save_screenshot
+      end
     end
   end
 
