@@ -1,8 +1,25 @@
-# Rails Assets [![Build Status](https://travis-ci.org/tenex/rails-assets.svg?branch=master)](https://travis-ci.org/tenex/rails-assets)
+# Rails Assets ![Build Status](https://github.com/tenex/rails-assets/actions/workflows/verify.yml/badge.svg)
 
 > [Bundler](http://bundler.io) to [Bower](http://bower.io) proxy
 
-This README concerns the development aspect of the project. **[Visit the site](https://rails-assets.org) to learn how to use Rails Assets in your application.**
+This README concerns the development aspect of the project. **[Visit
+the site](https://rails-assets.org) to learn how to use Rails Assets
+in your application.**
+
+## Project Status
+
+[Bower is
+depcreated](https://bower.io/blog/2017/how-to-migrate-away-from-bower/)
+and new projects should not use it. Because Rails Assets is a proxy
+between bower and bundler, it should also not be used in new
+projects. Instead, there are [multiple better
+solutions](https://world.hey.com/dhh/rails-7-will-have-three-great-answers-to-javascript-in-2021-8d68191b)
+which work with modern versions of Rails:
+
+    A default path with Hotwire and import maps, an alternate path
+    using a thin integration with one of the popular JavaScript
+    bundlers, and finally the strict API path with a separate
+    repository for the front-end.
 
 ## Development
 
