@@ -58,6 +58,7 @@ jobs:
           (cd /tmp;
            wget "https://chromedriver.storage.googleapis.com/${chrome_version}/chromedriver_linux64.zip" &&
            sudo unzip chromedriver_linux64.zip -d /usr/local/bin)
+          git config --global url."https://".insteadOf 'git://'
       - name: Install packages
         run: |
           npm install --global npm@5.10.0
