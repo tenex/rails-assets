@@ -40,18 +40,16 @@ jobs:
       #       ${{ runner.os }}-yarn-
       - name: Install OS dependencies for test
         run: |
-          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > \
-            /etc/apt/sources.list.d/google-chrome.list
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | \
+            sudo tee /etc/apt/sources.list.d/google-chrome.list
           wget -O- https://dl.google.com/linux/linux_signing_key.pub | \
-            gpg --dearmor > /etc/apt/trusted.gpg.d/google.gpg
-          apt update && apt install -y google-chrome-stable
+            gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/google.gpg > /dev/null
+          sudo apt update && sudo apt install -y google-chrome-stable
           chrome_version="$(google-chrome --version | cut -d ' ' -f3)" # Google Chrome 103.0.5060.53 -> 103.0.5060.53
           echo $chrome_version
           (cd /tmp;
            wget "https://chromedriver.storage.googleapis.com/${chrome_version}/chromedriver_linux64.zip" &&
-           unzip chromedriver_linux64.zip -d /usr/local/bin)
-
-          apt update
+           sudo unzip chromedriver_linux64.zip -d /usr/local/bin)
       - name: Install packages
         run: |
           npm install --global npm@5.10.0
