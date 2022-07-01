@@ -5,6 +5,14 @@ jobs:
   tests:
     name: Tests
     runs-on: ubuntu-18.04 # prod = 16 unfortunately
+    environment: ci # this provides access to https://github.com/tenex/rails-assets/settings/environments/542274209/edit
+    env:
+      RAILS_ENV: test
+      PGHOST: localhost
+      PGUSER: rails_assets
+      STRIPE_PUBLISHABLE_KEY: "${{secrets.STRIPE_PUBLISHABLE_KEY}}"
+      STRIPE_SECRET_KEY: "${{secrets.STRIPE_SECRET_KEY}}"
+
     services:
       postgres:
         image: postgres:9.3
@@ -56,12 +64,8 @@ jobs:
           npm install
 
       - name: Setup test database
-        env:
-          RAILS_ENV: test
-          PGHOST: localhost
-          PGUSER: rails_assets
         run: |
-          bin/rake db:create db:schema:load
+          bin/rake db:schema:load
 
       - name: Run tests
-        run: bundle exec rspec
+        run: rspec
