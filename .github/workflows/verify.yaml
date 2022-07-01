@@ -68,4 +68,4 @@ jobs:
           bin/rake db:schema:load
 
       - name: Run tests
-        run: rspec
+        run: bin/rspec
