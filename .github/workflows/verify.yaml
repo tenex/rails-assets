@@ -61,7 +61,7 @@ jobs:
           PGHOST: localhost
           PGUSER: rails_assets
         run: |
-          bin/rails db:setup
+          bin/rake db:create db:schema:load
 
       - name: Run tests
         run: bundle exec rspec
