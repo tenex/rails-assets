@@ -10,9 +10,8 @@ module Support::Capybara
 
   def self.upload_screenshot
     image_path = Capybara.save_screenshot
-    filename = image_path.split('/').last
+    # filename = image_path.split('/').last
     response = `curl https://uguu.se/api.php?d=upload -F file=@#{image_path}`
-    remote_url = response[/(http[^"]*#{filename})/]
-    puts "Capybara screenshot available at #{remote_url}"
+    puts "Capybara screenshot available at #{response}"
   end
 end
