@@ -52,7 +52,7 @@ jobs:
             sudo tee /etc/apt/sources.list.d/google-chrome.list
           wget -O- https://dl.google.com/linux/linux_signing_key.pub | \
             gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/google.gpg > /dev/null
-          sudo apt update && sudo apt install -y google-chrome-stable
+          sudo apt update && sudo apt install -y google-chrome-stable redis
           chrome_version="$(google-chrome --version | cut -d ' ' -f3)" # Google Chrome 103.0.5060.53 -> 103.0.5060.53
           echo $chrome_version
           (cd /tmp;
