@@ -1,0 +1,1 @@
+DATA_DIR: <%= File.expand_path("../public", __FILE__) %>
