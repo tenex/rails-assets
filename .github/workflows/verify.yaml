@@ -48,15 +48,17 @@ jobs:
       #       ${{ runner.os }}-yarn-
       - name: Install OS dependencies for test
         run: |
+          LATEST_CHROMEDRIVER="$(curl https://chromedriver.storage.googleapis.com/LATEST_RELEASE)"
+          echo "latest chromedriver available: $LATEST_CHROMEDRIVER"
           echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | \
             sudo tee /etc/apt/sources.list.d/google-chrome.list
           wget -O- https://dl.google.com/linux/linux_signing_key.pub | \
             gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/google.gpg > /dev/null
-          sudo apt update && sudo apt install -y google-chrome-stable redis
-          chrome_version="$(google-chrome --version | cut -d ' ' -f3)" # Google Chrome 103.0.5060.53 -> 103.0.5060.53
-          echo $chrome_version
+          sudo apt update && sudo apt install -y google-chrome-stable="$LATEST_CHROMEDRIVER" redis
+          CHROME_VERSION="$(google-chrome --version | cut -d ' ' -f3)" # Google Chrome 103.0.5060.53 -> 103.0.5060.53
+          echo Installed chrome version: $CHROME_VERSION
           (cd /tmp;
-           wget "https://chromedriver.storage.googleapis.com/${chrome_version}/chromedriver_linux64.zip" &&
+           wget "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER}/chromedriver_linux64.zip" &&
            sudo unzip chromedriver_linux64.zip -d /usr/local/bin)
           git config --global url."https://".insteadOf 'git://'
           cp config/application.ci.yml config/application.yml
