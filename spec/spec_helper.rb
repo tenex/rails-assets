@@ -9,10 +9,12 @@ require 'support/capybara'
 require 'support/continuous_integration'
 
 ActiveRecord::Migration.maintain_test_schema!
-Capybara.default_driver = Capybara.javascript_driver = :selenium
+Capybara.default_driver = :selenium_chrome_headless
+
 # need to include Capybara::Angular::DSL?
 
 RSpec.configure do |config|
+  config.infer_spec_type_from_file_location!
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
@@ -20,10 +22,14 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
   config.include Rails.application.routes.url_helpers, type: :feature
-  config.after(:each, type: :feature) do
-    if @example.exception && Support::ContinuousIntegration.upload_screenshot_on_failure?
-      puts 'Failure detected. Uploading screenshot...'
-      Support::Capybara.upload_screenshot
+  config.after(:each, type: :feature) do |example|
+    if example.exception
+      if Support::ContinuousIntegration.upload_screenshot_on_failure?
+        puts 'Failure detected. Uploading screenshot...'
+        Support::Capybara.upload_screenshot
+      else
+        Support::Capybara.save_screenshot
+      end
     end
   end
 

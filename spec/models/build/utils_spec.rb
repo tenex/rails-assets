@@ -349,7 +349,7 @@ module Build
 
       it 'removes .git postfix from git url' do
         expect(Utils.fix_gem_name(
-          'tinymce', 'git://github.com/jozzhart/tinymce.git#4.0.0'
+          'tinymce', 'https://github.com/jozzhart/tinymce.git#4.0.0'
         )).to eq('jozzhart--tinymce')
       end
 
@@ -377,7 +377,7 @@ module Build
 
       specify do
         expect(Utils.fix_dependencies(
-          "tinymce" => "git://github.com/jozzhart/tinymce.git#4.0.0"
+          "tinymce" => "https://github.com/jozzhart/tinymce.git#4.0.0"
         )).to eq(
           "rails-assets-jozzhart--tinymce" => "4.0.0"
         )
@@ -385,7 +385,7 @@ module Build
 
       specify do
         expect(Utils.fix_dependencies(
-          "git://github.com/jozzhart/tinymce.git" => "4.0.0"
+          "https://github.com/jozzhart/tinymce.git" => "4.0.0"
         )).to eq(
           "rails-assets-jozzhart--tinymce" => "4.0.0"
         )

@@ -17,9 +17,9 @@ describe Build::Converter do
 
         gem_path = @gem_root + '.gem'
 
-        expect(File.exist?(gem_path.to_s)).to be_true
+        expect(File.exist?(gem_path.to_s)).to be true
         Build::Utils.sh(File.join(Figaro.env.data_dir, 'gems'), 'gem unpack', gem_path.to_s)
-        expect(Dir.exist?(@gem_root.to_s)).to be_true
+        expect(Dir.exist?(@gem_root.to_s)).to be true
 
         instance_eval(&block)
 

@@ -1,0 +1,73 @@
+name: Verify
+on: [push]
+
+jobs:
+  tests:
+    name: Tests
+    runs-on: ubuntu-18.04 # prod = 16 unfortunately
+    environment: ci # this provides access to https://github.com/tenex/rails-assets/settings/environments/542274209/edit
+    env:
+      RAILS_ENV: test
+      PGHOST: localhost
+      PGUSER: rails_assets
+      STRIPE_PUBLISHABLE_KEY: "${{secrets.STRIPE_PUBLISHABLE_KEY}}"
+      STRIPE_SECRET_KEY: "${{secrets.STRIPE_SECRET_KEY}}"
+
+    services:
+      postgres:
+        image: postgres:9.3
+        env:
+          POSTGRES_USER: rails_assets
+          POSTGRES_DB: rails_assets_test
+          POSTGRES_PASSWORD: ""
+        ports: ["5432:5432"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby and install gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true # this runs bundle install and caches
+          # ruby version is pulled from .ruby-version
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 4.7.0
+      # - name: Find yarn cache location
+      #   id: yarn-cache
+      #   run: echo "::set-output name=dir::$(yarn cache dir)"
+      # - name: JS package cache
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: ${{ steps.yarn-cache.outputs.dir }}
+      #     key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-yarn-
+      - name: Install OS dependencies for test
+        run: |
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | \
+            sudo tee /etc/apt/sources.list.d/google-chrome.list
+          wget -O- https://dl.google.com/linux/linux_signing_key.pub | \
+            gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/google.gpg > /dev/null
+          sudo apt update && sudo apt install -y google-chrome-stable redis
+          chrome_version="$(google-chrome --version | cut -d ' ' -f3)" # Google Chrome 103.0.5060.53 -> 103.0.5060.53
+          echo $chrome_version
+          (cd /tmp;
+           wget "https://chromedriver.storage.googleapis.com/${chrome_version}/chromedriver_linux64.zip" &&
+           sudo unzip chromedriver_linux64.zip -d /usr/local/bin)
+          git config --global url."https://".insteadOf 'git://'
+          cp config/application.ci.yml config/application.yml
+      - name: Install packages
+        run: |
+          npm install --global npm@5.10.0
+          npm install
+
+      - name: Setup test database
+        run: |
+          bin/rake db:schema:load
+
+      - name: Run tests
+        run: bin/rspec

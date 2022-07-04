@@ -7,7 +7,7 @@ describe DonationsController, type: :controller do
         card: {
           number: 4_242_424_242_424_242,
           exp_month: 12,
-          exp_year: 2017,
+          exp_year: Time.now.year+1,
           cvc: 123
         }
       ).to_h.merge(email: 'test@example.com') # simulate stripe checkout request
@@ -37,7 +37,7 @@ describe DonationsController, type: :controller do
         card: {
           number: 4_000_000_000_000_002,
           exp_month: 12,
-          exp_year: 2017,
+          exp_year: Time.now.year+1,
           cvc: 123
         }
       )

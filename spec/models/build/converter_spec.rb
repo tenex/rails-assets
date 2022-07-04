@@ -80,9 +80,9 @@ module Build
       it 'converts component to new temp directory and yields it' do
         Converter.install!('jquery', '2.0.3') do |dependencies|
           Converter.convert!(dependencies.first) do |dir, paths, mains|
-            expect(Dir.exist?(dir.to_s)).to be_true
-            expect(paths.all? { |p| File.exist?(dir.join(p)) }).to be_true
-            expect(mains.all? { |p| File.exist?(dir.join(p)) }).to be_true
+            expect(Dir.exist?(dir.to_s)).to be true
+            expect(paths.all? { |p| File.exist?(dir.join(p)) }).to be true
+            expect(mains.all? { |p| File.exist?(dir.join(p)) }).to be true
           end
         end
       end
@@ -129,7 +129,7 @@ module Build
             end
           end
 
-          expect(File.exist?(gem_path.to_s)).to be_true
+          expect(File.exist?(gem_path.to_s)).to be true
         end
       end
     end
@@ -158,7 +158,7 @@ module Build
             Path.new('quick/Marshal.4.8/rails-assets-jquery-2.0.3.gemspec.rz'),
             Path.new('specs.4.8'),
             Path.new('specs.4.8.gz')
-          ]))).to be_true
+          ]))).to be true
 
           expect {
             Converter.index!
@@ -182,7 +182,7 @@ module Build
               Path.new('quick/Marshal.4.8/rails-assets-jquery-2.1.0.gemspec.rz'),
               Path.new('specs.4.8'),
               Path.new('specs.4.8.gz')
-            ]))).to be_true
+            ]))).to be true
           }.to change { File.read(File.join(Figaro.env.data_dir, 'specs.4.8')) }
         end
       end

@@ -1,8 +1,25 @@
-# Rails Assets [![Build Status](https://travis-ci.org/tenex/rails-assets.svg?branch=master)](https://travis-ci.org/tenex/rails-assets)
+# Rails Assets ![Build Status](https://github.com/tenex/rails-assets/actions/workflows/verify.yml/badge.svg)
 
 > [Bundler](http://bundler.io) to [Bower](http://bower.io) proxy
 
-This README concerns the development aspect of the project. **[Visit the site](https://rails-assets.org) to learn how to use Rails Assets in your application.**
+This README concerns the development aspect of the project. **[Visit
+the site](https://rails-assets.org) to learn how to use Rails Assets
+in your application.**
+
+## Project Status
+
+[Bower is
+depcreated](https://bower.io/blog/2017/how-to-migrate-away-from-bower/)
+and new projects should not use it. Because Rails Assets is a proxy
+between bower and bundler, it should also not be used in new
+projects. Instead, there are [multiple better
+solutions](https://world.hey.com/dhh/rails-7-will-have-three-great-answers-to-javascript-in-2021-8d68191b)
+which work with modern versions of Rails:
+
+    A default path with Hotwire and import maps, an alternate path
+    using a thin integration with one of the popular JavaScript
+    bundlers, and finally the strict API path with a separate
+    repository for the front-end.
 
 ## Development
 
@@ -16,6 +33,26 @@ cp config/application{.sample,}.yml
 # edit config/database.yml and config/application.yml if necessary.
 bin/rake db:setup
 foreman start
+```
+
+### Headless chrome
+
+`rspec` tests will use `capybara` for tests. Capybara's driver is set
+up to use `selenium` with headless Chrome. Therefore, you will need
+Chrome and the Chrome Selenium web driver.
+
+``` sh
+# get chrome
+cat << EOF > /etc/apt/sources.list.d/google-chrome.list
+deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+EOF
+wget -O- https://dl.google.com/linux/linux_signing_key.pub |gpg
+--dearmor > /etc/apt/trusted.gpg.d/google.gpg
+apt update && apt install -y google-chrome-stable
+# get appropriate driver
+chrome_version="$(google-chrome --version | cut -d ' ' -f3)" # Google Chrome 103.0.5060.53 -> 103.0.5060.53
+(wget "https://chromedriver.storage.googleapis.com/${chrome_version}/chromedriver_linux64.zip" &&
+ unzip chromedriver_linux64.zip -d /usr/local/bin)
 ```
 
 ### Convert Bower package into Ruby gem using CLI

@@ -6,7 +6,7 @@ module Build
       JSON.parse('{
         "endpoint": {
           "name": "jquery",
-          "source": "git://github.com/srigi/jquery.git",
+          "source": "https://github.com/srigi/jquery.git",
           "target": "~2.0.3"
         },
         "canonicalDir": "/Users/sheerun/Source/rails-assets/bower_components/awesome-jquery",
@@ -30,7 +30,7 @@ module Build
             "tag": "2.0.3",
             "commit": "452a56b52b8f4a032256cdb8b6838f25f0bdb3d2"
           },
-          "_source": "git://github.com/srigi/jquery.git",
+          "_source": "https://github.com/srigi/jquery.git",
           "_target": "~2.0.3",
           "_originalSource": "srigi/jquery",
           "_direct": true
@@ -56,7 +56,7 @@ module Build
                 "tag": "v1.0.3",
                 "commit": "1f43e215030d7b39be02311b49734d530ab85650"
               },
-              "_source": "git://github.com/desandro/eventie.git",
+              "_source": "https://github.com/desandro/eventie.git",
               "_target": ">=1.0.3 <2.0"
             },
             "dependencies": {},
@@ -145,7 +145,7 @@ module Build
       end
 
       it 'renders proper repository' do
-        expect(subject.repository).to eq('git://github.com/srigi/jquery.git')
+        expect(subject.repository).to eq('https://github.com/srigi/jquery.git')
       end
 
       it 'renders proper homepage' do

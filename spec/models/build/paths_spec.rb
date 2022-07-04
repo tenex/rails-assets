@@ -115,12 +115,12 @@ module Build
       let(:strange_paths) {
         Paths.new([
           'foo.pnga', 'foo.css3', 'foo.jsv', 'foo.js2',
-          'foo/bar/baz.exe', 'foo/fiz/fuz.rb', 
+          'foo/bar/baz.exe', 'foo/fiz/fuz.rb',
           'FOO.JS', 'foo.Coffee', 'foo.Js'
         ])
       }
 
-      let(:asset_paths) { 
+      let(:asset_paths) {
         javascript_paths + stylesheet_paths +
         image_paths + strange_paths
       }
@@ -226,17 +226,17 @@ module Build
       it 'determines that path is child of another' do
         expect(
           Path.new('/usr/local/application.yml').descendant?('/usr/local/')
-        ).to be_true
+        ).to be true
       end
 
       it 'determines that path is not child of another' do
         expect(
           Path.new('/usr/application.yml').descendant?('/usr/local/')
-        ).to be_false
+        ).to be false
 
         expect(
           Path.new('/usr/locale/application.yml').descendant?('/usr/local/')
-        ).to be_false
+        ).to be false
       end
     end
 
@@ -251,7 +251,7 @@ module Build
         expect(Path.new('foo').join('bar', 'biz')).to be_a(Path)
       end
     end
-    
+
     context '#append_relative_path' do
       it 'properly appends relative path' do
         expect(Path.new('./foo/bar/baz.css').append_relative_path('../foo/image.png')).
