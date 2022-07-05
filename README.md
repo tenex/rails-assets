@@ -1,4 +1,4 @@
-# Rails Assets ![Build Status](https://github.com/tenex/rails-assets/actions/workflows/verify.yml/badge.svg)
+# Rails Assets ![Build Status](https://github.com/tenex/rails-assets/actions/workflows/verify.yaml/badge.svg)
 
 > [Bundler](http://bundler.io) to [Bower](http://bower.io) proxy
 
