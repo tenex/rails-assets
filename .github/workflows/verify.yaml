@@ -88,10 +88,10 @@ jobs:
       - name: Run tests
         id: rspec
         run: bin/rspec
-        continue-on-error: true
 
       - name: Upload test
         uses: actions/upload-artifact@v3
+        if: always() # or .... ?
         with:
           name: verification.log
           path: log/test.log
