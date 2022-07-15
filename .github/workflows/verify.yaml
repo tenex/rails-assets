@@ -19,7 +19,7 @@ jobs:
         env:
           POSTGRES_USER: rails_assets
           POSTGRES_DB: rails_assets_test
-          POSTGRES_PASSWORD: ""
+          POSTGRES_PASSWORD: postgres
         ports: ["5432:5432"]
         options: >-
           --health-cmd pg_isready
