@@ -54,7 +54,7 @@ jobs:
       #       ${{ runner.os }}-yarn-
       - name: Install OS dependencies for test
         run: |
-          LATEST_CHROMEDRIVER="$(curl https://chromedriver.storage.googleapis.com/LATEST_RELEASE)"
+          LATEST_CHROMEDRIVER="$(curl -S -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE)"
           echo "latest chromedriver available: $LATEST_CHROMEDRIVER"
           echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | \
             sudo tee /etc/apt/sources.list.d/google-chrome.list
@@ -66,12 +66,10 @@ jobs:
           (cd /tmp;
            wget "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER}/chromedriver_linux64.zip" &&
            sudo unzip chromedriver_linux64.zip -d /usr/local/bin)
-          git config --global url."https://".insteadOf 'git://'
           cp config/application.ci.yml config/application.yml
       - name: Install packages
         run: |
-          npm install --global npm@8.11.0
-          npm install
+          yarn
           node --version
           npm --version
           ./node_modules/.bin/bower --version
