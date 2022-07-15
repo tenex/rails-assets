@@ -106,13 +106,13 @@ module Build
         end
       end
 
-      #breaks in bower 1.7.9
+      # Case changed in bower 1.7.9
       it 'names the asset paths according to the bower_name that we store in Component' do
         Dir.mktmpdir do |tmpdir|
           gem_path = Converter.install!('adminlte', '2.3.3') do |dependencies|
             Converter.convert!(dependencies.first) do |dir, paths, mains|
               Dir["#{dir}/app/assets/javascripts/*.js"].should eq [
-                "#{dir}/app/assets/javascripts/adminlte.js"
+                "#{dir}/app/assets/javascripts/AdminLTE.js"
               ]
             end
           end
