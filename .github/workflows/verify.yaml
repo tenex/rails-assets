@@ -74,6 +74,11 @@ jobs:
           npm --version
           ./node_modules/.bin/bower --version
 
+      - name: Debug bower results
+        run: |
+          echo ./node_modules/.bin/bower info 'colorbox#1.5.5'
+          ./node_modules/.bin/bower info 'colorbox#1.5.5'
+
       - name: Setup test database
         run: |
           bin/rake db:schema:load
