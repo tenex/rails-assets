@@ -86,8 +86,12 @@ jobs:
           bin/rake db:schema:load
 
       - name: Run tests
+        id: rspec
         run: bin/rspec
-      - uses: actions/upload-artifact@v3
+        continue-on-error: true
+
+      - name: Upload test
+        uses: actions/upload-artifact@v3
         with:
           name: verification.log
           path: log/test.log
