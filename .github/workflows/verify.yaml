@@ -4,7 +4,7 @@ on: [push]
 jobs:
   tests:
     name: Tests
-    runs-on: ubuntu-22.04 # prod = 16 unfortunately
+    runs-on: ubuntu-20.04 # prod = 16 unfortunately
     environment: ci # this provides access to https://github.com/tenex/rails-assets/settings/environments/542274209/edit
     env:
       RAILS_ENV: test
