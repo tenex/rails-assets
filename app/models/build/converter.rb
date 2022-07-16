@@ -129,8 +129,14 @@ module Build
           "#{component_name}##{component_version || 'latest'}"
         )
 
-        bower_components =
-          result.values.map do |data|
+        if ENV['DEBUG_BUILD'].present?
+          Utils.make_debug_archive(
+            cache_dir.to_s,
+            "bower-#{component_name.gsub('/', '--')}.#{component_version || 'latest'}"
+          )
+        end
+
+        bower_components = result.values.map do |data|
           BowerComponent.new(Path.new(cache_dir), data)
         end
 

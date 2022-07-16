@@ -182,6 +182,23 @@ module Build
            end]
     end
 
+    # Make a .tar.xz of a directory (e.g., bower_components, gem directory)
+    def make_debug_archive(dir, label)
+      dir = Pathname.new(dir)
+      dest_parent = Rails.root.join('tmp', 'debug')
+      dest_parent.mkpath
+      dest_basename = "#{label}.#{Time.now.to_i}.tar.xz"
+      dest_path = dest_parent.join(dest_basename).to_s
+      $stderr.puts "making tarball of #{dir} at #{dest_path}"
+      res = system(
+        'tar',
+        '-C', dir.dirname.to_s,
+        '-cJf', dest_path,
+        dir.basename.to_s
+      )
+      Rails.logger.debug("debug archive (status #{res}): #{dir} -> #{dest_path}")
+    end
+
     private
 
     def semversion_fix(version)

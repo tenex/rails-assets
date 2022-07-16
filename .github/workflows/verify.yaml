@@ -88,10 +88,15 @@ jobs:
       - name: Run tests
         id: rspec
         run: bin/rspec
+        env:
+          DEBUG_BUILD: true
 
       - name: Upload test
         uses: actions/upload-artifact@v3
         if: always() # or .... ?
+        run: |
+          tar -cf build-debug.tar tmp/build
         with:
-          name: verification.log
-          path: log/test.log
+          path: |
+            log/test.log
+            build-debug.tar
