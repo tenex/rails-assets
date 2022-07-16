@@ -161,8 +161,8 @@ describe Build::Converter do
     end
 
     component "swipe", "2.0.0" do
-      gem_file "app/assets/javascripts/Swipe.js"
-      gem_file "app/assets/javascripts/Swipe/swipe.js"
+      gem_file "app/assets/javascripts/swipe.js"
+      gem_file "app/assets/javascripts/swipe/swipe.js"
       file_contains "app/assets/javascripts/Swipe.js", "require Swipe/swipe"
     end
 
@@ -187,13 +187,11 @@ describe Build::Converter do
     # ^1.2.3 kind of dependency
     component "jquery-masonry", "3.1.5" do
       gem_file "app/assets/javascripts/jquery-masonry.js"
-      gem_file "app/assets/javascripts/jquery-masonry/jquery-masonry.js"
     end
 
     # 1.0 - 1.1 kind of dependency
     component "marionette", "1.7.4" do
       gem_file "app/assets/javascripts/marionette.js"
-      gem_file "app/assets/javascripts/marionette/marionette.js"
     end
 
     component "bignumber.js", "1.5.0" do
