@@ -173,29 +173,16 @@ describe Build::Converter do
       #   'spec.add_dependency "rails-assets-desandro--get-size", ">= 1.1.4", "< 2.0"'
     end
 
-    # This is strange example because colorbox has only
-    # colorbox.css files that are examples (about 5 of them)
-    # Rails Assets algorithm select first example colorbox.css
-    # because it is named the same way as the gem
-    #
-    # I'm not sure it is bug of feature, so I'm leaving it :-)
-    component "colorbox", "1.5.5" do
-      gem_file "app/assets/stylesheets/colorbox.scss"
-      gem_file "app/assets/stylesheets/colorbox/colorbox.scss"
-      file_contains "app/assets/stylesheets/colorbox.scss",
-        "@import 'colorbox/colorbox.scss';"
-    end
-
     # ^1.2.3 kind of dependency
     component "jquery-masonry", "3.1.5" do
-      gem_file "app/assets/javascripts/jquery-masonry.js"
-      gem_file "app/assets/javascripts/jquery-masonry/masonry.js"
+      gem_file "app/assets/javascripts/masonry.js"
+      gem_file "app/assets/javascripts/masonry/masonry.js"
     end
 
     # 1.0 - 1.1 kind of dependency
     component "marionette", "1.7.4" do
-      gem_file "app/assets/javascripts/marionette.js"
-      gem_file "app/assets/javascripts/marionette/backbone.marionette.js"
+      gem_file "app/assets/javascripts/backbone.marionette.js"
+      gem_file "app/assets/javascripts/backbone.marionette/backbone.marionette.js"
     end
 
     component "bignumber.js", "1.5.0" do
