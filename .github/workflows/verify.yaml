@@ -74,13 +74,6 @@ jobs:
           npm --version
           ./node_modules/.bin/bower --version
 
-      - name: Debug bower results
-        run: |
-          echo ./node_modules/.bin/bower info 'colorbox#1.5.5'
-          ./node_modules/.bin/bower info 'colorbox#1.5.5'
-          echo ./node_modules/.bin/bower info 'swipe#2.0.0'
-          ./node_modules/.bin/bower info 'swipe#2.0.0'
-
       - name: Setup test database
         run: |
           bin/rake db:schema:load
@@ -88,12 +81,6 @@ jobs:
       - name: Run tests
         id: rspec
         run: bin/rspec
-        env:
-          DEBUG_BUILD: true
-
-      - name: make build debug tarball
-        run: tar -cf build-debug.tar tmp/debug
-        if: always()
 
       - name: Upload test
         uses: actions/upload-artifact@v3
@@ -101,4 +88,3 @@ jobs:
         with:
           path: |
             log/test.log
-            build-debug.tar

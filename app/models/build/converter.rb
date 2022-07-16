@@ -129,13 +129,6 @@ module Build
           "#{component_name}##{component_version || 'latest'}"
         )
 
-        if ENV['DEBUG_BUILD'].present?
-          Utils.make_debug_archive(
-            cache_dir.to_s,
-            "bower-#{component_name.gsub('/', '--')}.#{component_version || 'latest'}"
-          )
-        end
-
         bower_components = result.values.map do |data|
           BowerComponent.new(Path.new(cache_dir), data)
         end
@@ -159,11 +152,6 @@ module Build
 
         asset_paths = transformations[:all].map(&:last)
         main_paths = transformations[:main].map(&:last)
-
-        if ENV['DEBUG_BUILD'].present?
-          warn "convert! of #{bower_component.name} #{bower_component.version}"
-          warn transformations.to_s
-        end
 
         raise BuildError.new('No files to convert') if asset_paths.empty?
 
