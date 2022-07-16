@@ -160,6 +160,11 @@ module Build
         asset_paths = transformations[:all].map(&:last)
         main_paths = transformations[:main].map(&:last)
 
+        if ENV['DEBUG_BUILD'].present?
+          warn "convert! of #{bower_component.name} #{bower_component.version}"
+          warn transformations.to_s
+        end
+
         raise BuildError.new('No files to convert') if asset_paths.empty?
 
         Transformer.process_transformations!(
