@@ -92,7 +92,7 @@ jobs:
           DEBUG_BUILD: true
 
       - name: make build debug tarball
-        run: tar -cf build-debug.tar tmp/build
+        run: tar -cf build-debug.tar tmp/debug
         if: always()
 
       - name: Upload test
