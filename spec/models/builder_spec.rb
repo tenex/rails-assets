@@ -12,18 +12,29 @@ describe Build::Converter do
 
         version = Build::Converter.run!(name, version)
 
-        @gem_root = File.join(Figaro.env.data_dir, 'gems',
-          "rails-assets-#{version.component.name}-#{version.string}").to_s
+        Dir.mktmpdir do |sink_path|
+          gem_path = File.join(
+            Figaro.env.data_dir,
+            'gems',
+            "rails-assets-#{version.component.name}-#{version.string}.gem"
+          ).to_s
 
-        gem_path = @gem_root + '.gem'
+          expect(File.exist?(gem_path.to_s)).to be true
+          Build::Utils.sh(
+            File.join(Figaro.env.data_dir, 'gems'),
+            'gem unpack',
+            "--target=#{sink_path}", # unpack to temp directory
+            gem_path.to_s
+          )
+          @gem_root = File.join(
+            sink_path,
+            "rails-assets-#{version.component.name}-#{version.string}"
+          )
+          expect(Dir.exist?(@gem_root.to_s)).to be true
+          instance_eval(&block)
+        end
 
-        expect(File.exist?(gem_path.to_s)).to be true
-        Build::Utils.sh(File.join(Figaro.env.data_dir, 'gems'), 'gem unpack', gem_path.to_s)
-        expect(Dir.exist?(@gem_root.to_s)).to be true
-
-        instance_eval(&block)
-
-        @component = Component.where(:name => gem_name).first
+        @component = Component.where(name: gem_name).first
         @component.should_not be_nil
       end
     end
