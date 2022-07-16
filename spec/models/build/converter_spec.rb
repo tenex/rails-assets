@@ -112,7 +112,7 @@ module Build
           gem_path = Converter.install!('adminlte', '2.3.3') do |dependencies|
             Converter.convert!(dependencies.first) do |dir, paths, mains|
               Dir["#{dir}/app/assets/javascripts/*.js"].should eq [
-                "#{dir}/app/assets/javascripts/AdminLTE.js"
+                "#{dir}/app/assets/javascripts/adminlte.js"
               ]
             end
           end

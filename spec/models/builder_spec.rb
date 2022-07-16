@@ -186,14 +186,14 @@ describe Build::Converter do
 
     # ^1.2.3 kind of dependency
     component "jquery-masonry", "3.1.5" do
-      gem_file "app/assets/javascripts/masonry.js"
-      gem_file "app/assets/javascripts/masonry/masonry.js"
+      gem_file "app/assets/javascripts/jquery-masonry.js"
+      gem_file "app/assets/javascripts/jquery-masonry/jquery-masonry.js"
     end
 
     # 1.0 - 1.1 kind of dependency
     component "marionette", "1.7.4" do
-      gem_file "app/assets/javascripts/backbone.marionette.js"
-      gem_file "app/assets/javascripts/backbone.marionette/backbone.marionette.js"
+      gem_file "app/assets/javascripts/marionette.js"
+      gem_file "app/assets/javascripts/marionette/marionette.js"
     end
 
     component "bignumber.js", "1.5.0" do
