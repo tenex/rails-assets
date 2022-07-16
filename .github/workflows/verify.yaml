@@ -91,11 +91,12 @@ jobs:
         env:
           DEBUG_BUILD: true
 
+      - name: make build debug tarball
+        run: tar -cf build-debug.tar tmp/build
+
       - name: Upload test
         uses: actions/upload-artifact@v3
         if: always() # or .... ?
-        run: |
-          tar -cf build-debug.tar tmp/build
         with:
           path: |
             log/test.log
