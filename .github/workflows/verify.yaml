@@ -93,6 +93,7 @@ jobs:
 
       - name: make build debug tarball
         run: tar -cf build-debug.tar tmp/build
+        if: always()
 
       - name: Upload test
         uses: actions/upload-artifact@v3
