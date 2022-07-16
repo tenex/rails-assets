@@ -150,9 +150,9 @@ describe Build::Converter do
     end
 
     component "swipe", "2.0.0" do
-      gem_file "app/assets/javascripts/swipe.js"
-      gem_file "app/assets/javascripts/swipe/swipe.js"
-      file_contains "app/assets/javascripts/swipe.js", "require swipe/swipe"
+      gem_file "app/assets/javascripts/Swipe.js"
+      gem_file "app/assets/javascripts/Swipe/swipe.js"
+      file_contains "app/assets/javascripts/Swipe.js", "require Swipe/swipe"
     end
 
     component "Swipe", "2.0.0" do
