@@ -4,7 +4,7 @@ on: [push]
 jobs:
   tests:
     name: Tests
-    runs-on: ubuntu-18.04 # prod = 16 unfortunately
+    runs-on: ubuntu-20.04 # prod = 16 unfortunately
     environment: ci # this provides access to https://github.com/tenex/rails-assets/settings/environments/542274209/edit
     env:
       RAILS_ENV: test
@@ -15,12 +15,18 @@ jobs:
 
     services:
       postgres:
-        image: postgres:9.3
+        image: postgres:13.7
         env:
           POSTGRES_USER: rails_assets
           POSTGRES_DB: rails_assets_test
-          POSTGRES_PASSWORD: ""
+          # POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
         ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 20s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -35,7 +41,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 4.7.0
+          node-version: 16.16.0
       # - name: Find yarn cache location
       #   id: yarn-cache
       #   run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -48,28 +54,37 @@ jobs:
       #       ${{ runner.os }}-yarn-
       - name: Install OS dependencies for test
         run: |
-          LATEST_CHROMEDRIVER="$(curl https://chromedriver.storage.googleapis.com/LATEST_RELEASE)"
+          LATEST_CHROMEDRIVER="$(curl -S -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE)"
           echo "latest chromedriver available: $LATEST_CHROMEDRIVER"
           echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | \
             sudo tee /etc/apt/sources.list.d/google-chrome.list
           wget -O- https://dl.google.com/linux/linux_signing_key.pub | \
             gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/google.gpg > /dev/null
-          sudo apt update && sudo apt install -y google-chrome-stable="$LATEST_CHROMEDRIVER" redis
+          sudo apt update && sudo apt install -y google-chrome-stable redis
           CHROME_VERSION="$(google-chrome --version | cut -d ' ' -f3)" # Google Chrome 103.0.5060.53 -> 103.0.5060.53
           echo Installed chrome version: $CHROME_VERSION
           (cd /tmp;
            wget "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER}/chromedriver_linux64.zip" &&
            sudo unzip chromedriver_linux64.zip -d /usr/local/bin)
-          git config --global url."https://".insteadOf 'git://'
           cp config/application.ci.yml config/application.yml
       - name: Install packages
         run: |
-          npm install --global npm@5.10.0
-          npm install
+          yarn
+          node --version
+          npm --version
+          ./node_modules/.bin/bower --version
 
       - name: Setup test database
         run: |
           bin/rake db:schema:load
 
       - name: Run tests
+        id: rspec
         run: bin/rspec
+
+      - name: Upload test
+        uses: actions/upload-artifact@v3
+        if: always() # or .... ?
+        with:
+          path: |
+            log/test.log

@@ -12,18 +12,29 @@ describe Build::Converter do
 
         version = Build::Converter.run!(name, version)
 
-        @gem_root = File.join(Figaro.env.data_dir, 'gems',
-          "rails-assets-#{version.component.name}-#{version.string}").to_s
+        Dir.mktmpdir do |sink_path|
+          gem_path = File.join(
+            Figaro.env.data_dir,
+            'gems',
+            "rails-assets-#{version.component.name}-#{version.string}.gem"
+          ).to_s
 
-        gem_path = @gem_root + '.gem'
+          expect(File.exist?(gem_path.to_s)).to be true
+          Build::Utils.sh(
+            File.join(Figaro.env.data_dir, 'gems'),
+            'gem unpack',
+            "--target=#{sink_path}", # unpack to temp directory
+            gem_path.to_s
+          )
+          @gem_root = File.join(
+            sink_path,
+            "rails-assets-#{version.component.name}-#{version.string}"
+          )
+          expect(Dir.exist?(@gem_root.to_s)).to be true
+          instance_eval(&block)
+        end
 
-        expect(File.exist?(gem_path.to_s)).to be true
-        Build::Utils.sh(File.join(Figaro.env.data_dir, 'gems'), 'gem unpack', gem_path.to_s)
-        expect(Dir.exist?(@gem_root.to_s)).to be true
-
-        instance_eval(&block)
-
-        @component = Component.where(:name => gem_name).first
+        @component = Component.where(name: gem_name).first
         @component.should_not be_nil
       end
     end
@@ -173,37 +184,14 @@ describe Build::Converter do
       #   'spec.add_dependency "rails-assets-desandro--get-size", ">= 1.1.4", "< 2.0"'
     end
 
-    # This is strange example because colorbox has only
-    # colorbox.css files that are examples (about 5 of them)
-    # Rails Assets algorithm select first example colorbox.css
-    # because it is named the same way as the gem
-    #
-    # I'm not sure it is bug of feature, so I'm leaving it :-)
-    component "colorbox", "1.5.5" do
-      gem_file "app/assets/stylesheets/colorbox.scss"
-      gem_file "app/assets/stylesheets/colorbox/colorbox.scss"
-      file_contains "app/assets/stylesheets/colorbox.scss",
-        "@import 'colorbox/colorbox.scss';"
-    end
-
-    # main is hash
-    component "orbicular", "1.0.3" do
-      gem_file "app/assets/stylesheets/orbicular.scss"
-      gem_file "app/assets/stylesheets/orbicular/orbicular.scss"
-      gem_file "app/assets/javascripts/orbicular.js"
-      gem_file "app/assets/javascripts/orbicular/orbicular.js"
-    end
-
     # ^1.2.3 kind of dependency
     component "jquery-masonry", "3.1.5" do
       gem_file "app/assets/javascripts/jquery-masonry.js"
-      gem_file "app/assets/javascripts/jquery-masonry/masonry.js"
     end
 
     # 1.0 - 1.1 kind of dependency
     component "marionette", "1.7.4" do
       gem_file "app/assets/javascripts/marionette.js"
-      gem_file "app/assets/javascripts/marionette/backbone.marionette.js"
     end
 
     component "bignumber.js", "1.5.0" do

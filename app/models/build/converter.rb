@@ -123,14 +123,14 @@ module Build
     #   For each component a Version and Component is created in database.
     def install!(component_name, component_version = nil)
       Dir.mktmpdir do |cache_dir|
+        component_basename = component_name.split('/').last
         result = Utils.bower(
           cache_dir,
           'install -p -F',
-          "#{component_name}##{component_version || 'latest'}"
+          "#{component_basename}=#{component_name}##{component_version || 'latest'}"
         )
 
-        bower_components =
-          result.values.map do |data|
+        bower_components = result.values.map do |data|
           BowerComponent.new(Path.new(cache_dir), data)
         end
 

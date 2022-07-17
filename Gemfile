@@ -3,8 +3,8 @@ source 'https://rubygems.org'
 gem 'rails', '~> 4.2.11'
 
 gem 'actionpack-page_caching'
-gem 'angular-semver-sort-rails'
 gem 'angularjs-rails'
+gem 'angular-semver-sort-rails'
 gem 'annotate'
 gem 'autoprefixer-rails', '>= 0.6.20130728'
 gem 'awesome_print'
@@ -56,6 +56,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'rspec-its'
   gem 'rspec-rails', '~> 2.0'
   gem 'thin'
 end
