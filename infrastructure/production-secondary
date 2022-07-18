@@ -1,9 +1,0 @@
-[secondary:children]
-web
-database
-
-[web]
-rails-assets.org rails_env=production ansible_ssh_host=mcp.rails-assets.org
-
-[database]
-rails-assets.org ansible_ssh_host=mcp.rails-assets.org
