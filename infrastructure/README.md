@@ -4,6 +4,12 @@ Prerequisites:
 
 * Your SSH key can access root account on server
 
+## Spin up a server
+
+Create a server that runs Debian Bullseye (11). Ubuntu 22.04 will not
+work (without a lot of labor) because Ruby 2.4.10 will not install
+(only Ruby 3+ will) due to OpenSSL versions being incompatible.
+
 ## Install ansible and roles
 
 ``` shell
