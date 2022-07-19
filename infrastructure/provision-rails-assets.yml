@@ -1,0 +1,357 @@
+---
+- name: basic provisioning
+  hosts: all
+  user: root
+  roles:
+    - role: kamaln7.swapfile
+      swapfile_use_dd: True
+      swapfile_size: 4096
+
+  tasks:
+    - name: update installed packages
+      apt:
+        upgrade: safe
+        update_cache: yes
+        cache_valid_time: 3600
+    - name: add phusion apt key
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 561F9B9CAC40B2F7
+    - name: install passenger apt repository
+      apt_repository:
+        state: present
+        repo: "deb https://oss-binaries.phusionpassenger.com/apt/passenger bullseye main"
+    - name: add nodesource apt key
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+    - name: install nodesource apt ppa
+      apt_repository:
+        state: present
+        repo: "deb https://deb.nodesource.com/node_16.x bullseye main"
+    - name: install server base packages
+      apt:
+        name: "{{ item }}"
+        state: latest
+        update_cache: yes
+      with_items:
+        - apt-file
+        - apt-transport-https
+        - bc
+        - build-essential
+        - ca-certificates
+        - curl
+        - dnsutils
+        - gettext
+        - git
+        - htop
+        - iftop
+        - iotop
+        - jq
+        - libgmp-dev
+        - libpq-dev
+        - libxml2-utils
+        - moreutils
+        - nginx
+        - nginx-extras
+        - nodejs
+        - ntp
+        - passenger
+        - pcregrep
+        - postgresql
+        - postgresql-contrib
+        - pv
+        - redis-server
+        - redis-tools
+        - rsync
+        - silversearcher-ag
+        - tmux
+        - wget
+        - xmlstarlet
+        - zsh
+
+    - name: setup app group
+      group:
+        name: "{{ app_name }}"
+        state: "present"
+
+    - name: setup app user
+      user:
+        name: "{{ app_name }}"
+        shell: "/bin/bash"
+        groups: "{{ app_name }}"
+        append: yes
+        generate_ssh_key: yes
+      register: app_user
+
+    - authorized_key: user={{ item }}
+                      key="{{ lookup('file', 'keys.txt') }}"
+      with_items:
+        - root
+        - "{{ app_name }}"
+
+    - name: setup engineers accounts
+      user:
+        name: "{{ item.username }}"
+        shell: "{{ item.shell }}"
+        groups: "rvm,{{ app_name }},staff,users"
+        append: "yes"
+      with_items: "{{ engineers }}"
+
+    - name: setup authorized keys for engineers
+      authorized_key:
+        user: "{{ item.username }}"
+        key: "https://github.com/{{ item.github }}.keys"
+      with_items: "{{ engineers }}"
+      changed_when: False # workaround for bug where authorized_key always chagned
+
+    - name: enable agent forwarding
+      lineinfile:
+        dest: "/etc/ssh/sshd_config"
+        state: "present"
+        regexp: "^AllowAgentForwarding"
+        line: "AllowAgentForwarding yes"
+      notify: restart sshd
+
+  handlers:
+    - name: restart sshd
+      service:
+        name: "ssh"
+        state: "restarted"
+
+- name: install ruby
+  hosts: all
+  user: "{{ app_name }}"
+  roles:
+    - role: rvm.ruby
+      rvm1_rubies:
+        - 'ruby-2.4.10'
+      rvm1_install_flags: '--auto-dotfiles'
+      rvm1_gpg_keys: ''
+
+- name: install and configure web packages
+  hosts: all
+  user: root
+  tasks:
+    - name: "determine passenger root"
+      shell: passenger-config --root
+      register: passenger_root
+      changed_when: false
+    - name: "determine where ruby is"
+      become: True
+      become_user: "{{ app_name }}"
+      shell: which ruby
+      register: user_ruby_path
+      changed_when: false
+    - name: "set charset"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*charset '
+        insertafter='^http {'
+        line='        charset utf-8;'
+      notify: restart nginx
+    - name: "configure nginx access log to use combined format"
+      lineinfile:
+        dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*access_log'
+        insertafter='^http {'
+        line='        access_log /var/log/nginx/access.log combined;'
+      notify: restart nginx
+    - name: "set nginx user"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^user'
+        line="user {{ app_name }};"
+      notify: restart nginx
+    - name: "set passenger root"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*passenger_root'
+        insertafter='^http {'
+        line="        passenger_root {{ passenger_root.stdout }};"
+      notify: restart nginx
+    - name: "set passenger_ruby"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*passenger_ruby'
+        insertafter='^http {'
+        line="        passenger_ruby {{ user_ruby_path }};"
+      notify: restart nginx
+    - name: "set worker connections"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*worker_connections'
+        insertafter='^event {'
+        line='        worker_connections 1024;'
+      notify: restart nginx
+    - name: "set client_max_body_size"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*client_max_body_size'
+        insertafter='^http {'
+        line='        client_max_body_size 50m;'
+      notify: restart nginx
+    - name: "set passenger_max_pool_size"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*passenger_max_pool_size'
+        insertafter='^http {'
+        line='        passenger_max_pool_size 12;'
+      notify: restart nginx
+    - name: "set infinite passenger_max_request_queue_size"
+      lineinfile: dest=/etc/nginx/nginx.conf state=present
+        regexp='^\s*passenger_max_request_queue_size'
+        insertafter='^http {'
+        line='        passenger_max_request_queue_size 0;'
+      notify: restart nginx
+    - name: "generate diffie-hellman params"
+      command: >-
+        openssl dhparam -out /etc/ssl/dhparam.pem 2048
+        creates=/etc/ssl/dhparam.pem
+    - name: "copy nginx template"
+      template:
+        src: "nginx-site.conf.j2"
+        dest: "/etc/nginx/sites-enabled/{{ app_name }}.conf"
+      notify: restart nginx
+    - name: "remove default enabled site from nginx"
+      file:
+        path: "/etc/nginx/sites-enabled/default"
+        state: "absent"
+      notify: restart nginx
+    - name: fix permissions for nginx+passenger+logrotate
+      file:
+        path: "/var/log/nginx"
+        state: "directory"
+        mode: "u=rwx,g=rx,o=rx"
+    - name: logrotate script
+      copy:
+        src: "logrotate-nginx"
+        dest: "/etc/logrotate.d/nginx"
+        mode: "0644"
+    - name: rails-assets production logrotate
+      copy:
+        src: "logrotate-rails-assets"
+        dest: "/etc/logrotate.d/rails-assets"
+        mode: "0644"
+  handlers:
+    - name: restart nginx
+      service:
+        name: "nginx"
+        state: "restarted"
+
+- name: configure serving directories and app config
+  hosts: all
+  user: root
+  tasks:
+    - name: "make /srv/data directory"
+      file:
+        path: "/srv/data"
+        state: "directory"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: "u=rwx,g=rwx,o=rx"
+
+    - name: "make app directory"
+      file:
+        path: "/home/{{ app_name }}/rails-apps/{{ app_name }}"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: "0770"
+        state: "directory"
+
+    - name: "make config directory"
+      file:
+        path: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: "0770"
+        state: "directory"
+
+    - name: "make public symlink"
+      file:
+        src: "/srv/data"
+        dest: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/public"
+        owner: "{{ app_name }}"
+        group: "users"
+        state: "link"
+        force: "yes"
+
+    - name: "copy application.yml template"
+      template:
+        src: "files/application.yml"
+        dest: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/application.yml"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: "0660"
+
+    - name: "install database.yml"
+      template:
+        src: "files/database.yml"
+        dest: "/home/{{ app_name }}/rails-apps/{{ app_name }}/shared/config/database.yml"
+        owner: "{{ app_name }}"
+        group: "users"
+        mode: 0660
+
+    - name: "Copy passenger-watchdog script"
+      template:
+        src: "files/passenger-watchdog"
+        dest: "/home/{{ app_name}}/passenger-watchdog"
+        mode: 0770
+        owner: "{{ app_name }}"
+        group: "users"
+
+    - name: "Install passenger-watchdog into cron"
+      cron:
+        name: "passenger-watchdog"
+        job: "/home/{{ app_name}}/passenger-watchdog 2> /dev/null"
+
+- name: sidekiq systemd worker configuration
+  hosts: worker
+  user: root
+  tasks:
+    - name: "copy sudoers file for worker permissions"
+      copy:
+        src: "files/sudoers"
+        dest: "/etc/sudoers.d/rails-assets"
+        mode: "0440"
+    - name: "copy worker systemd template"
+      template:
+        src: "files/systemd/rails-assets-build.service"
+        dest: "/lib/systemd/system/rails-assets-build.service"
+      notify: bounce worker
+  handlers:
+    - name: bounce worker
+      systemd:
+        daemon_reload: true
+        name: "rails-assets-build"
+        enabled: true
+        state: restarted
+
+- name: install lets-encrypt and certificate cron job
+  user: root
+  hosts: all
+  tasks:
+    - name: lets-encrypt certificate renewal cron job
+      cron:
+        name: "renew-certificate"
+        job: "letsencrypt renew"
+        special_time: "daily"
+
+- name: configure application postgres database
+  hosts: all
+  user: root
+  become: True
+  become_user: postgres
+  tags:
+    - db
+  tasks:
+    - postgresql_db:
+        name: "rails_assets_{{ rails_env }}"
+        state: present
+    - name: add postgres user
+      community.postgresql.postgresql_user:
+        db: "rails_assets_{{ rails_env }}"
+        name: rails_assets
+        priv: ALL
+        role_attr_flags: CREATEDB,CREATEROLE,SUPERUSER
+    - name: hba trust local connections
+      community.postgresql.postgresql_pg_hba:
+        dest: /etc/postgresql/13/main/pg_hba.conf
+        contype: host
+        users: "{{ app_name }}"
+        source: samehost
+        databases: "rails_assets_{{ rails_env }}"
+        method: trust
