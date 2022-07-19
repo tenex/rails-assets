@@ -49,6 +49,7 @@
         - iotop
         - jq
         - libgmp-dev
+        - libnginx-mod-http-passenger
         - libpq-dev
         - libxml2-utils
         - moreutils
@@ -70,16 +71,19 @@
         - xmlstarlet
         - zsh
 
-    - name: setup app group
+    - name: setup app groups
       group:
-        name: "{{ app_name }}"
+        name: "{{ item }}"
         state: "present"
+      with_items:
+        - "{{ app_name }}"
+        - rvm
 
     - name: setup app user
       user:
         name: "{{ app_name }}"
         shell: "/bin/bash"
-        groups: "{{ app_name }}"
+        groups: "{{ app_name }},rvm"
         append: yes
         generate_ssh_key: yes
       register: app_user
@@ -94,7 +98,7 @@
       user:
         name: "{{ item.username }}"
         shell: "{{ item.shell }}"
-        groups: "rvm,{{ app_name }},staff,users"
+        groups: "{{ app_name }},staff,users,rvm"
         append: "yes"
       with_items: "{{ engineers }}"
 
