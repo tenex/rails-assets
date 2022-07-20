@@ -227,7 +227,7 @@
         mode: "0644"
     - name: rails-assets production logrotate
       copy:
-        src: "logrotate-rails-assets"
+        src: "files/logrotate-rails-assets"
         dest: "/etc/logrotate.d/rails-assets"
         mode: "0644"
   handlers:
@@ -272,6 +272,16 @@
         group: "users"
         state: "link"
         force: "yes"
+
+    - name: "copy backup scripts"
+      copy:
+        src: "files/{{ item }}"
+        dest: "/home/{{ app_name }}/{{item}}"
+        mode: "0770"
+      with_items:
+        - file-backup.zsh
+        - log-backup.zsh
+        - database-backup.zsh
 
     - name: "copy application.yml template"
       template:
