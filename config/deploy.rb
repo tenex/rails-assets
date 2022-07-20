@@ -9,8 +9,8 @@ set :deploy_user_home, -> { File.join '/home', fetch(:deploy_user) }
 set :rails_apps_path, -> { File.join fetch(:deploy_user_home), 'rails-apps' }
 set :deploy_to, -> { File.join fetch(:rails_apps_path), fetch(:application) }
 
-set :slack_webhook, -> { ENV['RAILS_ASSETS_SLACK_WEBHOOK'] }
-set :slack_deploy_user, -> { ENV['USER'] || ENV['USERNAME'] }
+# set :slack_webhook, -> { ENV['RAILS_ASSETS_SLACK_WEBHOOK'] }
+# set :slack_deploy_user, -> { ENV['USER'] || ENV['USERNAME'] }
 
 set :scm, :git
 set :format, :pretty

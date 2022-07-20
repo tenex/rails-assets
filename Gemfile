@@ -52,6 +52,9 @@ group :development do
   gem 'capistrano-passenger'
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-touch-linked-files'
+  gem 'net-ssh', '>=4.2'
+  gem 'ed25519'
+  gem 'bcrypt_pbkdf'
   gem 'slackistrano'
 end
 
