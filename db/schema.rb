@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20160404213501) do
   enable_extension "hstore"
 
   create_table "components", force: :cascade do |t|
-    t.string   "name",          index: {name: "index_components_on_name", unique: true}
+    t.string   "name",          :index=>{:name=>"index_components_on_name", :unique=>true}
     t.text     "description"
     t.string   "homepage"
     t.datetime "created_at"
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 20160404213501) do
   end
 
   create_table "failed_jobs", force: :cascade do |t|
-    t.string   "name",       index: {name: "index_failed_jobs_on_name"}
+    t.string   "name",       :index=>{:name=>"index_failed_jobs_on_name"}
     t.string   "worker"
     t.text     "args"
     t.text     "message"
@@ -37,19 +37,19 @@ ActiveRecord::Schema.define(version: 20160404213501) do
   end
 
   create_table "versions", force: :cascade do |t|
-    t.integer  "component_id",  index: {name: "index_versions_on_component_id"}, foreign_key: {references: "components", name: "fk_versions_component_id", on_update: :no_action, on_delete: :no_action}
-    t.string   "string",        index: {name: "index_versions_on_string"}
+    t.integer  "component_id",  :index=>{:name=>"index_versions_on_component_id"}, :foreign_key=>{:references=>"components", :name=>"fk_versions_component_id", :on_update=>:no_action, :on_delete=>:no_action}
+    t.string   "string",        :index=>{:name=>"index_versions_on_string"}
     t.hstore   "dependencies"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "build_status",  index: {name: "index_versions_on_build_status"}
+    t.string   "build_status",  :index=>{:name=>"index_versions_on_build_status"}
     t.text     "build_message"
-    t.text     "asset_paths",   default: [],    array: true
-    t.text     "main_paths",    default: [],    array: true
-    t.boolean  "rebuild",       default: false, index: {name: "index_versions_on_rebuild"}
-    t.string   "bower_version", index: {name: "index_versions_on_bower_version"}
-    t.string   "position",      limit: 1023, index: {name: "index_versions_on_position"}
-    t.boolean  "prerelease",    default: false, index: {name: "index_versions_on_prerelease"}
+    t.text     "asset_paths",   :default=>[], :array=>true
+    t.text     "main_paths",    :default=>[], :array=>true
+    t.boolean  "rebuild",       :default=>false, :index=>{:name=>"index_versions_on_rebuild"}
+    t.string   "bower_version", :index=>{:name=>"index_versions_on_bower_version"}
+    t.string   "position",      :limit=>1023, :index=>{:name=>"index_versions_on_position"}
+    t.boolean  "prerelease",    :default=>false, :index=>{:name=>"index_versions_on_prerelease"}
   end
 
 end

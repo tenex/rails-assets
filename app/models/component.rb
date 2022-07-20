@@ -3,12 +3,12 @@
 # Table name: components
 #
 #  id            :integer          not null, primary key
-#  name          :string(255)
+#  name          :string
 #  description   :text
-#  homepage      :string(255)
+#  homepage      :string
 #  created_at    :datetime
 #  updated_at    :datetime
-#  bower_name    :string(255)
+#  bower_name    :string
 #  summary_cache :json
 #
 # Indexes

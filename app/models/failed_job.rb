@@ -3,8 +3,8 @@
 # Table name: failed_jobs
 #
 #  id         :integer          not null, primary key
-#  name       :string(255)
-#  worker     :string(255)
+#  name       :string
+#  worker     :string
 #  args       :text
 #  message    :text
 #  created_at :datetime

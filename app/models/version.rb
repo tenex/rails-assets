@@ -4,16 +4,16 @@
 #
 #  id            :integer          not null, primary key
 #  component_id  :integer
-#  string        :string(255)
+#  string        :string
 #  dependencies  :hstore
 #  created_at    :datetime
 #  updated_at    :datetime
-#  build_status  :string(255)
+#  build_status  :string
 #  build_message :text
 #  asset_paths   :text             default([]), is an Array
 #  main_paths    :text             default([]), is an Array
 #  rebuild       :boolean          default(FALSE)
-#  bower_version :string(255)
+#  bower_version :string
 #  position      :string(1023)
 #  prerelease    :boolean          default(FALSE)
 #
