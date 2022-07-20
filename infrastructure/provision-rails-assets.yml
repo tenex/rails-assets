@@ -47,6 +47,7 @@
         - apt-file
         - apt-transport-https
         - bc
+        - btrfs-progs
         - build-essential
         - ca-certificates
         - curl
@@ -231,7 +232,7 @@
         mode: "u=rwx,g=rx,o=rx"
     - name: logrotate script
       copy:
-        src: "logrotate-nginx"
+        src: "files/logrotate-nginx"
         dest: "/etc/logrotate.d/nginx"
         mode: "0644"
     - name: rails-assets production logrotate

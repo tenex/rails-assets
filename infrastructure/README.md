@@ -36,3 +36,11 @@ If you're deploying this, you will know the vault password.
   into cron
 * SSH into the server as rails-assets and run gcloud init with
   credentials that can get to the backup GCS buckets
+
+# Restoring from Backup
+
+``` shell
+gsutil cp gs://tenex-database-backups/rails-assets-production.dump.bz2 .
+bzip2 -d rails-assets-production.dump.bz2
+pg_restore -U rails_assets -d rails_assets_production -c rails-assets-production.dump
+```
