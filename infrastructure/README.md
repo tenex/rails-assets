@@ -29,3 +29,10 @@ ansible --inventory production \
 ```
 
 If you're deploying this, you will know the vault password.
+
+## TODO
+
+* Install the backup scripts in the rails-assets user's home directory
+  into cron
+* SSH into the server as rails-assets and run gcloud init with
+  credentials that can get to the backup GCS buckets

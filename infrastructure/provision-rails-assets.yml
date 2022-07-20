@@ -29,6 +29,15 @@
       apt_repository:
         state: present
         repo: "deb https://deb.nodesource.com/node_16.x bullseye main"
+    - name: install google apt key
+      apt_key:
+        state: present
+        keyring: /usr/share/keyrings/cloud.google.gpg
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    - name: install google repo for gsutil
+      apt_repository:
+        state: present
+        repo: "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main"
     - name: install server base packages
       apt:
         name: "{{ item }}"
