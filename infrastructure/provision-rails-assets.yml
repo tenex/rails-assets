@@ -355,7 +355,7 @@
       community.postgresql.postgresql_pg_hba:
         dest: /etc/postgresql/13/main/pg_hba.conf
         contype: host
-        users: "{{ app_name }}"
+        users: rails_assets
         source: samehost
         databases: "rails_assets_{{ rails_env }}"
         method: trust
