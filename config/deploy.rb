@@ -1,5 +1,5 @@
 # config valid only for current version of Capistrano
-lock '3.4.0'
+lock '3.17.0'
 
 set :application, 'rails-assets'
 set :repo_url, 'git@github.com:tenex/rails-assets.git'
