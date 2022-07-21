@@ -29,7 +29,7 @@ gem 'rb-readline', '~> 0.5.0', require: false
 gem 'redcarpet'
 gem 'redis', '~> 3.3'
 gem 'redis-mutex'
-gem 'redis-rails', '~> 4.0.0'
+gem 'redis-rails'
 gem 'sass-rails'
 gem 'schema_plus'
 gem 'sentry-raven'
