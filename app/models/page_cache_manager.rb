@@ -9,7 +9,7 @@ class PageCacheManager
   ].freeze
 
   ACTION_CONTROLLER_METHODS.each do |method|
-    define_singleton_method method do
+    define_method method do
       ActionController::Base.send(method)
     end
   end
