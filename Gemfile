@@ -26,6 +26,7 @@ gem 'pg'
 gem 'postrank-uri'
 gem 'pry-rails'
 gem 'quiet_assets'
+gem 'rake', '>= 12.3.3'
 gem 'rb-readline', '~> 0.5.0', require: false
 gem 'redcarpet'
 gem 'redis', '~> 3.3'

@@ -43,9 +43,9 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     angular-semver-sort-rails (0.1.0)
     angularjs-rails (1.5.0)
-    annotate (2.7.0)
-      activerecord (>= 3.2, < 6.0)
-      rake (~> 10.4)
+    annotate (3.2.0)
+      activerecord (>= 3.2, < 8.0)
+      rake (>= 10.4, < 14.0)
     arel (6.0.4)
     autoprefixer-rails (0.8.20130911)
       execjs
@@ -213,7 +213,7 @@ GEM
       activesupport (= 4.2.11.3)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (10.5.0)
+    rake (13.0.6)
     rb-readline (0.5.5)
     redcarpet (2.2.2)
     redis (3.3.5)
@@ -447,6 +447,7 @@ DEPENDENCIES
   pry-rails
   quiet_assets
   rails (~> 4.2.11)
+  rake (>= 12.3.3)
   rb-readline (~> 0.5.0)
   redcarpet
   redis (~> 3.3)
