@@ -62,7 +62,7 @@ end
 
 group :development, :test do
   gem 'rspec-its'
-  gem 'rspec-rails', '~> 2.0'
+  gem 'rspec-rails', '~> 3.9.1'
   gem 'thin'
 end
 
