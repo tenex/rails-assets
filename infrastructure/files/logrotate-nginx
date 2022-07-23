@@ -14,7 +14,7 @@
         fi \
     endscript
     postrotate
-        invoke-rc.d nginx rotate >/dev/null 2>&1
-                passenger-config reopen-logs
+        passenger-config reopen-logs    
+        invoke-rc.d nginx rotate
     endscript
 }

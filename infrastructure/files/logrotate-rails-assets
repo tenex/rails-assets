@@ -1,4 +1,5 @@
 /home/rails-assets/rails-apps/rails-assets/current/log/production.log {
+  su rails-assets rails-assets
   daily
   copytruncate
   rotate 6
