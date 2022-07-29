@@ -1,7 +1,18 @@
 module Build
   # Stores the finished gem in an appropriate place
-  class Storage
-    def initialize
+  module Storage
+    extend self
+
+    def config(dest)
+      case dest
+      when :bucket
+        @dest = :bucket
+      when :local
+        @dest = :local
+      end
+    end
+
+    def configure_bucket
       @client = Aws::S3::Client.new(
         access_key_id: Figaro.env.aws_access_key,
         secret_access_key: Figaro.env.aws_secret_access_key,
