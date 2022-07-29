@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Unexpected request formats' do
+RSpec.describe 'Unexpected request formats', type: :controller do
   controller do
     def index
       respond_to do |format|
