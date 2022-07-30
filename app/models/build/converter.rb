@@ -99,13 +99,19 @@ module Build
             FileUtils.mkdir_p(data_dir.join('gems').to_s)
 
             gem_paths.each do |gem_path|
-              destination = data_dir.join('gems', File.basename(gem_path))
-              FileUtils.mv(gem_path.to_s, destination.to_s, force: true)
+              move_gem(gem_path)
               Reindex.new.reindex_spec(File.basename(gem_path).gsub(/\.gem\z/, ''))
             end
           end
         end
       end
+    end
+
+    # Move generated gem file to destination
+    def move_gem(gem_path)
+      data_dir = Path.new(Figaro.env.data_dir)
+      destination = data_dir.join('gems', File.basename(gem_path))
+      FileUtils.mv(gem_path.to_s, destination.to_s, force: true)
     end
 
     # Internal: Installs component to temporary directory and yields path to it.
